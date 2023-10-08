@@ -16,13 +16,16 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(cors());
 
-// Define your routes here (if you have any)
-// For example:
-// const movieRoute = require("./routes/movies");
-// app.use("/movie", movieRoute);
+//importing routes
+const recipeRoute = require("./routes/recipeRoute");
+
 
 // Middleware to handle and catch errors
 app.use(errorHandler);
+
+//setting the route naming
+app.use("/recipe", recipeRoute);
+
 
 // Start the server
 app.listen(port, () => {
