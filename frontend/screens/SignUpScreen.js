@@ -31,7 +31,7 @@ export default function SignUpScreen() {
         source={require("../assets/background.png")}
       />
 
-      {/* lights */}
+      {/* recipe logo */}
       <View className="flex-row justify-around w-full absolute">
         <Animated.Image
           entering={FadeInUp.delay(200).duration(1000).springify()}
