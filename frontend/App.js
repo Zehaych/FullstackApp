@@ -18,7 +18,7 @@ function App() {
         <Stack.Screen
           name="SignUpScreen"
           component={SignUpScreen}
-          options={{ title: "Sign up" }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="TabScreen"

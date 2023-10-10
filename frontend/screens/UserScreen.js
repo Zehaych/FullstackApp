@@ -3,7 +3,7 @@ import { StyleSheet, View, Text } from "react-native";
 const UserScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>This is UserScreen!</Text>
+      <Text>This is UserScreen</Text>
     </View>
   );
 };

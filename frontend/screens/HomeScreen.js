@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>This is homescreen</Text>
+      <Text>Boundary name is based from file name, so this is HomeScreen</Text>
     </View>
   );
 };

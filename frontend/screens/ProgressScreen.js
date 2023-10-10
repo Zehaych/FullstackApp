@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 const ProgressScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>This is track progress screen</Text>
+      <Text>This is ProgressScreen</Text>
     </View>
   );
 };

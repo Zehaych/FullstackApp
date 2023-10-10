@@ -25,7 +25,7 @@ export default function TabScreen() {
             iconName = focused ? "restaurant" : "restaurant-outline";
           } else if (route.name === "Members Recipes") {
             iconName = focused ? "restaurant" : "restaurant-outline";
-          } else if (route.name === "Progress") {
+          } else if (route.name === "Track Progress") {
             iconName = focused ? "bar-chart" : "bar-chart-outline";
           } else if (route.name === "User") {
             iconName = focused ? "person" : "person-outline";
@@ -55,7 +55,7 @@ export default function TabScreen() {
         options={{ tabBarLabel: "Members" }}
       />
       <Tab.Screen
-        name="Progress"
+        name="Track Progress"
         component={ProgressScreen}
         options={{ tabBarLabel: "Progress" }}
       />

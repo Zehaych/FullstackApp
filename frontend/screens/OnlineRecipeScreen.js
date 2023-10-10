@@ -3,7 +3,7 @@ const OnlineRecipeScreen = () => {
   return (
     <View style={styles.container}>
       <Text>
-        This is online recipe screen, maybe retrieved from spoonacular API?
+        This is OnlineRecipeScreen, maybe retrieved from spoonacular API?
       </Text>
     </View>
   );
