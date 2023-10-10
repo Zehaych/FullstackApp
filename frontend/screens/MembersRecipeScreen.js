@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import React, { useState, useEffect } from "react";
 
-export default function RecipeScreen() {
+export default function MembersRecipeScreen() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -18,6 +18,12 @@ export default function RecipeScreen() {
 
   return (
     <View style={styles.container}>
+      <Text>
+        Welcome to the Community's recipe. This is where everybody chips in and
+        contribute to a healthier lifestyle, add your own custom recipe here for
+        everyone to see as well.
+      </Text>
+      <Text>Recipes:</Text>
       {loading ? (
         <Text>Loading ...</Text>
       ) : (
@@ -25,7 +31,7 @@ export default function RecipeScreen() {
           <View key={food._id}>
             <Text>Name: {food.name}</Text>
             <Text>
-              Ingredients:
+              Ingredients:{" "}
               {food.ingredients.map((ingredient, index) => (
                 <Text key={index}>{ingredient}, </Text>
               ))}{" "}

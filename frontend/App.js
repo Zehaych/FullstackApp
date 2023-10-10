@@ -10,9 +10,21 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="LogInScreen">
-        <Stack.Screen name="LogInScreen" component={LogInScreen} />
-        <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
-        <Stack.Screen name="TabScreen" component={TabScreen} />
+        <Stack.Screen
+          name="LogInScreen"
+          component={LogInScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SignUpScreen"
+          component={SignUpScreen}
+          options={{ title: "Sign up" }}
+        />
+        <Stack.Screen
+          name="TabScreen"
+          component={TabScreen}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

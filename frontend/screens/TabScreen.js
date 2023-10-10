@@ -2,37 +2,62 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import UserScreen from "./UserScreen";
-import RecipeScreen from "./RecipeScreen";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import HomeScreen from "./HomeScreen";
+import OnlineRecipeScreen from "./OnlineRecipeScreen";
+import MembersRecipeScreen from "./MembersRecipeScreen";
+import ProgressScreen from "./ProgressScreen";
 
 const Tab = createBottomTabNavigator();
 
 export default function TabScreen() {
   return (
     <Tab.Navigator
-      initialRouteName="RecipeScreen"
+      initialRouteName="Home"
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused, size }) => {
           let iconName;
+          let iconColor = focused ? "goldenrod" : "black"; // Set the color to golden for focused icons
 
-          if (route.name === "RecipeScreen") {
-            iconName = focused ? "ios-restaurant" : "ios-restaurant-outline";
+          if (route.name === "Home") {
+            iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "Online Recipes") {
+            iconName = focused ? "restaurant" : "restaurant-outline";
+          } else if (route.name === "Members Recipes") {
+            iconName = focused ? "restaurant" : "restaurant-outline";
+          } else if (route.name === "Progress") {
+            iconName = focused ? "bar-chart" : "bar-chart-outline";
           } else if (route.name === "User") {
-            iconName = focused ? "ios-person" : "ios-person-outline";
+            iconName = focused ? "person" : "person-outline";
           }
 
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return <Ionicons name={iconName} size={size} color={iconColor} />;
+        },
+        tabBarLabelStyle: {
+          color: "black", // Set the text color for tab labels (names of the icons)
+          fontSize: 12,
         },
       })}
-      tabBarActiveTintColor="tomato"
-      tabBarInactiveTintColor="gray"
-      tabBarLabelStyle={{ fontSize: 12 }}
-      tabBarStyle={{ display: "flex" }}
     >
       <Tab.Screen
-        name="RecipeScreen"
-        component={RecipeScreen}
-        options={{ tabBarLabel: "Recipes" }}
+        name="Home"
+        component={HomeScreen}
+        options={{ tabBarLabel: "Home" }}
+      />
+      <Tab.Screen
+        name="Online Recipes"
+        component={OnlineRecipeScreen}
+        options={{ tabBarLabel: "Online" }}
+      />
+      <Tab.Screen
+        name="Members Recipes"
+        component={MembersRecipeScreen}
+        options={{ tabBarLabel: "Members" }}
+      />
+      <Tab.Screen
+        name="Progress"
+        component={ProgressScreen}
+        options={{ tabBarLabel: "Progress" }}
       />
       <Tab.Screen
         name="User"
@@ -42,12 +67,3 @@ export default function TabScreen() {
     </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
