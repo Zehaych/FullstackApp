@@ -7,6 +7,7 @@ import HomeScreen from "./HomeScreen";
 import OnlineRecipeScreen from "./OnlineRecipeScreen";
 import MembersRecipeScreen from "./MembersRecipeScreen";
 import ProgressScreen from "./ProgressScreen";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const Tab = createBottomTabNavigator();
 
@@ -24,7 +25,14 @@ export default function TabScreen() {
           } else if (route.name === "Online Recipes") {
             iconName = focused ? "restaurant" : "restaurant-outline";
           } else if (route.name === "Members Recipes") {
-            iconName = focused ? "restaurant" : "restaurant-outline";
+            iconName = focused ? "account-group" : "account-group-outline";
+            return (
+              <MaterialCommunityIcons
+                name={iconName}
+                size={size}
+                color={iconColor}
+              />
+            );
           } else if (route.name === "Track Progress") {
             iconName = focused ? "bar-chart" : "bar-chart-outline";
           } else if (route.name === "User") {

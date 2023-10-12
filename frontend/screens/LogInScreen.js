@@ -39,7 +39,7 @@ export default function LogInScreen() {
       {/* recipe logo */}
       <View className="flex-row justify-around w-full absolute">
         <Animated.Image
-          entering={FadeInUp.delay(200).duration(2000).springify()}
+          entering={FadeInUp.delay(200).duration(1000).springify()}
           source={require("../assets/logo.png")}
           // className="h-[210] w-[210]"
           className="h-[300] w-[300] mt-4"
