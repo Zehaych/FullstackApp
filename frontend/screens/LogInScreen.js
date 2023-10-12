@@ -39,16 +39,13 @@ export default function LogInScreen() {
       {/* recipe logo */}
       <View className="flex-row justify-around w-full absolute">
         <Animated.Image
-          entering={FadeInUp.delay(200).duration(1000).springify()}
-          source={require("../assets/diet.png")}
-          className="h-[210] w-[210]"
+          entering={FadeInUp.delay(200).duration(2000).springify()}
+          source={require("../assets/logo.png")}
+          // className="h-[210] w-[210]"
+          className="h-[300] w-[300] mt-4"
+
           //   className="h-[225] w-[90]"
         />
-        {/* <Animated.Image
-          entering={FadeInUp.delay(400).duration(1000).springify()}
-          source={require("../assets/light.png")}
-          className="h-[160] w-[65] opacity-75"
-        /> */}
       </View>
 
       {/* title and form */}
