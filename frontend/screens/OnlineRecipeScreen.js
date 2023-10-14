@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, TextInput, FlatList } from "react-native";
+import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
-import { fetchRecipes } from '../assets/Api';
+import { fetchRecipesByName } from '../assets/Api';
 
 const OnlineRecipeScreen = () => {
   const [search, setSearch] = useState("");
@@ -8,10 +8,10 @@ const OnlineRecipeScreen = () => {
   const [recipes, setRecipes] = useState([]);
 
   // Function to fetch meals by first letter
-  const fetchRecipesByLetter = async (letter) => {
+  const fetchRecipes = async (text) => {
     setLoading(true);
     try {
-      const data = await fetchRecipes(letter);
+      const data = await fetchRecipesByName(text);
       setRecipes(data);
     } catch (error) {
       console.error('Error fetching meals:', error);
@@ -21,9 +21,9 @@ const OnlineRecipeScreen = () => {
   };
 
   useEffect(() => {
-    if (search && search.length === 1) {
+    if (search.length >= 1) {
       // Fetch meals by the first letter when search is a single letter
-      fetchRecipesByLetter(search);
+      fetchRecipes(search);
     } else {
       setRecipes([]); // Clear the meals list when search is empty or longer than one letter
     }
@@ -33,6 +33,14 @@ const OnlineRecipeScreen = () => {
   const handleSearch = (text) => {
     setSearch(text);
   };
+
+  //handle pressable data
+  const renderItem = ({ item }) => (
+    <TouchableOpacity onPress={() => handleItemClick(item)}>
+      <Text>{item.strMeal}</Text>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
       {/* search bar */}
@@ -48,9 +56,10 @@ const OnlineRecipeScreen = () => {
         <Text>Loading...</Text>
       ) : (
         <FlatList
+          style={styles.listFlat}
           data={recipes}
           keyExtractor={(item) => item.idMeal.toString()}
-          renderItem={({ item }) => <Text>{item.strMeal}</Text>}
+          renderItem={renderItem}
         />
       )}
     </View>
@@ -64,7 +73,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    //justifyContent: "center",
   },
   header: {
 
@@ -78,4 +86,9 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
   },
+  listFlat:{
+    width: 385,
+    padding: 10,
+    margin: 10
+  }
 });
