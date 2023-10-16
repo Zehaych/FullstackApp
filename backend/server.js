@@ -19,6 +19,7 @@ app.use(cors());
 //importing routes
 const recipeRoute = require("./routes/recipeRoute");
 const FoodAndDrinksRoute = require("./routes/FoodAndDrinksRoute");
+const userRoute = require("./routes/userRoute");
 
 
 // Middleware to handle and catch errors
@@ -27,6 +28,7 @@ app.use(errorHandler);
 //setting the route naming
 app.use("/recipe", recipeRoute);
 app.use("/FoodAndDrinks", FoodAndDrinksRoute);
+app.use("/user", userRoute);
 
 
 // Start the server
