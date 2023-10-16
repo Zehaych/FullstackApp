@@ -18,6 +18,20 @@ export async function fetchRecipesByName(name) {
 // full meal detail by id:   https://www.themealdb.com/api/json/v1/1/lookup.php?i=52772
 // image: https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg/preview
 
+export async function fetchRecipesDetailsById(idMeal) {
+    try {
+        const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching meal details:', error);
+        throw error;
+    }
+}
+
 export async function fetchRecipesByArea(area) {
     try {
         const response = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?a=${area}');

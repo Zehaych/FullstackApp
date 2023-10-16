@@ -5,6 +5,8 @@ import TabScreen from "./screens/TabScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import MembersRecipeScreen from "./screens/MembersRecipeScreen";
 import MembersRecipeInfoScreen from "./screens/MembersRecipeInfoScreen";
+import OnlineRecipeScreen from "./screens/OnlineRecipeScreen";
+import OnlineRecipeInfoScreen from "./screens/OnlineRecipeInfoScreen";
 
 const Stack = createStackNavigator();
 
@@ -34,6 +36,14 @@ function App() {
         <Stack.Screen 
           name="MembersRecipeInfoScreen" 
           component={MembersRecipeInfoScreen}
+        />
+        <Stack.Screen 
+          name="OnlineRecipeScreen" 
+          component={OnlineRecipeScreen}
+        />
+        <Stack.Screen 
+          name="OnlineRecipeInfoScreen" 
+          component={OnlineRecipeInfoScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
