@@ -8,7 +8,7 @@ const userController = require("../controllers/userController");
 router.get("/", userController.getUsers);
 
 //user -> POST
-//router.post("/register", userController.register);
+router.post("/register", userController.register);
 
 
 module.exports = router;
