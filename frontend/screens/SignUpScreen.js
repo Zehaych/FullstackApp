@@ -193,7 +193,6 @@ import {
   View,
   Text,
   Image,
-  SafeAreaView,
   TextInput,
   TouchableOpacity,
   Pressable,
@@ -212,11 +211,11 @@ export default function SignUpScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  // const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
-  // const handlePasswordConfirmationChange = (text) => {
-  //   setPasswordConfirmation(text);
-  // };
+  const handlePasswordConfirmationChange = (text) => {
+    setPasswordConfirmation(text);
+  };
 
   const handleUsernameChange = (text) => {
     setUsername(text);
@@ -231,10 +230,10 @@ export default function SignUpScreen() {
   };
 
   const handleSignUp = async () => {
-    // if (password.trim() !== passwordConfirmation.trim()) {
-    //   alert("Password and confirmation do not match");
-    //   return;
-    // }
+    if (password.trim() !== passwordConfirmation.trim()) {
+      alert("Password and confirmation do not match");
+      return;
+    }
 
     const createUserResponse = await fetch(
       "http://192.168.1.62:5000/user/register",
@@ -275,7 +274,7 @@ export default function SignUpScreen() {
         <Animated.Image
           entering={FadeInUp.delay(200).duration(1000).springify()}
           source={require("../assets/logo.png")}
-          className="h-[300] w-[300] mt-4"
+          className="h-[250] w-90] mt-4"
           //   className="h-[225] w-[90]"
         />
       </View>
@@ -286,7 +285,7 @@ export default function SignUpScreen() {
         <View className="flex items-center">
           <Animated.Text
             entering={FadeInUp.duration(1000).springify()}
-            className="text-white font-bold tracking-wider text-5xl mb-10"
+            className="text-white font-bold tracking-wider text-5xl"
           >
             NutriRizz
           </Animated.Text>
@@ -300,7 +299,7 @@ export default function SignUpScreen() {
           >
             <TextInput
               placeholder="Username"
-              placeholderTextColor={"gray"}
+              placeholderTextColor={"black"}
               onChangeText={handleUsernameChange}
             />
           </Animated.View>
@@ -310,34 +309,34 @@ export default function SignUpScreen() {
           >
             <TextInput
               placeholder="Email"
-              placeholderTextColor={"gray"}
+              placeholderTextColor={"black"}
               onChangeText={handleEmailChange}
               keyboardType="email-address"
             />
           </Animated.View>
           <Animated.View
             entering={FadeInDown.delay(400).duration(1000).springify()}
-            className="bg-black/5 p-5 rounded-2xl w-full mb-3"
+            className="bg-black/5 p-5 rounded-2xl w-full"
           >
             <TextInput
               placeholder="Password"
-              placeholderTextColor={"gray"}
+              placeholderTextColor={"black"}
               secureTextEntry
               onChangeText={handlePasswordChange}
             />
           </Animated.View>
 
-          {/* <Animated.View
+          <Animated.View
             entering={FadeInDown.delay(400).duration(1000).springify()}
             className="bg-black/5 p-5 rounded-2xl w-full"
           >
             <TextInput
               placeholder="Confirm Password"
-              placeholderTextColor={"gray"}
+              placeholderTextColor={"black"}
               secureTextEntry
               onChangeText={handlePasswordConfirmationChange}
             />
-          </Animated.View> */}
+          </Animated.View>
 
           <Animated.View
             entering={FadeInDown.delay(400).duration(1000).springify()}

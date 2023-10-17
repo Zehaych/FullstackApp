@@ -20,6 +20,7 @@ exports.getUsers = asyncHandler(async (req, res) => {
 exports.register = async (req, res) => {
   const userName = req.body.userName;
   const password = req.body.password;
+  const passwordConfirmation = req.body.password;
   const email = req.body.email;
 
   //   const passwordConfirmation = req.body.passwordConfirmation;
@@ -49,11 +50,11 @@ exports.register = async (req, res) => {
     return res
       .status(400)
       .json({ message: "Please enter a password more than 6 characters" });
-  //   else if (password !== passwordConfirmation) {
-  //     return res
-  //       .status(400)
-  //       .json({ message: "Password and confirmation do not match" });
-  //   }
+  else if (password !== passwordConfirmation) {
+    return res
+      .status(400)
+      .json({ message: "Password and confirmation do not match" });
+  }
 
   bcrypt.hash(req.body.password, 10).then(async (hash) => {
     await User.create({

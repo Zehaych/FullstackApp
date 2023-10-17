@@ -38,12 +38,11 @@ export default function LogInScreen() {
 
       {/* recipe logo */}
       <View className="flex-row justify-around w-full absolute">
-        
         <Animated.Image
           entering={FadeInUp.delay(200).duration(1000).springify()}
           source={require("../assets/logo.png")}
           // className="h-[210] w-[210]"
-          className="h-[300] w-[300] mt-4"
+          className="h-[250] w-90] mt-4"
 
           //   className="h-[225] w-[90]"
         />
@@ -67,7 +66,7 @@ export default function LogInScreen() {
             entering={FadeInDown.duration(1000).springify()}
             className="bg-black/5 p-5 rounded-2xl w-full"
           >
-            <TextInput placeholder="Email" placeholderTextColor={"gray"} />
+            <TextInput placeholder="Email" placeholderTextColor={"black"} />
           </Animated.View>
           <Animated.View
             entering={FadeInDown.delay(200).duration(1000).springify()}
@@ -75,7 +74,7 @@ export default function LogInScreen() {
           >
             <TextInput
               placeholder="Password"
-              placeholderTextColor={"gray"}
+              placeholderTextColor={"black"}
               secureTextEntry
             />
           </Animated.View>
