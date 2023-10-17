@@ -24,6 +24,8 @@ exports.register = async (req, res) => {
 
   //   const passwordConfirmation = req.body.passwordConfirmation;
 
+  const validator = require("validator");
+
   //check if user exist
   const userExist = await User.findOne({ username: userName });
 
@@ -39,8 +41,10 @@ exports.register = async (req, res) => {
     return res.status(400).json({ message: "Empty fields are not allowed." });
   else if (!userName)
     return res.status(400).json({ message: "Please enter username" });
-  else if (!email) {
-    return res.status(400).json({ message: "Please enter your email address" });
+  else if (!email || !validator.isEmail(req.body.email)) {
+    return res
+      .status(400)
+      .json({ message: "Please enter a proper email address" });
   } else if (password.length < 6)
     return res
       .status(400)
