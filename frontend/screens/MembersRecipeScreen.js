@@ -1,19 +1,26 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image, SafeAreaView, TextInput, TouchableOpacity, Button} from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  SafeAreaView,
+  TextInput,
+  TouchableOpacity,
+  Button,
+} from "react-native";
 import React, { useState, useEffect } from "react";
-
 
 export default function MembersRecipeScreen({ navigation }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const url = "http://192.168.0.125:5000/recipe";
+  const url = "http://192.168.1.62:5000/recipe";
 
   //navigate to recipe info page
   const handleRecipeInfo = (recipeData) => {
     navigation.navigate("MembersRecipeInfoScreen", { recipeData });
   };
-
 
   useEffect(() => {
     fetch(url)
