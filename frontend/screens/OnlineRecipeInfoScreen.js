@@ -41,7 +41,7 @@ const OnlineRecipeInfoScreen = ({ route }) => {
                         <Text>Loading recipe ingredients...</Text>
                     )}
                     <Text style={styles.customHeadings}>Instructions:</Text>
-                    <Text>{recipeDetails.instructions}</Text>
+                    <Text style={styles.customText}>{recipeDetails.instructions}</Text>
                     <Text></Text>
                 </View>
             ) : (
@@ -71,10 +71,12 @@ const styles = StyleSheet.create({
     customHeadings:{
         fontWeight: 'bold',
         fontSize: 20,
+        margin: 10,
 
     },
     customText:{
         fontSize: 16,
         textAlign: 'left',
+        margin: 10,
     }
   });
