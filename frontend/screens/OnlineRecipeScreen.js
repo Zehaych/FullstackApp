@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Keyboard, TouchableWithoutFeedback } from "react-native";
 import React, { useState, useEffect } from "react";
-import { fetchRecipesByName } from '../assets/Api';
+import { fetchRecipes } from '../assets/Api';
 import { useNavigation } from '@react-navigation/native';
 
 const OnlineRecipeScreen = () => {
@@ -9,31 +9,24 @@ const OnlineRecipeScreen = () => {
   const [recipes, setRecipes] = useState([]);
   const navigation = useNavigation();
 
-  // Function to fetch meals by first letter
-  const fetchRecipes = async (text) => {
-    setLoading(true);
-    try {
-      const data = await fetchRecipesByName(text);
-      setRecipes(data);
-    } catch (error) {
-      console.error('Error fetching recipes:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (search) {
-      // Fetch meals by the first letter when search is a single letter
-      fetchRecipes(search);
-    } else {
-      setRecipes([]); // Clear the meals list when search is empty or longer than one letter
+      setLoading(true);
+
+      // Call the fetchRecipes function from api.js
+      fetchRecipes(search)
+        .then((data) => setRecipes(data))
+        .catch((error) => console.error('Error fetching recipes:', error))
+        .finally(() => setLoading(false));
     }
   }, [search]);
 
   //handle search data
   const handleSearch = (text) => {
     setSearch(text);
+    if (!text) {
+      setRecipes([]); // Clear the recipes list
+    }
   };
 
   //handle pressable data
@@ -61,10 +54,10 @@ const OnlineRecipeScreen = () => {
         ) : (
           <FlatList
             data={recipes}
-            keyExtractor={(item) => item.idMeal.toString()}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => handleItemClick(item.idMeal)}>
-                <Text>{item.strMeal}</Text>
+              <TouchableOpacity onPress={() => handleItemClick(item.id)}>
+                <Text>{item.title}</Text>
               </TouchableOpacity>
             )}
           />

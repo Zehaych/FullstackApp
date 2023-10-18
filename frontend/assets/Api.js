@@ -1,75 +1,56 @@
-export async function fetchRecipesByName(name) {
+//https://api.spoonacular.com/recipes/complexSearch
+
+//const API_KEY = '4c52cb82f761490fa7dbf7bb39a6dfb1';
+const API_KEY = 'f4991d4623324aaaaad5a221c320c38f';
+
+export async function fetchRecipes(query) {
     try {
-        const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`);
+        const response = await fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&query=${query}`);
+
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
+
         const data = await response.json();
-        return data.meals; // Extract the meals array from the response
+        return data.results;
     } catch (error) {
-        console.error('Error fetching meals:', error);
+        console.error('Error fetching recipes:', error);
         throw error;
     }
 }
 
-// all categories:   https://www.themealdb.com/api/json/v1/1/list.php?c=list
-// all Area:   https://www.themealdb.com/api/json/v1/1/list.php?a=list
-// all Ingredients:   https://www.themealdb.com/api/json/v1/1/list.php?i=list
-// full meal detail by id:   https://www.themealdb.com/api/json/v1/1/lookup.php?i=52772
-// image: https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg/preview
-
-export async function fetchRecipesDetailsById(idMeal) {
+//https://api.spoonacular.com/recipes/716429/information?includeNutrition=false
+//recipe Details by id
+export async function fetchRecipeDetails(recipeId) {
     try {
-        const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        return data;
+      const response = await fetch(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${API_KEY}&includeNutrition=false`);
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      return data;
     } catch (error) {
-        console.error('Error fetching meal details:', error);
-        throw error;
+      console.error('Error fetching recipe details:', error);
+      throw error;
     }
 }
 
-export async function fetchRecipesByArea(area) {
+//GET https://api.spoonacular.com/recipes/1003464/ingredientWidget.json
+//ingredients by id
+export async function fetchRecipeIngredients(recipeId) {
     try {
-        const response = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?a=${area}');
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        return data.meals; // Extract the meals array from the response
+      const response = await fetch(`https://api.spoonacular.com/recipes/${recipeId}/ingredientWidget.json?apiKey=${API_KEY}`);
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      return data.ingredients;
     } catch (error) {
-        console.error('Error fetching meals:', error);
-        throw error;
-    }
-}
-
-export async function fetchRecipesByCategory(category) {
-    try {
-        const response = await fetch('https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}');
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        return data.meals; // Extract the meals array from the response
-    } catch (error) {
-        console.error('Error fetching meals:', error);
-        throw error;
-    }
-}
-
-export async function fetchRecipesByIngredient(ingredient) {
-    try {
-        const response = await fetch('https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}');
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        return data.meals; // Extract the meals array from the response
-    } catch (error) {
-        console.error('Error fetching meals:', error);
-        throw error;
+      console.error('Error fetching recipe ingredients:', error);
+      throw error;
     }
 }
