@@ -57,6 +57,7 @@ function App() {
         <Stack.Screen
           name="OnlineRecipeInfoScreen"
           component={OnlineRecipeInfoScreen}
+          options={{ headerTransparent: true, headerTitle: '' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
