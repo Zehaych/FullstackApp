@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Keyboard,
   StyleSheet,
   View,
   Text,
@@ -154,13 +155,13 @@ const RadioButton = ({ label, selected, onSelect }) => (
 
 const style = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1, // Allow content to expand within ScrollView
     backgroundColor: "#f5f5f5",
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
   label: {
-    fontSize: 18,
+    fontSize: window.width > 360 ? 18 : 16, // Adjust font size for smaller screens
     fontWeight: "bold",
   },
   checkboxGroup: {
@@ -174,7 +175,7 @@ const style = StyleSheet.create({
     width: window.width > 360 ? "30%" : "45%",
   },
   checkboxLabel: {
-    fontSize: 16,
+    fontSize: window.width > 360 ? 16 : 14, // Adjust font size for smaller screens
   },
   radioGroup: {
     flexDirection: "row",
@@ -186,7 +187,7 @@ const style = StyleSheet.create({
     width: "30%",
   },
   radioLabel: {
-    fontSize: 16,
+    fontSize: window.width > 360 ? 16 : 14, // Adjust font size for smaller screens
   },
 });
 
