@@ -1,7 +1,8 @@
 //https://api.spoonacular.com/recipes/complexSearch
 
 //const API_KEY = '4c52cb82f761490fa7dbf7bb39a6dfb1';
-const API_KEY = 'f4991d4623324aaaaad5a221c320c38f';
+//const API_KEY = 'f4991d4623324aaaaad5a221c320c38f';
+const API_KEY = 'fd983c12627846e4807c29737d70378c';
 
 export async function fetchRecipes(query) {
     try {
@@ -23,7 +24,7 @@ export async function fetchRecipes(query) {
 //recipe Details by id
 export async function fetchRecipeDetails(recipeId) {
     try {
-      const response = await fetch(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${API_KEY}&includeNutrition=false`);
+      const response = await fetch(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${API_KEY}&includeNutrition=true`);
   
       if (!response.ok) {
         throw new Error('Network response was not ok');
