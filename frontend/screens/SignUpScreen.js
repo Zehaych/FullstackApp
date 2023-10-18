@@ -236,7 +236,7 @@ export default function SignUpScreen() {
     }
 
     const createUserResponse = await fetch(
-      "http://192.168.1.62:5000/user/register",
+      `${process.env.EXPO_PUBLIC_IP}/user/register`,
       {
         method: "POST",
         headers: {

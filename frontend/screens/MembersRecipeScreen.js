@@ -15,7 +15,15 @@ export default function MembersRecipeScreen({ navigation }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const url = "http://192.168.1.62:5000/recipe";
+  const url = `${process.env.EXPO_PUBLIC_IP}/recipe`;
+
+  // // const url = process.env.REACT_APP_BASE_URL;
+  // const dotenv = require("dotenv");
+
+  // dotenv.config({ path: ".env" });
+
+  // const url = process.env.REACT_APP_BASE_URL;
+  // const url = "http://192.168.1.62:5000/recipe";
 
   //navigate to recipe info page
   const handleRecipeInfo = (recipeData) => {
@@ -24,7 +32,12 @@ export default function MembersRecipeScreen({ navigation }) {
 
   useEffect(() => {
     fetch(url)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((json) => setData(json))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
