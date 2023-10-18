@@ -28,9 +28,10 @@ const OnlineRecipeInfoScreen = ({ route }) => {
                         <Image source={{ uri: recipeDetails.image }}style={styles.image}/> 
                     </View>
                     <Text style={styles.customHeadings}>{recipeDetails.title}</Text>
+                    <Text style={styles.customHeadings}>Ingredients:</Text>
                     {recipeIngredients !== null ? (     //check if recipeIngredients is not null
                         <View>
-                            <Text style={styles.customHeadings}>Ingredients:</Text>
+                            
                             {recipeIngredients.map((ingredient, index) => (
                                 <Text key={index} style={styles.customText}>
                                     {ingredient.name} - {ingredient.amount.metric.value} {ingredient.amount.metric.unit}
@@ -41,8 +42,16 @@ const OnlineRecipeInfoScreen = ({ route }) => {
                         <Text>Loading recipe ingredients...</Text>
                     )}
                     <Text style={styles.customHeadings}>Instructions:</Text>
-                    <Text style={styles.customText}>{recipeDetails.instructions}</Text>
+                    {recipeDetails.instructions.length > 0 ? (
+                        <View>
+                            
+                            <Text style={styles.customText}>{recipeDetails.instructions}</Text>
+                        </View>
+                    ) : (
+                        <Text style={styles.customText}>No instructions available. So just do it.</Text>
+                    )}
                     <Text></Text>
+                        
                 </View>
             ) : (
                 <Text>Loading recipe details...</Text>
@@ -66,7 +75,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: '100%',  // Occupy the entire width
-        height: 200,  // Fixed height
+        height: 300,  // Fixed height
     },
     customHeadings:{
         fontWeight: 'bold',
