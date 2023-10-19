@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContext } from "react";
+import { useState } from "react";
 import { Context } from "../store/context";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
@@ -24,17 +26,16 @@ export default function LogInScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
+  const handleUsernameChange = (text) => {
+    setUsername(text);
   }
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
+  const handlePasswordChange = (text) => {
+    setPassword(text);
   }
 
-  const LogIn = async(e) => {
-    e.preventDefault();
-
+  const LogIn = async() => {
+    
     const login = await fetch (`${process.env.EXPO_PUBLIC_IP}/user/login`,{
       method: "POST",
       headers: {
@@ -44,15 +45,21 @@ export default function LogInScreen() {
       body: JSON.stringify({
         username: username,
         password: password,
-      })
+      }),
     });
     const data = await login.json();
     if (login.status === 200){
-      sessionStorage.setItem("userId", JSON.stringify(data.user));
-      setCurrentUser(data.user);
-    } else window.alert("Invalid");
-    }
-    navigation.navigate("TabScreen");
+        //await 
+        AsyncStorage.setItem('userId', JSON.stringify(data.user));
+        setCurrentUser(data.user);
+        console.log(data.user);
+        navigation.navigate("TabScreen");
+      // sessionStorage.setItem("userId", JSON.stringify(data.user));
+      // setCurrentUser(data.user);
+      // navigation.navigate("TabScreen");
+      console.log(currentUser);
+    } else window.alert("Error saving data to AsyncStorage");
+  }
   
 
   const handleSignUp = () => {
@@ -61,6 +68,7 @@ export default function LogInScreen() {
     navigation.navigate("SignUpScreen");
   };
   return (
+    <Context.Provider value = {[currentUser, setCurrentUser]}>
     <View className="bg-white h-full w-full">
       <StatusBar style="light" />
       <Image
@@ -110,7 +118,7 @@ export default function LogInScreen() {
             <TextInput
               placeholder="Password"
               placeholderTextColor={"black"}
-              onChange = {handlePasswordChange}
+              onChangeText = {handlePasswordChange}
             />
           </Animated.View>
 
@@ -140,5 +148,6 @@ export default function LogInScreen() {
         </View>
       </View>
     </View>
+    </Context.Provider>
   );
 }

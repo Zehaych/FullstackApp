@@ -10,9 +10,15 @@ import {
 } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useContext } from "react";
+import { Context } from "../store/context";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const UserScreen = () => {
   const navigation = useNavigation();
+  const [currentUser, setCurrentUser] = useContext(Context);
 
   const onLogOutPressed = () => {
     Alert.alert("Log Out", "Are you sure you want to log out?", [
@@ -34,6 +40,7 @@ const UserScreen = () => {
   };
 
   return (
+
     <SafeAreaView style={styles.container}>
       <View style={styles.userInfoSection}>
         <View style={styles.userInfo}>

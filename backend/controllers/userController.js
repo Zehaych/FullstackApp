@@ -92,7 +92,10 @@ exports.register = async (req, res) => {
 // @route POST/login
 // @access public
 exports.login = async(req, res) => {
-  const {username, password} = req.body;
+  // const {username, password} = req.body;
+  const username = req.body.username;
+  const password = req.body.password;
+
   try{
     const user = await User.findOne({username: username});
 
@@ -106,7 +109,12 @@ exports.login = async(req, res) => {
           if (match){
             res.status(200).json({
               message: "Login successful",
-              error: "Incorrect password"
+              user,
+            });
+          } else {
+            res.status(400).json({
+              message: "Login not successful",
+              error: "Incorrect password",
             });
           }
         });
