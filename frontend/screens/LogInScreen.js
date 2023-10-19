@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React from "react";
+import { useContext } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
 import Animated, {
@@ -16,12 +17,42 @@ import Animated, {
 } from "react-native-reanimated";
 
 export default function LogInScreen() {
+  const [currentUser, setCurrentUser] = useContext(Context);
   const navigation = useNavigation();
-  const handleLogIn = () => {
-    // Implement your authentication logic here
-    // If authentication is successful, navigate to TabScreen
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+  }
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  }
+
+  const LogIn = async(e) => {
+    e.preventDefault();
+
+    const login = await fetch (`${process.env.EXPO_PUBLIC_IP}/user/login`,{
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      })
+    });
+    const data = await login.json();
+    if (login.status === 200){
+      sessionStorage.setItem("userId", JSON.stringify(data.user));
+      setCurrentUser(data.user);
+    } else window.alert("Invalid");
+    }
     navigation.navigate("TabScreen");
-  };
+  
 
   const handleSignUp = () => {
     // Implement your authentication logic here
@@ -66,7 +97,10 @@ export default function LogInScreen() {
             entering={FadeInDown.duration(1000).springify()}
             className="bg-black/5 p-5 rounded-2xl w-full"
           >
-            <TextInput placeholder="Email" placeholderTextColor={"black"} />
+            <TextInput placeholder= "Username" 
+            placeholderTextColor={"black"} 
+            onChangeText= {handleUsernameChange}
+            />
           </Animated.View>
           <Animated.View
             entering={FadeInDown.delay(200).duration(1000).springify()}
@@ -75,7 +109,7 @@ export default function LogInScreen() {
             <TextInput
               placeholder="Password"
               placeholderTextColor={"black"}
-              secureTextEntry
+              onChange = {handlePasswordChange}
             />
           </Animated.View>
 
@@ -85,7 +119,7 @@ export default function LogInScreen() {
           >
             <TouchableOpacity
               className="w-full bg-amber-600 p-3 rounded-2xl mb-3 active:bg-opacity-75"
-              onPress={handleLogIn}
+              onPress={LogIn}
             >
               <Text className="text-xl font-bold text-white text-center">
                 Log in
