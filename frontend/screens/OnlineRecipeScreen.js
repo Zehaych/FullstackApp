@@ -35,6 +35,13 @@ const OnlineRecipeScreen = () => {
     navigation.navigate('OnlineRecipeInfoScreen', { recipeId });
   };
 
+  //handle random recipes @ home page and online recipe page
+  const getRandomRecipes = (data, count) => {
+    const shuffled = data.sort(() => 0.5 - Math.random()); // Shuffle array
+    return shuffled.slice(0, count);                // Get sub-array of first n elements after shuffled
+  };
+  
+
   return (
     <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss();}}>
     <View style={styles.container}>

@@ -50,7 +50,7 @@
 //   },
 // });
 
-import React from "react";
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -60,6 +60,7 @@ import {
   ScrollView,
   StatusBar,
 } from "react-native";
+import { fetchRecipeDetails  } from '../assets/Api';
 
 const HomeScreen = ({ navigation }) => {
   const navigateToCommunityRecipes = () => {
@@ -73,6 +74,37 @@ const HomeScreen = ({ navigation }) => {
   const navigateToOnlineRecipes = () => {
     navigation.navigate("OnlineRecipeScreen");
   };
+
+  const [randomRecipes, setRandomRecipes] = useState([]);
+
+  useEffect(() => {
+    // Fetch random recipes by generating random recipe IDs
+    const randomRecipeIds = getRandomRecipeIds();
+    const fetchRecipePromises = randomRecipeIds.map((recipeId) => fetchRecipeDetails(recipeId));
+
+    Promise.all(fetchRecipePromises)
+      .then((data) => {
+        setRandomRecipes(data);
+      })
+      .catch((error) => console.error('Error fetching recipes:', error));
+  }, []);
+
+  function getRandomRecipeIds() {
+    // Generate random recipe IDs (e.g., between 1 and 1000)
+    const randomIds = [];
+    while (randomIds.length < 2) {
+      const randomId = Math.floor(Math.random() * 1000) + 1;
+      if (!randomIds.includes(randomId)) {
+        randomIds.push(randomId);
+      }
+    }
+    return randomIds;
+  }
+
+  const navigateToOnlineRecipesInfo = (recipeId) => {
+    navigation.navigate("OnlineRecipeInfoScreen", { recipeId });
+  };
+
   return (
     <ScrollView style={styles.container}>
       <StatusBar backgroundColor="white" barStyle="dark-content" />
@@ -117,7 +149,25 @@ const HomeScreen = ({ navigation }) => {
 
       <View style={styles.featuredSection}>
         <Text style={styles.sectionHeader}>Online Recipes</Text>
-        {/* Display featured recipe cards */}
+        {randomRecipes[0] && (
+          <TouchableOpacity
+            style={styles.featuredCard}
+            onPress={() => navigateToOnlineRecipesInfo(randomRecipes[0].id)}
+          >
+            <Image source={{ uri: randomRecipes[0].image }} style={styles.featuredCardImage} />
+            <Text style={styles.featuredCardTitle}>{randomRecipes[0].title}</Text>
+          </TouchableOpacity>
+        )}
+        {randomRecipes[1] && (
+          <TouchableOpacity
+            style={styles.featuredCard}
+            onPress={() => navigateToOnlineRecipesInfo(randomRecipes[1].id)}
+          >
+            <Image source={{ uri: randomRecipes[1].image }} style={styles.featuredCardImage} />
+            <Text style={styles.featuredCardTitle}>{randomRecipes[1].title}</Text>
+          </TouchableOpacity>
+        )}
+        {/*
         <TouchableOpacity style={styles.featuredCard}>
           <Image
             source={require("../assets/recipe1.jpg")}
@@ -131,7 +181,7 @@ const HomeScreen = ({ navigation }) => {
             style={styles.featuredCardImage}
           />
           <Text style={styles.featuredCardTitle}>Chicken Alfredo</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {/* Add more featured recipe cards here */}
       </View>
 

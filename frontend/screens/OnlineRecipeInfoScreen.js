@@ -11,7 +11,9 @@ const OnlineRecipeInfoScreen = ({ route }) => {
     useEffect(() => {
         // Fetch meal details by id
         fetchRecipeDetails(recipeId)
-            .then((data) => setRecipeDetails(data))
+            .then((data) => {
+                console.log("Recipe details data:", data);
+                setRecipeDetails(data);})
             .catch((error) => console.error('Error fetching recipe details:', error));
         
         // Fetch recipe ingredients by id
@@ -21,9 +23,10 @@ const OnlineRecipeInfoScreen = ({ route }) => {
 
     }, [recipeId]);
 
+    //handle score rating
     const handleScoreRating = (score) => {
         //console.log("Recipe Details:", recipeDetails);
-        console.log("Health Score:", score); // Log the spoonacularScore
+        console.log("Health Score:", score);
         const fullStar = Math.floor((score / 100) * 5);
         const halfStar = (score / 100) * 5 - fullStar;
         const stars = [];
@@ -38,10 +41,6 @@ const OnlineRecipeInfoScreen = ({ route }) => {
             }
         }
         return stars;
-    };
-
-    const handleItemClick = (id) => {
-        console.log(recipeDetails.spoonacularScore);
     };
   
     return (
@@ -76,7 +75,7 @@ const OnlineRecipeInfoScreen = ({ route }) => {
                     </View>
                     {/* ingredients */}
                     <Text style={styles.customHeadings}>Ingredients:</Text>
-                    {recipeIngredients !== null ? (     //check if recipeIngredients is not null
+                    {recipeIngredients ? (     //recipeIngredients !== null  check if recipeIngredients is not null
                         <View>
                             
                             {recipeIngredients.map((ingredient, index) => (
@@ -90,7 +89,7 @@ const OnlineRecipeInfoScreen = ({ route }) => {
                     )}
                     {/* instructions */}
                     <Text style={styles.customHeadings}>Instructions:</Text>
-                    {recipeDetails.instructions.length > 0 ? (
+                    {recipeDetails.instructions ? (
                         <View>
                             
                             <Text style={styles.customText}>{recipeDetails.instructions}</Text>
