@@ -61,16 +61,16 @@ const TDEEScreen = () => {
           formulaResult *= 1.2;
           break;
         case "lightly-active":
-          formulaResult *= 1.375;
+          formulaResult *= 1.35;
           break;
         case "moderately-active":
-          formulaResult *= 1.55;
+          formulaResult *= 1.48;
           break;
         case "very-active":
-          formulaResult *= 1.725;
+          formulaResult *= 1.6;
           break;
         case "extra-active":
-          formulaResult *= 1.9;
+          formulaResult *= 1.8;
           break;
         default:
           break;
@@ -78,10 +78,10 @@ const TDEEScreen = () => {
 
       switch (goal) {
         case "lose":
-          formulaResult -= 500;
+          formulaResult -= 200;
           break;
         case "gain":
-          formulaResult += 500;
+          formulaResult += 200;
           break;
         default:
           break;

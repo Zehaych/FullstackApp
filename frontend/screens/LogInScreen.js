@@ -49,18 +49,14 @@ export default function LogInScreen() {
     });
     const data = await login.json();
     if (login.status === 200){
-        //await 
         AsyncStorage.setItem('userId', JSON.stringify(data.user));
         setCurrentUser(data.user);
         console.log(data.user);
         console.log(data);
         navigation.navigate("TabScreen");
         console.log(currentUser);
-      // sessionStorage.setItem("userId", JSON.stringify(data.user));
-      // setCurrentUser(data.user);
-      // navigation.navigate("TabScreen");
- 
-    } else window.alert("Error saving data to AsyncStorage");
+
+    } else window.alert("Incorrect username or password");
   }
   
 
