@@ -10,6 +10,8 @@ import OnlineRecipeInfoScreen from "./screens/OnlineRecipeInfoScreen";
 import TDEEScreen from "./screens/TDEEScreen";
 import MedicalHistoryScreen from "./screens/MedicalHistoryScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
+import AddRecipeScreen from "./screens/AddRecipeScreen";
+import UserScreen from "./screens/UserScreen";
 
 const Stack = createStackNavigator();
 
@@ -35,6 +37,7 @@ function App() {
         <Stack.Screen name="Edit Profile" component={EditProfileScreen} />
         <Stack.Screen name="Calculate Calorie" component={TDEEScreen} />
         <Stack.Screen name="Medical History" component={MedicalHistoryScreen} />
+        <Stack.Screen name="Add Recipe" component={AddRecipeScreen} />
 
         <Stack.Screen
           name="MembersRecipeScreen"
@@ -53,6 +56,7 @@ function App() {
           component={OnlineRecipeInfoScreen}
           options={{ headerTransparent: true, headerTitle: "" }}
         />
+        <Stack.Screen name="UserScreen" component={UserScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

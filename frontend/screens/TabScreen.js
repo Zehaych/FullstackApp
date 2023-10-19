@@ -50,7 +50,7 @@ export default function TabScreen() {
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={{ tabBarLabel: "Home" }}
+        options={{ headerShown: false, tabBarLabel: "Home" }}
       />
       <Tab.Screen
         name="Online Recipes"

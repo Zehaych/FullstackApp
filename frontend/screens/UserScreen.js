@@ -27,16 +27,12 @@ const UserScreen = () => {
     ]);
   };
 
-  const onSettingsPressed = () => {
-    // navigation.navigate("SettingsScreen");
-  };
-
   const onEditProfilePressed = () => {
     navigation.push("Edit Profile");
   };
 
   const onAddRecipePressed = () => {
-    // navigation.navigate("AddRecipeScreen");
+    navigation.push("Add Recipe");
   };
 
   return (
