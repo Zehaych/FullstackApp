@@ -11,7 +11,7 @@
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "0.72.5",
+    "react-native": "0.72.6",
     "react-native-config": "^1.5.1",
     "react-native-keyboard-controller": "^1.6.1",
     "react-native-paper": "^5.11.0",
