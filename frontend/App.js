@@ -8,8 +8,8 @@ import MembersRecipeInfoScreen from "./screens/MembersRecipeInfoScreen";
 import OnlineRecipeScreen from "./screens/OnlineRecipeScreen";
 import OnlineRecipeInfoScreen from "./screens/OnlineRecipeInfoScreen";
 import TDEEScreen from "./screens/TDEEScreen";
-import CalorieGoalScreen from "./screens/CalorieGoalScreen";
 import MedicalHistoryScreen from "./screens/MedicalHistoryScreen";
+import EditProfileScreen from "./screens/EditProfileScreen";
 
 const Stack = createStackNavigator();
 
@@ -23,17 +23,7 @@ function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Get started"
-          component={TDEEScreen}
-          options={{ headerShown: true }}
-        />
-        <Stack.Screen
-          name="Medical History"
-          component={MedicalHistoryScreen}
-          options={{ headerShown: true }}
-        />
-        <Stack.Screen
-          name="SignUpScreen"
+          name="Sign up"
           component={SignUpScreen}
           options={{ headerShown: false }}
         />
@@ -42,6 +32,10 @@ function App() {
           component={TabScreen}
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="Edit Profile" component={EditProfileScreen} />
+        <Stack.Screen name="Calculate Calorie" component={TDEEScreen} />
+        <Stack.Screen name="Medical History" component={MedicalHistoryScreen} />
+
         <Stack.Screen
           name="MembersRecipeScreen"
           component={MembersRecipeScreen}
@@ -57,7 +51,7 @@ function App() {
         <Stack.Screen
           name="OnlineRecipeInfoScreen"
           component={OnlineRecipeInfoScreen}
-          options={{ headerTransparent: true, headerTitle: '' }}
+          options={{ headerTransparent: true, headerTitle: "" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

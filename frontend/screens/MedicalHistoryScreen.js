@@ -52,7 +52,8 @@ const MedicalHistoryScreen = () => {
     console.log("Can Take Spicy Food:", canTakeSpicyFood);
     console.log("Has Diabetes:", hasDiabetes);
     if (bloodPressure && cholesterolLevel && canTakeSpicyFood && hasDiabetes) {
-      navigation.navigate("SignUpScreen");
+      alert("Successfully updated your Medical History.");
+      navigation.navigate("TabScreen");
     } else {
       alert("Please fill in all fields.");
     }

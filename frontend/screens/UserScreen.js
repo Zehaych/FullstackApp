@@ -26,7 +26,7 @@ const UserScreen = () => {
   };
 
   const onEditProfilePressed = () => {
-    // navigation.navigate("EditProfileScreen");
+    navigation.push("Edit Profile");
   };
 
   const onAddRecipePressed = () => {
@@ -36,14 +36,19 @@ const UserScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.userInfoSection}>
-        <View style={styles.userAvatar}>
-          <View style={styles.userInfo}>
-            <Title style={styles.title}>User</Title>
-          </View>
+        <View style={styles.userInfo}>
+          <Title style={styles.title}>User</Title>
         </View>
+
         <View style={styles.userDetails}>
           <View style={styles.userDetail}>
-            <Text style={styles.detailText}>Loyalty points: 200</Text>
+            <Text style={styles.detailText}>Sex: </Text>
+            <Text style={styles.detailText}>Age: </Text>
+
+            <Text style={styles.detailText}>Weight: </Text>
+
+            <Text style={styles.detailText}>Height: </Text>
+            <Text style={styles.detailText}>Calorie goal: </Text>
           </View>
         </View>
       </View>
@@ -51,22 +56,18 @@ const UserScreen = () => {
       <View style={styles.menuWrapper}>
         <TouchableRipple onPress={onEditProfilePressed}>
           <View style={styles.menuItem}>
-            <Icon name="account-check-outline" color="#FF6347" size={25} />
+            <Icon name="account-edit" color="#FF6347" size={25} />
             <Text style={styles.menuItemText}>Edit Profile</Text>
           </View>
         </TouchableRipple>
+
         <TouchableRipple onPress={onAddRecipePressed}>
           <View style={styles.menuItem}>
-            <Icon name="database-plus" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>Add Personalised Recipe</Text>
+            <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>Add Recipe</Text>
           </View>
         </TouchableRipple>
-        <TouchableRipple onPress={onSettingsPressed}>
-          <View style={styles.menuItem}>
-            <Icon name="cog" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>Settings</Text>
-          </View>
-        </TouchableRipple>
+
         <TouchableRipple onPress={onLogOutPressed}>
           <View style={styles.menuItem}>
             <Icon name="exit-to-app" color="#FF6347" size={25} />
@@ -91,10 +92,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#dddddd",
   },
-  userAvatar: {
-    flexDirection: "row",
-    justifyContent: "center",
-  },
+
   userInfo: {
     alignItems: "center",
   },

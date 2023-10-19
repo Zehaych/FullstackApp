@@ -98,8 +98,8 @@ export default function LogInScreen() {
             className="flex-row justify-center"
           >
             <Text>Don't have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.push("Get started")}>
-              <Text className="text-amber-600">Get started</Text>
+            <TouchableOpacity onPress={() => navigation.push("Sign up")}>
+              <Text className="text-amber-600">Sign up</Text>
             </TouchableOpacity>
           </Animated.View>
         </View>
