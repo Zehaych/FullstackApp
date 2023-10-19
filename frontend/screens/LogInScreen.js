@@ -53,11 +53,13 @@ export default function LogInScreen() {
         AsyncStorage.setItem('userId', JSON.stringify(data.user));
         setCurrentUser(data.user);
         console.log(data.user);
+        console.log(data);
         navigation.navigate("TabScreen");
+        console.log(currentUser);
       // sessionStorage.setItem("userId", JSON.stringify(data.user));
       // setCurrentUser(data.user);
       // navigation.navigate("TabScreen");
-      console.log(currentUser);
+ 
     } else window.alert("Error saving data to AsyncStorage");
   }
   
@@ -68,7 +70,6 @@ export default function LogInScreen() {
     navigation.navigate("SignUpScreen");
   };
   return (
-    <Context.Provider value = {[currentUser, setCurrentUser]}>
     <View className="bg-white h-full w-full">
       <StatusBar style="light" />
       <Image
@@ -148,6 +149,5 @@ export default function LogInScreen() {
         </View>
       </View>
     </View>
-    </Context.Provider>
   );
 }

@@ -12,11 +12,16 @@ import MedicalHistoryScreen from "./screens/MedicalHistoryScreen";
 import EditProfileScreen from "./screens/EditProfileScreen";
 import AddRecipeScreen from "./screens/AddRecipeScreen";
 import UserScreen from "./screens/UserScreen";
+import { Context } from "./store/context";
+import { useState } from "react";
 
 const Stack = createStackNavigator();
 
 function App() {
+  const [currentUser, setCurrentUser] = useState(null);
+
   return (
+    <Context.Provider value = {[currentUser, setCurrentUser]}>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="LogInScreen">
         <Stack.Screen
@@ -59,6 +64,7 @@ function App() {
         <Stack.Screen name="UserScreen" component={UserScreen} />
       </Stack.Navigator>
     </NavigationContainer>
+    </Context.Provider>
   );
 }
 

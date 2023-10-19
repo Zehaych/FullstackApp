@@ -36,22 +36,22 @@ const UserScreen = () => {
   };
 
   return (
-
     <SafeAreaView style={styles.container}>
+      
       <View style={styles.userInfoSection}>
         <View style={styles.userInfo}>
-          <Title style={styles.title}>User</Title>
+          <Title style={styles.title}>{currentUser.username}</Title>
         </View>
 
         <View style={styles.userDetails}>
           <View style={styles.userDetail}>
-            <Text style={styles.detailText}>Sex: </Text>
-            <Text style={styles.detailText}>Age: </Text>
+            <Text style={styles.detailText}>Sex: {currentUser.gender}</Text>
+            <Text style={styles.detailText}>Age: {currentUser.age}</Text>
 
-            <Text style={styles.detailText}>Weight: </Text>
+            <Text style={styles.detailText}>Weight: {currentUser.weight}</Text>
 
-            <Text style={styles.detailText}>Height: </Text>
-            <Text style={styles.detailText}>Calorie goal: </Text>
+            <Text style={styles.detailText}>Height: {currentUser.height}</Text>
+            <Text style={styles.detailText}>Calorie goal: {currentUser.calorie}</Text>
           </View>
         </View>
       </View>
