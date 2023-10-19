@@ -61,10 +61,10 @@ const TDEEScreen = () => {
           formulaResult *= 1.2;
           break;
         case "lightly-active":
-          formulaResult *= 1.3;
+          formulaResult *= 1.35;
           break;
         case "moderately-active":
-          formulaResult *= 1.40;
+          formulaResult *= 1.48;
           break;
         case "very-active":
           formulaResult *= 1.6;
