@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import React from "react";
 import { useContext } from "react";
+import { Context } from "../store/context";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
 import Animated, {
