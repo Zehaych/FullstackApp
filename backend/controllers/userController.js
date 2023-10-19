@@ -86,3 +86,35 @@ exports.register = async (req, res) => {
       );
   });
 };
+
+
+// @desc Login
+// @route POST/login
+// @access public
+exports.login = async(req, res) => {
+  const {username, password} = req.body;
+  try{
+    const user = await User.findOne({username: username});
+
+    if (!user){
+      res.status(400).json({
+          message: "Login unsuccessful",
+          error: "User not found",
+        });
+      } else {
+        bcrypt.compare(password, user.password).then((match) => {
+          if (match){
+            res.status(200).json({
+              message: "Login successful",
+              error: "Incorrect password"
+            });
+          }
+        });
+      }
+    } catch (error){
+      res.status(400).json({
+        message: "Error occured",
+        error: error.message,
+      })
+    }
+};
