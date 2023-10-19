@@ -69,6 +69,8 @@ exports.register = async (req, res) => {
       age: 0,
       height: 0,
       weight: 0,
+      gender: " ",
+      calorie: 0,
     })
       .then((user) =>
         res.status(200).json({

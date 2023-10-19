@@ -6,16 +6,20 @@ const recipeSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    ingredients:{
+    ingredients: {
       type: [String],
       required: true,
     },
     instructions: {
-      type: String,
+      type: [String],
       required: true,
     },
     calories: {
       type: Number,
+      required: true,
+    },
+    image: {
+      type: String,
       required: true,
     },
   },
