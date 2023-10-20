@@ -8,25 +8,14 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  FlatList,
-  Dimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-
 
 export default function MembersRecipeScreen({ navigation }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const url = `${process.env.EXPO_PUBLIC_IP}/recipe`;
-
-  // // const url = process.env.REACT_APP_BASE_URL;
-  // const dotenv = require("dotenv");
-
-  // dotenv.config({ path: ".env" });
-
-  // const url = process.env.REACT_APP_BASE_URL;
-  // const url = "http://192.168.1.62:5000/recipe";
 
   //navigate to recipe info page
   const handleRecipeInfo = (recipeData) => {
@@ -44,81 +33,70 @@ export default function MembersRecipeScreen({ navigation }) {
       .then((json) => setData(json))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
-  }, []);
+  }, [url]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>All available recipes</Text>
-      <FlatList
-        data={data}
-        horizontal={true}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.recipeMember}
-            onPress={() => handleRecipeInfo(item)}>
-            <Image source={{ uri: item.image }} style={styles.image} />
-            <Text style={styles.recipeTitle}> {item.name}</Text>
-          </TouchableOpacity>
+      <Text style={styles.header}>All available receipes</Text>
+      <ScrollView style={styles.foodContainer}>
+        {loading ? (
+          <Text>Loading ...</Text>
+        ) : (
+          data.map((food) => (
+            <TouchableOpacity
+              key={food._id}
+              style={styles.recipeMember}
+              onPress={() => handleRecipeInfo(food)}
+            >
+              <Image source={{ uri: food.image }} style={styles.image} />
+              <Text style={styles.recipeTitle}> {food.name}</Text>
+            </TouchableOpacity>
+          ))
         )}
-      />
+      </ScrollView>
       <StatusBar style="auto" />
     </SafeAreaView>
   );
 }
 
-const { width } = Dimensions.get("window");
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FCFCD3",
-    padding: 10,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
+  //style for the header
   header: {
-    textAlign: "center",
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     color: "orange",
   },
+  //style for the image
   foodContainer: {
-    flexGrow: 1,
-    width: "100%", 
-    //width: width * data.length, // width * number of items
+    marginBottom: 20,
   },
   recipeMember: {
-    width: 360,
-    //width: "100%",
-    margin: 5,
+    flexDirection: "column",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 10,
+    margin: 10,
     padding: 10,
   },
   image: {
-    flex: 1, // Fill the container's available space
-    width: null,
-    height: null,
-    resizeMode: "cover", // Make the image fit the container
+    width: 150,
+    height: 150,
     borderRadius: 10,
   },
   recipeTitle: {
-    textAlign: "center",
     marginTop: 10,
     fontSize: 16,
     fontWeight: "bold",
-    position: "absolute",
-    bottom: 50, // Position the title on top of the image
-    left: 10, // Add some spacing from the left
-    right: 10, // Add some spacing from the right
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Add a semi-transparent background
-    color: "white",
-    padding: 5, // Add some padding
-    borderRadius: 5, // Add border radius for the background
   },
 });
-
 
 /*
               <Text>
@@ -129,24 +107,4 @@ const styles = StyleSheet.create({
               </Text>
               <Text>Instructions: {food.instructions}</Text>
               <Text>Calories: {food.calories}</Text>
-
-
-              return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>All available receipes</Text>
-      <ScrollView style={styles.foodContainer} >
-        {loading ? (
-          <Text>Loading ...</Text>
-        ) : (
-          data.map((food) => (
-            <TouchableOpacity key={food._id} style={styles.recipeMember} onPress={() => handleRecipeInfo(food)}>
-              <Image source={{ uri: food.image }} style={styles.image} />
-              <Text style={styles.recipeTitle}> {food.name}</Text>
-            </TouchableOpacity>
-          ))
-        )}
-      </ScrollView>
-      <StatusBar style="auto" />
-    </SafeAreaView>
-  );
               */
