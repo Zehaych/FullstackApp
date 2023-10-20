@@ -112,7 +112,7 @@ export default OnlineRecipeInfoScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
+        backgroundColor: "#FCFCD3",
         fontFamily: "Roboto",
     },
     //title

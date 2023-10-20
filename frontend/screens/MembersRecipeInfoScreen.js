@@ -1,52 +1,60 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image, SafeAreaView, TextInput, TouchableOpacity, Button } from "react-native";
+import { StyleSheet, Text, View, Image, ScrollView, TextInput, TouchableOpacity, Button } from "react-native";
 import React, { useState, useEffect } from "react";
 
 export default function MembersRecipeInfoScreen({ route }) {
     const { recipeData } = route.params;
   
     return (
-        <View style={styles.container}>
-            <Image source={{ uri: recipeData.image }} style={styles.image} />
-            <Text style={styles.text}>Name: {recipeData.name}</Text>
-            <Text>
-                Ingredients:{" "}
-                {recipeData.ingredients.map((ingredient, index) => (
-                    <Text key={index}>{ingredient}, </Text>))
-                }
-            </Text>
-            <Text>Instructions: </Text>
-            <Text>{recipeData.instructions}</Text>
-            <Text>Calories: </Text>
-            <Text>{recipeData.calories}</Text>
-            <StatusBar style="auto" />
-        </View>
+        <ScrollView style={styles.container}>
+            <View>
+                <View style={styles.imageContainer}>
+                    <Image source={{ uri: recipeData.image }} style={styles.image} />
+                </View>
+                <Text style={styles.title}>{recipeData.name}</Text>
+                <Text style={styles.subTitle}>Ingredients:{" "} </Text>
+                <Text>{recipeData.ingredients.map((ingredient, index) => (
+                    <Text key={index}>{ingredient}, </Text>
+                    ))}
+                </Text>
+                <Text style={styles.subTitle}>Instructions: </Text>
+                <Text>{recipeData.instructions}</Text>
+                <Text style={styles.subTitle}>Calories: </Text>
+                <Text>{recipeData.calories}</Text>
+                <StatusBar style="auto" />
+            </View>
+        </ScrollView>
     );
 }
   
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-    },
-    //style for the header
-    header: {
-        flex: 1,
-        justifyContent: "flex-end",
-        paddingHorizontal: 20,
-        paddingBottom: 50,
+        backgroundColor: "#FCFCD3",
+        //alignItems: "center",
     },
     //style for the image
+    imageContainer: {
+        flex: 1,
+        justifyContent: "center", // Center the image vertically
+        alignItems: "center", // Center the image horizontally
+        padding: 10,
+    },
     image: {
         flex: 1,
         width: 400,
         height: 400,
         resizeMode: "contain",
     },
-    text: {
+    title: {
         color: "gold",
         fontSize: 30,
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+    subTitle: {
+        color: "black",
+        fontSize: 20,
         fontWeight: "bold",
     },
 });
