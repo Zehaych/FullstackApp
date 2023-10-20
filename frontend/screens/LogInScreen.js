@@ -53,6 +53,9 @@ export default function LogInScreen() {
       console.log(data.user);
       console.log(data);
       navigation.navigate("TabScreen");
+      // Clear the text input fields
+      this.usernameInput.clear();
+      this.passwordInput.clear();
       console.log(currentUser);
     } else window.alert("Incorrect username or password");
   };
@@ -104,6 +107,7 @@ export default function LogInScreen() {
               placeholder="Username"
               placeholderTextColor={"black"}
               onChangeText={handleUsernameChange}
+              ref={(input) => (this.usernameInput = input)}
             />
           </Animated.View>
           <Animated.View
@@ -115,6 +119,7 @@ export default function LogInScreen() {
               placeholderTextColor={"black"}
               secureTextEntry
               onChangeText={handlePasswordChange}
+              ref={(input) => (this.passwordInput = input)}
             />
           </Animated.View>
 
