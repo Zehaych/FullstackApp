@@ -7,16 +7,18 @@ export default function MembersRecipeInfoScreen({ route }) {
   
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Recipe Info</Text>
-            <Text>Name: {recipeData.name}</Text>
+            <Image source={{ uri: recipeData.image }} style={styles.image} />
+            <Text style={styles.text}>Name: {recipeData.name}</Text>
             <Text>
                 Ingredients:{" "}
                 {recipeData.ingredients.map((ingredient, index) => (
                     <Text key={index}>{ingredient}, </Text>))
                 }
             </Text>
-            <Text>Instructions: {recipeData.instructions}</Text>
-            <Text>Calories: {recipeData.calories}</Text>
+            <Text>Instructions: </Text>
+            <Text>{recipeData.instructions}</Text>
+            <Text>Calories: </Text>
+            <Text>{recipeData.calories}</Text>
             <StatusBar style="auto" />
         </View>
     );
@@ -27,7 +29,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
         alignItems: "center",
-        justifyContent: "center",
     },
     //style for the header
     header: {
@@ -35,5 +36,17 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
         paddingHorizontal: 20,
         paddingBottom: 50,
+    },
+    //style for the image
+    image: {
+        flex: 1,
+        width: 400,
+        height: 400,
+        resizeMode: "contain",
+    },
+    text: {
+        color: "gold",
+        fontSize: 30,
+        fontWeight: "bold",
     },
 });

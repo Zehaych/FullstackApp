@@ -7,7 +7,7 @@ import {
   SafeAreaView,
   TextInput,
   TouchableOpacity,
-  Button,
+  ScrollView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 
@@ -41,39 +41,26 @@ export default function MembersRecipeScreen({ navigation }) {
       .then((json) => setData(json))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
-  }, [data]);
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <Text>
-        Welcome to the Community's recipe. This is where everybody chips in and
-        contribute to a healthier lifestyle, add your own custom recipe here for
-        everyone to see as well.
-      </Text>
-      <Text>All receipes</Text>
-      {loading ? (
-        <Text>Loading ...</Text>
-      ) : (
-        data.map((food) => (
-          <View key={food._id}>
-            <TouchableOpacity onPress={() => handleRecipeInfo(food)}>
-              <Text>Name: {food.name}</Text>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.header}>All available receipes</Text>
+      <ScrollView style={styles.foodContainer} >
+        {loading ? (
+          <Text>Loading ...</Text>
+        ) : (
+          data.map((food) => (
+            <TouchableOpacity key={food._id} style={styles.recipeMember} onPress={() => handleRecipeInfo(food)}>
+              <Image source={{ uri: food.image }} style={styles.image} />
+              <Text style={styles.recipeTitle}> {food.name}</Text>
             </TouchableOpacity>
-            {/*
-            <Text>
-              Ingredients:{" "}
-              {food.ingredients.map((ingredient, index) => (
-                <Text key={index}>{ingredient}, </Text>
-              ))}{" "}
-            </Text>
-            <Text>Instructions: {food.instructions}</Text>
-            <Text>Calories: {food.calories}</Text>
-            */}
-          </View>
-        ))
-      )}
+
+          ))
+        )}
+      </ScrollView>
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -86,9 +73,44 @@ const styles = StyleSheet.create({
   },
   //style for the header
   header: {
-    flex: 1,
-    justifyContent: "flex-end",
-    paddingHorizontal: 20,
-    paddingBottom: 50,
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "orange",
+  },
+  //style for the image
+  foodContainer: {
+    marginBottom: 20,
+  },
+  recipeMember: {
+    flexDirection: "column",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    margin: 10,
+    padding: 10,
+  },
+  image: {
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+  },
+  recipeTitle: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
+
+
+/*
+              <Text>
+                Ingredients:{" "}
+                {food.ingredients.map((ingredient, index) => (
+                  <Text key={index}>{ingredient}, </Text>
+                ))}{" "}
+              </Text>
+              <Text>Instructions: {food.instructions}</Text>
+              <Text>Calories: {food.calories}</Text>
+              */
