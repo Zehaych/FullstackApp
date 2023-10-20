@@ -10,7 +10,7 @@ import {
 } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useContext } from "react";
 import { Context } from "../store/context";
 import { useState } from "react";
@@ -23,7 +23,14 @@ const UserScreen = () => {
   const onLogOutPressed = () => {
     Alert.alert("Log Out", "Are you sure you want to log out?", [
       { text: "No", onPress: () => {} },
-      { text: "Yes", onPress: () => navigation.navigate("LogInScreen") },
+      {
+        text: "Yes",
+        onPress: () => {
+          navigation.navigate("LogInScreen");
+          // setCurrentUser(null);
+          // AsyncStorage.removeItem("userId");
+        },
+      },
     ]);
   };
 
@@ -37,7 +44,6 @@ const UserScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      
       <View style={styles.userInfoSection}>
         <View style={styles.userInfo}>
           <Title style={styles.title}>{currentUser.username}</Title>
@@ -51,7 +57,9 @@ const UserScreen = () => {
             <Text style={styles.detailText}>Weight: {currentUser.weight}</Text>
 
             <Text style={styles.detailText}>Height: {currentUser.height}</Text>
-            <Text style={styles.detailText}>Calorie goal: {currentUser.calorie}</Text>
+            <Text style={styles.detailText}>
+              Calorie goal: {currentUser.calorie}
+            </Text>
           </View>
         </View>
       </View>

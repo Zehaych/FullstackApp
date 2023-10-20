@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { Context } from "../store/context";
 import {
   Keyboard,
   StyleSheet,
@@ -15,6 +16,7 @@ const window = Dimensions.get("window");
 
 const TDEEScreen = () => {
   const navigation = useNavigation();
+  const [currentUser, setCurrentUser] = useContext(Context);
 
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
@@ -26,6 +28,44 @@ const TDEEScreen = () => {
   const [calorieCalculated, setCalorieCalculated] = useState(false);
 
   const handleSubmit = () => {
+    const updatedUser = { ...currentUser };
+
+    // Update the attributes
+    updatedUser.weight = parseFloat(weight);
+    updatedUser.height = parseFloat(height);
+    updatedUser.age = parseInt(age);
+    updatedUser.gender = gender;
+    updatedUser.calorie = parseFloat(tdee);
+
+    // Get the user's ID from the currentUser object
+    const userId = updatedUser._id;
+
+    // Make a PATCH request to update the user's attributes on the server
+    fetch(`${process.env.EXPO_PUBLIC_IP}/user/editUser/${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        weight: updatedUser.weight,
+        height: updatedUser.height,
+        age: updatedUser.age,
+        gender: updatedUser.gender,
+        calorie: updatedUser.calorie,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle the response from the server, if needed
+        console.log(data);
+      })
+      .catch((error) => {
+        // Handle any errors that occur during the request
+        console.error(error);
+      });
+
+    setCurrentUser(updatedUser);
+
     alert("Successfully updated your calorie intake.");
     navigation.navigate("TabScreen");
   };
@@ -43,13 +83,13 @@ const TDEEScreen = () => {
       alert("Please fill in all fields.");
     } else {
       let formulaResult = 0;
-      if (gender === "male") {
+      if (gender === "Male") {
         formulaResult =
           10 * parseFloat(weight) +
           6.25 * parseFloat(height) -
           5 * parseInt(age) +
           5;
-      } else if (gender === "female") {
+      } else if (gender === "Female") {
         formulaResult =
           10 * parseFloat(weight) +
           6.25 * parseFloat(height) -
@@ -119,13 +159,13 @@ const TDEEScreen = () => {
       <Text style={style.radioLabel}>Select your gender:</Text>
       <Button
         title="Male"
-        onPress={() => setGender("male")}
-        color={gender === "male" ? "orange" : "#0066cc"}
+        onPress={() => setGender("Male")}
+        color={gender === "Male" ? "orange" : "#0066cc"}
       />
       <Button
         title="Female"
-        onPress={() => setGender("female")}
-        color={gender === "female" ? "orange" : "#0066cc"}
+        onPress={() => setGender("Female")}
+        color={gender === "Female" ? "orange" : "#0066cc"}
       />
       <Text style={style.radioInput}>Select your activity level:</Text>
       <Button

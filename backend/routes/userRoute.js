@@ -9,7 +9,7 @@ router.get("/", userController.getUsers);
 
 //user -> POST
 router.post("/register", userController.register);
-router.post("/login", userController.login)
-
+router.post("/login", userController.login);
+router.put("/editUser/:id", userController.editUser);
 
 module.exports = router;

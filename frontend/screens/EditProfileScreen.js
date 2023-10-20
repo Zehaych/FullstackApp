@@ -2,19 +2,19 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { TouchableRipple, Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons"; // Import your desired icon library
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const EditProfileScreen = () => {
   const navigation = useNavigation();
 
   const onCalculateCaloriePressed = () => {
     // Navigate to the "Calculate Calorie" screen
-    navigation.push("Calculate Calorie"); // Replace "TDEEScreen" with the actual screen name
+    navigation.push("Calculate Calorie");
   };
 
   const onInsertMedicalHistoryPressed = () => {
     // Navigate to the "Insert Medical History" screen
-    navigation.push("Medical History"); // Replace "MedicalHistory" with the actual screen name
+    navigation.push("Medical History");
   };
 
   return (
