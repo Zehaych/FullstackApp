@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useContext } from "react";
 import { useState } from "react";
 import { Context } from "../store/context";
@@ -28,15 +28,14 @@ export default function LogInScreen() {
 
   const handleUsernameChange = (text) => {
     setUsername(text);
-  }
+  };
 
   const handlePasswordChange = (text) => {
     setPassword(text);
-  }
+  };
 
-  const LogIn = async() => {
-    
-    const login = await fetch (`${process.env.EXPO_PUBLIC_IP}/user/login`,{
+  const LogIn = async () => {
+    const login = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/login`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -48,17 +47,15 @@ export default function LogInScreen() {
       }),
     });
     const data = await login.json();
-    if (login.status === 200){
-        AsyncStorage.setItem('userId', JSON.stringify(data.user));
-        setCurrentUser(data.user);
-        console.log(data.user);
-        console.log(data);
-        navigation.navigate("TabScreen");
-        console.log(currentUser);
-
+    if (login.status === 200) {
+      AsyncStorage.setItem("userId", JSON.stringify(data.user));
+      setCurrentUser(data.user);
+      console.log(data.user);
+      console.log(data);
+      navigation.navigate("TabScreen");
+      console.log(currentUser);
     } else window.alert("Incorrect username or password");
-  }
-  
+  };
 
   const handleSignUp = () => {
     // Implement your authentication logic here
@@ -103,9 +100,10 @@ export default function LogInScreen() {
             entering={FadeInDown.duration(1000).springify()}
             className="bg-black/5 p-5 rounded-2xl w-full"
           >
-            <TextInput placeholder= "Username" 
-            placeholderTextColor={"black"} 
-            onChangeText= {handleUsernameChange}
+            <TextInput
+              placeholder="Username"
+              placeholderTextColor={"black"}
+              onChangeText={handleUsernameChange}
             />
           </Animated.View>
           <Animated.View
@@ -115,7 +113,8 @@ export default function LogInScreen() {
             <TextInput
               placeholder="Password"
               placeholderTextColor={"black"}
-              onChangeText = {handlePasswordChange}
+              secureTextEntry
+              onChangeText={handlePasswordChange}
             />
           </Animated.View>
 
