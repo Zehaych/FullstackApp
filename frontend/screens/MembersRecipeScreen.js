@@ -8,8 +8,11 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  FlatList,
+  Dimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
+
 
 export default function MembersRecipeScreen({ navigation }) {
   const [data, setData] = useState([]);
@@ -45,61 +48,74 @@ export default function MembersRecipeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>All available receipes</Text>
-      <ScrollView style={styles.foodContainer} >
-        {loading ? (
-          <Text>Loading ...</Text>
-        ) : (
-          data.map((food) => (
-            <TouchableOpacity key={food._id} style={styles.recipeMember} onPress={() => handleRecipeInfo(food)}>
-              <Image source={{ uri: food.image }} style={styles.image} />
-              <Text style={styles.recipeTitle}> {food.name}</Text>
-            </TouchableOpacity>
-
-          ))
+      <Text style={styles.header}>All available recipes</Text>
+      <FlatList
+        data={data}
+        horizontal={true}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.recipeMember}
+            onPress={() => handleRecipeInfo(item)}>
+            <Image source={{ uri: item.image }} style={styles.image} />
+            <Text style={styles.recipeTitle}> {item.name}</Text>
+          </TouchableOpacity>
         )}
-      </ScrollView>
+      />
       <StatusBar style="auto" />
     </SafeAreaView>
   );
 }
 
+const { width } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "#FCFCD3",
+    padding: 10,
   },
-  //style for the header
   header: {
+    textAlign: "center",
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     color: "orange",
   },
-  //style for the image
   foodContainer: {
-    marginBottom: 20,
+    flexGrow: 1,
+    width: "100%", 
+    //width: width * data.length, // width * number of items
   },
   recipeMember: {
-    flexDirection: "column",
-    alignItems: "center",
+    width: 360,
+    //width: "100%",
+    margin: 5,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 10,
-    margin: 10,
     padding: 10,
   },
   image: {
-    width: 150,
-    height: 150,
+    flex: 1, // Fill the container's available space
+    width: null,
+    height: null,
+    resizeMode: "cover", // Make the image fit the container
     borderRadius: 10,
   },
   recipeTitle: {
+    textAlign: "center",
     marginTop: 10,
     fontSize: 16,
     fontWeight: "bold",
+    position: "absolute",
+    bottom: 50, // Position the title on top of the image
+    left: 10, // Add some spacing from the left
+    right: 10, // Add some spacing from the right
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Add a semi-transparent background
+    color: "white",
+    padding: 5, // Add some padding
+    borderRadius: 5, // Add border radius for the background
   },
 });
 
@@ -113,4 +129,24 @@ const styles = StyleSheet.create({
               </Text>
               <Text>Instructions: {food.instructions}</Text>
               <Text>Calories: {food.calories}</Text>
+
+
+              return (
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.header}>All available receipes</Text>
+      <ScrollView style={styles.foodContainer} >
+        {loading ? (
+          <Text>Loading ...</Text>
+        ) : (
+          data.map((food) => (
+            <TouchableOpacity key={food._id} style={styles.recipeMember} onPress={() => handleRecipeInfo(food)}>
+              <Image source={{ uri: food.image }} style={styles.image} />
+              <Text style={styles.recipeTitle}> {food.name}</Text>
+            </TouchableOpacity>
+          ))
+        )}
+      </ScrollView>
+      <StatusBar style="auto" />
+    </SafeAreaView>
+  );
               */
