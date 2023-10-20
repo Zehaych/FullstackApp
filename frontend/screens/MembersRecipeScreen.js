@@ -17,14 +17,6 @@ export default function MembersRecipeScreen({ navigation }) {
 
   const url = `${process.env.EXPO_PUBLIC_IP}/recipe`;
 
-  // // const url = process.env.REACT_APP_BASE_URL;
-  // const dotenv = require("dotenv");
-
-  // dotenv.config({ path: ".env" });
-
-  // const url = process.env.REACT_APP_BASE_URL;
-  // const url = "http://192.168.1.62:5000/recipe";
-
   //navigate to recipe info page
   const handleRecipeInfo = (recipeData) => {
     navigation.navigate("MembersRecipeInfoScreen", { recipeData });
@@ -41,21 +33,24 @@ export default function MembersRecipeScreen({ navigation }) {
       .then((json) => setData(json))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
-  }, []);
+  }, [url]);
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>All available receipes</Text>
-      <ScrollView style={styles.foodContainer} >
+      <ScrollView style={styles.foodContainer}>
         {loading ? (
           <Text>Loading ...</Text>
         ) : (
           data.map((food) => (
-            <TouchableOpacity key={food._id} style={styles.recipeMember} onPress={() => handleRecipeInfo(food)}>
+            <TouchableOpacity
+              key={food._id}
+              style={styles.recipeMember}
+              onPress={() => handleRecipeInfo(food)}
+            >
               <Image source={{ uri: food.image }} style={styles.image} />
               <Text style={styles.recipeTitle}> {food.name}</Text>
             </TouchableOpacity>
-
           ))
         )}
       </ScrollView>
@@ -102,7 +97,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-
 
 /*
               <Text>
