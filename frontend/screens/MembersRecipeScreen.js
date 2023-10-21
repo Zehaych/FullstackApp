@@ -51,7 +51,8 @@ export default function MembersRecipeScreen({ navigation }) {
       <Text style={styles.header}>All available recipes</Text>
       <FlatList
         data={data}
-        horizontal={true}
+        numColumns={2}
+        contentContainerStyle={styles.foodContainer}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <TouchableOpacity
@@ -67,7 +68,7 @@ export default function MembersRecipeScreen({ navigation }) {
   );
 }
 
-const { width } = Dimensions.get("window");
+//const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
@@ -84,22 +85,25 @@ const styles = StyleSheet.create({
   },
   foodContainer: {
     flexGrow: 1,
-    width: "100%", 
+    //width: "100%", 
+    justifyContent: "space-between",
     //width: width * data.length, // width * number of items
   },
   recipeMember: {
-    width: 360,
+    //width: 360,
     //width: "100%",
-    margin: 5,
+    flex: 1,
+    alignItems: "center",
+    margin: 10,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 10,
     padding: 10,
   },
   image: {
-    flex: 1, // Fill the container's available space
-    width: null,
-    height: null,
+    //flex: 1, // Fill the container's available space
+    width: 150,
+    height: 150,
     resizeMode: "cover", // Make the image fit the container
     borderRadius: 10,
   },
@@ -108,14 +112,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     fontWeight: "bold",
-    position: "absolute",
-    bottom: 50, // Position the title on top of the image
-    left: 10, // Add some spacing from the left
-    right: 10, // Add some spacing from the right
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Add a semi-transparent background
-    color: "white",
-    padding: 5, // Add some padding
-    borderRadius: 5, // Add border radius for the background
+    //position: "absolute",
+    //bottom: 50, // Position the title on top of the image
+    //left: 10, // Add some spacing from the left
+    //right: 10, // Add some spacing from the right
+    //backgroundColor: "rgba(0, 0, 0, 0.5)", // Add a semi-transparent background
+    //color: "white",
+    //padding: 5, // Add some padding
+    //borderRadius: 5, // Add border radius for the background
   },
 });
 
@@ -149,4 +153,8 @@ const styles = StyleSheet.create({
       <StatusBar style="auto" />
     </SafeAreaView>
   );
+
+
+
+horizontal={true} // horozontal scroll
               */
