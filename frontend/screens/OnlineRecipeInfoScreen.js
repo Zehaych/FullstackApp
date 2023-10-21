@@ -131,6 +131,7 @@ const styles = StyleSheet.create({
     image: {
         width: '100%',  // Occupy the entire width
         height: 300,  // Fixed height
+        //resizeMode: "center", 
     },
     //spoonocular score
     scoreRating: {
