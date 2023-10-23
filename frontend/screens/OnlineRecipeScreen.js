@@ -8,9 +8,16 @@ const OnlineRecipeScreen = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [recipes, setRecipes] = useState([]);
-  const [medicalFilterEnabled, setMedicalFilterEnabled] = useState(false);
+  //const [medicalFilterEnabled, setMedicalFilterEnabled] = useState(false);
+  //const [userAllergies, setUserAllergies] = useState([]); //retrieve allergies from user profile to filter recipes
   const navigation = useNavigation();
+  
 
+  //const userAllergies = ["dairy", "egg", "gluten", "grain", "peanut", "seafood", "sesame", "shellfish", "soy", "sulfite", "tree nut", "wheat"];
+  //const userAllergies = []; //retrieve allergies from user profile to filter recipes
+
+  
+  
   useEffect(() => {
     if (search) {
       setLoading(true);
@@ -22,6 +29,34 @@ const OnlineRecipeScreen = () => {
         .finally(() => setLoading(false));
     }
   }, [search]);
+
+
+  /*
+  useEffect(() => {
+    if (search) {
+      setLoading(true);
+
+      // Call the fetchRecipes function from api.js
+      fetchRecipes(search)
+        .then((data) => {    
+          // Filter recipes if the medical filter is enabled
+          const filteredRecipes = medicalFilterEnabled
+            ? data.filter((recipe) => {
+                // Check if any allergenic ingredient is in the recipe
+                return !recipe.ingredients.some((ingredient) =>
+                  userAllergies.includes(ingredient)
+                );
+              })
+            : data;
+
+          setRecipes(filteredRecipes);
+        })
+        .catch((error) => console.error('Error fetching recipes:', error))
+        .finally(() => setLoading(false));
+    }
+  }, [search, medicalFilterEnabled, userAllergies]);
+
+  */
 
   //handle search data
   const handleSearch = (text) => {
@@ -35,11 +70,6 @@ const OnlineRecipeScreen = () => {
   const handleItemClick = (recipeId) => {
     //console.log(recipeId);
     navigation.navigate('OnlineRecipeInfoScreen', { recipeId });
-  };
-
-  //handle medical filter
-  const handleMedicalFilter = () => {
-    setMedicalFilterEnabled((prev) => !prev);
   };
 
   //handle random recipes @ home page and online recipe page
@@ -60,20 +90,6 @@ const OnlineRecipeScreen = () => {
           value={search}
           onChangeText={(text) => handleSearch(text)}
         />
-        <View style={styles.filterContainer}>
-          <View style={styles.leftComponent}>
-            <Text style={styles.toggleText}>Apply Medical Filter?  </Text>
-          </View>
-          <View style={styles.rightComponent}>
-            <TouchableOpacity onPress={handleMedicalFilter} style={styles.toggleButton}>
-              <Icon
-                name={medicalFilterEnabled ? 'toggle-on' : 'toggle-off'}
-                size={25}
-                color={medicalFilterEnabled ? 'orange' : 'black'}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
         <Text style={styles.recommandation}>Category</Text>
       </View>
       <View style={styles.listFlat}>
@@ -126,7 +142,36 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     padding: 10,
   },
-  filterContainer: {
+  
+});
+
+
+/*
+
+//handle medical filter
+  // const handleMedicalFilter = () => {
+  //   setMedicalFilterEnabled((prev) => !prev);
+  // };
+  
+
+<View style={styles.filterContainer}>
+          <View style={styles.leftComponent}>
+            <Text style={styles.toggleText}>Apply Medical Filter?  </Text>
+          </View>
+          <View style={styles.rightComponent}>
+            <TouchableOpacity onPress={handleMedicalFilter} style={styles.toggleButton}>
+              <Icon
+                name={medicalFilterEnabled ? 'toggle-on' : 'toggle-off'}
+                size={25}
+                color={medicalFilterEnabled ? 'orange' : 'black'}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+
+
+        filterContainer: {
     flexDirection: 'row', // Arrange components horizontally from left to right
     justifyContent: 'space-between', // Space them evenly
     alignItems: 'center', // Center them vertically
@@ -154,4 +199,4 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     borderRadius: 10,
   },
-});
+*/
