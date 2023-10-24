@@ -18,6 +18,7 @@ import ProgressScreen from "./screens/ProgressScreen";
 import AddBizRecipeScreen from "./screens/AddBizRecipeScreen";
 import BusinessRecipeScreen from "./screens/BusinessRecipeScreen";
 import BusinessRecipeInfoScreen from "./screens/BusinessRecipeInfoScreen";
+import PaymentScreen from "./screens/PaymentScreen";
 
 const Stack = createStackNavigator();
 
@@ -82,6 +83,7 @@ function App() {
             name="BusinessRecipeInfoScreen"
             component={BusinessRecipeInfoScreen}
           />
+          <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="UserScreen" component={UserScreen} />
         </Stack.Navigator>
       </NavigationContainer>
