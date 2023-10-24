@@ -10,14 +10,41 @@ import {
   Button,
 } from "react-native";
 import React, { useState, useEffect } from "react";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 export default function BusinessRecipeInfoScreen({ route, navigation }) {
   const { recipeData } = route.params;
   const [username, setUsername] = useState("");
 
+  const [quantity, setQuantity] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(recipeData.price);
+
+  const incrementQuantity = () => {
+    const newQuantity = quantity + 1;
+    setQuantity(newQuantity);
+    setTotalPrice(newQuantity * recipeData.price);
+  };
+
+  const decrementQuantity = () => {
+    if (quantity > 1) {
+      const newQuantity = quantity - 1;
+      setQuantity(newQuantity);
+      setTotalPrice(newQuantity * recipeData.price);
+    }
+  };
+
   const navigateToPayment = () => {
     navigation.navigate("Payment");
   };
+
+  const formatPrice = (price) => {
+    return `$${price.toFixed(2)}`;
+  };
+
+  const getTotalPrice = () => {
+    return formatPrice(totalPrice);
+  };
+
   //   const url = `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${recipeData.submitted_by}`;
 
   const fetchUsername = async () => {
@@ -59,18 +86,30 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
         <Text style={styles.subTitle}>Calories: </Text>
         <Text>{recipeData.calories}</Text>
         <Text style={styles.subTitle}>Price: </Text>
-        <Text>${recipeData.price}</Text>
+        <Text>{formatPrice(recipeData.price)}</Text>
+
+        <View style={styles.quantityContainer}>
+          <Text style={styles.quantityLabel}>Quantity:</Text>
+          <TouchableOpacity
+            style={styles.quantityButton}
+            onPress={decrementQuantity}
+          >
+            <Icon name="minus" size={20} color="#0066cc" />
+          </TouchableOpacity>
+          <Text style={styles.quantity}>{quantity}</Text>
+          <TouchableOpacity
+            style={styles.quantityButton}
+            onPress={incrementQuantity}
+          >
+            <Icon name="plus" size={20} color="#0066cc" />
+          </TouchableOpacity>
+        </View>
+        {/* <Text style={styles.subTitle}>Total Price: </Text> */}
+        <Text style={styles.totalPrice}>Total Price: {getTotalPrice()}</Text>
 
         <StatusBar style="auto" />
       </View>
-      {/* Add the "Prepare this meal for me" button */}
-      {/* <Button
-        title="Prepare this meal for me"
-        onPress={() => {
-          // Handle button click action here
-          // You can add logic for preparing the meal
-        }}
-      /> */}
+
       <TouchableOpacity style={styles.button} onPress={navigateToPayment}>
         <Text style={styles.buttonText}>Prepare this meal for me</Text>
       </TouchableOpacity>
@@ -82,13 +121,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FCFCD3",
-    //alignItems: "center",
+    padding: 20,
   },
-  //style for the image
   imageContainer: {
     flex: 1,
-    justifyContent: "center", // Center the image vertically
-    alignItems: "center", // Center the image horizontally
+    justifyContent: "center",
+    alignItems: "center",
     padding: 10,
   },
   image: {
@@ -119,5 +157,30 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  quantityContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  quantityLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginRight: 10,
+  },
+  quantityButton: {
+    backgroundColor: "#ddd",
+    borderRadius: 5,
+    padding: 5,
+  },
+  quantity: {
+    fontSize: 20,
+    marginHorizontal: 10,
+  },
+  totalPrice: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 10,
   },
 });
