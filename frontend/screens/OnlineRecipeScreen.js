@@ -77,6 +77,7 @@ const OnlineRecipeScreen = () => {
           onChangeText={(text) => handleSearch(text)}
         />
       </View>
+      {/* list of recipes */}
       <View style={styles.listFlat}>
         {loading ? (
           <Text>Loading...</Text>
@@ -92,6 +93,7 @@ const OnlineRecipeScreen = () => {
           />
         )}
       </View>
+      {/* featured section */}
       <Text style={styles.recommandation}>Featured Random Recipe</Text>
       {/* random recipe */}
       {/*data={randomRecipes.slice(0, 20)}*/}
