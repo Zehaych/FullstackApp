@@ -42,6 +42,10 @@ const UserScreen = () => {
     navigation.push("Add Recipe");
   };
 
+  const onTrackProgressPressed = () => {
+    navigation.push("Track Progress");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.userInfoSection}>
@@ -69,6 +73,13 @@ const UserScreen = () => {
           <View style={styles.menuItem}>
             <Icon name="account-edit" color="#FF6347" size={25} />
             <Text style={styles.menuItemText}>Edit Profile</Text>
+          </View>
+        </TouchableRipple>
+
+        <TouchableRipple onPress={onTrackProgressPressed}>
+          <View style={styles.menuItem}>
+            <Icon name="chart-bar" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>Track Progress</Text>
           </View>
         </TouchableRipple>
 
