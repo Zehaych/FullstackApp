@@ -8,6 +8,7 @@ import OnlineRecipeScreen from "./OnlineRecipeScreen";
 import MembersRecipeScreen from "./MembersRecipeScreen";
 import ProgressScreen from "./ProgressScreen";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import BusinessRecipeScreen from "./BusinessRecipeScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -33,9 +34,20 @@ export default function TabScreen() {
                 color={iconColor}
               />
             );
-          } else if (route.name === "Track Progress") {
-            iconName = focused ? "bar-chart" : "bar-chart-outline";
-          } else if (route.name === "User") {
+          } else if (route.name === "Business Recipes") {
+            iconName = focused ? "chef-hat" : "chef-hat";
+            return (
+              <MaterialCommunityIcons
+                name={iconName}
+                size={size}
+                color={iconColor}
+              />
+            );
+          }
+          // else if (route.name === "Track Progress") {
+          //   iconName = focused ? "bar-chart" : "bar-chart-outline";
+          // }
+          else if (route.name === "User") {
             iconName = focused ? "person" : "person-outline";
           }
 
@@ -63,10 +75,15 @@ export default function TabScreen() {
         options={{ tabBarLabel: "Members" }}
       />
       <Tab.Screen
+        name="Business Recipes"
+        component={BusinessRecipeScreen}
+        options={{ tabBarLabel: "Business" }}
+      />
+      {/* <Tab.Screen
         name="Track Progress"
         component={ProgressScreen}
         options={{ tabBarLabel: "Progress" }}
-      />
+      /> */}
       <Tab.Screen
         name="User"
         component={UserScreen}
