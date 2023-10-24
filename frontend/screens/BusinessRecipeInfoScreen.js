@@ -18,6 +18,26 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
   const navigateToPayment = () => {
     navigation.navigate("Payment");
   };
+  //   const url = `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${recipeData.submitted_by}`;
+
+  const fetchUsername = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${recipeData.submitted_by}`
+      );
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status}`);
+      }
+      const user = await response.json();
+      setUsername(user.username);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsername();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
