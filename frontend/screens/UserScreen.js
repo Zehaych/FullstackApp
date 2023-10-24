@@ -26,9 +26,9 @@ const UserScreen = () => {
       {
         text: "Yes",
         onPress: () => {
-          navigation.navigate("LogInScreen");
           // setCurrentUser(null);
           // AsyncStorage.removeItem("userId");
+          navigation.navigate("LogInScreen");
         },
       },
     ]);
@@ -52,6 +52,7 @@ const UserScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+
       <View style={styles.userInfoSection}>
         <View style={styles.userInfo}>
           <Title style={styles.title}>{currentUser.username}</Title>
@@ -72,6 +73,8 @@ const UserScreen = () => {
         </View>
       </View>
       <Divider />
+
+
       <View style={styles.menuWrapper}>
         <TouchableRipple onPress={onEditProfilePressed}>
           <View style={styles.menuItem}>

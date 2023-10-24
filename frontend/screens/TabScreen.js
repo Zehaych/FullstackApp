@@ -6,13 +6,59 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import HomeScreen from "./HomeScreen";
 import OnlineRecipeScreen from "./OnlineRecipeScreen";
 import MembersRecipeScreen from "./MembersRecipeScreen";
+import BizPartnerScreen from "./BizPartnerScreen";
+import AdminScreen from "./AdminScreen";
 import ProgressScreen from "./ProgressScreen";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import BusinessRecipeScreen from "./BusinessRecipeScreen";
+import { Context } from "../store/context";
+import { useContext } from "react";
+import { useEffect } from "react";
 
 const Tab = createBottomTabNavigator();
 
+function ConditionalUserScreen({ navigation }) {
+  const [currentUser, setCurrentUser] = useContext(Context);
+
+  useEffect(() => {
+    if (currentUser.userType === "user") {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'UserScreen' }],
+      });
+    } else if (currentUser.userType === "bizpartner") {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'BizPartnerScreen' }],
+      });
+    } else if (currentUser.userType === "admin"){
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'AdminScreen'}],
+      });
+    }
+  }, [currentUser]);
+
+  return null; 
+}
+
+
 export default function TabScreen() {
+  const [currentUser, setCurrentUser] = useContext(Context);
+
+  const getTabLabel = () => {
+    switch (currentUser.userType) {
+      case 'user':
+        return "User";
+      case 'bizpartner':
+        return "BizPartner";
+      case 'admin':
+        return "Admin";
+      default:
+        return "User";
+    }
+  }
+  
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -86,9 +132,14 @@ export default function TabScreen() {
       /> */}
       <Tab.Screen
         name="User"
-        component={UserScreen}
-        options={{ tabBarLabel: "User" }}
+        component={ConditionalUserScreen}
+        options={{ tabBarLabel: () => <Text>{getTabLabel()}</Text> }}
       />
+      {/* Add these screens to your Navigator, but make them hidden from the tab bar */}
+      <Tab.Screen name="UserScreen" component={UserScreen} options={{ tabBarButton: () => null }} />
+      <Tab.Screen name="BizPartnerScreen" component={BizPartnerScreen} options={{ tabBarButton: () => null }} />
+      <Tab.Screen name="AdminScreen" component={AdminScreen} options={{ tabBarButton: () => null }} />
+
     </Tab.Navigator>
   );
 }
