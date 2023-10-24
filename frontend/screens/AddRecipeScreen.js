@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { View, TextInput, Button, Image, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useContext } from "react";
+import { Context } from "../store/context";
 
 const AddRecipeScreen = () => {
   const navigation = useNavigation();
@@ -10,6 +12,8 @@ const AddRecipeScreen = () => {
   const [instructions, setInstructions] = useState("");
   const [calories, setCalories] = useState("");
   const [image, setImage] = useState(""); // Assuming image is a URL or path
+
+  const [currentUser, setCurrentUser] = useContext(Context);
 
   const handleSubmit = () => {
     // Handle form submission here
@@ -31,6 +35,7 @@ const AddRecipeScreen = () => {
         instructions: instructions,
         calories: calories,
         image: image,
+        submitted_by: currentUser._id,
       }),
     })
       .then((res) => {

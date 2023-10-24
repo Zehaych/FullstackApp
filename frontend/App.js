@@ -14,6 +14,7 @@ import AddRecipeScreen from "./screens/AddRecipeScreen";
 import UserScreen from "./screens/UserScreen";
 import { Context } from "./store/context";
 import { useState } from "react";
+import ProgressScreen from "./screens/ProgressScreen";
 
 const Stack = createStackNavigator();
 
@@ -21,49 +22,53 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
 
   return (
-    <Context.Provider value = {[currentUser, setCurrentUser]}>
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="LogInScreen">
-        <Stack.Screen
-          name="LogInScreen"
-          component={LogInScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Sign up"
-          component={SignUpScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="TabScreen"
-          component={TabScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="Edit Profile" component={EditProfileScreen} />
-        <Stack.Screen name="Calculate Calorie" component={TDEEScreen} />
-        <Stack.Screen name="Medical History" component={MedicalHistoryScreen} />
-        <Stack.Screen name="Add Recipe" component={AddRecipeScreen} />
+    <Context.Provider value={[currentUser, setCurrentUser]}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="LogInScreen">
+          <Stack.Screen
+            name="LogInScreen"
+            component={LogInScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Sign up"
+            component={SignUpScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="TabScreen"
+            component={TabScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="Edit Profile" component={EditProfileScreen} />
+          <Stack.Screen name="Calculate Calorie" component={TDEEScreen} />
+          <Stack.Screen
+            name="Medical History"
+            component={MedicalHistoryScreen}
+          />
+          <Stack.Screen name="Add Recipe" component={AddRecipeScreen} />
+          <Stack.Screen name="Track Progress" component={ProgressScreen} />
 
-        <Stack.Screen
-          name="MembersRecipeScreen"
-          component={MembersRecipeScreen}
-        />
-        <Stack.Screen
-          name="MembersRecipeInfoScreen"
-          component={MembersRecipeInfoScreen}
-        />
-        <Stack.Screen
-          name="OnlineRecipeScreen"
-          component={OnlineRecipeScreen}
-        />
-        <Stack.Screen
-          name="OnlineRecipeInfoScreen"
-          component={OnlineRecipeInfoScreen}
-          options={{ headerTransparent: true, headerTitle: "" }}
-        />
-        <Stack.Screen name="UserScreen" component={UserScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+          <Stack.Screen
+            name="MembersRecipeScreen"
+            component={MembersRecipeScreen}
+          />
+          <Stack.Screen
+            name="MembersRecipeInfoScreen"
+            component={MembersRecipeInfoScreen}
+          />
+          <Stack.Screen
+            name="OnlineRecipeScreen"
+            component={OnlineRecipeScreen}
+          />
+          <Stack.Screen
+            name="OnlineRecipeInfoScreen"
+            component={OnlineRecipeInfoScreen}
+            options={{ headerTransparent: true, headerTitle: "" }}
+          />
+          <Stack.Screen name="UserScreen" component={UserScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </Context.Provider>
   );
 }

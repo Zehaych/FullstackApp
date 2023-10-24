@@ -22,6 +22,11 @@ const recipeSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    submitted_by: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
   {
     timestamps: true,
