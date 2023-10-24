@@ -46,6 +46,10 @@ const UserScreen = () => {
     navigation.push("Track Progress");
   };
 
+  const onAddBizRecipePressed = () => {
+    navigation.push("Add Business Recipe");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.userInfoSection}>
@@ -87,6 +91,15 @@ const UserScreen = () => {
           <View style={styles.menuItem}>
             <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
             <Text style={styles.menuItemText}>Add Recipe</Text>
+          </View>
+        </TouchableRipple>
+
+        <TouchableRipple onPress={onAddBizRecipePressed}>
+          <View style={styles.menuItem}>
+            <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>
+              Add Business Recipe (Removing soon, just testing function)
+            </Text>
           </View>
         </TouchableRipple>
 

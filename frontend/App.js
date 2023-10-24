@@ -15,6 +15,9 @@ import UserScreen from "./screens/UserScreen";
 import { Context } from "./store/context";
 import { useState } from "react";
 import ProgressScreen from "./screens/ProgressScreen";
+import AddBizRecipeScreen from "./screens/AddBizRecipeScreen";
+import BusinessRecipeScreen from "./screens/BusinessRecipeScreen";
+import BusinessRecipeInfoScreen from "./screens/BusinessRecipeInfoScreen";
 
 const Stack = createStackNavigator();
 
@@ -47,6 +50,11 @@ function App() {
             component={MedicalHistoryScreen}
           />
           <Stack.Screen name="Add Recipe" component={AddRecipeScreen} />
+          <Stack.Screen
+            name="Add Business Recipe"
+            component={AddBizRecipeScreen}
+          />
+
           <Stack.Screen name="Track Progress" component={ProgressScreen} />
 
           <Stack.Screen
@@ -65,6 +73,14 @@ function App() {
             name="OnlineRecipeInfoScreen"
             component={OnlineRecipeInfoScreen}
             options={{ headerTransparent: true, headerTitle: "" }}
+          />
+          <Stack.Screen
+            name="BusinessRecipeScreen"
+            component={BusinessRecipeScreen}
+          />
+          <Stack.Screen
+            name="BusinessRecipeInfoScreen"
+            component={BusinessRecipeInfoScreen}
           />
           <Stack.Screen name="UserScreen" component={UserScreen} />
         </Stack.Navigator>

@@ -20,7 +20,7 @@ app.use(cors());
 const recipeRoute = require("./routes/recipeRoute");
 const FoodAndDrinksRoute = require("./routes/FoodAndDrinksRoute");
 const userRoute = require("./routes/userRoute");
-
+const bizRecipeRoute = require("./routes/bizRecipeRoute");
 
 // Middleware to handle and catch errors
 app.use(errorHandler);
@@ -29,7 +29,7 @@ app.use(errorHandler);
 app.use("/recipe", recipeRoute);
 app.use("/FoodAndDrinks", FoodAndDrinksRoute);
 app.use("/user", userRoute);
-
+app.use("/bizRecipe", bizRecipeRoute);
 
 // Start the server
 app.listen(port, () => {
