@@ -59,32 +59,31 @@ function App() {
           <Stack.Screen name="Track Progress" component={ProgressScreen} />
 
           <Stack.Screen
-            name="MembersRecipeScreen"
+            name="Community Recipes"
             component={MembersRecipeScreen}
           />
           <Stack.Screen
-            name="MembersRecipeInfoScreen"
+            name="Recipe Information"
             component={MembersRecipeInfoScreen}
+            options={{ headerTransparent: true, headerTitle: "" }}
           />
+          <Stack.Screen name="Online Recipes" component={OnlineRecipeScreen} />
           <Stack.Screen
-            name="OnlineRecipeScreen"
-            component={OnlineRecipeScreen}
-          />
-          <Stack.Screen
-            name="OnlineRecipeInfoScreen"
+            name="Online Recipe Information"
             component={OnlineRecipeInfoScreen}
             options={{ headerTransparent: true, headerTitle: "" }}
           />
           <Stack.Screen
-            name="BusinessRecipeScreen"
+            name="Business Recipes"
             component={BusinessRecipeScreen}
           />
           <Stack.Screen
-            name="BusinessRecipeInfoScreen"
+            name="Business Recipe Information"
             component={BusinessRecipeInfoScreen}
+            options={{ headerTransparent: true, headerTitle: "" }}
           />
           <Stack.Screen name="Payment" component={PaymentScreen} />
-          <Stack.Screen name="UserScreen" component={UserScreen} />
+          <Stack.Screen name="User Profile" component={UserScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Context.Provider>

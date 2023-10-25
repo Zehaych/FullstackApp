@@ -21,7 +21,7 @@ export default function BusinessRecipeScreen({ navigation }) {
 
   //navigate to recipe info page
   const handleRecipeInfo = (recipeData) => {
-    navigation.navigate("BusinessRecipeInfoScreen", { recipeData });
+    navigation.navigate("Business Recipe Information", { recipeData });
   };
 
   useEffect(() => {

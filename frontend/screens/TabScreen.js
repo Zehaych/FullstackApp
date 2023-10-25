@@ -70,7 +70,7 @@ export default function TabScreen() {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Online Recipes") {
             iconName = focused ? "restaurant" : "restaurant-outline";
-          } else if (route.name === "Members Recipes") {
+          } else if (route.name === "Community Recipes") {
             iconName = focused ? "account-group" : "account-group-outline";
             return (
               <MaterialCommunityIcons
@@ -115,9 +115,9 @@ export default function TabScreen() {
         options={{ tabBarLabel: "Online" }}
       />
       <Tab.Screen
-        name="Members Recipes"
+        name="Community Recipes"
         component={MembersRecipeScreen}
-        options={{ tabBarLabel: "Members" }}
+        options={{ tabBarLabel: "Community" }}
       />
       <Tab.Screen
         name="Business Recipes"

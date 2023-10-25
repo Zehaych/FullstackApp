@@ -1,56 +1,4 @@
-// import { StyleSheet, Text, View, ScrollView } from "react-native";
-// import React from "react";
-// import Icon from 'react-native-vector-icons/FontAwesome';
-// import { StatusBar } from "expo-status-bar";
-
-// const HomeScreen = () => {
-//   return (
-//     <View style={styles.container}>
-//       <ScrollView
-//         showsVerticalScrollIndicator={false}
-//         contentContainerStyle={{paddingBottom: 50}}
-//         style={styles.scroller}>
-//           {/* bellicon */}
-//         <View style={styles.header}>
-//           <Icon name="bell" size={30} color="#900" />
-//         </View>
-//         <View style={styles.text}>
-//           <Text>Boundary name is based from file name, so this is HomeScreen</Text>
-//         </View>
-
-//       </ScrollView>
-
-//     </View>
-//   );
-// };
-
-// export default HomeScreen;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: "#fff",
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-//   scroller: {
-//     // Add spacing between child elements
-//     marginVertical: 6,
-//     paddingTop: 14,
-//   },
-//   header: {
-//     height: 60,
-//     paddingTop: 20,
-
-//   },
-//   text: {
-//     flex: 1,
-//     justifyContent: "flex-end",
-//     paddingBottom: 50,
-//   },
-// });
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -60,19 +8,19 @@ import {
   ScrollView,
   StatusBar,
 } from "react-native";
-import { fetchRecipeDetails  } from '../assets/Api';
+import { fetchRecipeDetails } from "../assets/Api";
 
 const HomeScreen = ({ navigation }) => {
   const navigateToCommunityRecipes = () => {
-    navigation.navigate("MembersRecipeScreen");
+    navigation.navigate("Community Recipes");
   };
 
   const navigateToUser = () => {
-    navigation.navigate("UserScreen");
+    navigation.navigate("User Profile");
   };
 
   const navigateToOnlineRecipes = () => {
-    navigation.navigate("OnlineRecipeScreen");
+    navigation.navigate("Online Recipes");
   };
 
   const [randomRecipes, setRandomRecipes] = useState([]);
@@ -80,13 +28,15 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     // Fetch random recipes by generating random recipe IDs
     const randomRecipeIds = getRandomRecipeIds();
-    const fetchRecipePromises = randomRecipeIds.map((recipeId) => fetchRecipeDetails(recipeId));
+    const fetchRecipePromises = randomRecipeIds.map((recipeId) =>
+      fetchRecipeDetails(recipeId)
+    );
 
     Promise.all(fetchRecipePromises)
       .then((data) => {
         setRandomRecipes(data);
       })
-      .catch((error) => console.error('Error fetching recipes:', error));
+      .catch((error) => console.error("Error fetching recipes:", error));
   }, []);
 
   function getRandomRecipeIds() {
@@ -102,7 +52,7 @@ const HomeScreen = ({ navigation }) => {
   }
 
   const navigateToOnlineRecipesInfo = (recipeId) => {
-    navigation.navigate("OnlineRecipeInfoScreen", { recipeId });
+    navigation.navigate("Online Recipe Information", { recipeId });
   };
 
   return (
@@ -154,8 +104,13 @@ const HomeScreen = ({ navigation }) => {
             style={styles.featuredCard}
             onPress={() => navigateToOnlineRecipesInfo(randomRecipes[0].id)}
           >
-            <Image source={{ uri: randomRecipes[0].image }} style={styles.featuredCardImage} />
-            <Text style={styles.featuredCardTitle}>{randomRecipes[0].title}</Text>
+            <Image
+              source={{ uri: randomRecipes[0].image }}
+              style={styles.featuredCardImage}
+            />
+            <Text style={styles.featuredCardTitle}>
+              {randomRecipes[0].title}
+            </Text>
           </TouchableOpacity>
         )}
         {randomRecipes[1] && (
@@ -163,8 +118,13 @@ const HomeScreen = ({ navigation }) => {
             style={styles.featuredCard}
             onPress={() => navigateToOnlineRecipesInfo(randomRecipes[1].id)}
           >
-            <Image source={{ uri: randomRecipes[1].image }} style={styles.featuredCardImage} />
-            <Text style={styles.featuredCardTitle}>{randomRecipes[1].title}</Text>
+            <Image
+              source={{ uri: randomRecipes[1].image }}
+              style={styles.featuredCardImage}
+            />
+            <Text style={styles.featuredCardTitle}>
+              {randomRecipes[1].title}
+            </Text>
           </TouchableOpacity>
         )}
         {/*

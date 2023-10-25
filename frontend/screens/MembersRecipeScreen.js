@@ -21,7 +21,7 @@ export default function MembersRecipeScreen({ navigation }) {
 
   //navigate to recipe info page
   const handleRecipeInfo = (recipeData) => {
-    navigation.navigate("MembersRecipeInfoScreen", { recipeData });
+    navigation.navigate("Recipe Information", { recipeData });
   };
 
   useEffect(() => {

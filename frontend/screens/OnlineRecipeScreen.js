@@ -1,8 +1,19 @@
-import { StyleSheet, Text, View, TextInput, Image, FlatList, TouchableOpacity, Keyboard, TouchableWithoutFeedback, SafeAreaView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  Keyboard,
+  TouchableWithoutFeedback,
+  SafeAreaView,
+} from "react-native";
 import React, { useState, useEffect } from "react";
-import { fetchRecipes, fetchRecipeDetails } from '../assets/Api';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { useNavigation } from '@react-navigation/native';
+import { fetchRecipes, fetchRecipeDetails } from "../assets/Api";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { useNavigation } from "@react-navigation/native";
 
 const OnlineRecipeScreen = () => {
   const [search, setSearch] = useState("");
@@ -10,7 +21,6 @@ const OnlineRecipeScreen = () => {
   const [recipes, setRecipes] = useState([]);
   const [randomRecipes, setRandomRecipes] = useState([]);
   const navigation = useNavigation();
-  
 
   useEffect(() => {
     if (search) {
@@ -19,22 +29,23 @@ const OnlineRecipeScreen = () => {
       // Call the fetchRecipes function from api.js
       fetchRecipes(search)
         .then((data) => setRecipes(data))
-        .catch((error) => console.error('Error fetching recipes:', error))
+        .catch((error) => console.error("Error fetching recipes:", error))
         .finally(() => setLoading(false));
     }
-
   }, [search]);
 
   useEffect(() => {
     // Fetch random recipe details
     const randomRecipeIds = getRandomRecipeIds();
-    const fetchRecipePromises = randomRecipeIds.map((recipeId) => fetchRecipeDetails(recipeId));
+    const fetchRecipePromises = randomRecipeIds.map((recipeId) =>
+      fetchRecipeDetails(recipeId)
+    );
 
     Promise.all(fetchRecipePromises)
       .then((data) => {
         setRandomRecipes(data);
       })
-      .catch((error) => console.error('Error fetching recipes:', error));
+      .catch((error) => console.error("Error fetching recipes:", error));
   }, []);
 
   function getRandomRecipeIds() {
@@ -47,8 +58,7 @@ const OnlineRecipeScreen = () => {
       }
     }
     return randomIds;
-  }  
-
+  }
 
   //handle search data
   const handleSearch = (text) => {
@@ -61,56 +71,61 @@ const OnlineRecipeScreen = () => {
   //handle pressable data
   const handleItemClick = (recipeId) => {
     //console.log(recipeId);
-    navigation.navigate('OnlineRecipeInfoScreen', { recipeId });
+    navigation.navigate("Online Recipe Information", { recipeId });
   };
-  
 
   return (
-    <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss();}}>
-    <SafeAreaView style={styles.container}>
-      {/* search bar */}
-      <View style={styles.header}> 
-        <TextInput
-          placeholder="Search"
-          style={styles.searchBar}
-          value={search}
-          onChangeText={(text) => handleSearch(text)}
-        />
-      </View>
-      {/* list of recipes */}
-      <View style={styles.listFlat}>
-        {loading ? (
-          <Text>Loading...</Text>
-        ) : (
-          <FlatList
-            data={recipes}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => handleItemClick(item.id)}>
-                <Text>{item.title}</Text>
-              </TouchableOpacity>
-            )}
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+    >
+      <SafeAreaView style={styles.container}>
+        {/* search bar */}
+        <View style={styles.header}>
+          <TextInput
+            placeholder="Search"
+            style={styles.searchBar}
+            value={search}
+            onChangeText={(text) => handleSearch(text)}
           />
-        )}
-      </View>
-      {/* featured section */}
-      <Text style={styles.recommandation}>Featured Random Recipe</Text>
-      {/* random recipe */}
-      {/*data={randomRecipes.slice(0, 20)}*/}
-      <FlatList
-        data={randomRecipes}
-        horizontal={true}
-        contentContainerStyle={styles.foodContainer}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity  style={styles.recipeMember} onPress={() => handleItemClick(item.id)}>
-            <Image source={{ uri: item.image }} style={styles.recipeImage} />
-            <Text style={styles.recipeName}>{item.title}</Text>
-          </TouchableOpacity>
-        )}
-      />
-      
-    </SafeAreaView>
+        </View>
+        {/* list of recipes */}
+        <View style={styles.listFlat}>
+          {loading ? (
+            <Text>Loading...</Text>
+          ) : (
+            <FlatList
+              data={recipes}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => handleItemClick(item.id)}>
+                  <Text>{item.title}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          )}
+        </View>
+        {/* featured section */}
+        <Text style={styles.recommandation}>Featured Random Recipe</Text>
+        {/* random recipe */}
+        {/*data={randomRecipes.slice(0, 20)}*/}
+        <FlatList
+          data={randomRecipes}
+          horizontal={true}
+          contentContainerStyle={styles.foodContainer}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.recipeMember}
+              onPress={() => handleItemClick(item.id)}
+            >
+              <Image source={{ uri: item.image }} style={styles.recipeImage} />
+              <Text style={styles.recipeName}>{item.title}</Text>
+            </TouchableOpacity>
+          )}
+        />
+      </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 };
@@ -123,9 +138,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FCFCD3",
     alignItems: "center",
   },
-  header: {
-
-  },
+  header: {},
   searchBar: {
     height: 50,
     width: 385,
@@ -135,18 +148,17 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
   },
-  listFlat:{
+  listFlat: {
     width: 385,
     padding: 10,
-    margin: 10
+    margin: 10,
   },
   recommandation: {
     fontSize: 20,
     fontWeight: "bold",
     padding: 10,
   },
-  featuredSection: {
-  },
+  featuredSection: {},
   foodContainer: {
     flexGrow: 1,
     //padding: 5,
@@ -166,8 +178,8 @@ const styles = StyleSheet.create({
     width: 360,
     height: 400,
     resizeMode: "contain",
-    alignItems: "center", 
-    justifyContent: "center", 
+    alignItems: "center",
+    justifyContent: "center",
   },
   recipeName: {
     textAlign: "center",
@@ -184,7 +196,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 });
-
 
 /*
 
