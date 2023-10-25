@@ -1,9 +1,18 @@
 import React, { useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { View, TextInput, Button, Image, StyleSheet, Text } from "react-native";
+import {
+  View,
+  TextInput,
+  Button,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
 import { Context } from "../store/context";
+import * as ImagePicker from "expo-image-picker";
 
 const AddRecipeScreen = () => {
   const navigation = useNavigation();
@@ -58,8 +67,7 @@ const AddRecipeScreen = () => {
       name === "" ||
       ingredients === "" ||
       calories === "" ||
-      image === "" ||
-      price === ""
+      image === ""
     ) {
       alert("Please fill in all fields.");
     }
@@ -116,6 +124,21 @@ const AddRecipeScreen = () => {
       );
   };
 
+  const selectImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+    });
+
+    if (result.canceled) {
+      console.log("Image picker was canceled");
+    } else if (result.assets && result.assets.length > 0) {
+      // Access the selected image using the assets array
+      setImage(result.assets[0].uri);
+    }
+  };
+
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
@@ -170,14 +193,22 @@ const AddRecipeScreen = () => {
           onChangeText={(text) => setCalories(text)}
           keyboardType="numeric" // This ensures the keyboard displays numbers
         />
+
+        {/* Attach Image Section */}
         <Text style={styles.label}>Attach Image</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Image URL or Path"
-          value={image}
-          onChangeText={(text) => setImage(text)}
-        />
-        <Image source={{ uri: image }} style={styles.imagePreview} />
+        <TouchableOpacity
+          style={styles.attachImageContainer}
+          onPress={selectImage}
+        >
+          {image ? (
+            <Image source={{ uri: image }} style={styles.imagePreview} />
+          ) : (
+            <Text style={styles.attachImageText}>Tap to select an image</Text>
+          )}
+        </TouchableOpacity>
+
+        {/* Space between Attach Image and Submit Button */}
+        <View style={styles.space} />
 
         <Button title="Submit" onPress={handleSubmit} />
       </View>
@@ -227,10 +258,26 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
   },
+  attachImageContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    paddingVertical: 20,
+    marginTop: 10,
+  },
+  attachImageText: {
+    fontSize: 16,
+    color: "#777",
+  },
   imagePreview: {
     width: 100,
     height: 100,
     resizeMode: "cover",
+    marginVertical: 10,
+  },
+  space: {
     marginVertical: 10,
   },
 });
