@@ -13,20 +13,11 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 
-
 export default function MembersRecipeScreen({ navigation }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const url = `${process.env.EXPO_PUBLIC_IP}/recipe`;
-
-  // // const url = process.env.REACT_APP_BASE_URL;
-  // const dotenv = require("dotenv");
-
-  // dotenv.config({ path: ".env" });
-
-  // const url = process.env.REACT_APP_BASE_URL;
-  // const url = "http://192.168.1.62:5000/recipe";
 
   //navigate to recipe info page
   const handleRecipeInfo = (recipeData) => {
@@ -57,7 +48,8 @@ export default function MembersRecipeScreen({ navigation }) {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.recipeMember}
-            onPress={() => handleRecipeInfo(item)}>
+            onPress={() => handleRecipeInfo(item)}
+          >
             <Image source={{ uri: item.image }} style={styles.image} />
             <Text style={styles.recipeTitle}> {item.name}</Text>
           </TouchableOpacity>
@@ -85,7 +77,7 @@ const styles = StyleSheet.create({
   },
   foodContainer: {
     flexGrow: 1,
-    //width: "100%", 
+    //width: "100%",
     justifyContent: "space-between",
     //width: width * data.length, // width * number of items
   },
@@ -122,7 +114,6 @@ const styles = StyleSheet.create({
     //borderRadius: 5, // Add border radius for the background
   },
 });
-
 
 /*
               <Text>
