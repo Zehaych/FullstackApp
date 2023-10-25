@@ -3,6 +3,7 @@ import React, { useState,useEffect } from "react";
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from "react-native-paper";
+import { fetchRecipes, fetchRecipeDetails } from "../assets/Api";
 //import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 //import MealScreen from "./MealScreen";
 //import CaloriesScreen from './CaloriesScreen';  // may be implement sth like tab screen where u can switch between
@@ -10,18 +11,18 @@ import { Button } from "react-native-paper";
 
 const ProgressScreen = () => {
 
-  const [searchText, setSearchText] = useState('');
+  const [search, setSearch] = useState("");
+  const [memberRecipes, setMemberRecipes] = useState([]);
+  const [onlineRecipes, setOnlineRecipes] = useState([]);
   const [selectedDropdownValue, setSelectedDropdownValue] = useState('All');
   const [breakfastRecipe, setBreakfastRecipe] = useState(null);
   const [lunchRecipe, setLunchRecipe] = useState(null);
   const [dinnerRecipe, setDinnerRecipe] = useState(null);
   const [selectedMemberRecipe, setSelectedMemberRecipe] = useState(null);
-
-
-  //handle search member recipes
   const [recipes, setRecipes] = useState([]);
-  //const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
+  //member recipe data
   useEffect(() => {
     const url = `${process.env.EXPO_PUBLIC_IP}/recipe`;
     fetch(url)
@@ -31,25 +32,53 @@ const ProgressScreen = () => {
         }
         return response.json();
       })
-      .then((json) => setRecipes(json))
+      .then((json) => setMemberRecipes(json))
       .catch((error) => console.log(error))
       //.finally(() => setLoading(false));
   }, []);
 
+  //online recipe data
+  useEffect(() => {
+    if (search) {
+      setLoading(true);
 
-  //handle add recipe
-  // const handleAddRecipe = (recipe) => {
-  //   if (selectedDropdownValue === "bf") {
-  //     setBreakfastRecipe(recipe);
-  //   } else if (selectedDropdownValue === "lunch") {
-  //     setLunchRecipe(recipe);
-  //   } else if (selectedDropdownValue === "din") {
-  //     setDinnerRecipe(recipe);
-  //   }
-  // };
+      // Call the fetchRecipes function from api.js
+      fetchRecipes(search)
+        .then((data) => setOnlineRecipes(data))
+        .catch((error) => console.error("Error fetching recipes:", error))
+        .finally(() => setLoading(false));
+    }
+  }, [search]);
 
+  //handle search data
+  const handleSearch = (text) => {
+    setSearch(text);
+    if (!text) {
+      setOnlineRecipes([]); // Clear the recipes list
+    }
+  };
+
+  //handle item click
+  const handleItemClick = (recipeId) => {
+    const selectedRecipe = onlineRecipes.find((recipe) => recipe.id === recipeId);
+
+    if (!selectedRecipe) {
+      return;
+    }
+  
+    if (selectedDropdownValue === "bf") {
+      setBreakfastRecipe(selectedRecipe);
+    } else if (selectedDropdownValue === "lunch") {
+      setLunchRecipe(selectedRecipe);
+    } else if (selectedDropdownValue === "din") {
+      setDinnerRecipe(selectedRecipe);
+    }
+  };
+  
+
+  //handle add member recipe through dropdown
   const handleSelectMemberRecipe = (recipeId) => {
-    const selectedRecipe = recipes.find((recipe) => recipe._id === recipeId);
+    const selectedRecipe = memberRecipes.find((recipe) => recipe._id === recipeId);
     setSelectedMemberRecipe(selectedRecipe);
 
     if (selectedDropdownValue === "bf") {
@@ -81,8 +110,8 @@ const ProgressScreen = () => {
     if (mealRecipe) {
       return (
         <View style={styles.mealRecipe}>
-          <Text>{mealRecipe.name}</Text>
-          <Text>Calories: {mealRecipe.calories} kcal</Text>
+          <Text style={styles.mealDetails}>{mealRecipe.name}</Text>
+          <Text style={styles.mealDetails}>{mealRecipe.calories} kcal</Text>
         </View>
       );
     }
@@ -92,11 +121,10 @@ const ProgressScreen = () => {
   };
 
   return (
-    <ScrollView>
     <View style={styles.container}>
       {/* dropdown to choose meal */}
       <View style={styles.pickerContainer}>
-        <Text style={styles.mealTitle}>Choose meal to add</Text>
+        <Text style={styles.mealSelector}>Choose meal to add</Text>
         <Picker
           selectedValue={selectedDropdownValue}
           onValueChange={(itemValue, itemIndex) => setSelectedDropdownValue(itemValue)}
@@ -117,21 +145,40 @@ const ProgressScreen = () => {
         style={styles.dropdown}
       >
         <Picker.Item label="Select a recipe" value={null} />
-        {recipes.map((recipe) => (
+        {memberRecipes.map((recipe) => (
           <Picker.Item key={recipe._id} label={recipe.name} value={recipe._id} />
         ))}
       </Picker>
 
       {/* search for online recipe */}
+      <Text style={styles.subTitle}>Available online recipes</Text>
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
           placeholder="Search for online recipe"
-          onChangeText={(text) => setSearchText(text)}
+          value={search}
+          onChangeText={(text) => handleSearch(text)}
         />
         <TouchableOpacity style={styles.addButton} onPress={() => handleAddRecipe()}>
           <Icon name="plus" size={20} color="white" />
         </TouchableOpacity>
+      </View>
+      
+      {/* list of recipes */}
+      <View style={styles.searchList}>
+        {loading ? (
+          <Text>Loading...</Text>
+        ) : (
+          <FlatList
+            data={recipes}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => handleItemClick(item.id)}>
+                <Text>{item.title}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        )}
       </View>
 
       {/* set Recipe for 3 meals */}
@@ -168,7 +215,6 @@ const ProgressScreen = () => {
       </View>
       <Button onPress={() => handleReset()} style={styles.resetButton}>Reset</Button>
     </View>
-    </ScrollView>
   );
 };
 
@@ -177,7 +223,7 @@ export default ProgressScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FCFCD3',
     alignItems: 'center',
   },
   pickerContainer: {
@@ -200,17 +246,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  addButton: {
-    backgroundColor: 'green',
+  //search result
+  searchList: {
+    width: 385,
     padding: 10,
-    borderRadius: 5,
-    marginLeft: 10,
+    margin: 10,
   },
-  mealTitle: {
-    fontSize: 20,
+  //text
+  mealDetails: {
+    fontSize: 15,
+    textAlign: 'center',
+  },
+  mealSelector: {
+    fontSize: 18,
     fontWeight: 'bold',
   },
   subTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  smallHeadings:{
+    fontSize: 13,
+    textAlign: 'center',
+  },
+  smallText:{
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -239,30 +299,20 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
   },
-  smallHeadings:{
-    fontSize: 12,
-    textAlign: 'center',
-  },
-  smallText:{
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
   iconObj:{
     textAlign: 'center',
   },
-  //reset button
+  //buttons
+  addButton: {
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 10,
+    marginLeft: 10,
+  },
   resetButton: {
     backgroundColor: 'lightblue',
     margin: 10,
     borderRadius: 10,
-  },
-  recipeItem: {
-    margin: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    padding: 10,
   },
 });
 
