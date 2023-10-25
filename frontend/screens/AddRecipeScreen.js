@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { View, TextInput, Button, Image, StyleSheet, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
@@ -9,8 +9,8 @@ const AddRecipeScreen = () => {
   const navigation = useNavigation();
 
   const [name, setName] = useState("");
-  const [ingredients, setIngredients] = useState("");
-  const [instructions, setInstructions] = useState(['']);
+  const [ingredients, setIngredients] = useState([""]);
+  const [instructions, setInstructions] = useState([""]);
   const [calories, setCalories] = useState("");
   const [image, setImage] = useState(""); // Assuming image is a URL or path
 
@@ -23,9 +23,18 @@ const AddRecipeScreen = () => {
   };
 
   const addNewInstruction = () => {
-    setInstructions([...instructions, '']);
+    setInstructions([...instructions, ""]);
   };
 
+  const handleIngredientChange = (text, index) => {
+    const newIngredient = [...ingredients];
+    newIngredient[index] = text;
+    setIngredients(newIngredient);
+  };
+
+  const addNewIngredient = () => {
+    setIngredients([...ingredients, ""]);
+  };
 
   const handleSubmit = () => {
     // Handle form submission here
@@ -71,42 +80,43 @@ const AddRecipeScreen = () => {
 
   return (
     <KeyboardAwareScrollView>
-    <View style={styles.container}>
-      <Text>Add Recipe Name</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Add Name"
-        value={name}
-        onChangeText={(text) => setName(text)}
-      />
-      <Text> Ingredients </Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Add Ingredients"
-        value={ingredients}
-        onChangeText={(text) => setIngredients(text)}
-        multiline={true}
-        numberOfLines={4}
-      />
-      <Text>Instructions</Text>
-      {instructions.map((instructions, index) => (
-        <View key = {index}>
-        <Text> Step {index + 1}: </Text>
+      <View style={styles.container}>
+        <Text>Add Recipe Name</Text>
         <TextInput
-        style={styles.input}
-        placeholder="Add Instructions"
-        onChangeText={(text)=>handleInstructionChange(text, index)}
-        value = {instructions}
+          style={styles.input}
+          placeholder="Add Name"
+          value={name}
+          onChangeText={(text) => setName(text)}
         />
-        </View>         
-      ))}
-        <Button
-        title = "Add another step"
-        onPress ={addNewInstruction}
-        />
-     
+        <Text> Ingredients </Text>
+        {ingredients.map((ingredient, index) => (
+          <View key={index}>
+            <Text> Ingredient {index + 1}: </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Add Ingredient"
+              onChangeText={(text) => handleIngredientChange(text, index)}
+              value={ingredient}
+            />
+          </View>
+        ))}
+        <Button title="Add another ingredient" onPress={addNewIngredient} />
 
-      {/* <TextInput
+        <Text>Instructions</Text>
+        {instructions.map((instructions, index) => (
+          <View key={index}>
+            <Text> Step {index + 1}: </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Add Instruction"
+              onChangeText={(text) => handleInstructionChange(text, index)}
+              value={instructions}
+            />
+          </View>
+        ))}
+        <Button title="Add another step" onPress={addNewInstruction} />
+
+        {/* <TextInput
         style={styles.input}
         placeholder="Instructions"
         value={instructions}
@@ -114,25 +124,25 @@ const AddRecipeScreen = () => {
         multiline={true}
         numberOfLines={4}
       /> */}
-      <Text>Calories</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Add Calories"
-        value={calories}
-        onChangeText={(text) => setCalories(text)}
-        keyboardType="numeric" // This ensures the keyboard displays numbers
-      />
-      <Text> Attach Image</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Image URL or Path"
-        value={image}
-        onChangeText={(text) => setImage(text)}
-      />
-      <Image source={{ uri: image }} style={styles.imagePreview} />
+        <Text>Calories</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Add Calories"
+          value={calories}
+          onChangeText={(text) => setCalories(text)}
+          keyboardType="numeric" // This ensures the keyboard displays numbers
+        />
+        <Text> Attach Image</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Image URL or Path"
+          value={image}
+          onChangeText={(text) => setImage(text)}
+        />
+        <Image source={{ uri: image }} style={styles.imagePreview} />
 
-      <Button title="Submit" onPress={handleSubmit} />
-    </View>
+        <Button title="Submit" onPress={handleSubmit} />
+      </View>
     </KeyboardAwareScrollView>
   );
 };

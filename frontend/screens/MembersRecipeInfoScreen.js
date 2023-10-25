@@ -42,18 +42,25 @@ export default function MembersRecipeInfoScreen({ route }) {
         </View>
         <Text style={styles.title}>{recipeData.name}</Text>
         <Text style={styles.subTitle}>Created by: </Text>
-        <Text>{username}</Text>
+        <Text>
+          {username} {"\n"}
+        </Text>
         <Text style={styles.subTitle}>Ingredients: </Text>
         <Text>
           {recipeData.ingredients.map((ingredient, index) => (
-            <Text key={index}>{ingredient}, </Text>
-          ))}
+            <Text key={index}>
+              • {ingredient}
+              {"\n"}
+            </Text>
+          ))}{" "}
         </Text>
         <Text style={styles.subTitle}>Instructions: </Text>
         <View>
-        {recipeData.instructions.map((instruction, index) => (
-        <Text key={index}>Step {index + 1}: {instruction}</Text>
-        ))}
+          {recipeData.instructions.map((instruction, index) => (
+            <Text key={index}>
+              Step {index + 1}: {instruction} {"\n"}
+            </Text>
+          ))}
         </View>
 
         <Text style={styles.subTitle}>Calories: </Text>
