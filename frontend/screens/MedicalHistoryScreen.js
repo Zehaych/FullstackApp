@@ -16,10 +16,8 @@ const MedicalHistoryScreen = () => {
   const navigation = useNavigation();
 
   const [foodAllergens, setFoodAllergens] = useState([]);
-  const [bloodPressure, setBloodPressure] = useState(null);
-  const [cholesterolLevel, setCholesterolLevel] = useState(null);
-  const [canTakeSpicyFood, setCanTakeSpicyFood] = useState(null);
-  const [hasDiabetes, setHasDiabetes] = useState(null);
+
+  const [medicalConditions, setMedicalConditions] = useState([]);
 
   const toggleFoodAllergen = (allergen) => {
     if (foodAllergens.includes(allergen)) {
@@ -29,34 +27,24 @@ const MedicalHistoryScreen = () => {
     }
   };
 
-  const handleBloodPressureSelection = (value) => {
-    setBloodPressure(value);
-  };
-
-  const handleCholesterolLevelSelection = (value) => {
-    setCholesterolLevel(value);
-  };
-
-  const handleSpicyFoodSelection = (value) => {
-    setCanTakeSpicyFood(value);
-  };
-
-  const handleDiabetesSelection = (value) => {
-    setHasDiabetes(value);
+  const toggleMedicalCondition = (condition) => {
+    if (medicalConditions.includes(condition)) {
+      setMedicalConditions(
+        medicalConditions.filter((item) => item !== condition)
+      );
+    } else {
+      setMedicalConditions([...medicalConditions, condition]);
+    }
   };
 
   const handleSubmit = () => {
     console.log("Food Allergens:", foodAllergens);
-    console.log("Blood Pressure:", bloodPressure);
-    console.log("Cholesterol Level:", cholesterolLevel);
-    console.log("Can Take Spicy Food:", canTakeSpicyFood);
-    console.log("Has Diabetes:", hasDiabetes);
-    if (bloodPressure && cholesterolLevel && canTakeSpicyFood && hasDiabetes) {
-      alert("Successfully updated your Medical History.");
-      navigation.navigate("TabScreen");
-    } else {
-      alert("Please fill in all fields.");
-    }
+    console.log("Medical Conditions:", medicalConditions);
+
+    alert(
+      "Successfully updated your Medical History. Generated meal plans will now filter your recipes based on your submitted entry."
+    );
+    navigation.navigate("TabScreen");
   };
 
   return (
@@ -86,33 +74,28 @@ const MedicalHistoryScreen = () => {
         ))}
       </View>
 
-      <Text style={style.label}>Blood Pressure:</Text>
-      <RadioButtonGroup
-        options={["Low", "Normal", "High"]}
-        selectedValue={bloodPressure}
-        onValueChange={handleBloodPressureSelection}
-      />
-
-      <Text style={style.label}>Cholesterol Level:</Text>
-      <RadioButtonGroup
-        options={["Low", "Normal", "High"]}
-        selectedValue={cholesterolLevel}
-        onValueChange={handleCholesterolLevelSelection}
-      />
-
-      <Text style={style.label}>Can You Take Spicy Food:</Text>
-      <RadioButtonGroup
-        options={["Yes", "No"]}
-        selectedValue={canTakeSpicyFood}
-        onValueChange={handleSpicyFoodSelection}
-      />
-
-      <Text style={style.label}>Do You Have Diabetes:</Text>
-      <RadioButtonGroup
-        options={["Yes", "No"]}
-        selectedValue={hasDiabetes}
-        onValueChange={handleDiabetesSelection}
-      />
+      <Text style={style.label}>
+        Medical Conditions (skip if inapplicable):
+      </Text>
+      <View style={style.checkboxGroup}>
+        {[
+          "High Blood Pressure",
+          "High Cholesterol Level",
+          "Weak Stomach/Digestive Problems",
+          "Heart Disease",
+          "Kidney Damage",
+          "Liver Damage",
+          "Diabetes",
+          "Had a Stroke",
+        ].map((option, index) => (
+          <CheckboxOption
+            key={index}
+            label={option}
+            selected={medicalConditions.includes(option)}
+            onSelect={() => toggleMedicalCondition(option)}
+          />
+        ))}
+      </View>
 
       <Button title="Submit" onPress={handleSubmit} />
     </ScrollView>
@@ -130,39 +113,15 @@ const CheckboxOption = ({ label, selected, onSelect }) => (
   </View>
 );
 
-const RadioButtonGroup = ({ options, selectedValue, onValueChange }) => (
-  <View style={style.radioGroup}>
-    {options.map((option, index) => (
-      <RadioButton
-        key={index}
-        label={option}
-        selected={option === selectedValue}
-        onSelect={() => onValueChange(option)}
-      />
-    ))}
-  </View>
-);
-
-const RadioButton = ({ label, selected, onSelect }) => (
-  <View style={style.radioOption}>
-    <Text style={style.radioLabel}>{label}</Text>
-    <Button
-      title={selected ? "Selected" : "Select"}
-      onPress={onSelect}
-      color={selected ? "orange" : "#0066cc"}
-    />
-  </View>
-);
-
 const style = StyleSheet.create({
   container: {
-    flexGrow: 1, // Allow content to expand within ScrollView
+    flexGrow: 1,
     backgroundColor: "#f5f5f5",
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
   label: {
-    fontSize: window.width > 360 ? 18 : 16, // Adjust font size for smaller screens
+    fontSize: window.width > 360 ? 18 : 16,
     fontWeight: "bold",
   },
   checkboxGroup: {
@@ -176,20 +135,7 @@ const style = StyleSheet.create({
     width: window.width > 360 ? "30%" : "45%",
   },
   checkboxLabel: {
-    fontSize: window.width > 360 ? 16 : 14, // Adjust font size for smaller screens
-  },
-  radioGroup: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  radioOption: {
-    alignItems: "center",
-    width: "30%",
-  },
-  radioLabel: {
-    fontSize: window.width > 360 ? 16 : 14, // Adjust font size for smaller screens
+    fontSize: window.width > 360 ? 16 : 14,
   },
 });
-
 export default MedicalHistoryScreen;
