@@ -74,17 +74,31 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
         </View>
         <Text style={styles.title}>{recipeData.name}</Text>
         <Text style={styles.subTitle}>Company name: </Text>
-        <Text>{username}</Text>
+        <Text>
+          {username} {"\n"}
+        </Text>
         <Text style={styles.subTitle}>Ingredients: </Text>
         <Text>
           {recipeData.ingredients.map((ingredient, index) => (
-            <Text key={index}>{ingredient}, </Text>
-          ))}
+            <Text key={index}>
+              • {ingredient}
+              {"\n"}
+            </Text>
+          ))}{" "}
         </Text>
         <Text style={styles.subTitle}>Instructions: </Text>
-        <Text>{recipeData.instructions}</Text>
+        <View>
+          {recipeData.instructions.map((instruction, index) => (
+            <Text key={index}>
+              Step {index + 1}: {instruction} {"\n"}
+            </Text>
+          ))}
+        </View>
         <Text style={styles.subTitle}>Calories: </Text>
-        <Text>{recipeData.calories}</Text>
+        <Text>
+          {recipeData.calories}
+          {"\n"}
+        </Text>
         <Text style={styles.subTitle}>Price: </Text>
         <Text>{formatPrice(recipeData.price)}</Text>
 

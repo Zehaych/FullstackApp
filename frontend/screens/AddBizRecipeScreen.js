@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Image, StyleSheet } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { View, TextInput, Button, Image, StyleSheet, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
 import { Context } from "../store/context";
@@ -8,17 +9,74 @@ const AddBizRecipeScreen = () => {
   const navigation = useNavigation();
 
   const [name, setName] = useState("");
-  const [ingredients, setIngredients] = useState("");
-  const [instructions, setInstructions] = useState("");
+  const [ingredients, setIngredients] = useState([""]);
+  const [instructions, setInstructions] = useState([""]);
   const [calories, setCalories] = useState("");
   const [image, setImage] = useState(""); // Assuming image is a URL or path
   const [price, setPrice] = useState("");
 
   const [currentUser, setCurrentUser] = useContext(Context);
 
+  const handleInstructionChange = (text, index) => {
+    const newInstruction = [...instructions];
+    newInstruction[index] = text;
+    setInstructions(newInstruction);
+  };
+
+  const addNewInstruction = () => {
+    setInstructions([...instructions, ""]);
+  };
+
+  const handleIngredientChange = (text, index) => {
+    const newIngredient = [...ingredients];
+    newIngredient[index] = text;
+    setIngredients(newIngredient);
+  };
+
+  const addNewIngredient = () => {
+    setIngredients([...ingredients, ""]);
+  };
+
+  const removeInstruction = (index) => {
+    const newInstructions = [...instructions];
+    newInstructions.splice(index, 1);
+    setInstructions(newInstructions);
+  };
+
+  const removeIngredient = (index) => {
+    const newIngredients = [...ingredients];
+    newIngredients.splice(index, 1);
+    setIngredients(newIngredients);
+  };
+
   const handleSubmit = () => {
     // Handle form submission here
     // You can access the form values in the name, ingredients, instructions, calories, and image variables
+
+    if (
+      instructions === "" ||
+      name === "" ||
+      ingredients === "" ||
+      calories === "" ||
+      image === "" ||
+      price === ""
+    ) {
+      alert("Please fill in all fields.");
+    }
+
+    // Check for empty steps
+    else if (instructions.some((step) => step === "")) {
+      // Display an error message or prevent submission
+      alert(
+        "Please fill in all instructions steps and remove the empty steps."
+      );
+      return;
+    } else if (ingredients.some((ingredient) => ingredient === "")) {
+      // Display an error message or prevent submission
+      alert("Please fill in all ingredients steps and remove the empty steps.");
+      return;
+    }
+
     console.log("Name:", name);
     console.log("Ingredients:", ingredients);
     console.log("Instructions:", instructions);
@@ -61,53 +119,78 @@ const AddBizRecipeScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={(text) => setName(text)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Ingredients"
-        value={ingredients}
-        onChangeText={(text) => setIngredients(text)}
-        multiline={true}
-        numberOfLines={4}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Instructions"
-        value={instructions}
-        onChangeText={(text) => setInstructions(text)}
-        multiline={true}
-        numberOfLines={4}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Calories"
-        value={calories}
-        onChangeText={(text) => setCalories(text)}
-        keyboardType="numeric" // This ensures the keyboard displays numbers
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Price"
-        value={price}
-        onChangeText={(text) => setPrice(text)}
-        keyboardType="numeric" // This ensures the keyboard displays numbers
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Image URL or Path"
-        value={image}
-        onChangeText={(text) => setImage(text)}
-      />
-      <Image source={{ uri: image }} style={styles.imagePreview} />
+    <KeyboardAwareScrollView>
+      <View style={styles.container}>
+        <Text style={styles.label}>Add Recipe Name</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Add Name"
+          value={name}
+          onChangeText={(text) => setName(text)}
+        />
+        <Text style={styles.label}>Ingredients</Text>
+        {ingredients.map((ingredient, index) => (
+          <View key={index} style={styles.ingredientContainer}>
+            <TextInput
+              style={styles.ingredientInput}
+              placeholder={`Ingredient ${index + 1}`}
+              onChangeText={(text) => handleIngredientChange(text, index)}
+              value={ingredient}
+            />
+            <Button
+              title="Remove"
+              onPress={() => removeIngredient(index)}
+              color="red"
+            />
+          </View>
+        ))}
+        <Button title="Add Ingredient" onPress={addNewIngredient} />
 
-      <Button title="Submit" onPress={handleSubmit} />
-    </View>
+        <Text style={styles.label}>Instructions</Text>
+        {instructions.map((instruction, index) => (
+          <View key={index} style={styles.instructionContainer}>
+            <TextInput
+              style={styles.instructionInput}
+              placeholder={`Step ${index + 1}`}
+              onChangeText={(text) => handleInstructionChange(text, index)}
+              value={instruction}
+            />
+            <Button
+              title="Remove"
+              onPress={() => removeInstruction(index)}
+              color="red"
+            />
+          </View>
+        ))}
+        <Button title="Add Step" onPress={addNewInstruction} />
+        <Text style={styles.label}>Calories</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Add Calories"
+          value={calories}
+          onChangeText={(text) => setCalories(text)}
+          keyboardType="numeric" // This ensures the keyboard displays numbers
+        />
+        <Text style={styles.label}>Price</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Add Price"
+          value={price}
+          onChangeText={(text) => setPrice(text)}
+          keyboardType="numeric" // This ensures the keyboard displays numbers
+        />
+        <Text style={styles.label}>Attach Image</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Image URL or Path"
+          value={image}
+          onChangeText={(text) => setImage(text)}
+        />
+        <Image source={{ uri: image }} style={styles.imagePreview} />
+
+        <Button title="Submit" onPress={handleSubmit} />
+      </View>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -117,11 +200,40 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
   },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 10,
+  },
   input: {
     height: 40,
     borderColor: "gray",
     borderWidth: 1,
     marginBottom: 15,
+    paddingHorizontal: 10,
+  },
+  ingredientContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  ingredientInput: {
+    flex: 1,
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  instructionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  instructionInput: {
+    flex: 1,
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 10,
     paddingHorizontal: 10,
   },
   imagePreview: {

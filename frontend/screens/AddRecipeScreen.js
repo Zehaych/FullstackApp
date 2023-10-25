@@ -53,28 +53,28 @@ const AddRecipeScreen = () => {
     // You can access the form values in the name, ingredients, instructions, calories, and image variables
 
     // Check for empty steps
-    if (instructions.some((step) => step === "")) {
-      // Display an error message or prevent submission
-      alert(
-        "Please fill in all instructions steps and remove the empty steps."
-      );
-      return;
-    }
-
-    if (ingredients.some((ingredient) => ingredient === "")) {
-      // Display an error message or prevent submission
-      alert("Please fill in all ingredients steps and remove the empty steps.");
-      return;
-    }
-
     if (
       instructions === "" ||
       name === "" ||
       ingredients === "" ||
       calories === "" ||
-      image === ""
+      image === "" ||
+      price === ""
     ) {
       alert("Please fill in all fields.");
+    }
+
+    // Check for empty steps
+    else if (instructions.some((step) => step === "")) {
+      // Display an error message or prevent submission
+      alert(
+        "Please fill in all instructions steps and remove the empty steps."
+      );
+      return;
+    } else if (ingredients.some((ingredient) => ingredient === "")) {
+      // Display an error message or prevent submission
+      alert("Please fill in all ingredients steps and remove the empty steps.");
+      return;
     }
 
     console.log("Name:", name);
