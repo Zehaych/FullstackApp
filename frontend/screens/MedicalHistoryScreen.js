@@ -81,7 +81,7 @@ const MedicalHistoryScreen = () => {
         {[
           "High Blood Pressure",
           "High Cholesterol Level",
-          "Weak Stomach/Digestive Problems",
+          "Digestive Problems",
           "Heart Disease",
           "Kidney Damage",
           "Liver Damage",
