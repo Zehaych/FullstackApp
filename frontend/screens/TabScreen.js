@@ -24,41 +24,40 @@ function ConditionalUserScreen({ navigation }) {
     if (currentUser.userType === "user") {
       navigation.reset({
         index: 0,
-        routes: [{ name: 'UserScreen' }],
+        routes: [{ name: "User Profile" }],
       });
     } else if (currentUser.userType === "bizpartner") {
       navigation.reset({
         index: 0,
-        routes: [{ name: 'BizPartnerScreen' }],
+        routes: [{ name: "Business Profile" }],
       });
-    } else if (currentUser.userType === "admin"){
+    } else if (currentUser.userType === "admin") {
       navigation.reset({
         index: 0,
-        routes: [{ name: 'AdminScreen'}],
+        routes: [{ name: "Admin Profile" }],
       });
     }
   }, [currentUser]);
 
-  return null; 
+  return null;
 }
-
 
 export default function TabScreen() {
   const [currentUser, setCurrentUser] = useContext(Context);
 
   const getTabLabel = () => {
     switch (currentUser.userType) {
-      case 'user':
+      case "user":
         return "User";
-      case 'bizpartner':
+      case "bizpartner":
         return "BizPartner";
-      case 'admin':
+      case "admin":
         return "Admin";
       default:
         return "User";
     }
-  }
-  
+  };
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -136,10 +135,21 @@ export default function TabScreen() {
         options={{ tabBarLabel: () => <Text>{getTabLabel()}</Text> }}
       />
       {/* Add these screens to your Navigator, but make them hidden from the tab bar */}
-      <Tab.Screen name="UserScreen" component={UserScreen} options={{ tabBarButton: () => null }} />
-      <Tab.Screen name="BizPartnerScreen" component={BizPartnerScreen} options={{ tabBarButton: () => null }} />
-      <Tab.Screen name="AdminScreen" component={AdminScreen} options={{ tabBarButton: () => null }} />
-
+      <Tab.Screen
+        name="User Profile"
+        component={UserScreen}
+        options={{ tabBarButton: () => null }}
+      />
+      <Tab.Screen
+        name="Business Profile"
+        component={BizPartnerScreen}
+        options={{ tabBarButton: () => null }}
+      />
+      <Tab.Screen
+        name="Admin Profile"
+        component={AdminScreen}
+        options={{ tabBarButton: () => null }}
+      />
     </Tab.Navigator>
   );
 }

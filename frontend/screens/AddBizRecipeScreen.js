@@ -93,19 +93,18 @@ const AddBizRecipeScreen = () => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Image URL or Path"
-        value={image}
-        onChangeText={(text) => setImage(text)}
-      />
-      <Image source={{ uri: image }} style={styles.imagePreview} />
-
-      <TextInput
-        style={styles.input}
         placeholder="Price"
         value={price}
         onChangeText={(text) => setPrice(text)}
         keyboardType="numeric" // This ensures the keyboard displays numbers
       />
+      <TextInput
+        style={styles.input}
+        placeholder="Image URL or Path"
+        value={image}
+        onChangeText={(text) => setImage(text)}
+      />
+      <Image source={{ uri: image }} style={styles.imagePreview} />
 
       <Button title="Submit" onPress={handleSubmit} />
     </View>

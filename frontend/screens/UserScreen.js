@@ -52,7 +52,6 @@ const UserScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-
       <View style={styles.userInfoSection}>
         <View style={styles.userInfo}>
           <Title style={styles.title}>{currentUser.username}</Title>
@@ -74,7 +73,6 @@ const UserScreen = () => {
       </View>
       <Divider />
 
-
       <View style={styles.menuWrapper}>
         <TouchableRipple onPress={onEditProfilePressed}>
           <View style={styles.menuItem}>
@@ -94,15 +92,6 @@ const UserScreen = () => {
           <View style={styles.menuItem}>
             <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
             <Text style={styles.menuItemText}>Add Recipe</Text>
-          </View>
-        </TouchableRipple>
-
-        <TouchableRipple onPress={onAddBizRecipePressed}>
-          <View style={styles.menuItem}>
-            <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>
-              Add Business Recipe (Removing soon, just testing function)
-            </Text>
           </View>
         </TouchableRipple>
 
