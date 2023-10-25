@@ -40,7 +40,7 @@ export default function MembersRecipeInfoScreen({ route }) {
         <View style={styles.imageContainer}>
           <Image source={{ uri: recipeData.image }} style={styles.image} />
         </View>
-        <Text style={styles.title}>{recipeData.name}</Text>
+        <Text style={styles.title}>{recipeData.name} </Text>
         <Text style={styles.subTitle}>Created by: </Text>
         <Text>
           {username} {"\n"}

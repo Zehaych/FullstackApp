@@ -36,9 +36,47 @@ const AddRecipeScreen = () => {
     setIngredients([...ingredients, ""]);
   };
 
+  const removeInstruction = (index) => {
+    const newInstructions = [...instructions];
+    newInstructions.splice(index, 1);
+    setInstructions(newInstructions);
+  };
+
+  const removeIngredient = (index) => {
+    const newIngredients = [...ingredients];
+    newIngredients.splice(index, 1);
+    setIngredients(newIngredients);
+  };
+
   const handleSubmit = () => {
     // Handle form submission here
     // You can access the form values in the name, ingredients, instructions, calories, and image variables
+
+    // Check for empty steps
+    if (instructions.some((step) => step === "")) {
+      // Display an error message or prevent submission
+      alert(
+        "Please fill in all instructions steps and remove the empty steps."
+      );
+      return;
+    }
+
+    if (ingredients.some((ingredient) => ingredient === "")) {
+      // Display an error message or prevent submission
+      alert("Please fill in all ingredients steps and remove the empty steps.");
+      return;
+    }
+
+    if (
+      instructions === "" ||
+      name === "" ||
+      ingredients === "" ||
+      calories === "" ||
+      image === ""
+    ) {
+      alert("Please fill in all fields.");
+    }
+
     console.log("Name:", name);
     console.log("Ingredients:", ingredients);
     console.log("Instructions:", instructions);
@@ -81,50 +119,50 @@ const AddRecipeScreen = () => {
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
-        <Text>Add Recipe Name</Text>
+        <Text style={styles.label}>Add Recipe Name</Text>
         <TextInput
           style={styles.input}
           placeholder="Add Name"
           value={name}
           onChangeText={(text) => setName(text)}
         />
-        <Text> Ingredients </Text>
+        <Text style={styles.label}>Ingredients</Text>
         {ingredients.map((ingredient, index) => (
-          <View key={index}>
-            <Text> Ingredient {index + 1}: </Text>
+          <View key={index} style={styles.ingredientContainer}>
             <TextInput
-              style={styles.input}
-              placeholder="Add Ingredient"
+              style={styles.ingredientInput}
+              placeholder={`Ingredient ${index + 1}`}
               onChangeText={(text) => handleIngredientChange(text, index)}
               value={ingredient}
             />
-          </View>
-        ))}
-        <Button title="Add another ingredient" onPress={addNewIngredient} />
-
-        <Text>Instructions</Text>
-        {instructions.map((instructions, index) => (
-          <View key={index}>
-            <Text> Step {index + 1}: </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Add Instruction"
-              onChangeText={(text) => handleInstructionChange(text, index)}
-              value={instructions}
+            <Button
+              title="Remove"
+              onPress={() => removeIngredient(index)}
+              color="red"
             />
           </View>
         ))}
-        <Button title="Add another step" onPress={addNewInstruction} />
+        <Button title="Add Ingredient" onPress={addNewIngredient} />
 
-        {/* <TextInput
-        style={styles.input}
-        placeholder="Instructions"
-        value={instructions}
-        onChangeText={(text) => setInstructions(text)}
-        multiline={true}
-        numberOfLines={4}
-      /> */}
-        <Text>Calories</Text>
+        <Text style={styles.label}>Instructions</Text>
+        {instructions.map((instruction, index) => (
+          <View key={index} style={styles.instructionContainer}>
+            <TextInput
+              style={styles.instructionInput}
+              placeholder={`Step ${index + 1}`}
+              onChangeText={(text) => handleInstructionChange(text, index)}
+              value={instruction}
+            />
+            <Button
+              title="Remove"
+              onPress={() => removeInstruction(index)}
+              color="red"
+            />
+          </View>
+        ))}
+        <Button title="Add Step" onPress={addNewInstruction} />
+
+        <Text style={styles.label}>Calories</Text>
         <TextInput
           style={styles.input}
           placeholder="Add Calories"
@@ -132,7 +170,7 @@ const AddRecipeScreen = () => {
           onChangeText={(text) => setCalories(text)}
           keyboardType="numeric" // This ensures the keyboard displays numbers
         />
-        <Text> Attach Image</Text>
+        <Text style={styles.label}>Attach Image</Text>
         <TextInput
           style={styles.input}
           placeholder="Image URL or Path"
@@ -153,11 +191,40 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
   },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 10,
+  },
   input: {
     height: 40,
     borderColor: "gray",
     borderWidth: 1,
     marginBottom: 15,
+    paddingHorizontal: 10,
+  },
+  ingredientContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  ingredientInput: {
+    flex: 1,
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  instructionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  instructionInput: {
+    flex: 1,
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 10,
     paddingHorizontal: 10,
   },
   imagePreview: {
