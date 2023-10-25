@@ -50,7 +50,12 @@ export default function MembersRecipeInfoScreen({ route }) {
           ))}
         </Text>
         <Text style={styles.subTitle}>Instructions: </Text>
-        <Text>{recipeData.instructions}</Text>
+        <View>
+        {recipeData.instructions.map((instruction, index) => (
+        <Text key={index}>Step {index + 1}: {instruction}</Text>
+        ))}
+        </View>
+
         <Text style={styles.subTitle}>Calories: </Text>
         <Text>{recipeData.calories}</Text>
         <StatusBar style="auto" />

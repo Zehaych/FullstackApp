@@ -4,6 +4,8 @@ import {
   Image,
   SafeAreaView,
   TextInput,
+  KeyboardAvoidingView,
+  ScrollView,
   TouchableOpacity,
 } from "react-native";
 import React from "react";
@@ -66,6 +68,9 @@ export default function LogInScreen() {
     navigation.navigate("SignUpScreen");
   };
   return (
+    <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"} 
+    style={{ flex: 1 }}>
     <View className="bg-white h-full w-full">
       <StatusBar style="light" />
       <Image
@@ -149,5 +154,6 @@ export default function LogInScreen() {
         </View>
       </View>
     </View>
+    </KeyboardAvoidingView>
   );
 }

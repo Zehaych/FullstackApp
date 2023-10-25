@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ScrollView } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { View, TextInput, Button, Image, StyleSheet, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
@@ -70,7 +70,7 @@ const AddRecipeScreen = () => {
   };
 
   return (
-    <ScrollView>
+    <KeyboardAwareScrollView>
     <View style={styles.container}>
       <Text>Add Recipe Name</Text>
       <TextInput
@@ -133,7 +133,7 @@ const AddRecipeScreen = () => {
 
       <Button title="Submit" onPress={handleSubmit} />
     </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 
