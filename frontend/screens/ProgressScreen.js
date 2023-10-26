@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from "react-native-paper";
 import { fetchRecipes, fetchRecipeDetails } from "../assets/Api";
+//import { set } from "mongoose";
 //import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 //import MealScreen from "./MealScreen";
 //import CaloriesScreen from './CaloriesScreen';  // may be implement sth like tab screen where u can switch between
@@ -11,15 +12,15 @@ import { fetchRecipes, fetchRecipeDetails } from "../assets/Api";
 
 const ProgressScreen = () => {
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [memberRecipes, setMemberRecipes] = useState([]);
   const [onlineRecipes, setOnlineRecipes] = useState([]);
   const [selectedDropdownValue, setSelectedDropdownValue] = useState('All');
   const [breakfastRecipe, setBreakfastRecipe] = useState(null);
   const [lunchRecipe, setLunchRecipe] = useState(null);
   const [dinnerRecipe, setDinnerRecipe] = useState(null);
-  const [selectedMemberRecipe, setSelectedMemberRecipe] = useState(null);
-  const [recipes, setRecipes] = useState([]);
+  const [selectedRecipeId, setSelectedRecipeId] = useState(null); //sparate for online and member recipe if not work
+  const [recipeDetails, setRecipeDetails] = useState(null);
   const [loading, setLoading] = useState(false);
 
   //member recipe data
@@ -50,6 +51,27 @@ const ProgressScreen = () => {
     }
   }, [search]);
 
+  // handle breakfast meal dropdown
+  const handleBreakfastSelect = (recipeId) => {
+    setBreakfastRecipe(recipeId);
+    setSearch(''); 
+    setOnlineRecipes([]); 
+  };
+  
+  // handle lunch meal dropdown
+  const handleLunchSelect = (recipeId) => {
+    setLunchRecipe(recipeId);
+    setSearch(''); 
+    setOnlineRecipes([]); 
+  };
+  
+  // handle dinner meal dropdown
+  const handleDinnerSelect = (recipeId) => {
+    setDinnerRecipe(recipeId);
+    setSearch(''); 
+    setOnlineRecipes([]); 
+  };
+
   //handle search data
   const handleSearch = (text) => {
     setSearch(text);
@@ -60,26 +82,31 @@ const ProgressScreen = () => {
 
   //handle item click
   const handleItemClick = (recipeId) => {
-    const selectedRecipe = onlineRecipes.find((recipe) => recipe.id === recipeId);
-
-    if (!selectedRecipe) {
-      return;
-    }
-  
-    if (selectedDropdownValue === "bf") {
-      setBreakfastRecipe(selectedRecipe);
-    } else if (selectedDropdownValue === "lunch") {
-      setLunchRecipe(selectedRecipe);
-    } else if (selectedDropdownValue === "din") {
-      setDinnerRecipe(selectedRecipe);
-    }
+    setSelectedRecipeId(recipeId);
   };
-  
+
+  useEffect(() => {
+    if (selectedRecipeId) {
+      fetchRecipeDetails(selectedRecipeId)
+        .then((data) => {
+          console.log("Recipe details data:", data.title, data.nutrition.nutrients[0].amount);
+          setRecipeDetails(data);
+          if (selectedDropdownValue === 'bf') {
+            setBreakfastRecipe(data);
+          } else if (selectedDropdownValue === 'lunch') {
+            setLunchRecipe(data);
+          } else if (selectedDropdownValue === 'din') {
+            setDinnerRecipe(data);
+          }
+        })
+        .catch((error) => console.error('Error fetching recipe details:', error));
+    }
+  }, [selectedRecipeId, selectedDropdownValue]);
 
   //handle add member recipe through dropdown
   const handleSelectMemberRecipe = (recipeId) => {
     const selectedRecipe = memberRecipes.find((recipe) => recipe._id === recipeId);
-    setSelectedMemberRecipe(selectedRecipe);
+    setSelectedRecipeId(selectedRecipe);
 
     if (selectedDropdownValue === "bf") {
       setBreakfastRecipe(selectedRecipe);
@@ -88,30 +115,25 @@ const ProgressScreen = () => {
     } else if (selectedDropdownValue === "din") {
       setDinnerRecipe(selectedRecipe);
     }
-  };
-
-  // handle calculate total calories
-  const handleTotalCalories = () => {
-    let totalCalories = 0;
-    if (breakfastRecipe) {
-      totalCalories += breakfastRecipe.calories;
-    }
-    if (lunchRecipe) {
-      totalCalories += lunchRecipe.calories;
-    }
-    if (dinnerRecipe) {
-      totalCalories += dinnerRecipe.calories;
-    }
-    return totalCalories;
   };
 
   // for rendering meal recipe
   const renderMealRecipe = (mealRecipe) => {
     if (mealRecipe) {
+      let name, calories;
+      if (mealRecipe.name) {
+        //member recipe
+        name = mealRecipe.name;
+        calories = mealRecipe.calories;
+      } else {
+        //online recipe
+        name = mealRecipe.title;
+        calories = mealRecipe.nutrition.nutrients[0].amount;
+      }
       return (
         <View style={styles.mealRecipe}>
-          <Text style={styles.mealDetails}>{mealRecipe.name}</Text>
-          <Text style={styles.mealDetails}>{mealRecipe.calories} kcal</Text>
+          <Text style={styles.mealDetails}>{name}</Text>
+          <Text style={styles.mealDetails}>{calories} kcal</Text>
         </View>
       );
     }
@@ -120,8 +142,44 @@ const ProgressScreen = () => {
     );
   };
 
+  const handleTotalCalories = () => {
+    let totalCalories = 0;
+    // breakfast calories
+    if (breakfastRecipe) {
+      if (breakfastRecipe.calories) {
+        // 4 member recipe
+        totalCalories += breakfastRecipe.calories;
+      } else if (breakfastRecipe.nutrition && breakfastRecipe.nutrition.nutrients[0].amount) {
+        // 4 online recipe
+        totalCalories += breakfastRecipe.nutrition.nutrients[0].amount;
+      }
+    }
+    // lunch calories
+    if (lunchRecipe) {
+      if (lunchRecipe.calories) {
+        // 4 member recipe
+        totalCalories += lunchRecipe.calories;
+      } else if (lunchRecipe.nutrition && lunchRecipe.nutrition.nutrients[0].amount) {
+        // 4 online recipe
+        totalCalories += lunchRecipe.nutrition.nutrients[0].amount;
+      }
+    } 
+    // dinner calories
+    if (dinnerRecipe) {
+      if (dinnerRecipe.calories) {
+        // 4 member recipe
+        totalCalories += dinnerRecipe.calories;
+      } else if (dinnerRecipe.nutrition && dinnerRecipe.nutrition.nutrients[0].amount) {
+        // 4 online recipe
+        totalCalories += dinnerRecipe.nutrition.nutrients[0].amount;
+      }
+    }  
+    return totalCalories;
+  };
+
   // handle reset
   const handleReset = () => {
+    setSelectedDropdownValue('none');
     setBreakfastRecipe(null);
     setLunchRecipe(null);
     setDinnerRecipe(null);
@@ -134,9 +192,19 @@ const ProgressScreen = () => {
         <Text style={styles.mealSelector}>Choose meal to add</Text>
         <Picker
           selectedValue={selectedDropdownValue}
-          onValueChange={(itemValue, itemIndex) => setSelectedDropdownValue(itemValue)}
+          onValueChange={(itemValue) => {
+            setSelectedDropdownValue(itemValue);
+            if (itemValue === 'bf') {
+              handleBreakfastSelect(null); // Reset breakfast
+            } else if (itemValue === 'lunch') {
+              handleLunchSelect(null); // Reset lunch
+            } else if (itemValue === 'din') {
+              handleDinnerSelect(null); // Reset dinner
+            }
+          }}
           style={styles.dropdown}
         >
+        
           <Picker.Item label="Select a meal" value="none" />
           <Picker.Item label="Breakfast" value="bf" />
           <Picker.Item label="Lunch" value="lunch" />
@@ -147,7 +215,7 @@ const ProgressScreen = () => {
       {/* search for member recipe */}
       <Text style={styles.subTitle}>Available member recipes</Text>
       <Picker
-        selectedValue={selectedMemberRecipe ? selectedMemberRecipe._id : null}
+        selectedValue={setSelectedRecipeId ? setSelectedRecipeId._id : null}
         onValueChange={(itemValue) => handleSelectMemberRecipe(itemValue)}
         style={styles.dropdown}
       >
@@ -166,9 +234,6 @@ const ProgressScreen = () => {
           value={search}
           onChangeText={(text) => handleSearch(text)}
         />
-        <TouchableOpacity style={styles.addButton} onPress={() => handleAddRecipe()}>
-          <Icon name="plus" size={20} color="white" />
-        </TouchableOpacity>
       </View>
       
       {/* list of recipes */}
@@ -177,7 +242,7 @@ const ProgressScreen = () => {
           <Text>Loading...</Text>
         ) : (
           <FlatList
-            data={recipes}
+            data={onlineRecipes}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => handleItemClick(item.id)}>
@@ -325,6 +390,15 @@ const styles = StyleSheet.create({
 
 
 /*
+        <Picker
+          selectedValue={selectedDropdownValue}
+          onValueChange={(itemValue, itemIndex) => setSelectedDropdownValue(itemValue)}
+          style={styles.dropdown}
+        > 
+
+        <TouchableOpacity style={styles.addButton} onPress={() => handleAddRecipe()}>
+          <Icon name="plus" size={20} color="white" />
+        </TouchableOpacity>
 {recipes.map((recipe) => (
         <TouchableOpacity
           key={recipe._id}
