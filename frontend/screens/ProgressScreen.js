@@ -183,6 +183,8 @@ const ProgressScreen = () => {
     setBreakfastRecipe(null);
     setLunchRecipe(null);
     setDinnerRecipe(null);
+    setSearch(''); 
+    setOnlineRecipes([]);
   };
 
   return (
