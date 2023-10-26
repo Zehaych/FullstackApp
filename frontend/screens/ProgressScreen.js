@@ -120,6 +120,13 @@ const ProgressScreen = () => {
     );
   };
 
+  // handle reset
+  const handleReset = () => {
+    setBreakfastRecipe(null);
+    setLunchRecipe(null);
+    setDinnerRecipe(null);
+  };
+
   return (
     <View style={styles.container}>
       {/* dropdown to choose meal */}
@@ -231,7 +238,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dropdown: {
-    width: 200, // Adjust the width as needed
+    width: 200, 
     borderWidth: 1,
     borderColor: 'gray',
   },

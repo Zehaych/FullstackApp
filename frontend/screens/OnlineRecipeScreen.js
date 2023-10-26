@@ -154,9 +154,11 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   recommandation: {
-    fontSize: 20,
+    textAlign: "center",
+    fontSize: 24,
     fontWeight: "bold",
-    padding: 10,
+    marginBottom: 20,
+    color: "orange",
   },
   featuredSection: {},
   foodContainer: {
