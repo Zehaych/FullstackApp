@@ -1,11 +1,11 @@
 //https://api.spoonacular.com/recipes/complexSearch
 
-//const API_KEY = '4c52cb82f761490fa7dbf7bb39a6dfb1';
-const API_KEY = 'c340febd6b744850a0a6b615ae95899b';
+const API_KEY = "4c52cb82f761490fa7dbf7bb39a6dfb1";
+// const API_KEY = 'c340febd6b744850a0a6b615ae95899b';
 // const API_KEY = "f4991d4623324aaaaad5a221c320c38f";
 //const API_KEY = "a0e96efb400344959ce64a39e0b5c786";
-//const API_KEY = '16b4790ed40a4172a9f8981cd5a333db';
-//const API_KEY = '0a379b4c97a648aeb0051120265dcfca';
+// const API_KEY = "16b4790ed40a4172a9f8981cd5a333db";
+// const API_KEY = "0a379b4c97a648aeb0051120265dcfca";
 
 //search recipes by query
 export async function fetchRecipes(query) {
@@ -65,6 +65,27 @@ export async function fetchRecipeIngredients(recipeId) {
     return data.ingredients;
   } catch (error) {
     console.error("Error fetching recipe ingredients:", error);
+    throw error;
+  }
+}
+
+// GET https://api.spoonacular.com/mealplanner/generate?timeFrame=day&targetCalories=2000
+// 1 day 3 meals with targetCalories
+export async function fetchRecommendations(targetCalories) {
+  try {
+    const response = await fetch(
+      `https://api.spoonacular.com/mealplanner/generate?apiKey=${API_KEY}&timeFrame=day&targetCalories=${targetCalories}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    const recommendations = data.meals.map((meal) => meal.title);
+    return recommendations;
+  } catch (error) {
+    console.error("Error fetching meal recommendations:", error);
     throw error;
   }
 }

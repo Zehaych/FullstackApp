@@ -1,9 +1,21 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, ScrollView} from "react-native";
-import React, { useState,useEffect } from "react";
-import { Picker } from '@react-native-picker/picker';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  ScrollView,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import { Picker } from "@react-native-picker/picker";
+import Icon from "react-native-vector-icons/FontAwesome";
 import { Button } from "react-native-paper";
-import { fetchRecipes, fetchRecipeDetails } from "../assets/Api";
+import {
+  fetchRecipes,
+  fetchRecipeDetails,
+  fetchRecommendations,
+} from "../assets/Api";
 //import { set } from "mongoose";
 //import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 //import MealScreen from "./MealScreen";
@@ -11,17 +23,54 @@ import { fetchRecipes, fetchRecipeDetails } from "../assets/Api";
 //import NutrientScreen from './NutrientScreen';  // calories and nutrients and meal and show in piechart or graph or sth else
 
 const ProgressScreen = () => {
-
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [memberRecipes, setMemberRecipes] = useState([]);
   const [onlineRecipes, setOnlineRecipes] = useState([]);
-  const [selectedDropdownValue, setSelectedDropdownValue] = useState('All');
+  const [selectedDropdownValue, setSelectedDropdownValue] = useState("All");
   const [breakfastRecipe, setBreakfastRecipe] = useState(null);
   const [lunchRecipe, setLunchRecipe] = useState(null);
   const [dinnerRecipe, setDinnerRecipe] = useState(null);
   const [selectedRecipeId, setSelectedRecipeId] = useState(null); //sparate for online and member recipe if not work
   const [recipeDetails, setRecipeDetails] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const [recommendedRecipes, setRecommendedRecipes] = useState([]);
+  const targetCalories = 2000; // Set your desired target calories here
+  const API_KEY = "0a379b4c97a648aeb0051120265dcfca";
+
+  // const handleGenerateRecommendations = () => {
+  //   // Call the Spoonacular API to generate daily meal recommendations
+  //   fetch(
+  //     `https://api.spoonacular.com/mealplanner/generate?apiKey=${API_KEY}&timeFrame=day&targetCalories=${targetCalories}`
+  //   )
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       // Extract the recommended recipes from the response
+  //       const recommendations = data.meals.map((meal) => meal.title);
+  //       setRecommendedRecipes(recommendations);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching meal recommendations:", error);
+  //       setRecommendedRecipes([]);
+  //     });
+  // };
+
+  const handleGenerateRecommendations = () => {
+    // Call the new function to fetch meal recommendations
+    fetchRecommendations(targetCalories)
+      .then((data) => {
+        setRecommendedRecipes(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching meal recommendations:", error);
+        setRecommendedRecipes([]);
+      });
+  };
 
   //member recipe data
   useEffect(() => {
@@ -34,8 +83,8 @@ const ProgressScreen = () => {
         return response.json();
       })
       .then((json) => setMemberRecipes(json))
-      .catch((error) => console.log(error))
-      //.finally(() => setLoading(false));
+      .catch((error) => console.log(error));
+    //.finally(() => setLoading(false));
   }, []);
 
   //online recipe data
@@ -54,22 +103,22 @@ const ProgressScreen = () => {
   // handle breakfast meal dropdown
   const handleBreakfastSelect = (recipeId) => {
     setBreakfastRecipe(recipeId);
-    setSearch(''); 
-    setOnlineRecipes([]); 
+    setSearch("");
+    setOnlineRecipes([]);
   };
-  
+
   // handle lunch meal dropdown
   const handleLunchSelect = (recipeId) => {
     setLunchRecipe(recipeId);
-    setSearch(''); 
-    setOnlineRecipes([]); 
+    setSearch("");
+    setOnlineRecipes([]);
   };
-  
+
   // handle dinner meal dropdown
   const handleDinnerSelect = (recipeId) => {
     setDinnerRecipe(recipeId);
-    setSearch(''); 
-    setOnlineRecipes([]); 
+    setSearch("");
+    setOnlineRecipes([]);
   };
 
   //handle search data
@@ -89,23 +138,31 @@ const ProgressScreen = () => {
     if (selectedRecipeId) {
       fetchRecipeDetails(selectedRecipeId)
         .then((data) => {
-          console.log("Recipe details data:", data.title, data.nutrition.nutrients[0].amount);
+          console.log(
+            "Recipe details data:",
+            data.title,
+            data.nutrition.nutrients[0].amount
+          );
           setRecipeDetails(data);
-          if (selectedDropdownValue === 'bf') {
+          if (selectedDropdownValue === "bf") {
             setBreakfastRecipe(data);
-          } else if (selectedDropdownValue === 'lunch') {
+          } else if (selectedDropdownValue === "lunch") {
             setLunchRecipe(data);
-          } else if (selectedDropdownValue === 'din') {
+          } else if (selectedDropdownValue === "din") {
             setDinnerRecipe(data);
           }
         })
-        .catch((error) => console.error('Error fetching recipe details:', error));
+        .catch((error) =>
+          console.error("Error fetching recipe details:", error)
+        );
     }
   }, [selectedRecipeId, selectedDropdownValue]);
 
   //handle add member recipe through dropdown
   const handleSelectMemberRecipe = (recipeId) => {
-    const selectedRecipe = memberRecipes.find((recipe) => recipe._id === recipeId);
+    const selectedRecipe = memberRecipes.find(
+      (recipe) => recipe._id === recipeId
+    );
     setSelectedRecipeId(selectedRecipe);
 
     if (selectedDropdownValue === "bf") {
@@ -138,7 +195,9 @@ const ProgressScreen = () => {
       );
     }
     return (
-      <Text style={styles.emptyMealRecipe}>No recipe selected for this meal</Text>
+      <Text style={styles.emptyMealRecipe}>
+        No recipe selected for this meal
+      </Text>
     );
   };
 
@@ -149,7 +208,10 @@ const ProgressScreen = () => {
       if (breakfastRecipe.calories) {
         // 4 member recipe
         totalCalories += breakfastRecipe.calories;
-      } else if (breakfastRecipe.nutrition && breakfastRecipe.nutrition.nutrients[0].amount) {
+      } else if (
+        breakfastRecipe.nutrition &&
+        breakfastRecipe.nutrition.nutrients[0].amount
+      ) {
         // 4 online recipe
         totalCalories += breakfastRecipe.nutrition.nutrients[0].amount;
       }
@@ -159,31 +221,37 @@ const ProgressScreen = () => {
       if (lunchRecipe.calories) {
         // 4 member recipe
         totalCalories += lunchRecipe.calories;
-      } else if (lunchRecipe.nutrition && lunchRecipe.nutrition.nutrients[0].amount) {
+      } else if (
+        lunchRecipe.nutrition &&
+        lunchRecipe.nutrition.nutrients[0].amount
+      ) {
         // 4 online recipe
         totalCalories += lunchRecipe.nutrition.nutrients[0].amount;
       }
-    } 
+    }
     // dinner calories
     if (dinnerRecipe) {
       if (dinnerRecipe.calories) {
         // 4 member recipe
         totalCalories += dinnerRecipe.calories;
-      } else if (dinnerRecipe.nutrition && dinnerRecipe.nutrition.nutrients[0].amount) {
+      } else if (
+        dinnerRecipe.nutrition &&
+        dinnerRecipe.nutrition.nutrients[0].amount
+      ) {
         // 4 online recipe
         totalCalories += dinnerRecipe.nutrition.nutrients[0].amount;
       }
-    }  
+    }
     return totalCalories;
   };
 
   // handle reset
   const handleReset = () => {
-    setSelectedDropdownValue('none');
+    setSelectedDropdownValue("none");
     setBreakfastRecipe(null);
     setLunchRecipe(null);
     setDinnerRecipe(null);
-    setSearch(''); 
+    setSearch("");
     setOnlineRecipes([]);
   };
 
@@ -196,17 +264,16 @@ const ProgressScreen = () => {
           selectedValue={selectedDropdownValue}
           onValueChange={(itemValue) => {
             setSelectedDropdownValue(itemValue);
-            if (itemValue === 'bf') {
+            if (itemValue === "bf") {
               handleBreakfastSelect(null); // Reset breakfast
-            } else if (itemValue === 'lunch') {
+            } else if (itemValue === "lunch") {
               handleLunchSelect(null); // Reset lunch
-            } else if (itemValue === 'din') {
+            } else if (itemValue === "din") {
               handleDinnerSelect(null); // Reset dinner
             }
           }}
           style={styles.dropdown}
         >
-        
           <Picker.Item label="Select a meal" value="none" />
           <Picker.Item label="Breakfast" value="bf" />
           <Picker.Item label="Lunch" value="lunch" />
@@ -223,7 +290,11 @@ const ProgressScreen = () => {
       >
         <Picker.Item label="Select a recipe" value={null} />
         {memberRecipes.map((recipe) => (
-          <Picker.Item key={recipe._id} label={recipe.name} value={recipe._id} />
+          <Picker.Item
+            key={recipe._id}
+            label={recipe.name}
+            value={recipe._id}
+          />
         ))}
       </Picker>
 
@@ -237,7 +308,7 @@ const ProgressScreen = () => {
           onChangeText={(text) => handleSearch(text)}
         />
       </View>
-      
+
       {/* list of recipes */}
       <View style={styles.searchList}>
         {loading ? (
@@ -254,6 +325,21 @@ const ProgressScreen = () => {
           />
         )}
       </View>
+
+      {recommendedRecipes.length > 0 && (
+        <View style={styles.recommendedRecipesContainer}>
+          <Text style={styles.subTitle}>Recommended Recipes for the Day:</Text>
+          {recommendedRecipes.map((recipe, index) => (
+            <Text key={index}>{recipe}</Text>
+          ))}
+        </View>
+      )}
+      <Button
+        onPress={handleGenerateRecommendations}
+        style={styles.resetButton}
+      >
+        Generate Daily Recommendations
+      </Button>
 
       {/* set Recipe for 3 meals */}
       <View style={styles.componentContainer}>
@@ -284,10 +370,17 @@ const ProgressScreen = () => {
         </View>
         <View style={styles.rightComponent}>
           <Text style={styles.smallHeadings}>Objective</Text>
-          <Icon name="check-circle-o" size={20} color="green" style={styles.iconObj}/>
+          <Icon
+            name="check-circle-o"
+            size={20}
+            color="green"
+            style={styles.iconObj}
+          />
         </View>
       </View>
-      <Button onPress={() => handleReset()} style={styles.resetButton}>Reset</Button>
+      <Button onPress={() => handleReset()} style={styles.resetButton}>
+        Reset
+      </Button>
     </View>
   );
 };
@@ -297,28 +390,28 @@ export default ProgressScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FCFCD3',
-    alignItems: 'center',
+    backgroundColor: "#FCFCD3",
+    alignItems: "center",
   },
   pickerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   dropdown: {
-    width: 200, 
+    width: 200,
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: "gray",
   },
   searchInput: {
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: "gray",
     width: 200,
     margin: 10,
     padding: 5,
   },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   //search result
   searchList: {
@@ -329,31 +422,31 @@ const styles = StyleSheet.create({
   //text
   mealDetails: {
     fontSize: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
   mealSelector: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   subTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
-  smallHeadings:{
+  smallHeadings: {
     fontSize: 13,
-    textAlign: 'center',
+    textAlign: "center",
   },
-  smallText:{
+  smallText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   //component
   componentContainer: {
-    flexDirection: 'row', // Arrange components horizontally from left to right
-    justifyContent: 'space-between', // Space them evenly
-    alignItems: 'center', // Center them vertically
+    flexDirection: "row", // Arrange components horizontally from left to right
+    justifyContent: "space-between", // Space them evenly
+    alignItems: "center", // Center them vertically
     paddingTop: 10,
     paddingBottom: 10,
     margin: 10,
@@ -373,23 +466,22 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
   },
-  iconObj:{
-    textAlign: 'center',
+  iconObj: {
+    textAlign: "center",
   },
   //buttons
   addButton: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     padding: 10,
     borderRadius: 10,
     marginLeft: 10,
   },
   resetButton: {
-    backgroundColor: 'lightblue',
+    backgroundColor: "lightblue",
     margin: 10,
     borderRadius: 10,
   },
 });
-
 
 /*
         <Picker
