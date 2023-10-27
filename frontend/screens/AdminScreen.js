@@ -91,8 +91,8 @@ const AdminScreen = () => {
           {
             text: "Yes",
             onPress: async () => {
-              await AsyncStorage.removeItem("userId");
-              setCurrentUser(null);
+              // await AsyncStorage.removeItem("userId");
+              // setCurrentUser(null);
               navigation.navigate("LogInScreen");
             },
           },
