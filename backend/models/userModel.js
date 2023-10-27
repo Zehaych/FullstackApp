@@ -66,6 +66,18 @@ const userSchema = new Schema({
     type: Number,
     required: true,
   },
+  dailyCaloriesLog: [
+    {
+        date: {
+            type: Date,
+            default: Date.now
+        },
+        total_calories: {
+            type: Number,
+            default: 0
+        }
+    }
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);

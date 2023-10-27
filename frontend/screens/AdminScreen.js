@@ -1,156 +1,187 @@
-import React from "react";
-import { View, SafeAreaView, StyleSheet, Alert } from "react-native";
+// import { useNavigation } from '@react-navigation/native';
+// import {
+//     Avatar,
+//     Title,
+//     Caption,
+//     TouchableRipple,
+//     Divider,
+//   } from "react-native-paper";
+// import React from 'react';
+// import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+// import { View, Text, StyleSheet } from 'react-native';
+// import { useContext } from "react";
+// import { Context } from "../store/context";
+
+// const AdminScreen = () => {
+//     const navigation = useNavigation();
+//     const [currentUser, setCurrentUser] = useContext(Context);
+
+//     const onLogOutPressed = () => {
+//         Alert.alert("Log Out", "Are you sure you want to log out?", [
+//           { text: "No", onPress: () => {} },
+//           {
+//             text: "Yes",
+//             onPress: () => {
+//               AsyncStorage.removeItem("userId");
+//               setCurrentUser(null);
+//               navigation.navigate("LogInScreen");
+//             },
+//           },
+//         ]);
+//       };
+
+//     return (
+//         <View style={styles.container}>
+//             <Text style={styles.title}>{currentUser.username}</Text>
+//             <Text>Welcome to the Admin Screen</Text>
+//             {/* Add more components or information specific to business partners here */}
+
+
+//             <TouchableRipple onPress={onLogOutPressed}>
+//             <View style={styles.menuItem}>
+//             <Icon name="exit-to-app" color="#FF6347" size={25} />
+//             <Text style={styles.menuItemText}>Log Out</Text>
+//             </View>
+//             </TouchableRipple>
+//         </View>
+
+        
+//     );
+// }
+
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         backgroundColor: '#F5FCFF',
+//     },
+//     title: {
+//         fontSize: 20,
+//         textAlign: 'center',
+//         margin: 10,
+//     },
+// });
+
+// export default AdminScreen;
+
+import { useNavigation } from '@react-navigation/native';
 import {
-  Avatar,
-  Title,
-  Caption,
-  Text,
-  TouchableRipple,
-  Divider,
+    Avatar,
+    Title,
+    Caption,
+    TouchableRipple,
+    Divider,
+    TextInput,
+    Button,
 } from "react-native-paper";
+import React, { useState, useContext } from 'react';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useContext } from "react";
+import { View, Text, StyleSheet, Alert, AsyncStorage } from 'react-native';
 import { Context } from "../store/context";
-import { useState } from "react";
-import { useEffect } from "react";
 
-const BizPartnerScreen = () => {
-  const navigation = useNavigation();
-  const [currentUser, setCurrentUser] = useContext(Context);
+const AdminScreen = () => {
+    const navigation = useNavigation();
+    const [currentUser, setCurrentUser] = useContext(Context);
+    const [totalCalories, setTotalCalories] = useState('');
 
-  const onLogOutPressed = () => {
-    Alert.alert("Log Out", "Are you sure you want to log out?", [
-      { text: "No", onPress: () => {} },
-      {
-        text: "Yes",
-        onPress: () => {
-          // setCurrentUser(null);
-          // AsyncStorage.removeItem("userId");
-          navigation.navigate("LogInScreen");
-        },
-      },
-    ]);
+    const onLogOutPressed = () => {
+        Alert.alert("Log Out", "Are you sure you want to log out?", [
+          { text: "No", onPress: () => {} },
+          {
+            text: "Yes",
+            onPress: async () => {
+              await AsyncStorage.removeItem("userId");
+              setCurrentUser(null);
+              navigation.navigate("LogInScreen");
+            },
+          },
+        ]);
+    };
+
+    const handleSubmit = async () => {
+      try {
+          console.log(currentUser._id);
+          const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/postCalories/${currentUser._id}`, {
+              method: 'PUT',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  total_calories: totalCalories
+              })
+          });
+  
+          const responseData = await response.text();
+          console.log(currentUser);
+          console.log(responseData);
+          if (responseData === 'Updated successfully') {
+              Alert.alert('Calories updated!');
+          } else {
+              Alert.alert('Failed to update calories.');
+          }
+      } catch (error) {
+          Alert.alert('An error occurred: ' + error.message);
+      }
   };
+  
 
-  const onEditProfilePressed = () => {
-    navigation.push("Edit Profile");
-  };
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>{currentUser.username}</Text>
+            <Text>Welcome to the Admin Screen</Text>
 
-  const onAddRecipePressed = () => {
-    navigation.push("Add Recipe");
-  };
+            {/* Calorie Input */}
+            <TextInput
+                label='Total Calories'
+                value={totalCalories}
+                onChangeText={text => setTotalCalories(text)}
+                keyboardType='numeric'
+                mode='outlined'
+                style={{ width: 200, marginTop: 20 }}
+            />
+            <Button
+                mode='contained'
+                onPress={handleSubmit}
+                style={{ marginTop: 10 }}
+            >
+                Update Calories
+            </Button>
 
-  const onTrackProgressPressed = () => {
-    navigation.push("Track Progress");
-  };
-
-  const onAddBizRecipePressed = () => {
-    navigation.push("Add Business Recipe");
-  };
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.userInfoSection}>
-        <View style={styles.userInfo}>
-          <Title style={styles.title}>{currentUser.username}</Title>
+            <TouchableRipple onPress={onLogOutPressed} style={{ marginTop: 20 }}>
+                <View style={styles.menuItem}>
+                    <Icon name="exit-to-app" color="#FF6347" size={25} />
+                    <Text style={styles.menuItemText}>Log Out</Text>
+                </View>
+            </TouchableRipple>
         </View>
-
-        {/* <View style={styles.userDetails}>
-          <View style={styles.userDetail}>
-            <Text style={styles.detailText}>Sex: {currentUser.gender}</Text>
-            <Text style={styles.detailText}>Age: {currentUser.age}</Text>
-
-            <Text style={styles.detailText}>Weight: {currentUser.weight}</Text>
-
-            <Text style={styles.detailText}>Height: {currentUser.height}</Text>
-            <Text style={styles.detailText}>
-              Calorie goal: {currentUser.calorie}
-            </Text>
-          </View>
-        </View> */}
-      </View>
-      <Divider />
-
-      <View style={styles.menuWrapper}>
-        {/* <TouchableRipple onPress={onEditProfilePressed}>
-          <View style={styles.menuItem}>
-            <Icon name="account-edit" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>Edit Profile</Text>
-          </View>
-        </TouchableRipple> */}
-
-        {/* <TouchableRipple onPress={onAddBizRecipePressed}>
-          <View style={styles.menuItem}>
-            <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>Add Business Recipe</Text>
-          </View>
-        </TouchableRipple> */}
-
-        <TouchableRipple onPress={onLogOutPressed}>
-          <View style={styles.menuItem}>
-            <Icon name="exit-to-app" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>Log Out</Text>
-          </View>
-        </TouchableRipple>
-      </View>
-    </SafeAreaView>
-  );
-};
-
-export default BizPartnerScreen;
+    );
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  userInfoSection: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#dddddd",
-  },
-
-  userInfo: {
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  caption: {
-    fontSize: 14,
-    lineHeight: 14,
-    fontWeight: "500",
-  },
-  userDetails: {
-    flexDirection: "row",
-    marginTop: 20,
-    justifyContent: "space-around",
-  },
-  userDetail: {
-    alignItems: "center",
-  },
-  detailText: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  menuWrapper: {
-    marginTop: 10,
-  },
-  menuItem: {
-    flexDirection: "row",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    alignItems: "center",
-  },
-  menuItemText: {
-    color: "#777777",
-    marginLeft: 20,
-    fontWeight: "600",
-    fontSize: 16,
-    lineHeight: 26,
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF',
+    },
+    title: {
+        fontSize: 20,
+        textAlign: 'center',
+        margin: 10,
+    },
+    menuItem: {
+        flexDirection: 'row',
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        alignItems: 'center',
+    },
+    menuItemText: {
+        marginLeft: 10,
+        fontWeight: '500',
+        fontSize: 16,
+    }
 });
+
+export default AdminScreen;

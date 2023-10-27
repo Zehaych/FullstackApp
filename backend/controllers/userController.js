@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const asyncHandler = require("express-async-handler");
+const cron = require('node-cron');
 
 const User = require("../models/userModel");
 
@@ -73,6 +74,7 @@ exports.register = async (req, res) => {
       weight: 0,
       gender: " ",
       calorie: 0,
+      dailyCaloriesLog: [],
     })
       .then((user) =>
         res.status(200).json({
@@ -180,6 +182,96 @@ exports.getUserById = async (req, res) => {
   res.status(200).json(user);
 };
 
+
+//@desc     Setting the date automatically
+cron.schedule('0 0 * * *', async () => {
+  // This will run at 00:00 every day
+  const allUsers = await User.find({});
+  allUsers.forEach(async (user) => {
+      // Check if the last entry in the log is for today
+      const offset = 8; //GMT +8
+      const today = new Date();
+      today.setHours(-offset, 0, 0, 0);
+      
+      if (user.dailyCaloriesLog.length === 0 || user.dailyCaloriesLog[user.dailyCaloriesLog.length - 1].date.getTime() !== today.getTime()) {
+          user.dailyCaloriesLog.push({
+              date: today,
+              total_calories: 0
+          });
+          await user.save();
+      }
+  });
+});
+
+exports.postCalories = async (req, res) => {
+  const { id } = req.params;
+  const { total_calories } = req.body;
+
+  try {
+      // Find the user by id
+      const user = await User.findById(id);
+
+      // If user not found, respond with 404 status code
+      if (!user) {
+          return res.status(404).json({ message: "User not found" });
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (user.dailyCaloriesLog.length === 0 || user.dailyCaloriesLog[user.dailyCaloriesLog.length - 1].date.getTime() !== today.getTime()) {
+          user.dailyCaloriesLog.push({
+              date: today,
+              total_calories
+          });
+      } else {
+          user.dailyCaloriesLog[user.dailyCaloriesLog.length - 1].total_calories = total_calories;
+      }
+
+      await user.save();
+
+      // Respond with a success message
+      res.status(200).send('Updated successfully');
+
+  } catch (error) {
+      res.status(500).send('Server Error: ' + error.message);
+  }
+};
+
+
+// exports.postCalories = async (req, res) => {
+//   const {id} = req.params;
+//   const {total_calories } = req.body;
+
+//   // Find the user by id
+//   const user = await User.findById(id);
+
+//   // If user not found, respond with 404 status code
+//   if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//   }
+
+//   const today = new Date();
+//   today.setHours(0, 0, 0, 0);
+
+//   if (user.dailyCaloriesLog.length === 0 || user.dailyCaloriesLog[user.dailyCaloriesLog.length - 1].date.getTime() !== today.getTime()) {
+//       user.dailyCaloriesLog.push({
+//           date: today,
+//           total_calories
+//       });
+//   } else {
+//       user.dailyCaloriesLog[user.dailyCaloriesLog.length - 1].total_calories = total_calories;
+//   }
+
+//   await user.save();
+
+//   // Respond with a success message
+//   res.status(200).send('Updated successfully');
+// };
+
+
+
+
 /*
 exports.getUserById = async (req, res) => {
   const { id } = req.params;
@@ -212,3 +304,4 @@ exports.getUserAllergies = async (req, res) => {
   }
 };
 */
+
