@@ -66,6 +66,8 @@ exports.register = async (req, res) => {
       isValidated: true,
       hasAccess: false,
       allergies: [],
+      medicalHistory: [],
+      foodRestrictions: [],
       age: 0,
       height: 0,
       weight: 0,
@@ -128,12 +130,30 @@ exports.login = async (req, res) => {
 
 exports.editUser = async (req, res) => {
   const { id } = req.params;
-  const { weight, height, age, gender, calorie } = req.body;
+  const {
+    weight,
+    height,
+    age,
+    gender,
+    calorie,
+    allergies,
+    medicalHistory,
+    foodRestrictions,
+  } = req.body;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { weight, height, age, gender, calorie },
+      {
+        weight,
+        height,
+        age,
+        gender,
+        calorie,
+        allergies,
+        medicalHistory,
+        foodRestrictions,
+      },
       { new: true, runValidators: true, context: "query" }
     );
     if (!updatedUser) {
@@ -159,7 +179,6 @@ exports.getUserById = async (req, res) => {
   }
   res.status(200).json(user);
 };
-
 
 /*
 exports.getUserById = async (req, res) => {

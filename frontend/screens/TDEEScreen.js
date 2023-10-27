@@ -40,7 +40,7 @@ const TDEEScreen = () => {
     // Get the user's ID from the currentUser object
     const userId = updatedUser._id;
 
-    // Make a PATCH request to update the user's attributes on the server
+    // Make a PUT request to update the user's attributes on the server
     fetch(`${process.env.EXPO_PUBLIC_IP}/user/editUser/${userId}`, {
       method: "PUT",
       headers: {

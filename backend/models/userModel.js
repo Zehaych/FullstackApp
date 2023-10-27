@@ -36,6 +36,16 @@ const userSchema = new Schema({
       type: String,
     },
   ],
+  medicalHistory: [
+    {
+      type: String,
+    },
+  ],
+  foodRestrictions: [
+    {
+      type: String,
+    },
+  ],
   age: {
     type: Number,
     required: true,
