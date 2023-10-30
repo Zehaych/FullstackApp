@@ -49,7 +49,7 @@ const OnlineRecipeInfoScreen = ({ route }) => {
                 <View style={styles.container}>
                     {/* image */}
                     <View style={styles.imageContainer}>
-                        <Image source={{ uri: recipeDetails.image }}style={styles.image}/> 
+                        <Image source={{ uri: recipeDetails.image }} style={styles.image}/> 
                     </View>
                     {/* name */}
                     <Text style={styles.title}>{recipeDetails.title}</Text>
@@ -75,14 +75,16 @@ const OnlineRecipeInfoScreen = ({ route }) => {
                     </View>
                     {/* ingredients */}
                     <Text style={styles.customHeadings}>Ingredients:</Text>
-                    {recipeIngredients ? (     //recipeIngredients !== null  check if recipeIngredients is not null
+                    {recipeDetails.extendedIngredients ? ( //recipeDetails.extendedIngredients !== null 
                         <View>
-                            
-                            {recipeIngredients.map((ingredient, index) => (
-                                <Text key={index} style={styles.customText}>
-                                    {ingredient.name} - {ingredient.amount.metric.value} {ingredient.amount.metric.unit}
-                                </Text>
+                            {recipeDetails.extendedIngredients.map((ingredient, index) => (
+                                <View key={index}>
+                                    <Text style={styles.customText}>
+                                        {ingredient.name} - {ingredient.amount} {ingredient.unit}
+                                    </Text>
+                                </View>
                             ))}
+
                         </View>
                     ) : (
                         <Text>Loading recipe ingredients...</Text>
@@ -97,7 +99,6 @@ const OnlineRecipeInfoScreen = ({ route }) => {
                     ) : (
                         <Text style={styles.customText}>No instructions available. So just do it.</Text>
                     )}
-                    <Text></Text>
                         
                 </View>
             ) : (
@@ -189,4 +190,41 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
-  });
+    //ingredient
+    ingredientContainer: {
+        flexDirection: 'row', // Arrange components horizontally from left to right
+        justifyContent: 'space-between', // Space them evenly
+        alignItems: 'center', // Center them vertically
+        paddingTop: 10,
+        paddingBottom: 10,
+    },
+    ingredientImage: {
+        width: 50, 
+        height: 50,  
+        resizeMode: 'contain', 
+        borderRadius: 10,
+    },
+});
+
+
+/*
+                    {recipeIngredients ? (     //recipeIngredients !== null  check if recipeIngredients is not null
+                        <View>
+                            
+                            {recipeIngredients.map((ingredient, index) => (
+                                <Text key={index} style={styles.customText}>
+                                    {ingredient.name} - {ingredient.amount.metric.value} {ingredient.amount.metric.unit}
+                                </Text>
+                            ))}
+                        </View>
+                    ) : (
+                        <Text>Loading recipe ingredients...</Text>
+                    )}
+                    
+
+
+
+                    <View>
+                        <Text style={styles.customText}>{recipeDetails.extendedIngredients}</Text>
+                    </View>
+*/
