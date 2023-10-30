@@ -10,8 +10,9 @@ import {
   TouchableWithoutFeedback,
   SafeAreaView,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { fetchRecipes, fetchRecipeDetails } from "../assets/Api";
+import { Context } from "../store/context";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
 
@@ -20,19 +21,59 @@ const OnlineRecipeScreen = () => {
   const [loading, setLoading] = useState(false);
   const [recipes, setRecipes] = useState([]);
   const [randomRecipes, setRandomRecipes] = useState([]);
+  const [currentUser, setCurrentUser] = useContext(Context);
   const navigation = useNavigation();
+
+  // const [foodRestrictions, setFoodRestrictions] = useState([]);
+  const foodRestrictions = currentUser.foodRestrictions;
+
+  // useEffect(() => {
+  //   if (search) {
+  //     setLoading(true);
+
+  //     // Call the fetchRecipes function from api.js
+  //     fetchRecipes(search)
+  //       .then((data) => {
+  //         // Filter recipes based on user's medical history and allergies
+  //         const filteredRecipes = data.filter((recipe) => {
+  //               // Check if any allergenic ingredient is in the recipe
+  //               return !recipe.ingredients.some((ingredient) =>
+  //                 userAllergies.includes(ingredient)
+  //               );
+  //             });
+
+  //         setRecipes(filteredRecipes);
+  //       })
+  //       .catch((error) => console.error('Error fetching recipes:', error))
+  //       .finally(() => setLoading(false));
+  //   }
+  // }, [search, medicalFilterEnabled, userAllergies]);
 
   useEffect(() => {
     if (search) {
       setLoading(true);
 
-      // Call the fetchRecipes function from api.js
-      fetchRecipes(search)
-        .then((data) => setRecipes(data))
+      // Call the fetchRecipes function from api.js with food restrictions
+      fetchRecipes(search, foodRestrictions)
+        .then((data) => {
+          setRecipes(data);
+        })
         .catch((error) => console.error("Error fetching recipes:", error))
         .finally(() => setLoading(false));
     }
-  }, [search]);
+  }, [search, foodRestrictions]);
+
+  // useEffect(() => {
+  //   if (search) {
+  //     setLoading(true);
+
+  //     // Call the fetchRecipes function from api.js
+  //     fetchRecipes(search)
+  //       .then((data) => setRecipes(data))
+  //       .catch((error) => console.error("Error fetching recipes:", error))
+  //       .finally(() => setLoading(false));
+  //   }
+  // }, [search]);
 
   useEffect(() => {
     // Fetch random recipe details
@@ -62,11 +103,27 @@ const OnlineRecipeScreen = () => {
 
   //handle search data
   const handleSearch = (text) => {
+    // Check if the search query matches any restricted food items
+    if (foodRestrictions.includes(text)) {
+      // Optionally, show an error message or handle the case differently
+      console.error("This food item is restricted:", text);
+      alert("This food item is restricted as per your medical history:", text);
+      return;
+    }
+
     setSearch(text);
     if (!text) {
       setRecipes([]); // Clear the recipes list
     }
   };
+
+  //  //handle search data
+  //  const handleSearch = (text) => {
+  //   setSearch(text);
+  //   if (!text) {
+  //     setRecipes([]); // Clear the recipes list
+  //   }
+  // };
 
   //handle pressable data
   const handleItemClick = (recipeId) => {

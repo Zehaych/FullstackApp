@@ -41,8 +41,12 @@ const ProgressScreen = () => {
   const [currentUser, setCurrentUser] = useContext(Context);
 
   const [recommendedRecipes, setRecommendedRecipes] = useState([]);
-  const targetCalories = 2000; // Set your desired target calories here
-  const API_KEY = "0a379b4c97a648aeb0051120265dcfca";
+  // const targetCalories = 2000; // Set your desired target calories here
+
+  const targetCalories = currentUser.calorie;
+  // const API_KEY = "0a379b4c97a648aeb0051120265dcfca";
+
+  const foodRestrictions = currentUser.foodRestrictions;
 
   // const handleGenerateRecommendations = () => {
   //   // Call the Spoonacular API to generate daily meal recommendations
@@ -93,18 +97,33 @@ const ProgressScreen = () => {
     //.finally(() => setLoading(false));
   }, []);
 
-  //online recipe data
+  // //online recipe data
+  // useEffect(() => {
+  //   if (search) {
+  //     setLoading(true);
+
+  //     // Call the fetchRecipes function from api.js
+  //     fetchRecipes(search)
+  //       .then((data) => setOnlineRecipes(data))
+  //       .catch((error) => console.error("Error fetching recipes:", error))
+  //       .finally(() => setLoading(false));
+  //   }
+  // }, [search]);
+
+  // online recipe data
   useEffect(() => {
     if (search) {
       setLoading(true);
 
-      // Call the fetchRecipes function from api.js
-      fetchRecipes(search)
-        .then((data) => setOnlineRecipes(data))
+      // Call the fetchRecipes function from api.js with food restrictions
+      fetchRecipes(search, foodRestrictions)
+        .then((data) => {
+          setOnlineRecipes(data);
+        })
         .catch((error) => console.error("Error fetching recipes:", error))
         .finally(() => setLoading(false));
     }
-  }, [search]);
+  }, [search, foodRestrictions]);
 
   // handle breakfast meal dropdown
   const handleBreakfastSelect = (recipeId) => {
@@ -127,8 +146,23 @@ const ProgressScreen = () => {
     setOnlineRecipes([]);
   };
 
+  // //handle search data
+  // const handleSearch = (text) => {
+  //   setSearch(text);
+  //   if (!text) {
+  //     setOnlineRecipes([]); // Clear the recipes list
+  //   }
+  // };
   //handle search data
   const handleSearch = (text) => {
+    // Check if the search query matches any restricted food items
+    if (foodRestrictions.includes(text)) {
+      // Optionally, show an error message or handle the case differently
+      console.error("This food item is restricted:", text);
+      alert("This food item is restricted as per your medical history:", text);
+      return;
+    }
+
     setSearch(text);
     if (!text) {
       setOnlineRecipes([]); // Clear the recipes list
@@ -265,30 +299,30 @@ const ProgressScreen = () => {
   const handleSubmit = async () => {
     try {
       const totalCalories = handleTotalCalories();
-      console.log ("Total Calories: ", totalCalories);
+      console.log("Total Calories: ", totalCalories);
       console.log(currentUser._id);
       const url = `${process.env.EXPO_PUBLIC_IP}/user/postCalories/${currentUser._id}`;
-      const response = await fetch( url, {
-        method: 'PUT',
+      const response = await fetch(url, {
+        method: "PUT",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          total_calories: totalCalories
-        })
+          total_calories: totalCalories,
+        }),
       });
 
       const responseData = await response.text();
       console.log(currentUser);
       console.log(responseData);
-      if (response.ok && responseData === 'Updated successfully') {
-          Alert.alert('Calories updated!');
+      if (response.ok && responseData === "Updated successfully") {
+        Alert.alert("Calories updated!");
       } else {
-          Alert.alert('Failed to update calories.');
+        Alert.alert("Failed to update calories.");
       }
     } catch (error) {
-      Alert.alert('An error occurred: ' + error.message);
+      Alert.alert("An error occurred: " + error.message);
     }
   };
 
@@ -370,7 +404,9 @@ const ProgressScreen = () => {
 
         {recommendedRecipes.length > 0 && (
           <View style={styles.recommendedRecipesContainer}>
-            <Text style={styles.subTitle}>Recommended Recipes for the Day:</Text>
+            <Text style={styles.subTitle}>
+              Recommended Recipes for the Day:
+            </Text>
             {recommendedRecipes.map((recipe, index) => (
               <Text key={index}>{recipe}</Text>
             ))}
