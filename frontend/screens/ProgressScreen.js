@@ -21,6 +21,7 @@ import {
   fetchRecipeDetails,
   fetchRecommendations,
 } from "../assets/Api";
+import { useNavigation } from '@react-navigation/native';
 //import { set } from "mongoose";
 //import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 //import MealScreen from "./MealScreen";
@@ -69,6 +70,14 @@ const ProgressScreen = () => {
   //       setRecommendedRecipes([]);
   //     });
   // };
+
+  // nav for recommandation
+  const navigation = useNavigation();
+
+  const handleRecipeDetails = (recipeId) => {
+    // Navigate to OnlineRecipeInfoScreen with the recipe details
+    navigation.navigate('Online Recipe Information', { recipeId });
+  };
 
   const handleGenerateRecommendations = () => {
     // Call the new function to fetch meal recommendations
@@ -285,6 +294,39 @@ const ProgressScreen = () => {
     return totalCalories;
   };
 
+  const handleObjectiveIcon = () => {
+    const totalCalories = handleTotalCalories();
+    if (totalCalories === targetCalories) {
+      return (
+        <Icon
+          name="thumbs-up"
+          size={20}
+          color="green"
+          style={styles.iconObj}
+        />
+      );
+    } else if (totalCalories < targetCalories && totalCalories > 0) {
+      return (
+        <Icon
+          name="thumbs-o-up"
+          size={20}
+          color="green"
+          style={styles.iconObj}
+        />
+      );
+    } else if (totalCalories > targetCalories) {
+      return (
+        <Icon
+          name="thumbs-down"
+          size={20}
+          color="red"
+          style={styles.iconObj}
+        />
+      );
+    }
+    return null; // Return null if no condition is met
+  };
+
   // handle reset
   const handleReset = () => {
     setSelectedDropdownValue("none");
@@ -402,13 +444,14 @@ const ProgressScreen = () => {
           )}
         </View>
 
+        {/* meal recipe recommandation*/}
         {recommendedRecipes.length > 0 && (
           <View style={styles.recommendedRecipesContainer}>
             <Text style={styles.subTitle}>
               Recommended Recipes for the Day:
             </Text>
             {recommendedRecipes.map((recipe, index) => (
-              <Text key={index}>{recipe}</Text>
+              <Text key={index} onPress={() => handleRecipeDetails(recipe.id)} style={{ textDecorationLine: 'underline' }}>{recipe.title}</Text>
             ))}
           </View>
         )}
@@ -444,16 +487,11 @@ const ProgressScreen = () => {
           </View>
           <View style={styles.middleComponent}>
             <Text style={styles.smallHeadings}>Target Calories</Text>
-            <Text style={styles.smallText}></Text>
+            <Text style={styles.smallText}>{targetCalories}</Text>
           </View>
           <View style={styles.rightComponent}>
             <Text style={styles.smallHeadings}>Objective</Text>
-            <Icon
-              name="check-circle-o"
-              size={20}
-              color="green"
-              style={styles.iconObj}
-            />
+            {handleObjectiveIcon()}
           </View>
         </View>
         <View style={styles.componentContainer}>
