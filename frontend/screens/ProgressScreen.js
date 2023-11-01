@@ -139,6 +139,8 @@ const ProgressScreen = () => {
     setBreakfastRecipe(recipeId);
     setSearch("");
     setOnlineRecipes([]);
+    setRecipeDetails(null);
+    setSelectedRecipeId(null);
   };
 
   // handle lunch meal dropdown
@@ -146,6 +148,8 @@ const ProgressScreen = () => {
     setLunchRecipe(recipeId);
     setSearch("");
     setOnlineRecipes([]);
+    setRecipeDetails(null);
+    setSelectedRecipeId(null);
   };
 
   // handle dinner meal dropdown
@@ -153,6 +157,8 @@ const ProgressScreen = () => {
     setDinnerRecipe(recipeId);
     setSearch("");
     setOnlineRecipes([]);
+    setRecipeDetails(null);
+    setSelectedRecipeId(null);
   };
 
   // //handle search data
@@ -335,6 +341,8 @@ const ProgressScreen = () => {
     setDinnerRecipe(null);
     setSearch("");
     setOnlineRecipes([]);
+    setSelectedRecipeId(null);
+    setRecipeDetails(null);
   };
 
   //handle submit
