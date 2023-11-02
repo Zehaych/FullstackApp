@@ -6,8 +6,9 @@
 // const API_KEY = "a0e96efb400344959ce64a39e0b5c786";
 // const API_KEY = "16b4790ed40a4172a9f8981cd5a333db";
 // const API_KEY = "0a379b4c97a648aeb0051120265dcfca";
- const API_KEY = "896cbe4ca4d04cbaa770db45e4221a86";
+const API_KEY = "896cbe4ca4d04cbaa770db45e4221a86";
 // const API_KEY = "dcdece78ff304c2c8458ae107c8d6435";
+// const API_KEY = "58a60f0d87ed4b93910367fe8a51d35d";
 
 //search recipes by query
 // export async function fetchRecipes(query) {
@@ -35,7 +36,7 @@ export async function fetchRecipes(query, foodRestrictions) {
   // Gather all intolerances into an array
   const intolerances = [
     "Egg",
-    "Diary",
+    "Dairy",
     "Gluten",
     "Grain",
     "Peanut",
