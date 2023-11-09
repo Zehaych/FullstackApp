@@ -83,6 +83,11 @@ const ProgressScreen = () => {
     // Call the new function to fetch meal recommendations
     fetchRecommendations(targetCalories)
       .then((data) => {
+        console.log("Recommendations data:", data);
+        // const recommendations = data.meals.map((meal) => meal.title);
+        // const totalCalories = data.nutrients.calories;
+        // console.log("meals:", recommendations);
+        // console.log("Total calories:", totalCalories);
         setRecommendedRecipes(data);
       })
       .catch((error) => {
@@ -453,13 +458,17 @@ const ProgressScreen = () => {
         </View>
 
         {/* meal recipe recommandation*/}
-        {recommendedRecipes.length > 0 && (
+        {recommendedRecipes.meals && recommendedRecipes.meals.length > 0 && (
           <View style={styles.recommendedRecipesContainer}>
-            <Text style={styles.subTitle}>
-              Recommended Recipes for the Day:
-            </Text>
-            {recommendedRecipes.map((recipe, index) => (
-              <Text key={index} onPress={() => handleRecipeDetails(recipe.id)} style={{ textDecorationLine: 'underline' }}>{recipe.title}</Text>
+            <Text style={styles.subTitle}>Recommended Recipes for the Day:</Text>
+            {recommendedRecipes.meals.map((recipe, index) => (
+              <Text
+                key={index}
+                onPress={() => handleRecipeDetails(recipe.id)}
+                style={styles.recommendationsText}
+              >
+                {recipe.title}
+              </Text>
             ))}
           </View>
         )}
@@ -487,7 +496,6 @@ const ProgressScreen = () => {
         </View>
 
         {/* total calories */}
-
         <View style={styles.componentContainer}>
           <View style={styles.leftComponent}>
             <Text style={styles.smallHeadings}>Total Calories</Text>
@@ -576,6 +584,21 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
+  //recommanded recipe
+  recommendedRecipesContainer: {
+    width: 385,
+    padding: 10,
+    margin: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    textAlign: "center",
+  },
+  recommendationsText: {
+    fontSize: 16,
+    textDecorationLine: "underline",
+    textAlign: "center",
+  },
   //component
   componentContainer: {
     flexDirection: "row", // Arrange components horizontally from left to right
@@ -617,6 +640,9 @@ const styles = StyleSheet.create({
 });
 
 /*
+<Text onPress={() => handleRecipeDetails(recommendedRecipes[0].id)} style={styles.recommendationsText}>{recommendedRecipes[0]}</Text>
+            <Text onPress={() => handleRecipeDetails(recommendedRecipes[1].id)} style={styles.recommendationsText}>{recommendedRecipes[1]}</Text>
+            <Text onPress={() => handleRecipeDetails(recommendedRecipes[2].id)} style={styles.recommendationsText}>{recommendedRecipes[2]}</Text>
         <Picker
           selectedValue={selectedDropdownValue}
           onValueChange={(itemValue, itemIndex) => setSelectedDropdownValue(itemValue)}
@@ -657,6 +683,10 @@ const styles = StyleSheet.create({
           <Picker.Item label="Member Recipe" value="memberRep" />
         </Picker> 
 
+<Text key={index} onPress={() => handleRecipeDetails(recipe.id)} style={styles.recommendationsText}>{recipe.title}</Text>
+{recommendedRecipes.map((recipe, index) => (
+              <Text key={index} style={styles.recommendationsText}>{recipe.title}</Text>
+            ))}
 
 <FlatList
         data={filteredRecipes}
