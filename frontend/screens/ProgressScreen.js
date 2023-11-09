@@ -587,7 +587,7 @@ const styles = StyleSheet.create({
   //recommanded recipe
   recommendedRecipesContainer: {
     width: 385,
-    padding: 10,
+    padding: 5,
     margin: 10,
     borderWidth: 1,
     borderColor: "#ccc",
