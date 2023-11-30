@@ -11,7 +11,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { fetchRecipes, fetchRecipeDetails } from "../assets/Api";
+import { fetchRecipes, fetchRecipeDetails, fetchRandomRecipes } from "../assets/Api";
 import { Context } from "../store/context";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
@@ -75,31 +75,19 @@ const OnlineRecipeScreen = () => {
   //   }
   // }, [search]);
 
+  //random recipes
   useEffect(() => {
-    // Fetch random recipe details
-    const randomRecipeIds = getRandomRecipeIds();
-    const fetchRecipePromises = randomRecipeIds.map((recipeId) =>
-      fetchRecipeDetails(recipeId)
-    );
+    setLoading(true);
 
-    Promise.all(fetchRecipePromises)
+    //fetch 20 random recipes
+    const numberOfRecipes = 20;
+    fetchRandomRecipes(numberOfRecipes)
       .then((data) => {
         setRandomRecipes(data);
       })
-      .catch((error) => console.error("Error fetching recipes:", error));
+      .catch((error) => console.error("Error fetching random recipes:", error))
+      .finally(() => setLoading(false));
   }, []);
-
-  function getRandomRecipeIds() {
-    // Generate random recipe IDs (e.g., between 1 and 1000)
-    const randomIds = [];
-    while (randomIds.length < 10) {
-      const randomId = Math.floor(Math.random() * 1000) + 1;
-      if (!randomIds.includes(randomId)) {
-        randomIds.push(randomId);
-      }
-    }
-    return randomIds;
-  }
 
   //handle search data
   const handleSearch = (text) => {
@@ -257,6 +245,33 @@ const styles = StyleSheet.create({
 });
 
 /*
+
+  //old random recipes
+  // useEffect(() => {
+  //   // Fetch random recipe details
+  //   const randomRecipeIds = getRandomRecipeIds();
+  //   const fetchRecipePromises = randomRecipeIds.map((recipeId) =>
+  //     fetchRecipeDetails(recipeId)
+  //   );
+
+  //   Promise.all(fetchRecipePromises)
+  //     .then((data) => {
+  //       setRandomRecipes(data);
+  //     })
+  //     .catch((error) => console.error("Error fetching recipes:", error));
+  // }, []);
+
+ // function getRandomRecipeIds() {
+  //   // Generate random recipe IDs (e.g., between 1 and 1000)
+  //   const randomIds = [];
+  //   while (randomIds.length < 10) {
+  //     const randomId = Math.floor(Math.random() * 1000) + 1;
+  //     if (!randomIds.includes(randomId)) {
+  //       randomIds.push(randomId);
+  //     }
+  //   }
+  //   return randomIds;
+  // }
 
 //const [medicalFilterEnabled, setMedicalFilterEnabled] = useState(false);
   //const [userAllergies, setUserAllergies] = useState([]); //retrieve allergies from user profile to filter recipes

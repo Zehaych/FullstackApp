@@ -126,6 +126,29 @@ export async function fetchRecipeDetails(recipeId) {
   }
 }
 
+//https://api.spoonacular.com/recipes/random
+//random recipes
+export async function fetchRandomRecipes(numberOfRecipes) {
+  try {
+    // const response = await fetch(
+    //   `https://api.spoonacular.com/recipes/random?apiKey=${API_KEY}&number=10`
+    // );
+    const response = await fetch(
+      `https://api.spoonacular.com/recipes/random?apiKey=${API_KEY}&number=${numberOfRecipes}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    return data.recipes;
+  } catch (error) {
+    console.error("Error fetching random recipes:", error);
+    throw error;
+  }
+}
+
 //GET https://api.spoonacular.com/recipes/1003464/ingredientWidget.json
 //ingredients by id
 export async function fetchRecipeIngredients(recipeId) {
