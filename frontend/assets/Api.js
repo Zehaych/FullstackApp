@@ -2,12 +2,12 @@
 
 // const API_KEY = "4c52cb82f761490fa7dbf7bb39a6dfb1";
 // const API_KEY = "c340febd6b744850a0a6b615ae95899b";
-// const API_KEY = "f4991d4623324aaaaad5a221c320c38f";
+const API_KEY = "f4991d4623324aaaaad5a221c320c38f";
 // const API_KEY = "a0e96efb400344959ce64a39e0b5c786";
 // const API_KEY = "16b4790ed40a4172a9f8981cd5a333db";
 // const API_KEY = "0a379b4c97a648aeb0051120265dcfca";
 // const API_KEY = "896cbe4ca4d04cbaa770db45e4221a86";
- const API_KEY = "dcdece78ff304c2c8458ae107c8d6435";
+//  const API_KEY = "dcdece78ff304c2c8458ae107c8d6435";
 // const API_KEY = "58a60f0d87ed4b93910367fe8a51d35d";
 
 //search recipes by query
@@ -29,8 +29,8 @@
 //   }
 // }
 
-// search recipes by query and food restrictions
-export async function fetchRecipes(query, foodRestrictions) {
+// search recipes by query and allergies
+export async function fetchRecipes(query, allergies) {
   let url = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&query=${query}`;
 
   // Gather all intolerances into an array
@@ -48,7 +48,7 @@ export async function fetchRecipes(query, foodRestrictions) {
     "Tree Nut",
     "Wheat",
   ]
-    .filter((intolerance) => foodRestrictions.includes(intolerance))
+    .filter((intolerance) => allergies.includes(intolerance))
     .join(",");
 
   // If there are any intolerances, append them to the URL
@@ -56,18 +56,20 @@ export async function fetchRecipes(query, foodRestrictions) {
     url += `&intolerances=${intolerances}`;
   }
 
-  if (foodRestrictions.includes("Sodium")) {
-    url += "&maxSodium=30";
-  }
-  if (foodRestrictions.includes("Saturated Fat")) {
-    url += "&maxSaturatedFat=0.2";
-  }
-  if (foodRestrictions.includes("Sugar")) {
-    url += "&maxSugar=0.3";
-  }
-  if (foodRestrictions.includes("Cholesterol")) {
-    url += "&maxCholesterol=0";
-  }
+  // commented as of today for testing
+  // if (foodRestrictions.includes("Sodium")) {
+  //   url += "&maxSodium=30";
+  // }
+  // if (foodRestrictions.includes("Saturated Fat")) {
+  //   url += "&maxSaturatedFat=0.2";
+  // }
+  // if (foodRestrictions.includes("Sugar")) {
+  //   url += "&maxSugar=0.3";
+  // }
+  // if (foodRestrictions.includes("Cholesterol")) {
+  //   url += "&maxCholesterol=0";
+  // }
+  // end of comment today
 
   // // Define an object to map food restrictions to URL parameters
   // const restrictionParams = {
@@ -84,9 +86,10 @@ export async function fetchRecipes(query, foodRestrictions) {
   //   }
   // }
 
-  if (foodRestrictions.includes("Spicy")) {
-    url += "&excludeIngredients=curry,chilli,pepper,allspice";
-  }
+  // commented as of today for testing
+  // if (foodRestrictions.includes("Spicy")) {
+  //   url += "&excludeIngredients=curry,chilli,pepper,allspice";
+  // }
 
   try {
     const response = await fetch(url);
@@ -96,7 +99,32 @@ export async function fetchRecipes(query, foodRestrictions) {
     }
 
     const data = await response.json();
-    return data.results;
+
+    // Additional client-side filtering
+    const filteredData = data.results.filter((recipe) => {
+      // Check if the recipe title includes any of the user's allergies
+      const containsAllergy = allergies.some((allergy) =>
+        recipe.title.toLowerCase().includes(allergy.toLowerCase())
+      );
+
+      // Extra validation for some of the allergy products
+      const containsDairy =
+        allergies.includes("Dairy") &&
+        (recipe.title.toLowerCase().includes("milk") ||
+          recipe.title.toLowerCase().includes("cheese") ||
+          recipe.title.toLowerCase().includes("yogurt") ||
+          recipe.title.toLowerCase().includes("cheesy"));
+
+      const containsEgg =
+        allergies.includes("Egg") &&
+        (recipe.title.toLowerCase().includes("egg") ||
+          recipe.title.toLowerCase().includes("eggs"));
+
+      // Filter out recipes that contain any allergy
+      return !containsAllergy && !containsDairy && !containsEgg;
+    });
+
+    return filteredData;
   } catch (error) {
     console.error("Error fetching recipes:", error);
     throw error;
@@ -212,21 +240,39 @@ export async function fetchRecipeIngredients(recipeId) {
 //   }
 // }
 
-export async function fetchRecommendations(targetCalories) {
+export async function fetchRecommendations(targetCalories, allergies) {
+  let url = `https://api.spoonacular.com/mealplanner/generate?apiKey=${API_KEY}&timeFrame=day&targetCalories=${targetCalories}`;
+
+  // Gather all intolerances into an array and append them to the URL if they exist
+  const intolerances = [
+    "Egg",
+    "Dairy",
+    "Gluten",
+    "Grain",
+    "Peanut",
+    "Seafood",
+    "Sesame",
+    "Shellfish",
+    "Soy",
+    "Sulfite",
+    "Tree Nut",
+    "Wheat",
+  ]
+    .filter((intolerance) => allergies.includes(intolerance))
+    .join(",");
+
+  if (intolerances.length > 0) {
+    url += `&exclude=${intolerances}`;
+  }
+
   try {
-    const response = await fetch(
-      `https://api.spoonacular.com/mealplanner/generate?apiKey=${API_KEY}&timeFrame=day&targetCalories=${targetCalories}`
-    );
+    const response = await fetch(url);
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
 
     const data = await response.json();
-    console.log("Recommendations data:", data); 
-    //const recommendations = data.meals.map((meal) => meal.title);
-    //const totalCalories = data.nutrients.calories;
-    //console.log("Total calories:", totalCalories);
     return data;
   } catch (error) {
     console.error("Error fetching meal recommendations:", error);
