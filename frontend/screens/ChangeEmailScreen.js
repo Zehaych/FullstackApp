@@ -127,6 +127,11 @@ const ChangeEmailScreen = () => {
   const updatedUser = { ...currentUser }; // Create a copy of currentUser
 
   const handleEmailChange = () => {
+    if (!currentUser || !currentUser._id) {
+      console.log("No valid current user found");
+    } else {
+      console.log("User found!");
+    }
     if (!newEmail) {
       // Check if newEmail is empty and show an alert
       alert("Please enter an email."); // Prompt the user that empty email is not allowed

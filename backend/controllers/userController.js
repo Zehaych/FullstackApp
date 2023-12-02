@@ -320,59 +320,91 @@ exports.editEmail = async (req, res) => {
     res.status(500).json({ message: "Error updating user", error });
   }
 };
-// exports.editUsernameAndEmail = async (req, res) => {
+
+exports.editPassword = async (req, res) => {
+  const { id } = req.params;
+  const { currentPassword, newPassword, newPasswordConfirmation } = req.body;
+
+  // Retrieve the user by ID
+  const user = await User.findById(id);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  if (newPassword.length < 6) {
+    return res
+      .status(400)
+      .json({ message: "New password must be at least 6 characters long." });
+  } else if (newPassword !== newPasswordConfirmation) {
+    return res
+      .status(400)
+      .json({ message: "Password and confirmation do not match" });
+  }
+
+  // Verify the provided current password
+  const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+  if (!passwordMatch) {
+    return res.status(401).json({ message: "Invalid password" });
+  }
+
+  try {
+    // Hash the new password
+    const saltRounds = 10;
+    const newHashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    // Update the user's password in the database
+    user.password = newHashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Password updated successfully." });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res
+      .status(500)
+      .json({ message: "Error updating password.", error: error.message });
+  }
+};
+
+// exports.editPassword = async (req, res) => {
 //   const { id } = req.params;
-//   const { email, username } = req.body;
+//   const { currentPassword, newPassword } = req.body;
 
-//   const validator = require("validator");
-
-//   //check if user exist
-//   const userExist = await User.findOne({ username: username });
-
-//   //check if email exist
-//   const emailExist = await User.findOne({ email: email });
-
-//   //check if password exist
-//   // const passwordExist = await User.findOne({ password: password });
-
-//   // Retrieve the user by ID
-//   const user = await User.findById(id);
-
-//   if (!user) {
-//     return res.status(404).json({ message: "User not found" });
+//   // Validate the incoming data
+//   if (!newPassword || newPassword.length < 6) {
+//     return res
+//       .status(400)
+//       .json({ message: "New password must be at least 6 characters long." });
 //   }
-
-//   // Verify the provided password
-//   const passwordMatch = await bcrypt.compare(req.body.password, user.password);
-//   if (!passwordMatch) {
-//     return res.status(401).json({ message: "Invalid password" });
-//   }
-
-//   if (userExist)
-//     return res.status(400).json({ message: "Username already taken" });
-//   if (emailExist)
-//     return res.status(400).json({ message: "Email already taken" });
-
-//   // if (!username)
-//   //   return res.status(400).json({ message: "Empty fields are not allowed." });
 
 //   try {
-//     const updatedUser = await User.findByIdAndUpdate(
-//       id,
-//       {
-//         email,
-//         username,
-//       },
-//       { new: true, runValidators: true, context: "query" }
-//     );
-//     if (!updatedUser) {
-//       return res.status(404).json({ message: "User not found" });
+//     // Retrieve the user by ID
+//     const user = await User.findById(id);
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found." });
 //     }
-//     res
-//       .status(200)
-//       .json({ message: "User updated successfully", user: updatedUser });
+
+//     // Verify the provided current password
+//     const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+//     if (!passwordMatch) {
+//       return res
+//         .status(401)
+//         .json({ message: "Current password is incorrect." });
+//     }
+
+//     // Hash the new password
+//     const saltRounds = 10; // Adjust salt rounds as needed
+//     const newHashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+//     // Update the user's password in the database
+//     user.password = newHashedPassword;
+//     await user.save();
+
+//     res.status(200).json({ message: "Password updated successfully." });
 //   } catch (error) {
-//     res.status(500).json({ message: "Error updating user", error });
+//     console.error(error); // Log the error for server-side debugging
+//     res
+//       .status(500)
+//       .json({ message: "Error updating password.", error: error.message });
 //   }
 // };
 

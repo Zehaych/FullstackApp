@@ -13,6 +13,7 @@ router.post("/login", userController.login);
 router.put("/editUserHealth/:id", userController.editUserHealth);
 router.put("/editUsername/:id", userController.editUsername);
 router.put("/editEmail/:id", userController.editEmail);
+router.put("/editPassword/:id", userController.editPassword);
 
 // router.put("/editUsernameAndEmail/:id", userController.editUsernameAndEmail);
 router.get("/getUserById/:id", userController.getUserById);
