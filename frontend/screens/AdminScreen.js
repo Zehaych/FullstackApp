@@ -1,5 +1,4 @@
 import { useNavigation } from '@react-navigation/native';
-import BizPartnerSignUp from './BizPartnerSignUp';
 
 import {
     Avatar,
@@ -36,11 +35,18 @@ const AdminScreen = () => {
 
     //Function to navigate to create business Partner
     const handleCreateBusinessPartner = () => {
-        // Implement your authentication logic here
-        // If authentication is successful, navigate to TabScreen
         navigation.navigate("BizPartnerSignUp");
     };
 
+    const handleRetrieveUserAccount = () => {
+        navigation.navigate("RetrieveUserAccount");
+    };
+
+    
+    //Function to navigate to retrieve all business partners
+    const handleNavigateBizPartner = () => {
+        navigation.navigate("RetrieveBizPartners");
+    };
 
     return (
         <View style={styles.container}>
@@ -56,6 +62,30 @@ const AdminScreen = () => {
                 style={styles.icon}
             />
             <Text style={styles.menuItemText}>Create Business Partner Account</Text>
+            </View>
+        </TouchableRipple>
+
+        <TouchableRipple onPress = {handleRetrieveUserAccount}>
+            <View style={styles.menuItem}>
+            <Icon
+                name="account-edit"
+                size={25}
+                color="#FF6347"
+                style={styles.icon}
+            />
+            <Text style={styles.menuItemText}>Retrieve User accounts</Text>
+            </View>
+        </TouchableRipple>
+
+        <TouchableRipple onPress = {handleNavigateBizPartner}>
+            <View style={styles.menuItem}>
+            <Icon
+                name="account-edit"
+                size={25}
+                color="#FF6347"
+                style={styles.icon}
+            />
+            <Text style={styles.menuItemText}>Retrieve Business Partner accounts</Text>
             </View>
         </TouchableRipple>
             

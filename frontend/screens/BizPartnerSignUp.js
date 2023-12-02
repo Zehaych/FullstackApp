@@ -4,11 +4,15 @@ import {
     Image,
     TextInput,
     TouchableOpacity,
+    TouchableRipple,
     Pressable,
+    StyleSheet,
   } from "react-native";
+  import AdminScreen from "./AdminScreen";
   import React, { useState } from "react";
   import { StatusBar } from "expo-status-bar";
   import { useNavigation } from "@react-navigation/native";
+  import Icon from "react-native-vector-icons/MaterialCommunityIcons";
   import Animated, {
     FadeIn,
     FadeInDown,
@@ -70,6 +74,12 @@ import {
         alert("Error creating account");
       }
     };
+
+
+    const navigateBack = () => {
+      navigation.navigate("AdminScreen");
+    }
+
     return (
       <View className="bg-white h-full w-full">
         <StatusBar style="light" />
@@ -159,16 +169,20 @@ import {
                   Create Business Partner Account
                 </Text>
               </TouchableOpacity>
+
             </Animated.View>
-  
+
+            
             <Animated.View
               entering={FadeInDown.delay(800).duration(1000).springify()}
               className="flex-row justify-center"
             >
             </Animated.View>
+
+
           </View>
         </View>
       </View>
     );
   }
-  
+
