@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const asyncHandler = require("express-async-handler");
-const cron = require('node-cron');
+const cron = require("node-cron");
 
 const User = require("../models/userModel");
 
@@ -130,7 +130,75 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.editUser = async (req, res) => {
+// exports.editUser = async (req, res) => {
+//   const { id } = req.params;
+//   const {
+//     weight,
+//     height,
+//     age,
+//     gender,
+//     calorie,
+//     allergies,
+//     medicalHistory,
+//     foodRestrictions,
+//     email,
+//     username,
+//     password,
+//   } = req.body;
+
+//   // Fetch the user from the database
+//   const user = await User.findById(id);
+
+//   if (!user) {
+//     return res.status(404).json({ message: "User not found" });
+//   }
+
+//   // Check if the provided username is already taken by another user
+//   const existingUser = await User.findOne({ username: username });
+
+//   if (existingUser && existingUser._id.toString() !== id) {
+//     return res.status(400).json({ message: "Username already taken" });
+//   }
+
+//   // Compare the provided password with the hashed password in the database
+//   bcrypt.compare(password, user.password, async (err, match) => {
+//     if (err || !match) {
+//       return res.status(400).json({ message: "Incorrect password" });
+//     }
+
+//     try {
+//       // Update user details if password is correct
+//       const updatedUser = await User.findByIdAndUpdate(
+//         id,
+//         {
+//           weight,
+//           height,
+//           age,
+//           gender,
+//           calorie,
+//           allergies,
+//           medicalHistory,
+//           foodRestrictions,
+//           email,
+//           username,
+//           password,
+//         },
+//         { new: true, runValidators: true, context: "query" }
+//       );
+
+//       res
+//         .status(200)
+//         .json({ message: "User updated successfully", user: updatedUser });
+//     } catch (error) {
+//       console.error(error);
+//       res
+//         .status(500)
+//         .json({ message: "Error updating user", error: error.message });
+//     }
+//   });
+// };
+
+exports.editUserHealth = async (req, res) => {
   const { id } = req.params;
   const {
     weight,
@@ -169,6 +237,145 @@ exports.editUser = async (req, res) => {
   }
 };
 
+exports.editUsername = async (req, res) => {
+  const { id } = req.params;
+  const { username } = req.body;
+
+  //check if user exist
+  const userExist = await User.findOne({ username: username });
+
+  // Retrieve the user by ID
+  const user = await User.findById(id);
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  // Verify the provided password
+  const passwordMatch = await bcrypt.compare(req.body.password, user.password);
+  if (!passwordMatch) {
+    return res.status(401).json({ message: "Invalid password" });
+  }
+
+  if (userExist)
+    return res.status(400).json({ message: "Username already taken" });
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      {
+        username,
+      },
+      { new: true, runValidators: true, context: "query" }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res
+      .status(200)
+      .json({ message: "User updated successfully", user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating user", error });
+  }
+};
+
+exports.editEmail = async (req, res) => {
+  const { id } = req.params;
+  const { email } = req.body;
+
+  //check if email exist
+  const emailExist = await User.findOne({ email: email });
+
+  // Retrieve the user by ID
+  const user = await User.findById(id);
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  // Verify the provided password
+  const passwordMatch = await bcrypt.compare(req.body.password, user.password);
+  if (!passwordMatch) {
+    return res.status(401).json({ message: "Invalid password" });
+  }
+
+  if (emailExist)
+    return res.status(400).json({ message: "Email already taken" });
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      {
+        email,
+      },
+      { new: true, runValidators: true, context: "query" }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res
+      .status(200)
+      .json({ message: "User updated successfully", user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating user", error });
+  }
+};
+// exports.editUsernameAndEmail = async (req, res) => {
+//   const { id } = req.params;
+//   const { email, username } = req.body;
+
+//   const validator = require("validator");
+
+//   //check if user exist
+//   const userExist = await User.findOne({ username: username });
+
+//   //check if email exist
+//   const emailExist = await User.findOne({ email: email });
+
+//   //check if password exist
+//   // const passwordExist = await User.findOne({ password: password });
+
+//   // Retrieve the user by ID
+//   const user = await User.findById(id);
+
+//   if (!user) {
+//     return res.status(404).json({ message: "User not found" });
+//   }
+
+//   // Verify the provided password
+//   const passwordMatch = await bcrypt.compare(req.body.password, user.password);
+//   if (!passwordMatch) {
+//     return res.status(401).json({ message: "Invalid password" });
+//   }
+
+//   if (userExist)
+//     return res.status(400).json({ message: "Username already taken" });
+//   if (emailExist)
+//     return res.status(400).json({ message: "Email already taken" });
+
+//   // if (!username)
+//   //   return res.status(400).json({ message: "Empty fields are not allowed." });
+
+//   try {
+//     const updatedUser = await User.findByIdAndUpdate(
+//       id,
+//       {
+//         email,
+//         username,
+//       },
+//       { new: true, runValidators: true, context: "query" }
+//     );
+//     if (!updatedUser) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+//     res
+//       .status(200)
+//       .json({ message: "User updated successfully", user: updatedUser });
+//   } catch (error) {
+//     res.status(500).json({ message: "Error updating user", error });
+//   }
+// };
+
 //@desc     Get user by ID
 //@route    PUT/getUserById
 //@access   public
@@ -182,24 +389,27 @@ exports.getUserById = async (req, res) => {
   res.status(200).json(user);
 };
 
-
 //@desc     Setting the date automatically
-cron.schedule('0 0 * * *', async () => {
+cron.schedule("0 0 * * *", async () => {
   // This will run at 00:00 every day
   const allUsers = await User.find({});
   allUsers.forEach(async (user) => {
-      // Check if the last entry in the log is for today
-      const offset = 8; //GMT +8
-      const today = new Date();
-      today.setHours(-offset, 0, 0, 0);
-      
-      if (user.dailyCaloriesLog.length === 0 || user.dailyCaloriesLog[user.dailyCaloriesLog.length - 1].date.getTime() !== today.getTime()) {
-          user.dailyCaloriesLog.push({
-              date: today,
-              total_calories: 0
-          });
-          await user.save();
-      }
+    // Check if the last entry in the log is for today
+    const offset = 8; //GMT +8
+    const today = new Date();
+    today.setHours(-offset, 0, 0, 0);
+
+    if (
+      user.dailyCaloriesLog.length === 0 ||
+      user.dailyCaloriesLog[user.dailyCaloriesLog.length - 1].date.getTime() !==
+        today.getTime()
+    ) {
+      user.dailyCaloriesLog.push({
+        date: today,
+        total_calories: 0,
+      });
+      await user.save();
+    }
   });
 });
 
@@ -208,36 +418,39 @@ exports.postCalories = async (req, res) => {
   const { total_calories } = req.body;
 
   try {
-      // Find the user by id
-      const user = await User.findById(id);
+    // Find the user by id
+    const user = await User.findById(id);
 
-      // If user not found, respond with 404 status code
-      if (!user) {
-          return res.status(404).json({ message: "User not found" });
-      }
+    // If user not found, respond with 404 status code
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-      if (user.dailyCaloriesLog.length === 0 || user.dailyCaloriesLog[user.dailyCaloriesLog.length - 1].date.getTime() !== today.getTime()) {
-          user.dailyCaloriesLog.push({
-              date: today,
-              total_calories
-          });
-      } else {
-          user.dailyCaloriesLog[user.dailyCaloriesLog.length - 1].total_calories = total_calories;
-      }
+    if (
+      user.dailyCaloriesLog.length === 0 ||
+      user.dailyCaloriesLog[user.dailyCaloriesLog.length - 1].date.getTime() !==
+        today.getTime()
+    ) {
+      user.dailyCaloriesLog.push({
+        date: today,
+        total_calories,
+      });
+    } else {
+      user.dailyCaloriesLog[user.dailyCaloriesLog.length - 1].total_calories =
+        total_calories;
+    }
 
-      await user.save();
+    await user.save();
 
-      // Respond with a success message
-      res.status(200).send('Updated successfully');
-
+    // Respond with a success message
+    res.status(200).send("Updated successfully");
   } catch (error) {
-      res.status(500).send('Server Error: ' + error.message);
+    res.status(500).send("Server Error: " + error.message);
   }
 };
-
 
 // exports.postCalories = async (req, res) => {
 //   const {id} = req.params;
@@ -268,9 +481,6 @@ exports.postCalories = async (req, res) => {
 //   // Respond with a success message
 //   res.status(200).send('Updated successfully');
 // };
-
-
-
 
 /*
 exports.getUserById = async (req, res) => {
@@ -304,4 +514,3 @@ exports.getUserAllergies = async (req, res) => {
   }
 };
 */
-

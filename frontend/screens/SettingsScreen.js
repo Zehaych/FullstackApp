@@ -32,6 +32,10 @@ const EditProfileScreen = () => {
     navigation.push("Change Password");
   };
 
+  const onDeleteAccountPressed = () => {
+    // Navigate to the "Insert Medical History" screen
+    navigation.push("Delete Account");
+  };
   return (
     <View style={styles.container}>
       {/* <TouchableRipple onPress={onCalculateCaloriePressed}>
@@ -91,6 +95,18 @@ const EditProfileScreen = () => {
             style={styles.icon}
           />
           <Text style={styles.menuItemText}>Change Password</Text>
+        </View>
+      </TouchableRipple>
+
+      <TouchableRipple onPress={onDeleteAccountPressed}>
+        <View style={styles.menuItem}>
+          <Icon
+            name="account-edit"
+            size={25}
+            color="#FF6347"
+            style={styles.icon}
+          />
+          <Text style={styles.menuItemText}>Delete Account</Text>
         </View>
       </TouchableRipple>
 

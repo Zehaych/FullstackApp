@@ -10,7 +10,11 @@ router.get("/", userController.getUsers);
 //user -> POST
 router.post("/register", userController.register);
 router.post("/login", userController.login);
-router.put("/editUser/:id", userController.editUser);
+router.put("/editUserHealth/:id", userController.editUserHealth);
+router.put("/editUsername/:id", userController.editUsername);
+router.put("/editEmail/:id", userController.editEmail);
+
+// router.put("/editUsernameAndEmail/:id", userController.editUsernameAndEmail);
 router.get("/getUserById/:id", userController.getUserById);
 router.put("/postCalories/:id", userController.postCalories);
 //router.get("/user/allergies", userController.getUserAllergies);

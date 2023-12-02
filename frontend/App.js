@@ -22,6 +22,7 @@ import PaymentScreen from "./screens/PaymentScreen";
 import ChangeEmailScreen from "./screens/ChangeEmailScreen";
 import ChangeUsernameScreen from "./screens/ChangeUsernameScreen";
 import ChangePasswordScreen from "./screens/ChangePasswordScreen";
+import DeleteAcountScreen from "./screens/DeleteAcountScreen";
 
 const Stack = createStackNavigator();
 
@@ -61,6 +62,8 @@ function App() {
             name="Change Password"
             component={ChangePasswordScreen}
           />
+
+          <Stack.Screen name="Delete Account" component={DeleteAcountScreen} />
 
           <Stack.Screen name="Calculate Calorie" component={TDEEScreen} />
           <Stack.Screen
