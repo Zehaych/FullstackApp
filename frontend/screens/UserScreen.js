@@ -46,6 +46,10 @@ const UserScreen = () => {
     navigation.push("Add Recipe");
   };
 
+  const onViewRecipePressed = () => {
+    navigation.push("View Recipe");
+  };
+
   const onTrackProgressPressed = () => {
     navigation.push("Track Progress");
   };
@@ -129,6 +133,13 @@ const UserScreen = () => {
           <View style={styles.menuItem}>
             <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
             <Text style={styles.menuItemText}>Add Recipe</Text>
+          </View>
+        </TouchableRipple>
+
+        <TouchableRipple onPress={onViewRecipePressed}>
+          <View style={styles.menuItem}>
+            <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>View Added Recipe</Text>
           </View>
         </TouchableRipple>
 

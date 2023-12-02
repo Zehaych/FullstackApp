@@ -25,6 +25,7 @@ import ChangePasswordScreen from "./screens/ChangePasswordScreen";
 import BizPartnerSignUp from "./screens/BizPartnerSignUp";
 import AdminScreen from "./screens/AdminScreen";
 import DeleteAcountScreen from "./screens/DeleteAcountScreen";
+import ViewRecipeScreen from "./screens/ViewRecipeScreen";
 
 const Stack = createStackNavigator();
 
@@ -87,6 +88,7 @@ function App() {
             name="Add Business Recipe"
             component={AddBizRecipeScreen}
           />
+          <Stack.Screen name="View Recipe" component={ViewRecipeScreen} />
 
           <Stack.Screen name="Track Progress" component={ProgressScreen} />
 
