@@ -22,6 +22,8 @@ import PaymentScreen from "./screens/PaymentScreen";
 import ChangeEmailScreen from "./screens/ChangeEmailScreen";
 import ChangeUsernameScreen from "./screens/ChangeUsernameScreen";
 import ChangePasswordScreen from "./screens/ChangePasswordScreen";
+import BizPartnerSignUp from "./screens/BizPartnerSignUp";
+import AdminScreen from "./screens/AdminScreen";
 import DeleteAcountScreen from "./screens/DeleteAcountScreen";
 
 const Stack = createStackNavigator();
@@ -33,6 +35,11 @@ function App() {
     <Context.Provider value={[currentUser, setCurrentUser]}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="LogInScreen">
+          <Stack.Screen
+            name="AdminScreen"
+            component={AdminScreen}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="LogInScreen"
             component={LogInScreen}
@@ -46,6 +53,11 @@ function App() {
           <Stack.Screen
             name="TabScreen"
             component={TabScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="BizPartnerSignUp"
+            component={BizPartnerSignUp}
             options={{ headerShown: false }}
           />
           {/* <Stack.Screen name="Edit Profile" component={EditProfileScreen} /> */}
