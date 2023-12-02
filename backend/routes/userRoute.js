@@ -5,7 +5,8 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 
 //GET user testing to see if database deployed delete later
-router.get("/", userController.getUsers);
+router.get("/getUsers", userController.getUsers);
+router.get("/getUserTypes", userController.getUserTypes);
 
 //user -> POST
 router.post("/register", userController.register);

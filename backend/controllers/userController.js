@@ -14,6 +14,15 @@ exports.getUsers = asyncHandler(async (req, res) => {
   res.json(user);
 });
 
+exports.getUserTypes = asyncHandler(async (req, res) => {
+  const userType = req.query.userType; // Retrieve the userType from query parameters
+  const query = userType ? { userType: userType } : {}; // Build the query condition
+
+  const users = await User.find(query); // Find users based on the query
+  res.json(users);
+});
+
+
 //@desc Register a new user
 //@route POST/register
 //@access public
@@ -98,6 +107,7 @@ exports.login = async (req, res) => {
   // const {username, password} = req.body;
   const username = req.body.username;
   const password = req.body.password;
+  const isActive = req.body.isActive;
 
   try {
     const user = await User.findOne({ username: username });
@@ -107,7 +117,14 @@ exports.login = async (req, res) => {
         message: "Login unsuccessful",
         error: "User not found",
       });
-    } else {
+    }
+    if (!user.isActive) {
+      return res.status(400).json({
+        message: "Account Suspended",
+        error: "Your account has been suspended",
+      });
+    }
+    else {
       bcrypt.compare(password, user.password).then((match) => {
         if (match) {
           res.status(200).json({

@@ -59,7 +59,12 @@ export default function LogInScreen() {
       this.usernameInput.clear();
       this.passwordInput.clear();
       console.log(currentUser);
-    } else window.alert("Incorrect username or password");
+    } 
+    // else window.alert("Incorrect username or password");
+    else {
+      // Display the specific error message received from the server
+      window.alert(data.message || "An error occurred during login");
+    }
   };
 
   const handleSignUp = () => {
