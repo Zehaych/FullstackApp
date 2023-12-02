@@ -56,7 +56,7 @@ const AdminScreen = () => {
         <TouchableRipple onPress ={handleCreateBusinessPartner}>
             <View style={styles.menuItem}>
             <Icon
-                name="account-edit"
+                name="account-plus"
                 size={25}
                 color="#FF6347"
                 style={styles.icon}
@@ -68,7 +68,7 @@ const AdminScreen = () => {
         <TouchableRipple onPress = {handleRetrieveUserAccount}>
             <View style={styles.menuItem}>
             <Icon
-                name="account-edit"
+                name="account-search"
                 size={25}
                 color="#FF6347"
                 style={styles.icon}
@@ -80,7 +80,7 @@ const AdminScreen = () => {
         <TouchableRipple onPress = {handleNavigateBizPartner}>
             <View style={styles.menuItem}>
             <Icon
-                name="account-edit"
+                name="account-search"
                 size={25}
                 color="#FF6347"
                 style={styles.icon}
