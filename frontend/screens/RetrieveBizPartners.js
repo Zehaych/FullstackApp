@@ -34,40 +34,45 @@ export default function RetrieveUsers() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{currentUser.username}</Text>
-            <Text>Business Partner Accounts</Text>
+            <Text style={styles.subtitle}>Business Partner Accounts</Text>
             <FlatList
                 data={users}
                 keyExtractor={(item) => item._id}
-                renderItem={({ item }) => <Text>{item.username}</Text>} // Update this to display the user data as needed
+                renderItem={({ item }) => <Text style={styles.item}>{item.username}</Text>}
             />
         </View>
     )
 }
 
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
-        padding: 20,
+        padding: 10,
+        backgroundColor: '#f5f5f5', // Change as needed
     },
     title: {
+        marginTop: 30,
         fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    subtitle: {
+        fontSize: 18,
+        color: '#333', // Change as needed
+        marginBottom: 5,
         textAlign: 'center',
-        margin: 10,
     },
-    icon: {
-        marginRight: 16,
-      },
-    menuItem: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingVertical: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: "#dddddd",
+    item: {
+        backgroundColor: 'white',
+        padding: 10,
+        marginVertical: 8,
+        marginHorizontal: 16,
+        borderRadius: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
-    menuItemText: {
-        color: "#333",
-        fontWeight: "600",
-        fontSize: 16,
-    }
 });
