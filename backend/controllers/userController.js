@@ -14,6 +14,15 @@ exports.getUsers = asyncHandler(async (req, res) => {
   res.json(user);
 });
 
+exports.getUserTypes = asyncHandler(async (req, res) => {
+  const userType = req.query.userType; // Retrieve the userType from query parameters
+  const query = userType ? { userType: userType } : {}; // Build the query condition
+
+  const users = await User.find(query); // Find users based on the query
+  res.json(users);
+});
+
+
 //@desc Register a new user
 //@route POST/register
 //@access public

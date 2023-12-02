@@ -5,21 +5,41 @@ import {
     TextInput,
     TouchableOpacity,
     Pressable,
+    FlatList,
     StyleSheet
   } from "react-native";
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigation } from "@react-navigation/native";
 import { Context } from "../store/context";
 
 export default function RetrieveUsers() {
     const navigation = useNavigation();
     const [currentUser, setCurrentUser] = useContext(Context);
+    const [users, setUsers] = useState([]); // State to store the list of users
+
+    useEffect(() => {
+        fetchUsersByType('user'); 
+    }, []);
+
+    const fetchUsersByType = async (userType) => {
+        try {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/getUserTypes?userType=${userType}`);
+            const data = await response.json();
+            setUsers(data);
+        } catch (error) {
+            console.error('Failed to fetch users:', error);
+        }
+    };
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{currentUser.username}</Text>
             <Text>User Accounts</Text>
-
+            <FlatList
+                data={users}
+                keyExtractor={(item) => item._id}
+                renderItem={({ item }) => <Text>{item.username}</Text>} // Update this to display the user data as needed
+            />
         </View>
     )
 }
