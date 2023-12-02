@@ -16,6 +16,8 @@ router.put("/editUsername/:id", userController.editUsername);
 router.put("/editEmail/:id", userController.editEmail);
 router.put("/editPassword/:id", userController.editPassword);
 
+router.delete("/deleteUser/:id", userController.deleteUser);
+
 // router.put("/editUsernameAndEmail/:id", userController.editUsernameAndEmail);
 router.get("/getUserById/:id", userController.getUserById);
 router.put("/postCalories/:id", userController.postCalories);

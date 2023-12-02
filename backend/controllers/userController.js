@@ -22,7 +22,6 @@ exports.getUserTypes = asyncHandler(async (req, res) => {
   res.json(users);
 });
 
-
 //@desc Register a new user
 //@route POST/register
 //@access public
@@ -103,45 +102,85 @@ exports.register = async (req, res) => {
 // @desc Login
 // @route POST/login
 // @access public
+// exports.login = async (req, res) => {
+//   // const {username, password} = req.body;
+//   const username = req.body.username;
+//   const password = req.body.password;
+//   const isActive = req.body.isActive;
+
+//   try {
+//     const user = await User.findOne({ username: username });
+
+//     if (!user) {
+//       res.status(400).json({
+//         message: "Login unsuccessful",
+//         error: "User not found",
+//       });
+//     }
+//     if (!user.isActive) {
+//       return res.status(400).json({
+//         message: "Account Suspended",
+//         error: "Your account has been suspended",
+//       });
+//     } else {
+//       bcrypt.compare(password, user.password).then((match) => {
+//         if (match) {
+//           res.status(200).json({
+//             message: "Login successful",
+//             user,
+//           });
+//         } else {
+//           res.status(400).json({
+//             message: "Login not successful",
+//             error: "Incorrect password",
+//           });
+//         }
+//       });
+//     }
+//   } catch (error) {
+//     res.status(400).json({
+//       message: "Error occured",
+//       error: error.message,
+//     });
+//   }
+// };
 exports.login = async (req, res) => {
-  // const {username, password} = req.body;
-  const username = req.body.username;
-  const password = req.body.password;
-  const isActive = req.body.isActive;
+  const { username, password } = req.body;
 
   try {
     const user = await User.findOne({ username: username });
 
     if (!user) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "Login unsuccessful",
         error: "User not found",
       });
     }
+
     if (!user.isActive) {
       return res.status(400).json({
         message: "Account Suspended",
         error: "Your account has been suspended",
       });
     }
-    else {
-      bcrypt.compare(password, user.password).then((match) => {
-        if (match) {
-          res.status(200).json({
-            message: "Login successful",
-            user,
-          });
-        } else {
-          res.status(400).json({
-            message: "Login not successful",
-            error: "Incorrect password",
-          });
-        }
+
+    // Compare passwords asynchronously
+    const match = await bcrypt.compare(password, user.password);
+
+    if (match) {
+      return res.status(200).json({
+        message: "Login successful",
+        user,
+      });
+    } else {
+      return res.status(400).json({
+        message: "Login not successful",
+        error: "Incorrect password",
       });
     }
   } catch (error) {
-    res.status(400).json({
-      message: "Error occured",
+    return res.status(400).json({
+      message: "Error occurred",
       error: error.message,
     });
   }
@@ -379,6 +418,35 @@ exports.editPassword = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error updating password.", error: error.message });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  const { id } = req.params;
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    if (user.email !== email) {
+      return res.status(401).json({ message: "Invalid email." });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Invalid password." });
+    }
+
+    await User.findByIdAndDelete(id);
+    res.status(200).json({ message: "Account deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res
+      .status(500)
+      .json({ message: "Error deleting account.", error: error.message });
   }
 };
 
