@@ -15,12 +15,12 @@ import React, { useState, useEffect, useContext } from "react";
 import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Button } from "react-native-paper";
-import { Context } from "../store/context";
+import { Context } from "../../store/context";
 import {
   fetchRecipes,
   fetchRecipeDetails,
   fetchRecommendations,
-} from "../assets/Api";
+} from "../../assets/Api";
 import { useNavigation } from "@react-navigation/native";
 //import { set } from "mongoose";
 //import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";

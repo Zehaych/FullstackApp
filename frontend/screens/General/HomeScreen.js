@@ -8,7 +8,7 @@ import {
   ScrollView,
   StatusBar,
 } from "react-native";
-import { fetchRecipeDetails } from "../assets/Api";
+import { fetchRecipeDetails } from "../../assets/Api";
 
 const HomeScreen = ({ navigation }) => {
   const navigateToCommunityRecipes = () => {
@@ -63,7 +63,7 @@ const HomeScreen = ({ navigation }) => {
         <Text style={styles.headerText}>NutriRizz Recipe App</Text>
       </View>
       <Image
-        source={require("../assets/recipe_image.png")}
+        source={require("../../assets/recipe_image.png")}
         style={styles.bannerImage}
       />
 
@@ -72,21 +72,21 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.introImages}>
           <View style={styles.introImage}>
             <Image
-              source={require("../assets/image1.png")}
+              source={require("../../assets/image1.png")}
               style={styles.introImageImage}
             />
             <Text style={styles.introImageText}>Discover Recipes</Text>
           </View>
           <View style={styles.introImage}>
             <Image
-              source={require("../assets/image2.png")}
+              source={require("../../assets/image2.png")}
               style={styles.introImageImage}
             />
             <Text style={styles.introImageText}>Share Your Recipes</Text>
           </View>
           <View style={styles.introImage}>
             <Image
-              source={require("../assets/image3.png")}
+              source={require("../../assets/image3.png")}
               style={styles.introImageImage}
             />
             <Text style={styles.introImageText}>Track your Progress</Text>
@@ -154,14 +154,14 @@ const HomeScreen = ({ navigation }) => {
         {/* Display top community recipes */}
         <TouchableOpacity style={styles.communityRecipe}>
           <Image
-            source={require("../assets/recipe3.jpg")}
+            source={require("../../assets/recipe3.jpg")}
             style={styles.communityRecipeImage}
           />
           <Text style={styles.communityRecipeTitle}>Veggie Stir-Fry</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.communityRecipe}>
           <Image
-            source={require("../assets/recipe4.jpg")}
+            source={require("../../assets/recipe4.jpg")}
             style={styles.communityRecipeImage}
           />
           <Text style={styles.communityRecipeTitle}>Homemade Pizza</Text>

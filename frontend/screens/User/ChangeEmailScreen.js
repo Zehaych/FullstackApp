@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Context } from "../store/context";
+import { Context } from "../../store/context";
 import {
   Keyboard,
   StyleSheet,
@@ -12,10 +12,10 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const ChangeUsernameScreen = () => {
+const ChangeEmailScreen = () => {
   const navigation = useNavigation();
   const [currentUser, setCurrentUser] = useContext(Context);
-  const [newUsername, setNewUsername] = useState("");
+  const [newEmail, setNewEmail] = useState("");
 
   const [password, setPassword] = useState("");
 
@@ -25,23 +25,28 @@ const ChangeUsernameScreen = () => {
 
   const updatedUser = { ...currentUser }; // Create a copy of currentUser
 
-  const handleUsernameChange = () => {
-    if (!newUsername) {
-      // Check if newUsername is empty and show an alert
-      alert("Please enter a username."); // Prompt the user that empty username is not allowed
+  const handleEmailChange = () => {
+    if (!currentUser || !currentUser._id) {
+      console.log("No valid current user found");
+    } else {
+      console.log("User found!");
+    }
+    if (!newEmail) {
+      // Check if newEmail is empty and show an alert
+      alert("Please enter an email."); // Prompt the user that empty email is not allowed
       return; // Exit the function without making the API call
     }
     const userId = updatedUser._id; // Get the user's ID from updatedUser
 
-    updatedUser.username = newUsername; // Update username in updatedUser
+    updatedUser.email = newEmail; // Update email in updatedUser
 
-    fetch(`${process.env.EXPO_PUBLIC_IP}/user/editUsername/${userId}`, {
+    fetch(`${process.env.EXPO_PUBLIC_IP}/user/editEmail/${userId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: newUsername, // Send the new username in the request body
+        email: newEmail, // Send the new email in the request body
         password: password,
       }),
     })
@@ -59,14 +64,14 @@ const ChangeUsernameScreen = () => {
           });
         } else {
           // Handle other error scenarios
-          throw new Error("An error occurred while updating the username.");
+          throw new Error("An error occurred while updating the email.");
         }
       })
       .then((data) => {
         // Handle the successful response from the server
         console.log(data);
         setCurrentUser(updatedUser); // Update currentUser in local state with updatedUser
-        alert("Successfully updated your username!");
+        alert("Successfully updated your email!");
         navigation.navigate("TabScreen");
       })
       .catch((error) => {
@@ -82,9 +87,10 @@ const ChangeUsernameScreen = () => {
         {/* <Text>Change Username</Text> */}
         <TextInput
           style={styles.input}
-          placeholder="Enter new username"
-          value={newUsername}
-          onChangeText={(text) => setNewUsername(text)}
+          placeholder="Enter new email"
+          value={newEmail}
+          onChangeText={(text) => setNewEmail(text)}
+          keyboardType="email-address"
         />
         <TextInput
           style={styles.input}
@@ -93,7 +99,7 @@ const ChangeUsernameScreen = () => {
           onChangeText={(text) => setPassword(text)}
         />
 
-        <Button title="Update Username" onPress={handleUsernameChange} />
+        <Button title="Update email" onPress={handleEmailChange} />
       </View>
     </ScrollView>
   );
@@ -115,4 +121,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChangeUsernameScreen;
+export default ChangeEmailScreen;

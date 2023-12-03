@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Context } from "../store/context";
+import { Context } from "../../store/context";
 import {
   Keyboard,
   StyleSheet,

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
-import { Context } from "../store/context";
+import { Context } from "../../store/context";
 import * as ImagePicker from "expo-image-picker";
 
 const AddRecipeScreen = () => {

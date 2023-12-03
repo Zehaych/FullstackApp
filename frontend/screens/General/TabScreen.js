@@ -1,17 +1,17 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import UserScreen from "./UserScreen";
+import UserScreen from "../User/UserScreen";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import HomeScreen from "./HomeScreen";
 import OnlineRecipeScreen from "./OnlineRecipeScreen";
 import MembersRecipeScreen from "./MembersRecipeScreen";
-import BizPartnerScreen from "./BizPartnerScreen";
+import BizPartnerScreen from "../BizPartner/BizPartnerScreen";
 import AdminScreen from "../SystemAdmin/AdminScreen";
-import ProgressScreen from "./ProgressScreen";
+import ProgressScreen from "../User/ProgressScreen";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import BusinessRecipeScreen from "./BusinessRecipeScreen";
-import { Context } from "../store/context";
+import { Context } from "../../store/context";
 import { useContext } from "react";
 import { useEffect } from "react";
 

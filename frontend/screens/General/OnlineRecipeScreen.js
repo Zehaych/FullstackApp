@@ -15,8 +15,8 @@ import {
   fetchRecipes,
   fetchRecipeDetails,
   fetchRandomRecipes,
-} from "../assets/Api";
-import { Context } from "../store/context";
+} from "../../assets/Api";
+import { Context } from "../../store/context";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
 

@@ -1,33 +1,33 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import LogInScreen from "./screens/LogInScreen";
-import TabScreen from "./screens/TabScreen";
-import SignUpScreen from "./screens/SignUpScreen";
-import MembersRecipeScreen from "./screens/MembersRecipeScreen";
-import MembersRecipeInfoScreen from "./screens/MembersRecipeInfoScreen";
-import OnlineRecipeScreen from "./screens/OnlineRecipeScreen";
-import OnlineRecipeInfoScreen from "./screens/OnlineRecipeInfoScreen";
-import TDEEScreen from "./screens/TDEEScreen";
-import MedicalHistoryScreen from "./screens/MedicalHistoryScreen";
-import SettingsScreen from "./screens/SettingsScreen";
-import AddRecipeScreen from "./screens/AddRecipeScreen";
-import UserScreen from "./screens/UserScreen";
+import LogInScreen from "./screens/General/LogInScreen";
+import TabScreen from "./screens/General/TabScreen";
+import SignUpScreen from "./screens/General/SignUpScreen";
+import MembersRecipeScreen from "./screens/General/MembersRecipeScreen";
+import MembersRecipeInfoScreen from "./screens/General/MembersRecipeInfoScreen";
+import OnlineRecipeScreen from "./screens/General/OnlineRecipeScreen";
+import OnlineRecipeInfoScreen from "./screens/General/OnlineRecipeInfoScreen";
+import TDEEScreen from "./screens/User/TDEEScreen";
+import MedicalHistoryScreen from "./screens/User/MedicalHistoryScreen";
+import SettingsScreen from "./screens/User/SettingsScreen";
+import AddRecipeScreen from "./screens/User/AddRecipeScreen";
+import UserScreen from "./screens/User/UserScreen";
 import { Context } from "./store/context";
 import { useState } from "react";
-import ProgressScreen from "./screens/ProgressScreen";
-import AddBizRecipeScreen from "./screens/AddBizRecipeScreen";
-import BusinessRecipeScreen from "./screens/BusinessRecipeScreen";
-import BusinessRecipeInfoScreen from "./screens/BusinessRecipeInfoScreen";
-import PaymentScreen from "./screens/PaymentScreen";
-import ChangeEmailScreen from "./screens/ChangeEmailScreen";
-import ChangeUsernameScreen from "./screens/ChangeUsernameScreen";
-import ChangePasswordScreen from "./screens/ChangePasswordScreen";
-import BizPartnerSignUp from "./screens/BizPartnerSignUp";
-import AdminScreen from "./SystemAdmin/AdminScreen";
-import DeleteAcountScreen from "./screens/DeleteAcountScreen";
-import ViewRecipeScreen from "./screens/ViewRecipeScreen";
-import RetrieveUserAccount from "./SystemAdmin/RetrieveUserAccount";
-import RetrieveBizPartners from "./SystemAdmin/RetrieveBizPartners"
+import ProgressScreen from "./screens/User/ProgressScreen";
+import AddBizRecipeScreen from "./screens/BizPartner/AddBizRecipeScreen";
+import BusinessRecipeScreen from "./screens/General/BusinessRecipeScreen";
+import BusinessRecipeInfoScreen from "./screens/General/BusinessRecipeInfoScreen";
+import PaymentScreen from "./screens/User/PaymentScreen";
+import ChangeEmailScreen from "./screens/User/ChangeEmailScreen";
+import ChangeUsernameScreen from "./screens/User/ChangeUsernameScreen";
+import ChangePasswordScreen from "./screens/User/ChangePasswordScreen";
+import BizPartnerSignUp from "./screens/SystemAdmin/BizPartnerSignUp";
+import AdminScreen from "./screens/SystemAdmin/AdminScreen";
+import DeleteAcountScreen from "./screens/User/DeleteAcountScreen";
+import ViewRecipeScreen from "./screens/User/ViewRecipeScreen";
+import RetrieveUserAccount from "./screens/SystemAdmin/RetrieveUserAccount";
+import RetrieveBizPartners from "./screens/SystemAdmin/RetrieveBizPartners";
 
 const Stack = createStackNavigator();
 
@@ -41,12 +41,12 @@ function App() {
           <Stack.Screen
             name="RetrieveBizPartners"
             component={RetrieveBizPartners}
-            options={{ headerShown: false}}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="RetrieveUserAccount"
             component={RetrieveUserAccount}
-            options={{ headerShown: false}}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="AdminScreen"

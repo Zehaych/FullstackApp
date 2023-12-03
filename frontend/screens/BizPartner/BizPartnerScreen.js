@@ -12,11 +12,11 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useContext } from "react";
-import { Context } from "../store/context";
+import { Context } from "../../store/context";
 import { useState } from "react";
 import { useEffect } from "react";
 
-const UserScreen = () => {
+const BizPartnerScreen = () => {
   const navigation = useNavigation();
   const [currentUser, setCurrentUser] = useContext(Context);
 
@@ -34,20 +34,12 @@ const UserScreen = () => {
     ]);
   };
 
-  const onSettingsPressed = () => {
-    navigation.push("Settings");
-  };
-
   const onEditProfilePressed = () => {
     navigation.push("Edit Profile");
   };
 
   const onAddRecipePressed = () => {
     navigation.push("Add Recipe");
-  };
-
-  const onViewRecipePressed = () => {
-    navigation.push("View Recipe");
   };
 
   const onTrackProgressPressed = () => {
@@ -58,16 +50,6 @@ const UserScreen = () => {
     navigation.push("Add Business Recipe");
   };
 
-  const onCalculateCaloriePressed = () => {
-    // Navigate to the "Calculate Calorie" screen
-    navigation.push("Calculate Calorie");
-  };
-
-  const onInsertMedicalHistoryPressed = () => {
-    // Navigate to the "Insert Medical History" screen
-    navigation.push("Medical History");
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.userInfoSection}>
@@ -75,7 +57,7 @@ const UserScreen = () => {
           <Title style={styles.title}>{currentUser.username}</Title>
         </View>
 
-        <View style={styles.userDetails}>
+        {/* <View style={styles.userDetails}>
           <View style={styles.userDetail}>
             <Text style={styles.detailText}>Sex: {currentUser.gender}</Text>
             <Text style={styles.detailText}>Age: {currentUser.age}</Text>
@@ -87,7 +69,7 @@ const UserScreen = () => {
               Calorie goal: {currentUser.calorie}
             </Text>
           </View>
-        </View>
+        </View> */}
       </View>
       <Divider />
 
@@ -99,70 +81,12 @@ const UserScreen = () => {
           </View>
         </TouchableRipple> */}
 
-        <TouchableRipple onPress={onCalculateCaloriePressed}>
-          <View style={styles.menuItem}>
-            <Icon
-              name="calculator"
-              size={25}
-              color="#FF6347"
-              style={styles.icon}
-            />
-            <Text style={styles.menuItemText}>Calculate Calorie</Text>
-          </View>
-        </TouchableRipple>
-        <TouchableRipple onPress={onInsertMedicalHistoryPressed}>
-          <View style={styles.menuItem}>
-            <Icon
-              name="clipboard-account"
-              size={25}
-              color="#FF6347"
-              style={styles.icon}
-            />
-            <Text style={styles.menuItemText}>Insert Medical History</Text>
-          </View>
-        </TouchableRipple>
-
-        <TouchableRipple onPress={onTrackProgressPressed}>
-          <View style={styles.menuItem}>
-            <Icon name="chart-bar" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>Track Progress</Text>
-          </View>
-        </TouchableRipple>
-
-        <TouchableRipple onPress={onAddRecipePressed}>
+        <TouchableRipple onPress={onAddBizRecipePressed}>
           <View style={styles.menuItem}>
             <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>Add Recipe</Text>
+            <Text style={styles.menuItemText}>Add Business Recipe</Text>
           </View>
         </TouchableRipple>
-
-        <TouchableRipple onPress={onViewRecipePressed}>
-          <View style={styles.menuItem}>
-            <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>View Added Recipe</Text>
-          </View>
-        </TouchableRipple>
-
-        <TouchableRipple onPress={onSettingsPressed}>
-          <View style={styles.menuItem}>
-            <Icon name="cog" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>Settings</Text>
-          </View>
-        </TouchableRipple>
-
-        {/* <TouchableRipple onPress={onSettingsPressed}>
-          <View style={styles.menuItem}>
-            <Icon name="cog" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>Delete Account</Text>
-          </View>
-        </TouchableRipple> */}
-        {/* 
-        <TouchableRipple onPress={onSettingsPressed}>
-          <View style={styles.menuItem}>
-            <Icon name="cog" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>Settings</Text>
-          </View>
-        </TouchableRipple> */}
 
         <TouchableRipple onPress={onLogOutPressed}>
           <View style={styles.menuItem}>
@@ -175,7 +99,7 @@ const UserScreen = () => {
   );
 };
 
-export default UserScreen;
+export default BizPartnerScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -221,8 +145,6 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 30,
     alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#dddddd",
   },
   menuItemText: {
     color: "#777777",
