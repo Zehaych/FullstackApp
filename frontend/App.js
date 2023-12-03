@@ -23,11 +23,11 @@ import ChangeEmailScreen from "./screens/ChangeEmailScreen";
 import ChangeUsernameScreen from "./screens/ChangeUsernameScreen";
 import ChangePasswordScreen from "./screens/ChangePasswordScreen";
 import BizPartnerSignUp from "./screens/BizPartnerSignUp";
-import AdminScreen from "./screens/AdminScreen";
+import AdminScreen from "./SystemAdmin/AdminScreen";
 import DeleteAcountScreen from "./screens/DeleteAcountScreen";
 import ViewRecipeScreen from "./screens/ViewRecipeScreen";
-import RetrieveUserAccount from "./screens/RetrieveUserAccount";
-import RetrieveBizPartners from "./screens/RetrieveBizPartners";
+import RetrieveUserAccount from "./SystemAdmin/RetrieveUserAccount";
+import RetrieveBizPartners from "./SystemAdmin/RetrieveBizPartners"
 
 const Stack = createStackNavigator();
 

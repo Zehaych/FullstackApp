@@ -36,10 +36,17 @@ export default function RetrieveUsers() {
             <Text style={styles.title}>{currentUser.username}</Text>
             <Text style={styles.subtitle}>Business Partner Accounts</Text>
             <FlatList
-                data={users}
-                keyExtractor={(item) => item._id}
-                renderItem={({ item }) => <Text style={styles.item}>{item.username}</Text>}
-            />
+            data={users}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
+                <TouchableOpacity
+                    style={styles.item}
+                    onPress={() => navigation.navigate('BizPartnerInfo', { user: item })}
+                >
+            <Text>{item.username}</Text>
+        </TouchableOpacity>
+    )}
+/>
         </View>
     )
 }

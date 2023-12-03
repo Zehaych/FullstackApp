@@ -8,7 +8,7 @@ import {
     Pressable,
     StyleSheet,
   } from "react-native";
-  import AdminScreen from "./AdminScreen";
+  import AdminScreen from "../SystemAdmin/AdminScreen";
   import React, { useState } from "react";
   import { StatusBar } from "expo-status-bar";
   import { useNavigation } from "@react-navigation/native";
