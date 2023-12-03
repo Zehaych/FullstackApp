@@ -57,17 +57,14 @@ export default function MembersRecipeInfoScreen({ route }) {
             <Text style={styles.subTitle}>Disclaimer: </Text>
             <Text>
               Based on your medical history, it is recommended to minimize or
-              abstain from using {currentUser.foodRestrictions.join(", ")} when
-              preparing the recipe. {"\n"}
+              abstain from using{" "}
+              <Text style={{ color: "red" }}>
+                {currentUser.foodRestrictions.join(", ")}
+              </Text>{" "}
+              when preparing the recipe. {"\n"}
             </Text>
           </View>
         )}
-        <Text style={styles.subTitle}>Ingredients: </Text>
-        {recipeData.ingredients.map((ingredient, index) => (
-          <Text key={index}>
-            • {ingredient} {"\n"}
-          </Text>
-        ))}
 
         <Text style={styles.subTitle}>Instructions: </Text>
         {recipeData.instructions.map((instruction, index) => (
