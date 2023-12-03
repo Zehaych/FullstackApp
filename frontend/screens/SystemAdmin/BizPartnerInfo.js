@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet, Button, TouchableOpacity } from "react-native";
 
 const BizPartnerInfo = ({ route, navigation }) => {
   const { user } = route.params; // Retrieve the user data passed from the previous screen
@@ -67,20 +67,12 @@ const BizPartnerInfo = ({ route, navigation }) => {
         Status: {userData.isActive ? "Active" : "Suspended"}
       </Text>
       <View style={styles.buttonContainer}>
-        <View style={styles.button}>
-          <Button
-            title="Suspend User"
-            color="#007bff" // Set the button's background color
-            onPress={() => suspendUser(userData._id)}
-          />
-        </View>
-        <View style={[styles.button, styles.secondaryButton]}>
-          <Button
-            title="Reactivate User"
-            color="#28a745" // Set the button's background color
-            onPress={() => unsuspendUser(userData._id)}
-          />
-        </View>
+        <TouchableOpacity style={[styles.button]} onPress={() => suspendUser(userData._id)}>
+            <Text style={styles.buttonText}>Suspend User</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, styles.secondaryButton]} onPress={() => unsuspendUser(userData._id)}>
+            <Text style={styles.buttonText}>Reactivate User</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

@@ -1,74 +1,78 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
 
 const UserInfo = ({ route, navigation }) => {
     const { user } = route.params; // Retrieve the user data passed from the previous screen
 
+    const [userData, setUserData] = useState(user);
+
     const suspendUser = async (userId) => {
         try {
-            const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/suspend/${userId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Add any necessary headers like authorization tokens
-                },
-            });
-            const data = await response.json();
-            if (response.ok) {
-                alert('User suspended successfully');
-                // Additional logic to update UI or state
-            } else {
-                alert(data.message || 'Error suspending user');
+          const response = await fetch(
+            `${process.env.EXPO_PUBLIC_IP}/user/suspend/${userId}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                // Add any necessary headers like authorization tokens
+              },
             }
+          );
+          const data = await response.json();
+          if (response.ok) {
+            alert("User suspended successfully");
+            const updatedUser = { ...userData, isActive: false }; // Update user's isActive property
+            setUserData(updatedUser); // Update the state with the modified user data
+          } else {
+            alert(data.message || "Error suspending user");
+          }
         } catch (error) {
-            console.error('Error suspending user:', error);
-            alert('Error suspending user');
+          console.error("Error suspending user:", error);
+          alert("Error suspending user");
         }
-    };
+      };
     
     const unsuspendUser = async (userId) => {
         try {
-            const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/unsuspend/${userId}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Add any necessary headers like authorization tokens
-                },
-            });
-            const data = await response.json();
-            if (response.ok) {
-                alert('User unsuspended successfully');
-                // Additional logic to update UI or state
-            } else {
-                alert(data.message || 'Error reactivating user');
+          const response = await fetch(
+            `${process.env.EXPO_PUBLIC_IP}/user/unsuspend/${userId}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                // Add any necessary headers like authorization tokens
+              },
             }
+          );
+          const data = await response.json();
+          if (response.ok) {
+            alert("User reactivated successfully");
+            const updatedUser = { ...userData, isActive: true };
+            setUserData(updatedUser);
+          } else {
+            alert(data.message || "Error reactivating user");
+          }
         } catch (error) {
-            console.error('Error reactivating user:', error);
-            alert('Error reactivating user');
+          console.error("Error reactivating user:", error);
+          alert("Error reactivating user");
         }
-    };
+      };
 
     return (
         <View style={styles.container}>
             <Text style={styles.infoTitle}>User Information</Text>
             <Text style={styles.userInfo}>User: {user.username}</Text>
             <Text style={styles.userInfo}>Email: {user.email}</Text>
-            <Text style={styles.userInfo}>Status: {user.isActive ? 'Active' : 'Suspended'}</Text>
+            <Text style={styles.userInfo}>
+                Status: {userData.isActive ? "Active" : "Suspended"}
+            </Text>
             <View style={styles.buttonContainer}>
-                <View style={styles.button}>
-                    <Button
-                        title="Suspend User"
-                        color="white" // Set the text color
-                        onPress={() => suspendUser(user._id)}
-                    />
-                </View>
-                <View style={[styles.button, styles.secondaryButton]}>
-                    <Button
-                        title="Reactivate User"
-                        color="white" // Set the text color
-                        onPress={() => unsuspendUser(user._id)}
-                    />
-                </View>
+                <TouchableOpacity style={[styles.button]} onPress={() => suspendUser(userData._id)}>
+                    <Text style={styles.buttonText}>Suspend User</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.button, styles.secondaryButton]} onPress={() => unsuspendUser(userData._id)}>
+                    <Text style={styles.buttonText}>Reactivate User</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
