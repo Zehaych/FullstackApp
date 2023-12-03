@@ -29,6 +29,8 @@ import ViewRecipeScreen from "./screens/User/ViewRecipeScreen";
 import RetrieveUserAccount from "./screens/SystemAdmin/RetrieveUserAccount";
 import RetrieveBizPartners from "./screens/SystemAdmin/RetrieveBizPartners";
 import SummaryScreen from "./screens/User/SummaryScreen";
+import BizPartnerInfo from "./screens/SystemAdmin/BizPartnerInfo";
+import UserInfo from "./screens/SystemAdmin/UserInfo";
 
 const Stack = createStackNavigator();
 
@@ -39,6 +41,16 @@ function App() {
     <Context.Provider value={[currentUser, setCurrentUser]}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="LogInScreen">
+          <Stack.Screen
+            name="UserInfo"
+            component={UserInfo}
+            options={{ headerShown: false}}
+          />
+          <Stack.Screen
+            name="BizPartnerInfo"
+            component={BizPartnerInfo}
+            options={{ headerShown: false}}
+          />
           <Stack.Screen
             name="RetrieveBizPartners"
             component={RetrieveBizPartners}

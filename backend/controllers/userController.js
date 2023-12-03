@@ -526,6 +526,37 @@ exports.postCalories = async (req, res) => {
   }
 };
 
+//Suspend User 
+exports.suspendUser = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+
+  const user = await User.findById(userId);
+  if (!user) {
+      return res.status(404).json({ message: "User not found" });
+  }
+
+  user.isActive = false;
+  await user.save();
+
+  res.status(200).json({ message: "User suspended successfully" });
+});
+
+//Unsuspend User
+exports.unsuspendUser = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+
+  const user = await User.findById(userId);
+  if (!user) {
+      return res.status(404).json({ message: "User not found" });
+  }
+
+  user.isActive = true;
+  await user.save();
+
+  res.status(200).json({ message: "User reactivated successfully" });
+});
+
+
 // exports.postCalories = async (req, res) => {
 //   const {id} = req.params;
 //   const {total_calories } = req.body;

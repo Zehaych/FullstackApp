@@ -41,7 +41,14 @@ export default function RetrieveUsers() {
         data={users}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
-          <Text style={styles.item}>{item.username}</Text>
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() =>
+              navigation.navigate("UserInfo", { user: item })
+            }
+          >
+            <Text>{item.username}</Text>
+          </TouchableOpacity>
         )}
       />
     </View>
@@ -52,7 +59,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: "#f5f5f5", // Change as needed
+    backgroundColor: "#f5f5f5",
   },
   title: {
     marginTop: 30,
@@ -61,9 +68,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: 18,
-    color: "#333", // Change as needed
-    marginBottom: 5,
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: "#333", 
     textAlign: "center",
   },
   item: {
