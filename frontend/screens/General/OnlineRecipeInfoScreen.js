@@ -93,7 +93,10 @@ const OnlineRecipeInfoScreen = ({ route }) => {
               <Text style={styles.customHeadings}>Disclaimer: </Text>
               <Text style={styles.customText}>
                 Based on your medical history, it is recommended to minimize or
-                abstain from using {currentUser.foodRestrictions.join(", ")}{" "}
+                abstain from using{" "}
+                <Text style={{ color: "red", fontWeight: "bold" }}>
+                  {currentUser.foodRestrictions.join(", ")}
+                </Text>{" "}
                 when preparing the recipe. {"\n"}
               </Text>
             </View>
