@@ -9,11 +9,14 @@ import {
   TouchableOpacity,
   Button,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { Context } from "../../store/context";
 
 export default function MembersRecipeInfoScreen({ route }) {
   const { recipeData } = route.params;
   const [username, setUsername] = useState("");
+
+  const [currentUser, setCurrentUser] = useContext(Context);
 
   const fetchUsername = async () => {
     try {
@@ -40,28 +43,38 @@ export default function MembersRecipeInfoScreen({ route }) {
         <View style={styles.imageContainer}>
           <Image source={{ uri: recipeData.image }} style={styles.image} />
         </View>
-        <Text style={styles.title}>{recipeData.name} </Text>
+        <Text style={styles.title}>
+          {recipeData.name} {"\n"}
+        </Text>
+
         <Text style={styles.subTitle}>Created by: </Text>
         <Text>
           {username} {"\n"}
         </Text>
+
+        {currentUser.foodRestrictions.length > 0 && (
+          <View>
+            <Text style={styles.subTitle}>Disclaimer: </Text>
+            <Text>
+              Based on your medical history, it is recommended to minimize or
+              abstain from using {currentUser.foodRestrictions.join(", ")} when
+              preparing the recipe. {"\n"}
+            </Text>
+          </View>
+        )}
         <Text style={styles.subTitle}>Ingredients: </Text>
-        <Text>
-          {recipeData.ingredients.map((ingredient, index) => (
-            <Text key={index}>
-              • {ingredient}
-              {"\n"}
-            </Text>
-          ))}{" "}
-        </Text>
+        {recipeData.ingredients.map((ingredient, index) => (
+          <Text key={index}>
+            • {ingredient} {"\n"}
+          </Text>
+        ))}
+
         <Text style={styles.subTitle}>Instructions: </Text>
-        <View>
-          {recipeData.instructions.map((instruction, index) => (
-            <Text key={index}>
-              Step {index + 1}: {instruction} {"\n"}
-            </Text>
-          ))}
-        </View>
+        {recipeData.instructions.map((instruction, index) => (
+          <Text key={index}>
+            Step {index + 1}: {instruction} {"\n"}
+          </Text>
+        ))}
 
         <Text style={styles.subTitle}>Calories: </Text>
         <Text>{recipeData.calories}</Text>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -9,11 +9,14 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { fetchRecipeDetails, fetchRecipeIngredients } from "../../assets/Api";
+import { Context } from "../../store/context";
 
 const OnlineRecipeInfoScreen = ({ route }) => {
   const { recipeId } = route.params;
   const [recipeDetails, setRecipeDetails] = useState(null);
   const [recipeIngredients, setRecipeIngredients] = useState(null);
+
+  const [currentUser, setCurrentUser] = useContext(Context);
 
   useEffect(() => {
     // Fetch meal details by id
@@ -84,6 +87,17 @@ const OnlineRecipeInfoScreen = ({ route }) => {
               </Text>
             </View>
           </View>
+
+          {currentUser.foodRestrictions.length > 0 && (
+            <View>
+              <Text style={styles.customHeadings}>Disclaimer: </Text>
+              <Text style={styles.customText}>
+                Based on your medical history, it is recommended to minimize or
+                abstain from using {currentUser.foodRestrictions.join(", ")}{" "}
+                when preparing the recipe. {"\n"}
+              </Text>
+            </View>
+          )}
           {/* ingredients */}
           <Text style={styles.customHeadings}>Ingredients:</Text>
           {recipeDetails.extendedIngredients ? ( //recipeDetails.extendedIngredients !== null
