@@ -58,7 +58,7 @@ export default function MembersRecipeInfoScreen({ route }) {
             <Text>
               Based on your medical history, it is recommended to minimize or
               abstain from using{" "}
-              <Text style={{ color: "red" }}>
+              <Text style={{ color: "red", fontWeight: "bold" }}>
                 {currentUser.foodRestrictions.join(", ")}
               </Text>{" "}
               when preparing the recipe. {"\n"}
