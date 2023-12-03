@@ -7,7 +7,7 @@ import HomeScreen from "./HomeScreen";
 import OnlineRecipeScreen from "./OnlineRecipeScreen";
 import MembersRecipeScreen from "./MembersRecipeScreen";
 import BizPartnerScreen from "./BizPartnerScreen";
-import AdminScreen from "./AdminScreen";
+import AdminScreen from "../SystemAdmin/AdminScreen";
 import ProgressScreen from "./ProgressScreen";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import BusinessRecipeScreen from "./BusinessRecipeScreen";
