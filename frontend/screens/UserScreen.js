@@ -34,6 +34,10 @@ const UserScreen = () => {
     ]);
   };
 
+  const onSettingsPressed = () => {
+    navigation.push("Settings");
+  };
+
   const onEditProfilePressed = () => {
     navigation.push("Edit Profile");
   };
@@ -42,12 +46,26 @@ const UserScreen = () => {
     navigation.push("Add Recipe");
   };
 
+  const onViewRecipePressed = () => {
+    navigation.push("View Recipe");
+  };
+
   const onTrackProgressPressed = () => {
     navigation.push("Track Progress");
   };
 
   const onAddBizRecipePressed = () => {
     navigation.push("Add Business Recipe");
+  };
+
+  const onCalculateCaloriePressed = () => {
+    // Navigate to the "Calculate Calorie" screen
+    navigation.push("Calculate Calorie");
+  };
+
+  const onInsertMedicalHistoryPressed = () => {
+    // Navigate to the "Insert Medical History" screen
+    navigation.push("Medical History");
   };
 
   return (
@@ -74,10 +92,33 @@ const UserScreen = () => {
       <Divider />
 
       <View style={styles.menuWrapper}>
-        <TouchableRipple onPress={onEditProfilePressed}>
+        {/* <TouchableRipple onPress={onEditProfilePressed}>
           <View style={styles.menuItem}>
             <Icon name="account-edit" color="#FF6347" size={25} />
             <Text style={styles.menuItemText}>Edit Profile</Text>
+          </View>
+        </TouchableRipple> */}
+
+        <TouchableRipple onPress={onCalculateCaloriePressed}>
+          <View style={styles.menuItem}>
+            <Icon
+              name="calculator"
+              size={25}
+              color="#FF6347"
+              style={styles.icon}
+            />
+            <Text style={styles.menuItemText}>Calculate Calorie</Text>
+          </View>
+        </TouchableRipple>
+        <TouchableRipple onPress={onInsertMedicalHistoryPressed}>
+          <View style={styles.menuItem}>
+            <Icon
+              name="clipboard-account"
+              size={25}
+              color="#FF6347"
+              style={styles.icon}
+            />
+            <Text style={styles.menuItemText}>Insert Medical History</Text>
           </View>
         </TouchableRipple>
 
@@ -94,6 +135,34 @@ const UserScreen = () => {
             <Text style={styles.menuItemText}>Add Recipe</Text>
           </View>
         </TouchableRipple>
+
+        <TouchableRipple onPress={onViewRecipePressed}>
+          <View style={styles.menuItem}>
+            <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>View Added Recipe</Text>
+          </View>
+        </TouchableRipple>
+
+        <TouchableRipple onPress={onSettingsPressed}>
+          <View style={styles.menuItem}>
+            <Icon name="cog" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>Settings</Text>
+          </View>
+        </TouchableRipple>
+
+        {/* <TouchableRipple onPress={onSettingsPressed}>
+          <View style={styles.menuItem}>
+            <Icon name="cog" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>Delete Account</Text>
+          </View>
+        </TouchableRipple> */}
+        {/* 
+        <TouchableRipple onPress={onSettingsPressed}>
+          <View style={styles.menuItem}>
+            <Icon name="cog" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>Settings</Text>
+          </View>
+        </TouchableRipple> */}
 
         <TouchableRipple onPress={onLogOutPressed}>
           <View style={styles.menuItem}>
@@ -152,6 +221,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 30,
     alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#dddddd",
   },
   menuItemText: {
     color: "#777777",

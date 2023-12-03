@@ -21,7 +21,7 @@ import {
   fetchRecipeDetails,
   fetchRecommendations,
 } from "../assets/Api";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 //import { set } from "mongoose";
 //import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 //import MealScreen from "./MealScreen";
@@ -47,7 +47,7 @@ const ProgressScreen = () => {
   const targetCalories = currentUser.calorie;
   // const API_KEY = "0a379b4c97a648aeb0051120265dcfca";
 
-  const foodRestrictions = currentUser.foodRestrictions;
+  const allergies = currentUser.allergies;
 
   // const handleGenerateRecommendations = () => {
   //   // Call the Spoonacular API to generate daily meal recommendations
@@ -76,12 +76,12 @@ const ProgressScreen = () => {
 
   const handleRecipeDetails = (recipeId) => {
     // Navigate to OnlineRecipeInfoScreen with the recipe details
-    navigation.navigate('Online Recipe Information', { recipeId });
+    navigation.navigate("Online Recipe Information", { recipeId });
   };
 
   const handleGenerateRecommendations = () => {
     // Call the new function to fetch meal recommendations
-    fetchRecommendations(targetCalories)
+    fetchRecommendations(targetCalories, allergies)
       .then((data) => {
         console.log("Recommendations data:", data);
         // const recommendations = data.meals.map((meal) => meal.title);
@@ -129,15 +129,15 @@ const ProgressScreen = () => {
     if (search) {
       setLoading(true);
 
-      // Call the fetchRecipes function from api.js with food restrictions
-      fetchRecipes(search, foodRestrictions)
+      // Call the fetchRecipes function from api.js with allergies
+      fetchRecipes(search, allergies)
         .then((data) => {
           setOnlineRecipes(data);
         })
         .catch((error) => console.error("Error fetching recipes:", error))
         .finally(() => setLoading(false));
     }
-  }, [search, foodRestrictions]);
+  }, [search, allergies]);
 
   // handle breakfast meal dropdown
   const handleBreakfastSelect = (recipeId) => {
@@ -166,28 +166,28 @@ const ProgressScreen = () => {
     setSelectedRecipeId(null);
   };
 
-  // //handle search data
-  // const handleSearch = (text) => {
-  //   setSearch(text);
-  //   if (!text) {
-  //     setOnlineRecipes([]); // Clear the recipes list
-  //   }
-  // };
   //handle search data
   const handleSearch = (text) => {
-    // Check if the search query matches any restricted food items
-    if (foodRestrictions.includes(text)) {
-      // Optionally, show an error message or handle the case differently
-      console.error("This food item is restricted:", text);
-      alert("This food item is restricted as per your medical history:", text);
-      return;
-    }
-
     setSearch(text);
     if (!text) {
       setOnlineRecipes([]); // Clear the recipes list
     }
   };
+  // //handle search data
+  // const handleSearch = (text) => {
+  //   // Check if the search query matches any restricted food items
+  //   if (foodRestrictions.includes(text)) {
+  //     // Optionally, show an error message or handle the case differently
+  //     console.error("This food item is restricted:", text);
+  //     alert("This food item is restricted as per your medical history:", text);
+  //     return;
+  //   }
+
+  //   setSearch(text);
+  //   if (!text) {
+  //     setOnlineRecipes([]); // Clear the recipes list
+  //   }
+  // };
 
   //handle item click
   const handleItemClick = (recipeId) => {
@@ -309,12 +309,7 @@ const ProgressScreen = () => {
     const totalCalories = handleTotalCalories();
     if (totalCalories === targetCalories) {
       return (
-        <Icon
-          name="thumbs-up"
-          size={20}
-          color="green"
-          style={styles.iconObj}
-        />
+        <Icon name="thumbs-up" size={20} color="green" style={styles.iconObj} />
       );
     } else if (totalCalories < targetCalories && totalCalories > 0) {
       return (
@@ -327,12 +322,7 @@ const ProgressScreen = () => {
       );
     } else if (totalCalories > targetCalories) {
       return (
-        <Icon
-          name="thumbs-down"
-          size={20}
-          color="red"
-          style={styles.iconObj}
-        />
+        <Icon name="thumbs-down" size={20} color="red" style={styles.iconObj} />
       );
     }
     return null; // Return null if no condition is met
@@ -460,7 +450,9 @@ const ProgressScreen = () => {
         {/* meal recipe recommandation*/}
         {recommendedRecipes.meals && recommendedRecipes.meals.length > 0 && (
           <View style={styles.recommendedRecipesContainer}>
-            <Text style={styles.subTitle}>Recommended Recipes for the Day:</Text>
+            <Text style={styles.subTitle}>
+              Recommended Recipes for the Day:
+            </Text>
             {recommendedRecipes.meals.map((recipe, index) => (
               <Text
                 key={index}

@@ -247,7 +247,7 @@ export default function SignUpScreen() {
           userName: username,
           email: email,
           password: password,
-          userType: "admin",
+          userType: "user",
         }),
       }
     );

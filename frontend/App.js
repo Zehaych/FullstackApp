@@ -9,7 +9,7 @@ import OnlineRecipeScreen from "./screens/OnlineRecipeScreen";
 import OnlineRecipeInfoScreen from "./screens/OnlineRecipeInfoScreen";
 import TDEEScreen from "./screens/TDEEScreen";
 import MedicalHistoryScreen from "./screens/MedicalHistoryScreen";
-import EditProfileScreen from "./screens/EditProfileScreen";
+import SettingsScreen from "./screens/SettingsScreen";
 import AddRecipeScreen from "./screens/AddRecipeScreen";
 import UserScreen from "./screens/UserScreen";
 import { Context } from "./store/context";
@@ -19,6 +19,15 @@ import AddBizRecipeScreen from "./screens/AddBizRecipeScreen";
 import BusinessRecipeScreen from "./screens/BusinessRecipeScreen";
 import BusinessRecipeInfoScreen from "./screens/BusinessRecipeInfoScreen";
 import PaymentScreen from "./screens/PaymentScreen";
+import ChangeEmailScreen from "./screens/ChangeEmailScreen";
+import ChangeUsernameScreen from "./screens/ChangeUsernameScreen";
+import ChangePasswordScreen from "./screens/ChangePasswordScreen";
+import BizPartnerSignUp from "./screens/BizPartnerSignUp";
+import AdminScreen from "./screens/AdminScreen";
+import DeleteAcountScreen from "./screens/DeleteAcountScreen";
+import ViewRecipeScreen from "./screens/ViewRecipeScreen";
+import RetrieveUserAccount from "./screens/RetrieveUserAccount";
+import RetrieveBizPartners from "./screens/RetrieveBizPartners";
 
 const Stack = createStackNavigator();
 
@@ -29,6 +38,21 @@ function App() {
     <Context.Provider value={[currentUser, setCurrentUser]}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="LogInScreen">
+          <Stack.Screen
+            name="RetrieveBizPartners"
+            component={RetrieveBizPartners}
+            options={{ headerShown: false}}
+          />
+          <Stack.Screen
+            name="RetrieveUserAccount"
+            component={RetrieveUserAccount}
+            options={{ headerShown: false}}
+          />
+          <Stack.Screen
+            name="AdminScreen"
+            component={AdminScreen}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="LogInScreen"
             component={LogInScreen}
@@ -44,7 +68,28 @@ function App() {
             component={TabScreen}
             options={{ headerShown: false }}
           />
-          <Stack.Screen name="Edit Profile" component={EditProfileScreen} />
+          <Stack.Screen
+            name="BizPartnerSignUp"
+            component={BizPartnerSignUp}
+            options={{ headerShown: false }}
+          />
+          {/* <Stack.Screen name="Edit Profile" component={EditProfileScreen} /> */}
+          <Stack.Screen name="Settings" component={SettingsScreen} />
+
+          <Stack.Screen name="Change Email" component={ChangeEmailScreen} />
+
+          <Stack.Screen
+            name="Change Username"
+            component={ChangeUsernameScreen}
+          />
+
+          <Stack.Screen
+            name="Change Password"
+            component={ChangePasswordScreen}
+          />
+
+          <Stack.Screen name="Delete Account" component={DeleteAcountScreen} />
+
           <Stack.Screen name="Calculate Calorie" component={TDEEScreen} />
           <Stack.Screen
             name="Medical History"
@@ -55,6 +100,7 @@ function App() {
             name="Add Business Recipe"
             component={AddBizRecipeScreen}
           />
+          <Stack.Screen name="View Recipe" component={ViewRecipeScreen} />
 
           <Stack.Screen name="Track Progress" component={ProgressScreen} />
 

@@ -96,7 +96,7 @@ const MedicalHistoryScreen = () => {
     const userId = updatedUser._id;
 
     // Make a PUT request to update the user's information on the server
-    fetch(`${process.env.EXPO_PUBLIC_IP}/user/editUser/${userId}`, {
+    fetch(`${process.env.EXPO_PUBLIC_IP}/user/editUserHealth/${userId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

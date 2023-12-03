@@ -1,71 +1,5 @@
-// import { useNavigation } from '@react-navigation/native';
-// import {
-//     Avatar,
-//     Title,
-//     Caption,
-//     TouchableRipple,
-//     Divider,
-//   } from "react-native-paper";
-// import React from 'react';
-// import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-// import { View, Text, StyleSheet } from 'react-native';
-// import { useContext } from "react";
-// import { Context } from "../store/context";
-
-// const AdminScreen = () => {
-//     const navigation = useNavigation();
-//     const [currentUser, setCurrentUser] = useContext(Context);
-
-//     const onLogOutPressed = () => {
-//         Alert.alert("Log Out", "Are you sure you want to log out?", [
-//           { text: "No", onPress: () => {} },
-//           {
-//             text: "Yes",
-//             onPress: () => {
-//               AsyncStorage.removeItem("userId");
-//               setCurrentUser(null);
-//               navigation.navigate("LogInScreen");
-//             },
-//           },
-//         ]);
-//       };
-
-//     return (
-//         <View style={styles.container}>
-//             <Text style={styles.title}>{currentUser.username}</Text>
-//             <Text>Welcome to the Admin Screen</Text>
-//             {/* Add more components or information specific to business partners here */}
-
-
-//             <TouchableRipple onPress={onLogOutPressed}>
-//             <View style={styles.menuItem}>
-//             <Icon name="exit-to-app" color="#FF6347" size={25} />
-//             <Text style={styles.menuItemText}>Log Out</Text>
-//             </View>
-//             </TouchableRipple>
-//         </View>
-
-        
-//     );
-// }
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         backgroundColor: '#F5FCFF',
-//     },
-//     title: {
-//         fontSize: 20,
-//         textAlign: 'center',
-//         margin: 10,
-//     },
-// });
-
-// export default AdminScreen;
-
 import { useNavigation } from '@react-navigation/native';
+
 import {
     Avatar,
     Title,
@@ -77,7 +11,7 @@ import {
 } from "react-native-paper";
 import React, { useState, useContext } from 'react';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { View, Text, StyleSheet, Alert, AsyncStorage } from 'react-native';
+import { View, Text, StyleSheet, Alert, AsyncStorage, Touchable } from 'react-native';
 import { Context } from "../store/context";
 
 const AdminScreen = () => {
@@ -99,62 +33,72 @@ const AdminScreen = () => {
         ]);
     };
 
-    const handleSubmit = async () => {
-      try {
-          console.log(currentUser._id);
-          const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/postCalories/${currentUser._id}`, {
-              method: 'PUT',
-              headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                  total_calories: totalCalories
-              })
-          });
-  
-          const responseData = await response.text();
-          console.log(currentUser);
-          console.log(responseData);
-          if (responseData === 'Updated successfully') {
-              Alert.alert('Calories updated!');
-          } else {
-              Alert.alert('Failed to update calories.');
-          }
-      } catch (error) {
-          Alert.alert('An error occurred: ' + error.message);
-      }
-  };
-  
+    //Function to navigate to create business Partner
+    const handleCreateBusinessPartner = () => {
+        navigation.navigate("BizPartnerSignUp");
+    };
+
+    const handleRetrieveUserAccount = () => {
+        navigation.navigate("RetrieveUserAccount");
+    };
+
+    
+    //Function to navigate to retrieve all business partners
+    const handleNavigateBizPartner = () => {
+        navigation.navigate("RetrieveBizPartners");
+    };
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{currentUser.username}</Text>
-            <Text>Welcome to the Admin Screen</Text>
+            <Text>Welcome to the System Administrator Screen</Text>
 
-            {/* Calorie Input */}
-            <TextInput
-                label='Total Calories'
-                value={totalCalories}
-                onChangeText={text => setTotalCalories(text)}
-                keyboardType='numeric'
-                mode='outlined'
-                style={{ width: 200, marginTop: 20 }}
+        <TouchableRipple onPress ={handleCreateBusinessPartner}>
+            <View style={styles.menuItem}>
+            <Icon
+                name="account-plus"
+                size={25}
+                color="#FF6347"
+                style={styles.icon}
             />
-            <Button
-                mode='contained'
-                onPress={handleSubmit}
-                style={{ marginTop: 10 }}
-            >
-                Update Calories
-            </Button>
+            <Text style={styles.menuItemText}>Create Business Partner Account</Text>
+            </View>
+        </TouchableRipple>
 
-            <TouchableRipple onPress={onLogOutPressed} style={{ marginTop: 20 }}>
-                <View style={styles.menuItem}>
-                    <Icon name="exit-to-app" color="#FF6347" size={25} />
-                    <Text style={styles.menuItemText}>Log Out</Text>
-                </View>
-            </TouchableRipple>
+        <TouchableRipple onPress = {handleRetrieveUserAccount}>
+            <View style={styles.menuItem}>
+            <Icon
+                name="account-search"
+                size={25}
+                color="#FF6347"
+                style={styles.icon}
+            />
+            <Text style={styles.menuItemText}>Retrieve User accounts</Text>
+            </View>
+        </TouchableRipple>
+
+        <TouchableRipple onPress = {handleNavigateBizPartner}>
+            <View style={styles.menuItem}>
+            <Icon
+                name="account-search"
+                size={25}
+                color="#FF6347"
+                style={styles.icon}
+            />
+            <Text style={styles.menuItemText}>Retrieve Business Partner accounts</Text>
+            </View>
+        </TouchableRipple>
+            
+          <TouchableRipple onPress={onLogOutPressed}>
+          <View style={styles.menuItem}>
+            <Icon 
+                name="exit-to-app" 
+                color="#FF6347" 
+                size={25} 
+                style={styles.icon}/>
+            <Text style={styles.menuItemText}>Log Out</Text>
+          </View>
+          </TouchableRipple>
         </View>
     );
 }
@@ -162,24 +106,27 @@ const AdminScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+        backgroundColor: "#fff",
+        padding: 20,
     },
     title: {
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
     },
+    icon: {
+        marginRight: 16,
+      },
     menuItem: {
-        flexDirection: 'row',
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
+        paddingVertical: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: "#dddddd",
     },
     menuItemText: {
-        marginLeft: 10,
-        fontWeight: '500',
+        color: "#333",
+        fontWeight: "600",
         fontSize: 16,
     }
 });

@@ -11,7 +11,11 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { fetchRecipes, fetchRecipeDetails, fetchRandomRecipes } from "../assets/Api";
+import {
+  fetchRecipes,
+  fetchRecipeDetails,
+  fetchRandomRecipes,
+} from "../assets/Api";
 import { Context } from "../store/context";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
@@ -26,6 +30,8 @@ const OnlineRecipeScreen = () => {
 
   // const [foodRestrictions, setFoodRestrictions] = useState([]);
   const foodRestrictions = currentUser.foodRestrictions;
+
+  const allergies = currentUser.allergies;
 
   // useEffect(() => {
   //   if (search) {
@@ -53,15 +59,15 @@ const OnlineRecipeScreen = () => {
     if (search) {
       setLoading(true);
 
-      // Call the fetchRecipes function from api.js with food restrictions
-      fetchRecipes(search, foodRestrictions)
+      // Call the fetchRecipes function from api.js with allergies
+      fetchRecipes(search, allergies)
         .then((data) => {
           setRecipes(data);
         })
         .catch((error) => console.error("Error fetching recipes:", error))
         .finally(() => setLoading(false));
     }
-  }, [search, foodRestrictions]);
+  }, [search, allergies]);
 
   // useEffect(() => {
   //   if (search) {
@@ -89,29 +95,29 @@ const OnlineRecipeScreen = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  //handle search data
-  const handleSearch = (text) => {
-    // Check if the search query matches any restricted food items
-    if (foodRestrictions.includes(text)) {
-      // Optionally, show an error message or handle the case differently
-      console.error("This food item is restricted:", text);
-      alert("This food item is restricted as per your medical history:", text);
-      return;
-    }
+  // //handle search data
+  // const handleSearch = (text) => {
+  //   // Check if the search query matches any restricted food items
+  //   if (foodRestrictions.includes(text)) {
+  //     // Optionally, show an error message or handle the case differently
+  //     console.error("This food item is restricted:", text);
+  //     alert("This food item is restricted as per your medical history:", text);
+  //     return;
+  //   }
 
-    setSearch(text);
-    if (!text) {
-      setRecipes([]); // Clear the recipes list
-    }
-  };
-
-  //  //handle search data
-  //  const handleSearch = (text) => {
   //   setSearch(text);
   //   if (!text) {
   //     setRecipes([]); // Clear the recipes list
   //   }
   // };
+
+  //handle search data
+  const handleSearch = (text) => {
+    setSearch(text);
+    if (!text) {
+      setRecipes([]); // Clear the recipes list
+    }
+  };
 
   //handle pressable data
   const handleItemClick = (recipeId) => {
