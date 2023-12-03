@@ -1,10 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Button, TouchableOpacity } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 const BizPartnerInfo = ({ route, navigation }) => {
   const { user } = route.params; // Retrieve the user data passed from the previous screen
 
   const [userData, setUserData] = useState(user); // State to hold the user data
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUserData = async () => {
+        try {
+          const userId = userData._id; // Assuming you have the user ID in the userData
+          const response = await fetch(
+            `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${userId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                // Add any necessary headers like authorization tokens
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            setUserData(data); // Update the userData with the fetched data
+          } else {
+            console.error("Failed to fetch user data");
+            // Handle errors as appropriate
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          // Handle errors as appropriate
+        }
+      };
+
+      fetchUserData();
+    }, [])
+  );
 
   const suspendUser = async (userId) => {
     try {
@@ -67,11 +101,17 @@ const BizPartnerInfo = ({ route, navigation }) => {
         Status: {userData.isActive ? "Active" : "Suspended"}
       </Text>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.button]} onPress={() => suspendUser(userData._id)}>
-            <Text style={styles.buttonText}>Suspend User</Text>
+        <TouchableOpacity
+          style={[styles.button]}
+          onPress={() => suspendUser(userData._id)}
+        >
+          <Text style={styles.buttonText}>Suspend User</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.secondaryButton]} onPress={() => unsuspendUser(userData._id)}>
-            <Text style={styles.buttonText}>Reactivate User</Text>
+        <TouchableOpacity
+          style={[styles.button, styles.secondaryButton]}
+          onPress={() => unsuspendUser(userData._id)}
+        >
+          <Text style={styles.buttonText}>Reactivate User</Text>
         </TouchableOpacity>
       </View>
     </View>
