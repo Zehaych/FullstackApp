@@ -19,34 +19,40 @@ const SummaryScreen = () => {
 
     // Get total calories from the latest data entry
     const latestTotalCalories = latestDataEntry ? latestDataEntry.total_calories : 0;
-    //console.log("latestTotalCalories: " + latestTotalCalories);
+    console.log("latestTotalCalories: " + latestTotalCalories);
 
+    //calories left to consume
+    const caloriesLeft = targetCalories - latestTotalCalories;
     //percentage of calories consumed
     const percentage = (latestTotalCalories / targetCalories) * 100;
 
     return (
         <View style={styles.container}>
-            <AnimatedCircularProgress
-                size={200}
-                width={15}
-                fill={percentage}
-                tintColor="#00e0ff"
-                backgroundColor="#3d5875"
-                rotation={0}
-                lineCap="round"
-            >
-                {(fill) => (
-                <View>
-                    <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-                    {latestTotalCalories} / {targetCalories} Calories
-                    </Text>
-                    <Text style={{ fontSize: 16 }}>Daily Intake</Text>
+            <View style={styles.chartContainer}>
+                <AnimatedCircularProgress
+                    size={200}
+                    width={15}
+                    fill={percentage}
+                    tintColor="#00e0ff"
+                    backgroundColor="#3d5875"
+                    rotation={0}
+                    lineCap="round"
+                >
+                    {(fill) => (
+                    <View>
+                        <Text style={styles.chartTextBold}>
+                        {latestTotalCalories} / {targetCalories} Cal consumed
+                        </Text>
+                        <Text style={styles.chartText}>{caloriesLeft} Cal left</Text>
+                    </View>
+                    )}
+                </AnimatedCircularProgress>
+                <View style={styles.textContainer}>
+                    <Text style={styles.chartTextBold}>Daily Intake</Text>
                 </View>
-                )}
-            </AnimatedCircularProgress>
-
-            <Text>Target Calories: {targetCalories}</Text>
-            <Text>Today's total Calories intake: {latestTotalCalories}</Text>
+            </View>
+            <Text style={styles.text}>Target Calories: {targetCalories}</Text>
+            <Text style={styles.text}>Today's total Calories intake: {latestTotalCalories}</Text>
         </View>
     );
 };
@@ -54,10 +60,35 @@ const SummaryScreen = () => {
 export default SummaryScreen;
 
 const styles = StyleSheet.create({
+    //containers
     container: {
         flex: 1,
         backgroundColor: "#FCFCD3",
         alignItems: "center",
+    },
+    chartContainer: {
+        marginTop: 50,
+        marginBottom: 50,
+    },
+    textContainer: {    
+        marginTop: 10,
+        marginBottom: 10,
+    },
+    //text
+    chartTextBold: {
+        fontSize: 20,
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+
+    chartText: {
+        fontSize: 18,
+        textAlign: "center",
+    },
+
+    text: {
+        fontSize: 20,
+        fontWeight: "bold",
     },
 });
 
