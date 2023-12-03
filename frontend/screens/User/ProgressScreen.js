@@ -370,6 +370,9 @@ const ProgressScreen = () => {
       Alert.alert("An error occurred: " + error.message);
     }
   };
+  const handleSummary = () => {
+    navigation.navigate("Summary");
+  };
 
   return (
     <TouchableWithoutFeedback
@@ -514,6 +517,9 @@ const ProgressScreen = () => {
             </Button>
           </View>
         </View>
+        <Button onPress={() => handleSummary()} style={styles.submitButton}>
+          View Summary
+        </Button>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

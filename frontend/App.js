@@ -28,6 +28,7 @@ import DeleteAcountScreen from "./screens/User/DeleteAcountScreen";
 import ViewRecipeScreen from "./screens/User/ViewRecipeScreen";
 import RetrieveUserAccount from "./screens/SystemAdmin/RetrieveUserAccount";
 import RetrieveBizPartners from "./screens/SystemAdmin/RetrieveBizPartners";
+import SummaryScreen from "./screens/User/SummaryScreen";
 
 const Stack = createStackNavigator();
 
@@ -128,6 +129,7 @@ function App() {
             component={BusinessRecipeInfoScreen}
             options={{ headerTransparent: true, headerTitle: "" }}
           />
+          <Stack.Screen name="Summary" component={SummaryScreen} options={{ headerTitle: "" }}/>
           <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="User Profile" component={UserScreen} />
         </Stack.Navigator>
