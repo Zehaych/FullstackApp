@@ -51,10 +51,10 @@ const PaymentScreen = () => {
         value={cvv}
         onChangeText={(text) => setCvv(text)}
       />
-      <Text style={styles.label}>House Address:</Text>
+      <Text style={styles.label}>Delivery Address:</Text>
       <TextInput
         style={styles.input}
-        placeholder="House Address"
+        placeholder="Delivery Address"
         value={address}
         onChangeText={(text) => setAddress(text)}
       />

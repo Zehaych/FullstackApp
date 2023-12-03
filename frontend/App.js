@@ -31,6 +31,7 @@ import RetrieveBizPartners from "./screens/SystemAdmin/RetrieveBizPartners";
 import SummaryScreen from "./screens/User/SummaryScreen";
 import BizPartnerInfo from "./screens/SystemAdmin/BizPartnerInfo";
 import UserInfo from "./screens/SystemAdmin/UserInfo";
+import PreferencesScreen from "./screens/User/PreferencesScreen";
 
 const Stack = createStackNavigator();
 
@@ -44,12 +45,12 @@ function App() {
           <Stack.Screen
             name="UserInfo"
             component={UserInfo}
-            options={{ headerShown: false}}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="BizPartnerInfo"
             component={BizPartnerInfo}
-            options={{ headerShown: false}}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="RetrieveBizPartners"
@@ -141,7 +142,17 @@ function App() {
             component={BusinessRecipeInfoScreen}
             options={{ headerTransparent: true, headerTitle: "" }}
           />
-          <Stack.Screen name="Summary" component={SummaryScreen} options={{ headerTitle: "" }}/>
+          <Stack.Screen
+            name="Summary"
+            component={SummaryScreen}
+            options={{ headerTitle: "" }}
+          />
+          <Stack.Screen
+            name="Preferences"
+            component={PreferencesScreen}
+            options={{ headerTransparent: true, headerTitle: "" }}
+          />
+
           <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="User Profile" component={UserScreen} />
         </Stack.Navigator>

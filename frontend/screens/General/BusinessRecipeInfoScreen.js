@@ -9,12 +9,15 @@ import {
   TouchableOpacity,
   Button,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { Context } from "../../store/context";
 
 export default function BusinessRecipeInfoScreen({ route, navigation }) {
   const { recipeData } = route.params;
   const [username, setUsername] = useState("");
+
+  const [currentUser, setCurrentUser] = useContext(Context);
 
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(recipeData.price);
@@ -35,6 +38,12 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
 
   const navigateToPayment = () => {
     navigation.navigate("Payment");
+  };
+
+  const navigateToPreferences = () => {
+    navigation.navigate("Preferences", {
+      recipeData: recipeData,
+    });
   };
 
   const formatPrice = (price) => {
@@ -73,36 +82,67 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
           <Image source={{ uri: recipeData.image }} style={styles.image} />
         </View>
         <Text style={styles.title}>{recipeData.name}</Text>
-        <Text style={styles.subTitle}>Company name: </Text>
-        <Text>
-          {username} {"\n"}
-        </Text>
-        <Text style={styles.subTitle}>Ingredients: </Text>
-        <Text>
-          {recipeData.ingredients.map((ingredient, index) => (
-            <Text key={index}>
-              • {ingredient}
+
+        <View style={styles.mainBox}>
+          <View style={styles.section}>
+            <Text style={styles.subTitle}>Company name: </Text>
+            <Text>
+              {username} {"\n"}
+            </Text>
+          </View>
+
+          {currentUser.foodRestrictions.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.subTitle}>Disclaimer: </Text>
+              <Text>
+                Based on your medical history, it is recommended to minimize or
+                abstain from using{" "}
+                <Text style={{ color: "red", fontWeight: "bold" }}>
+                  {currentUser.foodRestrictions.join(", ")}
+                </Text>{" "}
+                when preparing/ordering the recipe. {"\n"}
+              </Text>
+            </View>
+          )}
+
+          <View style={styles.section}>
+            <Text style={styles.subTitle}>Ingredients: </Text>
+            <Text>
+              {recipeData.ingredients.map((ingredient, index) => (
+                <Text key={index}>
+                  • {ingredient}
+                  {"\n"}
+                </Text>
+              ))}{" "}
+            </Text>
+          </View>
+          <View style={styles.section}>
+            <Text style={styles.subTitle}>Instructions: </Text>
+            <View>
+              {recipeData.instructions.map((instruction, index) => (
+                <Text key={index}>
+                  Step {index + 1}: {instruction} {"\n"}
+                </Text>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.subTitle}>Calories: </Text>
+            <Text>
+              {recipeData.calories}
               {"\n"}
             </Text>
-          ))}{" "}
-        </Text>
-        <Text style={styles.subTitle}>Instructions: </Text>
-        <View>
-          {recipeData.instructions.map((instruction, index) => (
-            <Text key={index}>
-              Step {index + 1}: {instruction} {"\n"}
-            </Text>
-          ))}
-        </View>
-        <Text style={styles.subTitle}>Calories: </Text>
-        <Text>
-          {recipeData.calories}
-          {"\n"}
-        </Text>
-        <Text style={styles.subTitle}>Price: </Text>
-        <Text>{formatPrice(recipeData.price)}</Text>
+          </View>
 
-        <View style={styles.quantityContainer}>
+          <Text style={styles.subTitle}>Price: </Text>
+          <Text>
+            {formatPrice(recipeData.price)}
+            {"\n"}
+          </Text>
+        </View>
+
+        {/* <View style={styles.quantityContainer}>
           <Text style={styles.quantityLabel}>Quantity:</Text>
           <TouchableOpacity
             style={styles.quantityButton}
@@ -117,14 +157,14 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
           >
             <Icon name="plus" size={20} color="#0066cc" />
           </TouchableOpacity>
-        </View>
-        {/* <Text style={styles.subTitle}>Total Price: </Text> */}
-        <Text style={styles.totalPrice}>Total Price: {getTotalPrice()}</Text>
+        </View> */}
+        {/* <Text style={styles.totalPrice}>Total Price: {getTotalPrice()}</Text> */}
+        <Text style={styles.subTitle}>Do you want us to cook for you? </Text>
 
         <StatusBar style="auto" />
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={navigateToPayment}>
+      <TouchableOpacity style={styles.button} onPress={navigateToPreferences}>
         <Text style={styles.buttonText}>Prepare this meal for me</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -145,12 +185,14 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    width: 400,
-    height: 400,
+    width: 310,
+    height: 310,
     resizeMode: "contain",
+    borderRadius: 20,
   },
+
   title: {
-    color: "gold",
+    color: "#333333",
     fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
@@ -196,5 +238,24 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginTop: 10,
+  },
+  mainBox: {
+    borderWidth: 2,
+    borderColor: "#CCCCCC",
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 30,
+  },
+  section: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#CCCCCC",
+    paddingBottom: 10,
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "black",
+    paddingBottom: 10,
   },
 });

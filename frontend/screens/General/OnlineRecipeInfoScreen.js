@@ -87,48 +87,55 @@ const OnlineRecipeInfoScreen = ({ route }) => {
               </Text>
             </View>
           </View>
-
-          {currentUser.foodRestrictions.length > 0 && (
-            <View>
-              <Text style={styles.customHeadings}>Disclaimer: </Text>
-              <Text style={styles.customText}>
-                Based on your medical history, it is recommended to minimize or
-                abstain from using{" "}
-                <Text style={{ color: "red", fontWeight: "bold" }}>
-                  {currentUser.foodRestrictions.join(", ")}
-                </Text>{" "}
-                when preparing the recipe. {"\n"}
-              </Text>
-            </View>
-          )}
-          {/* ingredients */}
-          <Text style={styles.customHeadings}>Ingredients:</Text>
-          {recipeDetails.extendedIngredients ? ( //recipeDetails.extendedIngredients !== null
-            <View>
-              {recipeDetails.extendedIngredients.map((ingredient, index) => (
-                <View key={index}>
-                  <Text style={styles.customText}>
-                    {ingredient.name} - {ingredient.amount} {ingredient.unit}
-                  </Text>
+          <View style={styles.mainBox}>
+            {currentUser.foodRestrictions.length > 0 && (
+              <View style={styles.section}>
+                <Text style={styles.customHeadings}>Disclaimer: </Text>
+                <Text style={styles.customText}>
+                  Based on your medical history, it is recommended to minimize
+                  or abstain from using{" "}
+                  <Text style={{ color: "red", fontWeight: "bold" }}>
+                    {currentUser.foodRestrictions.join(", ")}
+                  </Text>{" "}
+                  when preparing the recipe. {"\n"}
+                </Text>
+              </View>
+            )}
+            {/* ingredients */}
+            <View style={styles.section}>
+              <Text style={styles.customHeadings}>Ingredients:</Text>
+              {recipeDetails.extendedIngredients ? ( //recipeDetails.extendedIngredients !== null
+                <View>
+                  {recipeDetails.extendedIngredients.map(
+                    (ingredient, index) => (
+                      <View key={index}>
+                        <Text style={styles.customText}>
+                          {ingredient.name} - {ingredient.amount}{" "}
+                          {ingredient.unit}
+                        </Text>
+                      </View>
+                    )
+                  )}
                 </View>
-              ))}
+              ) : (
+                <Text>Loading recipe ingredients...</Text>
+              )}
             </View>
-          ) : (
-            <Text>Loading recipe ingredients...</Text>
-          )}
-          {/* instructions */}
-          <Text style={styles.customHeadings}>Instructions:</Text>
-          {recipeDetails.instructions ? (
-            <View>
+
+            {/* instructions */}
+            <Text style={styles.customHeadings}>Instructions:</Text>
+            {recipeDetails.instructions ? (
+              <View>
+                <Text style={styles.customText}>
+                  {recipeDetails.instructions}
+                </Text>
+              </View>
+            ) : (
               <Text style={styles.customText}>
-                {recipeDetails.instructions}
+                No instructions available. So just do it.
               </Text>
-            </View>
-          ) : (
-            <Text style={styles.customText}>
-              No instructions available. So just do it.
-            </Text>
-          )}
+            )}
+          </View>
         </View>
       ) : (
         <Text>Loading recipe details...</Text>
@@ -144,6 +151,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FCFCD3",
     fontFamily: "Roboto",
+    padding: 20,
   },
   //title
   title: {
@@ -161,8 +169,18 @@ const styles = StyleSheet.create({
   image: {
     width: "100%", // Occupy the entire width
     height: 300, // Fixed height
+    borderRadius: 20,
+
     //resizeMode: "center",
   },
+
+  // image: {
+  //   flex: 1,
+  //   width: 310,
+  //   height: 310,
+  //   resizeMode: "contain",
+  //   borderRadius: 20,
+  // },
   //spoonocular score
   scoreRating: {
     flexDirection: "row", // Arrange icon in a row
@@ -231,6 +249,25 @@ const styles = StyleSheet.create({
     height: 50,
     resizeMode: "contain",
     borderRadius: 10,
+  },
+  mainBox: {
+    borderWidth: 2,
+    borderColor: "#CCCCCC",
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 30,
+  },
+  section: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#CCCCCC",
+    paddingBottom: 10,
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "black",
+    paddingBottom: 10,
   },
 });
 
