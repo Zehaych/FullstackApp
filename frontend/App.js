@@ -28,7 +28,7 @@ import DeleteAcountScreen from "./screens/User/DeleteAcountScreen";
 import ViewRecipeScreen from "./screens/User/ViewRecipeScreen";
 import RetrieveUserAccount from "./screens/SystemAdmin/RetrieveUserAccount";
 import RetrieveBizPartners from "./screens/SystemAdmin/RetrieveBizPartners";
-import SummaryScreen from "./screens/User/SummaryScreen";
+import TabDWMScreen from "./screens/User/TabDWMScreen";
 import BizPartnerInfo from "./screens/SystemAdmin/BizPartnerInfo";
 import UserInfo from "./screens/SystemAdmin/UserInfo";
 import PreferencesScreen from "./screens/User/PreferencesScreen";
@@ -167,8 +167,8 @@ function App() {
             options={{ headerTransparent: true, headerTitle: "" }}
           />
           <Stack.Screen
-            name="Summary"
-            component={SummaryScreen}
+            name="TabDWMScreen"
+            component={TabDWMScreen}
             options={{ headerTitle: "" }}
           />
           <Stack.Screen

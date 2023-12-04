@@ -372,7 +372,7 @@ const ProgressScreen = () => {
     }
   };
   const handleSummary = () => {
-    navigation.navigate("Summary");
+    navigation.navigate("TabDWMScreen");
   };
 
   return (

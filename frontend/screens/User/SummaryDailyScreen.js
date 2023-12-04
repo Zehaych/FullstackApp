@@ -4,7 +4,7 @@ import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Context } from "../../store/context";
 
 
-const SummaryScreen = () => {
+const SummaryDailyScreen = () => {
     const [currentUser, setCurrentUser] = useContext(Context);
     const [dailyCalories, setDailyCalories] = useState([]);
 
@@ -34,7 +34,7 @@ const SummaryScreen = () => {
                     width={15}
                     fill={percentage}
                     tintColor="#00e0ff"
-                    backgroundColor="#3d5875"
+                    backgroundColor="#fff"
                     rotation={0}
                     lineCap="round"
                 >
@@ -51,13 +51,21 @@ const SummaryScreen = () => {
                     <Text style={styles.chartTextBold}>Daily Intake</Text>
                 </View>
             </View>
-            <Text style={styles.text}>Target Calories: {targetCalories}</Text>
-            <Text style={styles.text}>Today's total Calories intake: {latestTotalCalories}</Text>
+            <View style={styles.componentContainer}>
+                <View style={styles.leftComponent}>
+                    <Text style={styles.text}>Daily intake: </Text>
+                    <Text style={styles.subText}>{latestTotalCalories}</Text>
+                </View>
+                <View style={styles.rightComponent}>
+                    <Text style={styles.text}>Target Calories:</Text>
+                    <Text style={styles.subText}>{targetCalories}</Text>
+                </View>
+            </View>
         </View>
     );
 };
 
-export default SummaryScreen;
+export default SummaryDailyScreen;
 
 const styles = StyleSheet.create({
     //containers
@@ -74,21 +82,47 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
+    componentContainer: {
+        flexDirection: "row", // Arrange components horizontally from left to right
+        justifyContent: "space-between", // Space them evenly
+        alignItems: "center", // Center them vertically
+        paddingTop: 5,
+        paddingBottom: 5,
+        margin: 5,
+    },
+    leftComponent: {
+        flex: 1, // Takes up 1/3 of the available space
+        paddingTop: 10,
+        paddingBottom: 10,
+    },
+    middleComponent: {
+        flex: 1, // Takes up 1/3 of the available space
+        paddingTop: 10,
+        paddingBottom: 10,
+    },
+    rightComponent: {
+        flex: 1, // Takes up 1/3 of the available space
+        paddingTop: 10,
+        paddingBottom: 10,
+    },
     //text
     chartTextBold: {
         fontSize: 20,
         fontWeight: "bold",
         textAlign: "center",
     },
-
     chartText: {
         fontSize: 18,
         textAlign: "center",
     },
-
     text: {
         fontSize: 20,
         fontWeight: "bold",
+        textAlign: "center",
+    },
+    subText: {
+        fontSize: 16,
+        textAlign: "center",
     },
 });
 
