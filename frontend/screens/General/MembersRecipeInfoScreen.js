@@ -48,9 +48,7 @@ export default function MembersRecipeInfoScreen({ route }) {
         <View style={styles.mainBox}>
           <View style={styles.section}>
             <Text style={styles.subTitle}>Created by: </Text>
-            <Text>
-              {username} {"\n"}
-            </Text>
+            <Text>{username}</Text>
           </View>
 
           {currentUser.foodRestrictions.length > 0 && (
@@ -69,21 +67,17 @@ export default function MembersRecipeInfoScreen({ route }) {
 
           <View style={styles.section}>
             <Text style={styles.subTitle}>Ingredients: </Text>
-            <Text>
-              {recipeData.ingredients.map((ingredient, index) => (
-                <Text key={index}>
-                  • {ingredient}
-                  {"\n"}
-                </Text>
-              ))}{" "}
-            </Text>
+            {recipeData.ingredients.map((ingredient, index) => (
+              <Text key={index}>• {ingredient} </Text>
+            ))}
           </View>
 
           <View style={styles.section}>
             <Text style={styles.subTitle}>Instructions: </Text>
             {recipeData.instructions.map((instruction, index) => (
               <Text key={index}>
-                Step {index + 1}: {instruction} {"\n"}
+                <Text style={styles.boldText}>Step {index + 1}:</Text>{" "}
+                {instruction} {"\n"}
               </Text>
             ))}
           </View>
@@ -149,5 +143,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
     paddingBottom: 10,
+  },
+  boldText: {
+    fontWeight: "bold",
   },
 });
