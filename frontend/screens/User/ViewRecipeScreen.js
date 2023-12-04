@@ -9,6 +9,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Context } from "../../store/context";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function ViewRecipeScreen({ navigation }) {
   const [recipes, setRecipes] = useState([]);
@@ -42,6 +43,12 @@ export default function ViewRecipeScreen({ navigation }) {
       setLoading(false);
     }
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUserRecipes();
+    }, [])
+  );
 
   useEffect(() => {
     fetchUserRecipes();

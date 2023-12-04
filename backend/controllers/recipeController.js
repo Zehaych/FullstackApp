@@ -53,3 +53,85 @@ exports.postRecipe = asyncHandler(async (req, res) => {
 
   res.status(200).json(recipe);
 });
+
+//@desc Update a recipe
+//@route PUT /recipe/:recipeId
+//@access User-specific
+// exports.updateRecipe = asyncHandler(async (req, res) => {
+//   const recipeId = req.params.recipeId;
+//   const userId = req.user._id; // Assuming you have user info in req.user
+
+//   const recipe = await Recipe.findById(recipeId);
+
+//   if (!recipe) {
+//     res.status(404);
+//     throw new Error("Recipe not found");
+//   }
+
+//   if (recipe.submitted_by.toString() !== userId.toString()) {
+//     res.status(401);
+//     throw new Error("User not authorized to update this recipe");
+//   }
+
+//   const updatedRecipe = await Recipe.findByIdAndUpdate(recipeId, req.body, {
+//     new: true,
+//   });
+
+//   res.status(200).json(updatedRecipe);
+// });
+exports.updateRecipe = asyncHandler(async (req, res) => {
+  const recipeId = req.params.recipeId;
+
+  const recipe = await Recipe.findById(recipeId);
+
+  if (!recipe) {
+    res.status(404);
+    throw new Error("Recipe not found");
+  }
+
+  // Update the recipe with the new data
+  const updatedRecipe = await Recipe.findByIdAndUpdate(recipeId, req.body, {
+    new: true, // Return the updated document
+  });
+
+  res.status(200).json(updatedRecipe);
+});
+
+//@desc Delete a recipe
+//@route DELETE /recipe/:recipeId
+//@access User-specific
+// exports.deleteRecipe = asyncHandler(async (req, res) => {
+//   const recipeId = req.params.recipeId;
+//   const userId = req.user._id; // Assuming you have user info in req.user
+//   console.log("Attempting to delete recipe with ID:", recipeId);
+
+//   const recipe = await Recipe.findById(recipeId);
+
+//   if (!recipe) {
+//     console.log("Recipe not found");
+//     res.status(404);
+//     throw new Error("Recipe not found");
+//   }
+
+//   if (recipe.submitted_by.toString() !== userId.toString()) {
+//     res.status(401);
+//     throw new Error("User not authorized to delete this recipe");
+//   }
+
+//   await recipe.remove();
+
+//   res.status(200).json({ message: "Recipe deleted successfully" });
+// });
+
+exports.deleteRecipe = asyncHandler(async (req, res) => {
+  const recipeId = req.params.recipeId;
+
+  const recipe = await Recipe.findByIdAndRemove(recipeId);
+
+  if (!recipe) {
+    res.status(404);
+    throw new Error("Recipe not found");
+  }
+
+  res.status(200).json({ message: "Recipe deleted successfully" });
+});

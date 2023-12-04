@@ -6,10 +6,16 @@ import {
   Image,
   ScrollView,
   StatusBar,
+  Button,
+  Alert,
+  TouchableOpacity,
 } from "react-native";
 import { Context } from "../../store/context";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 export default function ViewRecipeInfoScreen({ route }) {
+  const navigation = useNavigation();
+
   const { recipe } = route.params;
   const [username, setUsername] = useState("");
   const [currentUser, setCurrentUser] = useContext(Context);
@@ -33,8 +39,57 @@ export default function ViewRecipeInfoScreen({ route }) {
     fetchUsername();
   }, []);
 
+  const handleEditPress = () => {
+    navigation.navigate("Edit Recipe", { recipe });
+  };
+
+  const handleDeletePress = () => {
+    Alert.alert(
+      "Delete Recipe",
+      "Are you sure you want to delete this recipe?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => deleteRecipe(),
+        },
+      ]
+    );
+  };
+
+  const deleteRecipe = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/recipe/deleteRecipe/${recipe._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status}`);
+      }
+
+      // Navigate back or update the state after successful deletion
+      Alert.alert("Success", "Recipe deleted successfully");
+      navigation.navigate("View Recipe");
+    } catch (error) {
+      console.error("Error deleting recipe:", error);
+      Alert.alert("Error", "Failed to delete recipe");
+    }
+  };
+
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       <View>
         <View style={styles.imageContainer}>
           <Image source={{ uri: recipe.image }} style={styles.image} />
@@ -83,6 +138,18 @@ export default function ViewRecipeInfoScreen({ route }) {
           <Text style={styles.subTitle}>Calories: </Text>
           <Text>{recipe.calories || "Not specified"}</Text>
         </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleEditPress}>
+            <Text style={styles.buttonText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, styles.deleteButton]}
+            onPress={handleDeletePress}
+          >
+            <Text style={styles.buttonText}>Delete</Text>
+          </TouchableOpacity>
+        </View>
         <StatusBar style="auto" />
       </View>
     </ScrollView>
@@ -127,7 +194,7 @@ const styles = StyleSheet.create({
     borderColor: "#CCCCCC",
     borderRadius: 10,
     padding: 10,
-    marginBottom: 30,
+    marginBottom: 20,
   },
   section: {
     borderBottomWidth: 1,
@@ -140,5 +207,27 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
     paddingBottom: 10,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    // marginTop: 10,
+  },
+  button: {
+    backgroundColor: "#007BFF",
+    padding: 10,
+    borderRadius: 5,
+    width: 100, // Fixed width for buttons
+    alignItems: "center", // Center text inside the button
+  },
+  deleteButton: {
+    backgroundColor: "#FF4136",
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  contentContainer: {
+    paddingBottom: 30, // Adjust as needed
   },
 });

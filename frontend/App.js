@@ -33,6 +33,7 @@ import BizPartnerInfo from "./screens/SystemAdmin/BizPartnerInfo";
 import UserInfo from "./screens/SystemAdmin/UserInfo";
 import PreferencesScreen from "./screens/User/PreferencesScreen";
 import ViewRecipeInfoScreen from "./screens/User/ViewRecipeInfoScreen";
+import EditRecipeScreen from "./screens/User/EditRecipeScreen";
 
 const Stack = createStackNavigator();
 
@@ -120,6 +121,8 @@ function App() {
             name="View Recipe Info"
             component={ViewRecipeInfoScreen}
           />
+
+          <Stack.Screen name="Edit Recipe" component={EditRecipeScreen} />
 
           <Stack.Screen name="Track Progress" component={ProgressScreen} />
 
