@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  ScrollView,
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
@@ -15,7 +16,7 @@ import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Button } from "react-native-paper";
 import { Context } from "../../store/context";
-import { ScrollView } from 'react-native-virtualized-view';
+//import { ScrollView } from 'react-native-virtualized-view';
 import {
   fetchRecipes,
   fetchRecipeDetails,
@@ -375,14 +376,13 @@ const ProgressScreen = () => {
   };
 
   return (
-    
     <ScrollView style={styles.scrollContainer}>
       <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
         }}
       >
-        <SafeAreaView style={styles.container}>        
+        <SafeAreaView style={styles.container}>   
           {/* dropdown to choose meal */}
           <View style={styles.pickerContainer}>
             <Text style={styles.mealSelector}>Choose meal to add</Text>
@@ -440,15 +440,16 @@ const ProgressScreen = () => {
             {loading ? (
               <Text>Loading...</Text>
             ) : (
-              <FlatList
-                data={onlineRecipes}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => handleItemClick(item.id)}>
+              <ScrollView>
+                {onlineRecipes.map((item) => (
+                  <TouchableOpacity
+                    key={item.id.toString()}
+                    onPress={() => handleItemClick(item.id)}
+                  >
                     <Text>{item.title}</Text>
                   </TouchableOpacity>
-                )}
-              />
+                ))}
+              </ScrollView>
             )}
           </View>
 
@@ -524,18 +525,21 @@ const ProgressScreen = () => {
           </Button>
         </SafeAreaView>
       </TouchableWithoutFeedback>
-    </ScrollView>      
+    </ScrollView>  
   );
 };
 
 export default ProgressScreen;
 
 const styles = StyleSheet.create({
+  //containers
   scrollContainer: {
     flex: 1,
     backgroundColor: "#FCFCD3",
   },
   container: {
+    flex: 1,
+    backgroundColor: "#FCFCD3",
     alignItems: "center",
   },
   pickerContainer: {
@@ -562,7 +566,7 @@ const styles = StyleSheet.create({
   searchList: {
     width: 385,
     padding: 10,
-    margin: 10,
+    margin: 5,
   },
   //text
   mealDetails: {
@@ -607,9 +611,9 @@ const styles = StyleSheet.create({
     flexDirection: "row", // Arrange components horizontally from left to right
     justifyContent: "space-between", // Space them evenly
     alignItems: "center", // Center them vertically
-    paddingTop: 10,
-    paddingBottom: 10,
-    margin: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
+    margin: 5,
   },
   leftComponent: {
     flex: 1, // Takes up 1/3 of the available space
@@ -632,12 +636,12 @@ const styles = StyleSheet.create({
   //buttons
   submitButton: {
     backgroundColor: "lightgreen",
-    margin: 10,
+    margin: 5,
     borderRadius: 10,
   },
   resetButton: {
     backgroundColor: "lightblue",
-    margin: 10,
+    margin: 5,
     borderRadius: 10,
   },
 });
