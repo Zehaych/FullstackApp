@@ -5,6 +5,9 @@ const recipeController = require("../controllers/recipeController");
 //food => GET
 router.get("/", recipeController.getRecipe);
 
+//food => GET
+router.get("/getRecipeId/:recipeId", recipeController.getRecipeId);
+
 //food => POST
 router.post("/", recipeController.postRecipe);
 

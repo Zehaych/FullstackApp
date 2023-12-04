@@ -16,9 +16,26 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 export default function ViewRecipeInfoScreen({ route }) {
   const navigation = useNavigation();
 
-  const { recipe } = route.params;
+  const [recipe, setRecipe] = useState(route.params.recipe);
+  //   const { recipe } = route.params;
   const [username, setUsername] = useState("");
   const [currentUser, setCurrentUser] = useContext(Context);
+
+  const fetchRecipeDetails = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/recipe/getRecipeId/${recipe._id}`
+      );
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status}`);
+      }
+      const updatedRecipe = await response.json();
+      setRecipe(updatedRecipe);
+      // Fetch username or other necessary data here
+    } catch (error) {
+      console.error("Error fetching recipe data:", error);
+    }
+  };
 
   const fetchUsername = async () => {
     try {
@@ -38,6 +55,12 @@ export default function ViewRecipeInfoScreen({ route }) {
   useEffect(() => {
     fetchUsername();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchRecipeDetails();
+    }, [])
+  );
 
   const handleEditPress = () => {
     navigation.navigate("Edit Recipe", { recipe });

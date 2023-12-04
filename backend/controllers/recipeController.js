@@ -11,9 +11,9 @@ exports.getRecipe = asyncHandler(async (req, res) => {
   res.json(recipes);
 });
 
-//@desc GET a single recipe item based on id
-//@route POST /recipe/:recipeId
-//@access public
+// @desc GET a single recipe item based on id
+// @route POST /recipe/:recipeId
+// @access public
 exports.getRecipeId = asyncHandler(async (req, res) => {
   const recipeId = req.params.recipeId;
   const recipes = await Recipe.findById(recipeId);
