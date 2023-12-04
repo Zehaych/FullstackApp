@@ -34,6 +34,8 @@ import UserInfo from "./screens/SystemAdmin/UserInfo";
 import PreferencesScreen from "./screens/User/PreferencesScreen";
 import ViewRecipeInfoScreen from "./screens/User/ViewRecipeInfoScreen";
 import EditRecipeScreen from "./screens/User/EditRecipeScreen";
+import TabDWMScreen from "./screens/User/TabDWMScreen";
+
 
 const Stack = createStackNavigator();
 
@@ -160,7 +162,11 @@ function App() {
             component={PreferencesScreen}
             options={{ headerTransparent: true, headerTitle: "" }}
           />
-
+          <Stack.Screen
+            name="TabDWMScreen"
+            component={TabDWMScreen}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="User Profile" component={UserScreen} />
         </Stack.Navigator>
