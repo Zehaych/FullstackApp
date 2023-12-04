@@ -68,6 +68,9 @@ const SummaryMonthlyScreen = () => {
     
     return (
         <View style={styles.container}>
+            <View style={styles.textContainer}>
+                <Text style={styles.chartTextBold}>Monthly Intake</Text>
+            </View>
             {/*<Text>{dailyCaloriesLogEntries}</Text>*/}
             <BarChart
                 data={chartData}
@@ -84,7 +87,6 @@ const SummaryMonthlyScreen = () => {
                 },
                 }}
             />
-            <Text style={styles.text}>Monthly Intake</Text>
             <View style={styles.componentContainer}>
                 <View style={styles.leftComponent}>
                     <Text style={styles.text}>(AVG)Monthly intake: </Text>
@@ -108,6 +110,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#FCFCD3",
         alignItems: "center",
+    },
+    textContainer: {    
+        marginTop: 10,
+        marginBottom: 10,
     },
     componentContainer: {
         flexDirection: "row", // Arrange components horizontally from left to right
@@ -134,12 +140,21 @@ const styles = StyleSheet.create({
     },
     //text
     text: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: "bold",
         textAlign: "center",
     },
     subText: {
         fontSize: 16,
+        textAlign: "center",
+    },
+    chartText: {
+        fontSize: 16,
+        textAlign: "center",
+    },
+    chartTextBold: {
+        fontSize: 20,
+        fontWeight: "bold",
         textAlign: "center",
     },
 });

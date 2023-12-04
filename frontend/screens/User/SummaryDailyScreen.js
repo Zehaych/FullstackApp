@@ -34,9 +34,9 @@ const SummaryDailyScreen = () => {
 
     return (
         <View style={styles.container}>
-                <View style={styles.textContainer}>
-                    <Text style={styles.chartTextBold}>Daily Intake</Text>
-                </View>
+            <View style={styles.textContainer}>
+                <Text style={styles.chartTextBold}>Daily Intake</Text>
+            </View>
             <View style={styles.chartContainer}>
                 <AnimatedCircularProgress
                     size={250}
@@ -114,22 +114,22 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
     },
     //text
-    chartTextBold: {
+    text: {
         fontSize: 18,
         fontWeight: "bold",
+        textAlign: "center",
+    },
+    subText: {
+        fontSize: 16,
         textAlign: "center",
     },
     chartText: {
         fontSize: 16,
         textAlign: "center",
     },
-    text: {
+    chartTextBold: {
         fontSize: 20,
         fontWeight: "bold",
-        textAlign: "center",
-    },
-    subText: {
-        fontSize: 16,
         textAlign: "center",
     },
 });

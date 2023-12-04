@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { View, Dimensions, StyleSheet, Text } from "react-native";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { BarChart } from "react-native-chart-kit";
 import { Context } from "../../store/context";
 
 const SummaryWeeklyScreen = () => {
@@ -29,6 +29,9 @@ const SummaryWeeklyScreen = () => {
 
     return (
         <View style={styles.container}>
+            <View style={styles.textContainer}>
+                <Text style={styles.chartTextBold}>Weekly Intake</Text>
+            </View>
             <Text style={styles.text}>Weekly's total Calories intake: ahahahahaha</Text>
             <View style={styles.componentContainer}>
                 <View style={styles.leftComponent}>
@@ -52,6 +55,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#FCFCD3",
         alignItems: "center",
+    },
+    textContainer: {    
+        marginTop: 10,
+        marginBottom: 10,
     },
     componentContainer: {
         flexDirection: "row", // Arrange components horizontally from left to right
@@ -78,12 +85,21 @@ const styles = StyleSheet.create({
     },
     //text
     text: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: "bold",
         textAlign: "center",
     },
     subText: {
         fontSize: 16,
+        textAlign: "center",
+    },
+    chartText: {
+        fontSize: 16,
+        textAlign: "center",
+    },
+    chartTextBold: {
+        fontSize: 20,
+        fontWeight: "bold",
         textAlign: "center",
     },
 });
