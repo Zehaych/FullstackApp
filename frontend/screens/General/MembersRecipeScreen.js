@@ -94,8 +94,8 @@ const styles = StyleSheet.create({
   },
   image: {
     //flex: 1, // Fill the container's available space
-    width: 150,
-    height: 150,
+    width: 135,
+    height: 135,
     resizeMode: "cover", // Make the image fit the container
     borderRadius: 10,
   },
