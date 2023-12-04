@@ -556,6 +556,57 @@ exports.unsuspendUser = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "User reactivated successfully" });
 });
 
+//Validation for Admin Password meant for deleting business partners
+exports.validateAdminPassword = asyncHandler(async (req, res) => {
+  const { password } = req.body;
+
+  // Specific admin user in the database.
+  const adminUser = await User.findOne({ username: 'testadmin' }); //Admin username
+
+  if (!adminUser) {
+      return res.status(404).json({ message: "Admin user not found" });
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, adminUser.password);
+
+  if (!isPasswordValid) {
+      return res.status(401).json({ isValid: false });
+  }
+
+  res.status(200).json({ isValid: true });
+});
+
+// Deleting Business Partner from System Admin
+exports.deleteBusinessPartner = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+
+  const businessPartner = await User.findById(userId);
+
+  if (!businessPartner) {
+      return res.status(404).json({ message: "Business partner not found" });
+  }
+
+  await User.deleteOne({ _id: userId });
+
+  res.status(200).json({ message: "Business partner deleted successfully" });
+});
+
+// Deleting User from System Admin
+exports.deleteUser = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+      return res.status(404).json({ message: "User not found" });
+  }
+
+  await User.deleteOne({ _id: userId });
+
+  res.status(200).json({ message: "User deleted successfully" });
+});
+
+
 
 // exports.postCalories = async (req, res) => {
 //   const {id} = req.params;

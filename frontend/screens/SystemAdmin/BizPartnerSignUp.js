@@ -65,7 +65,7 @@ export default function BizPartnerSignUp() {
       }
     );
     if (createUserResponse.status === 200) {
-      alert("User created successfully, redirecting to login page");
+      alert("Business partner created successfully, redirecting to admin page");
       navigation.navigate("AdminScreen");
     } else if (createUserResponse.status === 400) {
       const responseJson = await createUserResponse.json();
