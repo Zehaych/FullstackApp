@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const recipeSchema = mongoose.Schema(
+const bizRecipeSchema = mongoose.Schema(
   {
     name: {
       type: String,
@@ -22,6 +22,10 @@ const recipeSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    price: {
+      type: Number,
+      required: true,
+    },
     submitted_by: {
       type: mongoose.Types.ObjectId,
       ref: "User",
@@ -33,4 +37,4 @@ const recipeSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Recipe", recipeSchema);
+module.exports = mongoose.model("BizRecipe", bizRecipeSchema);
