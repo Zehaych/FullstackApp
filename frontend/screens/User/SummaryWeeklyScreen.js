@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, SafeAreaView, StyleSheet, Text } from "react-native";
+import { View, Dimensions, StyleSheet, Text } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Context } from "../../store/context";
 
@@ -10,7 +10,22 @@ const SummaryWeeklyScreen = () => {
     const targetCalories = currentUser.calorie * 7;
     const CaloriesLog = currentUser.dailyCaloriesLog;
 
+    useEffect(() => {
+        // Calculate total calories for the past week
+        const today = new Date();
+        const pastWeek = new Date(today);
+        pastWeek.setDate(today.getDate() - 7); // Subtract 7 days for the past week
     
+        const weeklyCalories = CaloriesLog.reduce((total, entry) => {
+          const entryDate = new Date(entry.date); 
+          if (entryDate >= pastWeek && entryDate <= today) {
+            total += entry.total_calories;
+          }
+          return total;
+        }, 0);
+    
+        setWeeklyCalories(weeklyCalories);
+    }, [CaloriesLog]);
 
     return (
         <View style={styles.container}>
@@ -65,5 +80,10 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 20,
         fontWeight: "bold",
+        textAlign: "center",
+    },
+    subText: {
+        fontSize: 16,
+        textAlign: "center",
     },
 });

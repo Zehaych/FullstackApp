@@ -23,18 +23,27 @@ const SummaryDailyScreen = () => {
 
     //calories left to consume
     const caloriesLeft = targetCalories - latestTotalCalories;
+    //calories more to consume
+    const caloriesMore = latestTotalCalories - targetCalories;
     //percentage of calories consumed
     const percentage = (latestTotalCalories / targetCalories) * 100;
 
+    // Determine if calories exceeded the target
+    const exceededTarget = latestTotalCalories > targetCalories;
+    const tintColor = exceededTarget ? "#ff0000" : "#55dfe6";
+
     return (
         <View style={styles.container}>
+                <View style={styles.textContainer}>
+                    <Text style={styles.chartTextBold}>Daily Intake</Text>
+                </View>
             <View style={styles.chartContainer}>
                 <AnimatedCircularProgress
-                    size={200}
+                    size={250}
                     width={15}
                     fill={percentage}
-                    tintColor="#00e0ff"
-                    backgroundColor="#fff"
+                    tintColor={tintColor}
+                    backgroundColor="#e1e2e3"
                     rotation={0}
                     lineCap="round"
                 >
@@ -43,13 +52,12 @@ const SummaryDailyScreen = () => {
                         <Text style={styles.chartTextBold}>
                         {latestTotalCalories} / {targetCalories} Cal consumed
                         </Text>
-                        <Text style={styles.chartText}>{caloriesLeft} Cal left</Text>
+                        <Text style={styles.chartText}>
+                            {exceededTarget ? `${caloriesMore} Cal more` : `${caloriesLeft} Cal left`}
+                        </Text>
                     </View>
                     )}
                 </AnimatedCircularProgress>
-                <View style={styles.textContainer}>
-                    <Text style={styles.chartTextBold}>Daily Intake</Text>
-                </View>
             </View>
             <View style={styles.componentContainer}>
                 <View style={styles.leftComponent}>
@@ -75,8 +83,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     chartContainer: {
-        marginTop: 50,
-        marginBottom: 50,
+        marginTop: 25,
+        marginBottom: 25,
     },
     textContainer: {    
         marginTop: 10,
@@ -107,12 +115,12 @@ const styles = StyleSheet.create({
     },
     //text
     chartTextBold: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: "bold",
         textAlign: "center",
     },
     chartText: {
-        fontSize: 18,
+        fontSize: 16,
         textAlign: "center",
     },
     text: {
