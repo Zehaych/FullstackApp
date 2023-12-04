@@ -86,9 +86,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
         <View style={styles.mainBox}>
           <View style={styles.section}>
             <Text style={styles.subTitle}>Company name: </Text>
-            <Text>
-              {username} {"\n"}
-            </Text>
+            <Text>{username}</Text>
           </View>
 
           {currentUser.foodRestrictions.length > 0 && (
@@ -107,21 +105,18 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
 
           <View style={styles.section}>
             <Text style={styles.subTitle}>Ingredients: </Text>
-            <Text>
-              {recipeData.ingredients.map((ingredient, index) => (
-                <Text key={index}>
-                  • {ingredient}
-                  {"\n"}
-                </Text>
-              ))}{" "}
-            </Text>
+            {recipeData.ingredients.map((ingredient, index) => (
+              <Text key={index}>• {ingredient} </Text>
+            ))}
           </View>
+
           <View style={styles.section}>
             <Text style={styles.subTitle}>Instructions: </Text>
             <View>
               {recipeData.instructions.map((instruction, index) => (
                 <Text key={index}>
-                  Step {index + 1}: {instruction} {"\n"}
+                  <Text style={styles.boldText}>Step {index + 1}:</Text>{" "}
+                  {instruction} {"\n"}
                 </Text>
               ))}
             </View>
@@ -129,17 +124,11 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
 
           <View style={styles.section}>
             <Text style={styles.subTitle}>Calories: </Text>
-            <Text>
-              {recipeData.calories}
-              {"\n"}
-            </Text>
+            <Text>{recipeData.calories}</Text>
           </View>
 
           <Text style={styles.subTitle}>Price: </Text>
-          <Text>
-            {formatPrice(recipeData.price)}
-            {"\n"}
-          </Text>
+          <Text>{formatPrice(recipeData.price)}</Text>
         </View>
 
         {/* <View style={styles.quantityContainer}>
@@ -257,5 +246,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
     paddingBottom: 10,
+  },
+  boldText: {
+    fontWeight: "bold",
   },
 });

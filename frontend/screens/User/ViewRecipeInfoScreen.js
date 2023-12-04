@@ -130,11 +130,12 @@ export default function ViewRecipeInfoScreen({ route }) {
             <View style={styles.section}>
               <Text style={styles.subTitle}>Disclaimer: </Text>
               <Text>
-                Based on your food restrictions, please be cautious with the
-                following ingredients:
+                Based on your medical history, it is recommended to minimize or
+                abstain from using{" "}
                 <Text style={{ color: "red", fontWeight: "bold" }}>
                   {currentUser.foodRestrictions.join(", ")}
-                </Text>
+                </Text>{" "}
+                when preparing the recipe. {"\n"}
               </Text>
             </View>
           )}
@@ -152,7 +153,7 @@ export default function ViewRecipeInfoScreen({ route }) {
             <Text style={styles.subTitle}>Instructions: </Text>
             {recipe.instructions.map((instruction, index) => (
               <Text key={index}>
-                Step {index + 1}: {instruction}
+                Step {index + 1}: {instruction} {"\n"}
               </Text>
             ))}
           </View>

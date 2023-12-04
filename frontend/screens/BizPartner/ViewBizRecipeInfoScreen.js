@@ -156,7 +156,7 @@ export default function ViewBizRecipeInfoScreen({ route }) {
             <Text style={styles.subTitle}>Instructions: </Text>
             {recipe.instructions.map((instruction, index) => (
               <Text key={index}>
-                Step {index + 1}: {instruction}
+                Step {index + 1}: {instruction} {"\n"}
               </Text>
             ))}
           </View>
