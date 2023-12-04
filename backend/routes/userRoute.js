@@ -18,6 +18,7 @@ router.put("/editUserHealth/:id", userController.editUserHealth);
 router.put("/editUsername/:id", userController.editUsername);
 router.put("/editEmail/:id", userController.editEmail);
 router.put("/editPassword/:id", userController.editPassword);
+router.put('/updateUsername/:id', userController.updateUsername);
 
 router.delete("/deleteUser/:id", userController.deleteUser);
 router.delete('/deleteBusinessPartner/:id', userController.deleteBusinessPartner);

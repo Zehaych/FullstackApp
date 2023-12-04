@@ -606,6 +606,22 @@ exports.deleteUser = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "User deleted successfully" });
 });
 
+// Update Business Partner username
+exports.updateUsername = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const { username } = req.body;
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+      return res.status(404).json({ message: "User not found" });
+  }
+
+  user.username = username;
+  await user.save();
+
+  res.status(200).json({ message: "Username updated successfully" });
+});
 
 
 // exports.postCalories = async (req, res) => {

@@ -11,6 +11,9 @@ const BizPartnerInfo = ({ route, navigation }) => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
+  const [newUsername, setNewUsername] = useState('');
+  const [usernameModalVisible, setUsernameModalVisible] = useState(false);
+
 
   useFocusEffect(
     React.useCallback(() => {
@@ -136,6 +139,28 @@ const deleteBusinessPartner = async (userId) => {
   }
 };
 
+const updateUsername = async () => {
+  try {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/updateUsername/${userData._id}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+              // Include any necessary headers, like authorization tokens
+          },
+          body: JSON.stringify({ username: newUsername }),
+      });
+
+      if (response.ok) {
+          Alert.alert('Success', 'Username updated successfully.');
+          setUserData({ ...userData, username: newUsername }); // Update local state
+      } else {
+          Alert.alert('Error', 'Failed to update username.');
+      }
+  } catch (error) {
+      console.error('Error updating username:', error);
+      Alert.alert('Error', 'Failed to update username.');
+  }
+  };
 
 
   return (
@@ -149,11 +174,20 @@ const deleteBusinessPartner = async (userId) => {
       </Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
+            style={[styles.button, styles.fourthButton]}
+            onPress={() => setUsernameModalVisible(true)}
+        >
+            <Text style={styles.buttonText}>Change Username</Text>
+        </TouchableOpacity>
+
+
+        <TouchableOpacity
           style={[styles.button]}
           onPress={() => suspendUser(userData._id)}
         >
           <Text style={styles.buttonText}>Suspend User</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={[styles.button, styles.secondaryButton]}
           onPress={() => unsuspendUser(userData._id)}
@@ -194,6 +228,33 @@ const deleteBusinessPartner = async (userId) => {
                 </View>
             </View>
         </Modal>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={usernameModalVisible}
+          onRequestClose={() => setUsernameModalVisible(false)}
+      >
+          <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                  <TextInput
+                      style={styles.input}
+                      placeholder="Enter new username"
+                      value={newUsername}
+                      onChangeText={setNewUsername}
+                  />
+                  <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => {
+                          setUsernameModalVisible(false);
+                          updateUsername();
+                      }}
+                  >
+                      <Text style={styles.buttonText}>Confirm</Text>
+                  </TouchableOpacity>
+              </View>
+          </View>
+      </Modal>
     </View>
   );
 };
@@ -242,6 +303,9 @@ const styles = StyleSheet.create({
   },
   thirdButton: {
     backgroundColor: "#FF0000",
+  },
+  fourthButton: {
+    backgroundColor: "#FFA500",
   },
   buttonText: {
     color: "white",
