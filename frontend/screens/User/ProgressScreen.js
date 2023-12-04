@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
-  ScrollView,
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
@@ -16,6 +15,7 @@ import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Button } from "react-native-paper";
 import { Context } from "../../store/context";
+import { ScrollView } from 'react-native-virtualized-view';
 import {
   fetchRecipes,
   fetchRecipeDetails,
@@ -375,162 +375,167 @@ const ProgressScreen = () => {
   };
 
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        Keyboard.dismiss();
-      }}
-    >
-      <SafeAreaView style={styles.container}>
-        {/* dropdown to choose meal */}
-        <View style={styles.pickerContainer}>
-          <Text style={styles.mealSelector}>Choose meal to add</Text>
+    
+    <ScrollView style={styles.scrollContainer}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          Keyboard.dismiss();
+        }}
+      >
+        <SafeAreaView style={styles.container}>        
+          {/* dropdown to choose meal */}
+          <View style={styles.pickerContainer}>
+            <Text style={styles.mealSelector}>Choose meal to add</Text>
+            <Picker
+              selectedValue={selectedDropdownValue}
+              onValueChange={(itemValue) => {
+                setSelectedDropdownValue(itemValue);
+                if (itemValue === "bf") {
+                  handleBreakfastSelect(null); // Reset breakfast
+                } else if (itemValue === "lunch") {
+                  handleLunchSelect(null); // Reset lunch
+                } else if (itemValue === "din") {
+                  handleDinnerSelect(null); // Reset dinner
+                }
+              }}
+              style={styles.dropdown}
+            >
+              <Picker.Item label="Select a meal" value="none" />
+              <Picker.Item label="Breakfast" value="bf" />
+              <Picker.Item label="Lunch" value="lunch" />
+              <Picker.Item label="Dinner" value="din" />
+            </Picker>
+          </View>
+
+          {/* search for member recipe */}
+          <Text style={styles.subTitle}>Available member recipes</Text>
           <Picker
-            selectedValue={selectedDropdownValue}
-            onValueChange={(itemValue) => {
-              setSelectedDropdownValue(itemValue);
-              if (itemValue === "bf") {
-                handleBreakfastSelect(null); // Reset breakfast
-              } else if (itemValue === "lunch") {
-                handleLunchSelect(null); // Reset lunch
-              } else if (itemValue === "din") {
-                handleDinnerSelect(null); // Reset dinner
-              }
-            }}
+            selectedValue={setSelectedRecipeId ? setSelectedRecipeId._id : null}
+            onValueChange={(itemValue) => handleSelectMemberRecipe(itemValue)}
             style={styles.dropdown}
           >
-            <Picker.Item label="Select a meal" value="none" />
-            <Picker.Item label="Breakfast" value="bf" />
-            <Picker.Item label="Lunch" value="lunch" />
-            <Picker.Item label="Dinner" value="din" />
-          </Picker>
-        </View>
-
-        {/* search for member recipe */}
-        <Text style={styles.subTitle}>Available member recipes</Text>
-        <Picker
-          selectedValue={setSelectedRecipeId ? setSelectedRecipeId._id : null}
-          onValueChange={(itemValue) => handleSelectMemberRecipe(itemValue)}
-          style={styles.dropdown}
-        >
-          <Picker.Item label="Select a recipe" value={null} />
-          {memberRecipes.map((recipe) => (
-            <Picker.Item
-              key={recipe._id}
-              label={recipe.name}
-              value={recipe._id}
-            />
-          ))}
-        </Picker>
-
-        {/* search for online recipe */}
-        <Text style={styles.subTitle}>Available online recipes</Text>
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search for online recipe"
-            value={search}
-            onChangeText={(text) => handleSearch(text)}
-          />
-        </View>
-
-        {/* list of recipes */}
-        <View style={styles.searchList}>
-          {loading ? (
-            <Text>Loading...</Text>
-          ) : (
-            <FlatList
-              data={onlineRecipes}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleItemClick(item.id)}>
-                  <Text>{item.title}</Text>
-                </TouchableOpacity>
-              )}
-            />
-          )}
-        </View>
-
-        {/* meal recipe recommandation*/}
-        {recommendedRecipes.meals && recommendedRecipes.meals.length > 0 && (
-          <View style={styles.recommendedRecipesContainer}>
-            <Text style={styles.subTitle}>
-              Recommended Recipes for the Day:
-            </Text>
-            {recommendedRecipes.meals.map((recipe, index) => (
-              <Text
-                key={index}
-                onPress={() => handleRecipeDetails(recipe.id)}
-                style={styles.recommendationsText}
-              >
-                {recipe.title}
-              </Text>
+            <Picker.Item label="Select a recipe" value={null} />
+            {memberRecipes.map((recipe) => (
+              <Picker.Item
+                key={recipe._id}
+                label={recipe.name}
+                value={recipe._id}
+              />
             ))}
-          </View>
-        )}
-        <Button
-          onPress={handleGenerateRecommendations}
-          style={styles.resetButton}
-        >
-          Generate Daily Recommendations
-        </Button>
+          </Picker>
 
-        {/* set Recipe for 3 meals */}
-        <View style={styles.componentContainer}>
-          <View style={styles.leftComponent}>
-            <Text style={styles.subTitle}>Breakfast</Text>
-            {renderMealRecipe(breakfastRecipe)}
+          {/* search for online recipe */}
+          <Text style={styles.subTitle}>Available online recipes</Text>
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search for online recipe"
+              value={search}
+              onChangeText={(text) => handleSearch(text)}
+            />
           </View>
-          <View style={styles.middleComponent}>
-            <Text style={styles.subTitle}>Lunch</Text>
-            {renderMealRecipe(lunchRecipe)}
-          </View>
-          <View style={styles.rightComponent}>
-            <Text style={styles.subTitle}>Dinner</Text>
-            {renderMealRecipe(dinnerRecipe)}
-          </View>
-        </View>
 
-        {/* total calories */}
-        <View style={styles.componentContainer}>
-          <View style={styles.leftComponent}>
-            <Text style={styles.smallHeadings}>Total Calories</Text>
-            <Text style={styles.smallText}>{handleTotalCalories()} kcal</Text>
+          {/* list of recipes */}
+          <View style={styles.searchList}>
+            {loading ? (
+              <Text>Loading...</Text>
+            ) : (
+              <FlatList
+                data={onlineRecipes}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => handleItemClick(item.id)}>
+                    <Text>{item.title}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            )}
           </View>
-          <View style={styles.middleComponent}>
-            <Text style={styles.smallHeadings}>Target Calories</Text>
-            <Text style={styles.smallText}>{targetCalories}</Text>
+
+          {/* meal recipe recommandation*/}
+          {recommendedRecipes.meals && recommendedRecipes.meals.length > 0 && (
+            <View style={styles.recommendedRecipesContainer}>
+              <Text style={styles.subTitle}>
+                Recommended Recipes for the Day:
+              </Text>
+              {recommendedRecipes.meals.map((recipe, index) => (
+                <Text
+                  key={index}
+                  onPress={() => handleRecipeDetails(recipe.id)}
+                  style={styles.recommendationsText}
+                >
+                  {recipe.title}
+                </Text>
+              ))}
+            </View>
+          )}
+          <Button
+            onPress={handleGenerateRecommendations}
+            style={styles.resetButton}
+          >
+            Generate Daily Recommendations
+          </Button>
+
+          {/* set Recipe for 3 meals */}
+          <View style={styles.componentContainer}>
+            <View style={styles.leftComponent}>
+              <Text style={styles.subTitle}>Breakfast</Text>
+              {renderMealRecipe(breakfastRecipe)}
+            </View>
+            <View style={styles.middleComponent}>
+              <Text style={styles.subTitle}>Lunch</Text>
+              {renderMealRecipe(lunchRecipe)}
+            </View>
+            <View style={styles.rightComponent}>
+              <Text style={styles.subTitle}>Dinner</Text>
+              {renderMealRecipe(dinnerRecipe)}
+            </View>
           </View>
-          <View style={styles.rightComponent}>
-            <Text style={styles.smallHeadings}>Objective</Text>
-            {handleObjectiveIcon()}
+
+          {/* total calories */}
+          <View style={styles.componentContainer}>
+            <View style={styles.leftComponent}>
+              <Text style={styles.smallHeadings}>Total Calories</Text>
+              <Text style={styles.smallText}>{handleTotalCalories()} kcal</Text>
+            </View>
+            <View style={styles.middleComponent}>
+              <Text style={styles.smallHeadings}>Target Calories</Text>
+              <Text style={styles.smallText}>{targetCalories}</Text>
+            </View>
+            <View style={styles.rightComponent}>
+              <Text style={styles.smallHeadings}>Objective</Text>
+              {handleObjectiveIcon()}
+            </View>
           </View>
-        </View>
-        <View style={styles.componentContainer}>
-          <View style={styles.leftComponent}>
-            <Button onPress={() => handleReset()} style={styles.resetButton}>
-              Reset
-            </Button>
+          <View style={styles.componentContainer}>
+            <View style={styles.leftComponent}>
+              <Button onPress={() => handleReset()} style={styles.resetButton}>
+                Reset
+              </Button>
+            </View>
+            <View style={styles.rightComponent}>
+              <Button onPress={() => handleSubmit()} style={styles.submitButton}>
+                Submit
+              </Button>
+            </View>
           </View>
-          <View style={styles.rightComponent}>
-            <Button onPress={() => handleSubmit()} style={styles.submitButton}>
-              Submit
-            </Button>
-          </View>
-        </View>
-        <Button onPress={() => handleSummary()} style={styles.submitButton}>
-          View Summary
-        </Button>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+          <Button onPress={() => handleSummary()} style={styles.submitButton}>
+            View Summary
+          </Button>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
+    </ScrollView>      
   );
 };
 
 export default ProgressScreen;
 
 const styles = StyleSheet.create({
-  container: {
+  scrollContainer: {
     flex: 1,
     backgroundColor: "#FCFCD3",
+  },
+  container: {
     alignItems: "center",
   },
   pickerContainer: {
