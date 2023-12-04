@@ -55,3 +55,34 @@ exports.postBizRecipe = asyncHandler(async (req, res) => {
 
   res.status(200).json(bizRecipe);
 });
+
+exports.updateBizRecipe = asyncHandler(async (req, res) => {
+  const recipeId = req.params.recipeId;
+
+  const recipe = await BizRecipe.findById(recipeId);
+
+  if (!recipe) {
+    res.status(404);
+    throw new Error("Recipe not found");
+  }
+
+  // Update the recipe with the new data
+  const updatedRecipe = await BizRecipe.findByIdAndUpdate(recipeId, req.body, {
+    new: true, // Return the updated document
+  });
+
+  res.status(200).json(updatedRecipe);
+});
+
+exports.deleteBizRecipe = asyncHandler(async (req, res) => {
+  const recipeId = req.params.recipeId;
+
+  const recipe = await BizRecipe.findByIdAndRemove(recipeId);
+
+  if (!recipe) {
+    res.status(404);
+    throw new Error("Recipe not found");
+  }
+
+  res.status(200).json({ message: "Recipe deleted successfully" });
+});

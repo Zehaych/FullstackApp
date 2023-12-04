@@ -34,6 +34,9 @@ import UserInfo from "./screens/SystemAdmin/UserInfo";
 import PreferencesScreen from "./screens/User/PreferencesScreen";
 import ViewRecipeInfoScreen from "./screens/User/ViewRecipeInfoScreen";
 import EditRecipeScreen from "./screens/User/EditRecipeScreen";
+import ViewBizRecipeScreen from "./screens/BizPartner/ViewBizRecipeScreen";
+import EditBizRecipeScreen from "./screens/BizPartner/EditBizRecipeScreen";
+import ViewBizRecipeInfoScreen from "./screens/BizPartner/ViewBizRecipeInfoScreen";
 
 const Stack = createStackNavigator();
 
@@ -120,6 +123,19 @@ function App() {
           <Stack.Screen
             name="View Recipe Info"
             component={ViewRecipeInfoScreen}
+          />
+
+          <Stack.Screen
+            name="View Business Recipe"
+            component={ViewBizRecipeScreen}
+          />
+          <Stack.Screen
+            name="Business Recipe Info"
+            component={ViewBizRecipeInfoScreen}
+          />
+          <Stack.Screen
+            name="Edit Business Recipe"
+            component={EditBizRecipeScreen}
           />
 
           <Stack.Screen name="Edit Recipe" component={EditRecipeScreen} />
