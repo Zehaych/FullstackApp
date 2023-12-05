@@ -7,6 +7,7 @@ router.get("/", bizRecipeController.getBizRecipe);
 
 //food => GET
 router.get("/getBizRecipeId/:bizRecipeId", bizRecipeController.getBizRecipeId);
+router.get("/getReportedBizRecipe", bizRecipeController.getReportedBizRecipes);
 
 //food => POST
 router.post("/", bizRecipeController.postBizRecipe);

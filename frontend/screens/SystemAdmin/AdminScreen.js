@@ -54,6 +54,15 @@ const AdminScreen = () => {
     navigation.navigate("RetrieveBizPartners");
   };
 
+  const handleNavigateReportedRecipe = () => {
+    navigation.navigate("ReportedRecipe");
+  };
+
+  const handleNavigateReportedBizRecipe = () => {
+    navigation.navigate("ReportedBizRecipe");
+  };
+
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{currentUser.username}</Text>
@@ -98,6 +107,35 @@ const AdminScreen = () => {
           </Text>
         </View>
       </TouchableRipple>
+
+      <TouchableRipple onPress={handleNavigateReportedRecipe}>
+        <View style={styles.menuItem}>
+          <Icon
+            name="book-alert"
+            size={25}
+            color="#FF6347"
+            style={styles.icon}
+          />
+          <Text style={styles.menuItemText}>
+            Reported Community Recipes
+          </Text>
+        </View>
+      </TouchableRipple>
+
+      <TouchableRipple onPress={handleNavigateReportedBizRecipe}>
+        <View style={styles.menuItem}>
+          <Icon
+            name="book-alert"
+            size={25}
+            color="#FF6347"
+            style={styles.icon}
+          />
+          <Text style={styles.menuItemText}>
+            Reported Business Partner Recipes
+          </Text>
+        </View>
+      </TouchableRipple>
+
 
       <TouchableRipple onPress={onLogOutPressed}>
         <View style={styles.menuItem}>

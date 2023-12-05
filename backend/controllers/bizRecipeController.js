@@ -105,3 +105,9 @@ exports.reportBizRecipe = asyncHandler(async (req, res) => {
 
   res.status(200).json({ message: "Recipe reported successfully" });
 });
+
+// Get the reported Biz Recipes
+exports.getReportedBizRecipes = asyncHandler(async (req, res) => {
+  const reportedRecipes = await BizRecipe.find({ isReported: true }).populate('reportedBy.user', 'username');
+  res.json(reportedRecipes);
+});
