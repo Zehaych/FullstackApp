@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         // Other text styling as needed
     },
-    // ... other styles ...
 });
 
 export default ReportedBizRecipeDetails;

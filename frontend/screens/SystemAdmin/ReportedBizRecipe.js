@@ -41,15 +41,6 @@ const ReportedBizRecipe = () => {
         <View style={styles.container}>
         <Text style={styles.title}>{currentUser.username}</Text>
         <Text style={styles.subtitle}>Reported Community Recipes</Text>
-        {/* <FlatList
-                data={reportedRecipes}
-                keyExtractor={item => item._id}
-                renderItem={({ item }) => (
-                    <View style={styles.recipeItem}>
-                        <Text style={styles.recipeTitle}>{item.name}</Text>
-                    </View>
-                )}
-            /> */}
         <FlatList
                 data={reportedRecipes}
                 keyExtractor={item => item._id}
@@ -59,7 +50,6 @@ const ReportedBizRecipe = () => {
                         onPress={() => handleRecipePress(item)}
                     >
                         <Text style={styles.recipeTitle}>{item.name}</Text>
-                        {/* Other recipe details */}
                     </TouchableOpacity>
                 )}
         />

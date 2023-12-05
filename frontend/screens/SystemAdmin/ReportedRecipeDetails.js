@@ -59,15 +59,12 @@ const styles = StyleSheet.create({
         marginVertical: 8,
         backgroundColor: 'white',
         borderRadius: 5,
-        // Other styling as needed
     },
     recipeTitle: {
         marginTop: 30,
         fontSize: 18,
         fontWeight: 'bold',
-        // Other text styling as needed
     },
-    // ... other styles ...
 });
 
 export default ReportedRecipeDetails;
