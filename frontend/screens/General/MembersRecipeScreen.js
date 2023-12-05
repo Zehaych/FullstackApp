@@ -52,6 +52,7 @@ export default function MembersRecipeScreen({ navigation }) {
           >
             <Image source={{ uri: item.image }} style={styles.image} />
             <Text style={styles.recipeTitle}> {item.name}</Text>
+            <Text>Average Rating: {item.averageRating.toFixed(1)}</Text>
           </TouchableOpacity>
         )}
       />

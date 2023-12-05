@@ -19,7 +19,7 @@ import AddRatingsScreen from "../User/AddRatingsScreen";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 export default function MembersRecipeInfoScreen({ route }) {
-  const { recipeData } = route.params;
+  const recipeData = route.params.recipeData;
   const [username, setUsername] = useState("");
 
   // new
@@ -125,12 +125,17 @@ export default function MembersRecipeInfoScreen({ route }) {
       );
 
       if (response.ok) {
-        // Clear the input fields
+        const updatedRecipeData = await response.json();
+
+        // Update local state with new recipe data
+        route.params.recipeData = updatedRecipeData;
+        setSubmittedReviews(updatedRecipeData.reviewsAndRatings);
         setUserReview("");
         setUserRating("");
 
-        // Fetch all reviews again to update the list
-        fetchAllReviews();
+        // Optionally, update average rating and total ratings in local state
+        // setAverageRating(updatedRecipeData.averageRating);
+        // setTotalRatings(updatedRecipeData.totalRatings);
 
         Alert.alert("Success", "Your review has been submitted.");
       } else {
@@ -172,8 +177,51 @@ export default function MembersRecipeInfoScreen({ route }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchReviews();
-    }, [])
+      // Fetch the updated recipe data including reviews and ratings
+      const fetchUpdatedRecipeData = async () => {
+        try {
+          const response = await fetch(
+            `${process.env.EXPO_PUBLIC_IP}/recipe/getRecipeId/${recipeData._id}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (response.ok) {
+            const updatedRecipeData = await response.json();
+            // Update the route params with the new recipe data
+            route.params.recipeData = updatedRecipeData;
+
+            // Update the state for reviews
+            const reviewsWithUsernames = await Promise.all(
+              updatedRecipeData.reviewsAndRatings.map(async (review) => {
+                const username = await fetchUsernameById(review.name);
+                return { ...review, username };
+              })
+            );
+
+            const currentUserReviews = reviewsWithUsernames
+              .filter((review) => review.name === currentUser._id)
+              .reverse();
+            const otherUserReviews = reviewsWithUsernames
+              .filter((review) => review.name !== currentUser._id)
+              .reverse();
+
+            setSubmittedReviews(otherUserReviews);
+            setCurrentUserReviews(currentUserReviews);
+          } else {
+            console.error("Failed to fetch updated recipe data");
+          }
+        } catch (error) {
+          console.error("Error fetching updated recipe data:", error);
+        }
+      };
+
+      fetchUpdatedRecipeData();
+    }, [recipeData._id, currentUser._id])
   );
 
   // Function to fetch username based on UserId
@@ -245,6 +293,8 @@ export default function MembersRecipeInfoScreen({ route }) {
           <Image source={{ uri: recipeData.image }} style={styles.image} />
         </View>
         <Text style={styles.title}>{recipeData.name}</Text>
+        <Text>Average Rating: {recipeData.averageRating.toFixed(1)}</Text>
+        <Text>Total Ratings: {recipeData.totalRatings}</Text>
 
         <View style={styles.mainBox}>
           <View style={styles.section}>
