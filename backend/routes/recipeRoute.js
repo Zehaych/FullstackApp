@@ -7,9 +7,11 @@ router.get("/", recipeController.getRecipe);
 
 //food => GET
 router.get("/getRecipeId/:recipeId", recipeController.getRecipeId);
+router.get("/getReportedRecipes", recipeController.getReportedRecipes);
 
 //food => POST
 router.post("/", recipeController.postRecipe);
+router.post("/reportRecipe/:recipeId", recipeController.reportRecipe);
 
 //food => PUT
 router.put("/updateRecipe/:recipeId", recipeController.updateRecipe);
