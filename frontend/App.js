@@ -37,6 +37,10 @@ import EditRecipeScreen from "./screens/User/EditRecipeScreen";
 import ViewBizRecipeScreen from "./screens/BizPartner/ViewBizRecipeScreen";
 import EditBizRecipeScreen from "./screens/BizPartner/EditBizRecipeScreen";
 import ViewBizRecipeInfoScreen from "./screens/BizPartner/ViewBizRecipeInfoScreen";
+import ReportedRecipe from "./screens/SystemAdmin/ReportedRecipe";
+import ReportedRecipeDetails from "./screens/SystemAdmin/ReportedRecipeDetails";
+import ReportedBizRecipe from "./screens/SystemAdmin/ReportedBizRecipe";
+import ReportedBizRecipeDetails from "./screens/SystemAdmin/ReportedBizRecipeDetail";
 
 const Stack = createStackNavigator();
 
@@ -47,6 +51,26 @@ function App() {
     <Context.Provider value={[currentUser, setCurrentUser]}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="LogInScreen">
+          <Stack.Screen
+            name="ReportedBizRecipeDetails"
+            component={ReportedBizRecipeDetails}
+            options={{ headerShown: false}}
+          />
+          <Stack.Screen
+            name="ReportedBizRecipe"
+            component={ReportedBizRecipe}
+            options={{ headerShown: false}}
+          />
+          <Stack.Screen
+            name="ReportedRecipeDetails"
+            component={ReportedRecipeDetails}
+            options={{ headerShown: false}}
+          />
+          <Stack.Screen
+            name="ReportedRecipe"
+            component={ReportedRecipe}
+            options={{ headerShown: false}}
+          />
           <Stack.Screen
             name="UserInfo"
             component={UserInfo}
