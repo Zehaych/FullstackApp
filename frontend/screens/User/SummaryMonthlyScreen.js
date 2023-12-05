@@ -41,7 +41,7 @@ const SummaryMonthlyScreen = () => {
             const targetCaloriesForMonth = currentUser.calorie * daysInMonth;
         
             data.push({
-                month: monthStartDate.toLocaleString('default', { month: 'long' }), // Month name
+                month: monthStartDate.toLocaleString('default', { month: 'short' }), // Month name
                 consumed: monthlyCalories,
                 target: targetCaloriesForMonth,
             });
@@ -63,7 +63,7 @@ const SummaryMonthlyScreen = () => {
                 color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
                 label: "Target",
             },
-            ],
+        ],
     };
     
     return (
