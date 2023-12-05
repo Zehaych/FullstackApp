@@ -16,6 +16,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../../store/context";
 import AddRatingsScreen from "../User/AddRatingsScreen";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 export default function MembersRecipeInfoScreen({ route }) {
   const { recipeData } = route.params;
@@ -24,6 +25,7 @@ export default function MembersRecipeInfoScreen({ route }) {
   // new
   const [userReview, setUserReview] = useState("");
   const [userRating, setUserRating] = useState("");
+  const [submittedReviews, setSubmittedReviews] = useState([]);
 
   const [reportModalVisible, setReportModalVisible] = useState(false);
   const [reportReason, setReportReason] = useState("");
@@ -111,11 +113,10 @@ export default function MembersRecipeInfoScreen({ route }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            // Include any necessary headers, like authorization tokens
           },
           body: JSON.stringify({
             id: recipeData._id,
-            name: currentUser._id, // Assuming the name field requires the user's ID
+            name: currentUser._id,
             reviews: userReview,
             ratings: Number(userRating),
           }),
@@ -123,6 +124,13 @@ export default function MembersRecipeInfoScreen({ route }) {
       );
 
       if (response.ok) {
+        // Clear the input fields
+        setUserReview("");
+        setUserRating("");
+
+        // Fetch all reviews again to update the list
+        fetchAllReviews();
+
         Alert.alert("Success", "Your review has been submitted.");
       } else {
         Alert.alert("Error", "Failed to submit the review.");
@@ -132,6 +140,84 @@ export default function MembersRecipeInfoScreen({ route }) {
       Alert.alert("Error", "An error occurred while submitting the review.");
     }
   };
+
+  // new
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/recipe/getRecipeId/${recipeData._id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            // Include any necessary headers, like authorization tokens
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setSubmittedReviews(data.reviewsAndRatings); // Assuming the response contains a reviewsAndRatings field
+      } else {
+        console.error("Failed to fetch recipe details");
+      }
+    } catch (error) {
+      console.error("Error fetching recipe details:", error);
+    }
+  };
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchReviews();
+    }, [])
+  );
+
+  // Function to fetch username based on UserId
+  const fetchUsernameById = async (userId) => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${userId}`
+      );
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status}`);
+      }
+      const userData = await response.json();
+      return userData.username; // Assuming the user object has a username field
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      return null; // Return null or a placeholder string if the username can't be fetched
+    }
+  };
+
+  // Function to fetch all reviews and update the state with usernames
+  const fetchAllReviews = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/recipe/getRecipeId/${recipeData._id}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        const reviewsWithUsernames = await Promise.all(
+          data.reviewsAndRatings.map(async (review) => {
+            const username = await fetchUsernameById(review.name);
+            return { ...review, username }; // Append the fetched username to the review object
+          })
+        );
+        setSubmittedReviews(reviewsWithUsernames);
+      } else {
+        console.error("Failed to fetch recipe details");
+      }
+    } catch (error) {
+      console.error("Error fetching recipe details:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllReviews();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -216,7 +302,22 @@ export default function MembersRecipeInfoScreen({ route }) {
         </View>
 
         <View style={styles.mainBox}>
-          <View style={styles.section}></View>
+          <View style={styles.section}>
+            {/* Displaying submitted reviews */}
+            {submittedReviews.length > 0 && (
+              <View style={styles.submittedReviewsContainer}>
+                {submittedReviews.map((review, index) => (
+                  <View key={index} style={styles.reviewItem}>
+                    {/* You might need to adjust these fields based on your data structure */}
+                    <Text style={styles.reviewText}>
+                      {review.username}: {review.reviews} (Rating:{" "}
+                      {review.ratings})
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            )}
+          </View>
         </View>
         <StatusBar style="auto" />
       </View>
@@ -438,5 +539,17 @@ const styles = StyleSheet.create({
   },
   boldText: {
     fontWeight: "bold",
+  },
+  submittedReviewsContainer: {
+    marginTop: 20,
+  },
+  reviewItem: {
+    backgroundColor: "#f0f0f0",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  reviewText: {
+    fontSize: 14,
   },
 });
