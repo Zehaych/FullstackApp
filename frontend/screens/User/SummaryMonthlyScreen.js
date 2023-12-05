@@ -21,7 +21,7 @@ const SummaryMonthlyScreen = () => {
     
     useEffect(() => {
         const today = new Date();
-        const monthsToDisplay = 6; // Adjust as needed
+        const monthsToDisplay = 6; // Adjust this to change how many months to display
     
         const data = [];
         for (let i = monthsToDisplay - 1; i >= 0; i--) {
@@ -65,6 +65,16 @@ const SummaryMonthlyScreen = () => {
             },
         ],
     };
+
+    const chartConfig = {
+        backgroundGradientFrom: "#fff",
+        backgroundGradientTo: "#fff",
+        color: (opacity = 1) => `rgba(0, 224, 255, ${opacity})`,
+        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+        style: {
+            borderRadius: 16,
+        },
+    };
     
     return (
         <View style={styles.container}>
@@ -77,15 +87,8 @@ const SummaryMonthlyScreen = () => {
                 width={Dimensions.get("window").width - 16}
                 height={220}
                 yAxisSuffix=" Cal"
-                chartConfig={{
-                backgroundGradientFrom: "#fff",
-                backgroundGradientTo: "#fff",
-                color: (opacity = 1) => `rgba(0, 224, 255, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                style: {
-                    borderRadius: 16,
-                },
-                }}
+                chartConfig={chartConfig}
+                verticalLabelRotation={0}
             />
             <View style={styles.componentContainer}>
                 <View style={styles.leftComponent}>
