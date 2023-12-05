@@ -2,21 +2,21 @@ const mongoose = require("mongoose");
 
 const reportSchema = mongoose.Schema({
   user: {
-      type: mongoose.Types.ObjectId,
-      ref: "User",
-      required: true
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
   feedback: {
-      type: String,
-      required: true
+    type: String,
+    required: true,
   },
   additionalComment: {
-      type: String
+    type: String,
   },
   reportedAt: {
-      type: Date,
-      default: Date.now
-  }
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const recipeSchema = mongoose.Schema(
@@ -48,14 +48,36 @@ const recipeSchema = mongoose.Schema(
     },
     isReported: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    reportedBy: [reportSchema]
+    reportedBy: [reportSchema],
+    reviewsAndRatings: [
+      {
+        name: {
+          type: mongoose.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        reviews: {
+          type: String,
+          required: true,
+        },
+        ratings: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+    averageRating: {
+      type: Number,
+    },
+    totalRatings: {
+      type: Number,
+    },
   },
   {
     timestamps: true,
   }
 );
-
 
 module.exports = mongoose.model("Recipe", recipeSchema);

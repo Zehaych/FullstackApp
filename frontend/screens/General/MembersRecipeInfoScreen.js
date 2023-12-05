@@ -15,23 +15,34 @@ import {
 import Icon from "react-native-vector-icons/MaterialIcons";
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../../store/context";
+import AddRatingsScreen from "../User/AddRatingsScreen";
 
 export default function MembersRecipeInfoScreen({ route }) {
   const { recipeData } = route.params;
   const [username, setUsername] = useState("");
 
+  // new
+  const [userReview, setUserReview] = useState("");
+  const [userRating, setUserRating] = useState("");
+
   const [reportModalVisible, setReportModalVisible] = useState(false);
-  const [reportReason, setReportReason] = useState('');
-  const reportReasons = ["Inappropriate Content", "False Information", "Offensive Language", "Health Misinformation", "Plagiarism"];
-  const [additionalDetails, setAdditionalDetails] = useState('');
+  const [reportReason, setReportReason] = useState("");
+  const reportReasons = [
+    "Inappropriate Content",
+    "False Information",
+    "Offensive Language",
+    "Health Misinformation",
+    "Plagiarism",
+  ];
+  const [additionalDetails, setAdditionalDetails] = useState("");
 
   const [currentUser, setCurrentUser] = useContext(Context);
 
   const [activeReason, setActiveReason] = useState(null);
 
   const handleReasonPress = (reason) => {
-      setReportReason(reason);
-      setActiveReason(reason);
+    setReportReason(reason);
+    setActiveReason(reason);
   };
 
   const fetchUsername = async () => {
@@ -55,48 +66,83 @@ export default function MembersRecipeInfoScreen({ route }) {
 
   const reportRecipe = async () => {
     try {
-        const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/recipe/reportRecipe/${recipeData._id}`, { 
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // Include any necessary headers, like authorization tokens
-            },
-            body: JSON.stringify({
-                userId: currentUser._id, // Assuming you have the current user's ID
-                feedback: reportReason,
-                additionalComment: additionalDetails
-            }),
-        });
-        console.log(recipeData._id)
-        console.log(currentUser._id)
-        if (response.ok) {
-            Alert.alert('Report Submitted', 'Your report has been submitted for review.');
-        } else {
-            Alert.alert('Report Failed', 'Failed to submit the report.');
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/recipe/reportRecipe/${recipeData._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Include any necessary headers, like authorization tokens
+          },
+          body: JSON.stringify({
+            userId: currentUser._id, // Assuming you have the current user's ID
+            feedback: reportReason,
+            additionalComment: additionalDetails,
+          }),
         }
+      );
+      console.log(recipeData._id);
+      console.log(currentUser._id);
+      if (response.ok) {
+        Alert.alert(
+          "Report Submitted",
+          "Your report has been submitted for review."
+        );
+      } else {
+        Alert.alert("Report Failed", "Failed to submit the report.");
+      }
     } catch (error) {
-        console.error('Error reporting recipe:', error);
-        Alert.alert('Error', 'An error occurred while submitting the report.');
+      console.error("Error reporting recipe:", error);
+      Alert.alert("Error", "An error occurred while submitting the report.");
     }
   };
 
+  // new
+  const submitReviewAndRating = async () => {
+    if (!userReview.trim() || !userRating.trim()) {
+      Alert.alert("Error", "Please enter both review and rating.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/recipe/ratings`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Include any necessary headers, like authorization tokens
+          },
+          body: JSON.stringify({
+            id: recipeData._id,
+            name: currentUser._id, // Assuming the name field requires the user's ID
+            reviews: userReview,
+            ratings: Number(userRating),
+          }),
+        }
+      );
+
+      if (response.ok) {
+        Alert.alert("Success", "Your review has been submitted.");
+      } else {
+        Alert.alert("Error", "Failed to submit the review.");
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      Alert.alert("Error", "An error occurred while submitting the review.");
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
-    <TouchableOpacity
+      <TouchableOpacity
         style={styles.menuItem}
         onPress={() => setReportModalVisible(true)}
-    >
-     <View>
-     <Icon
-        name="report"
-        color="#FF6347"
-        size={25}
-        style={styles.icon}
-        />
-     </View>
-        
-    </TouchableOpacity>
+      >
+        <View>
+          <Icon name="report" color="#FF6347" size={25} style={styles.icon} />
+        </View>
+      </TouchableOpacity>
       <View>
         <View style={styles.imageContainer}>
           <Image source={{ uri: recipeData.image }} style={styles.image} />
@@ -143,94 +189,123 @@ export default function MembersRecipeInfoScreen({ route }) {
           <Text style={styles.subTitle}>Calories: </Text>
           <Text>{recipeData.calories}</Text>
         </View>
+        {/* <AddRatingsScreen /> */}
+        <Text style={styles.subTitle}>NutriRizz Community Reviews </Text>
 
+        <View style={styles.mainBox}>
+          {/* <View style={styles.section}> */}
+          <Text style={styles.subTitle}>Review: </Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your review"
+            value={userReview}
+            onChangeText={setUserReview}
+            multiline
+          />
+          {/* </View> */}
+          <Text style={styles.subTitle}>Rating: </Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your rating (1-5)"
+            value={userRating}
+            onChangeText={(text) => setUserRating(text.replace(/[^1-5]/g, ""))}
+            keyboardType="numeric"
+          />
+
+          <Button title="Submit Review" onPress={submitReviewAndRating} />
+        </View>
+
+        <View style={styles.mainBox}>
+          <View style={styles.section}></View>
+        </View>
         <StatusBar style="auto" />
       </View>
 
       <Modal
-          animationType="slide"
-          transparent={true}
-          visible={reportModalVisible}
-          onRequestClose={() => setReportModalVisible(false)}
+        animationType="slide"
+        transparent={true}
+        visible={reportModalVisible}
+        onRequestClose={() => setReportModalVisible(false)}
       >
         <View style={styles.centeredView}>
-            <View style={styles.modalView}>
+          <View style={styles.modalView}>
             <View style={styles.reasonsContainer}>
-            {reportReasons.map((reason, index) => (
+              {reportReasons.map((reason, index) => (
                 <TouchableOpacity
-                    key={index}
+                  key={index}
+                  style={[
+                    styles.reasonButton,
+                    activeReason === reason ? styles.activeReasonButton : null,
+                  ]}
+                  onPress={() => handleReasonPress(reason)}
+                >
+                  <Text
                     style={[
-                        styles.reasonButton,
-                        activeReason === reason ? styles.activeReasonButton : null
+                      styles.reasonButtonText,
+                      activeReason === reason
+                        ? styles.activeReasonButtonText
+                        : null,
                     ]}
-                    onPress={() => handleReasonPress(reason)}
-                >
-                    <Text 
-                        style={[
-                            styles.reasonButtonText, 
-                            activeReason === reason ? styles.activeReasonButtonText : null
-                        ]}
-                    >
-                        {reason}
-                    </Text>
+                  >
+                    {reason}
+                  </Text>
                 </TouchableOpacity>
-            ))}
+              ))}
             </View>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Additional details (optional)"
-                    value={additionalDetails}
-                    onChangeText={setAdditionalDetails}
-                    multiline
-                />
-                <TouchableOpacity
-                    style={styles.submitButton}
-                    onPress={() => {
-                        setReportModalVisible(false);
-                        reportRecipe(); 
-                    }}
-                >
-                    <Text style={styles.submitButtonText}>Submit Report</Text>
-                </TouchableOpacity>
+            <TextInput
+              style={styles.input}
+              placeholder="Additional details (optional)"
+              value={additionalDetails}
+              onChangeText={setAdditionalDetails}
+              multiline
+            />
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={() => {
+                setReportModalVisible(false);
+                reportRecipe();
+              }}
+            >
+              <Text style={styles.submitButtonText}>Submit Report</Text>
+            </TouchableOpacity>
 
-                <TouchableOpacity
-                    style={styles.secondButton}
-                    onPress={() => {
-                        setReportModalVisible(false);
-                    }}
-                >
-                    <Text style={styles.submitButtonText}>Close</Text>
-                </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              style={styles.secondButton}
+              onPress={() => {
+                setReportModalVisible(false);
+              }}
+            >
+              <Text style={styles.submitButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-    </Modal>
-
+      </Modal>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  reasonsContainer:{
-    justifyContent: 'flex-start',
+  reasonsContainer: {
+    justifyContent: "flex-start",
   },
   reasonButton: {
     padding: 10,
     marginBottom: 10, // Space between buttons
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: '#ddd',
-    },
-    activeReasonButton: {
-        backgroundColor: '#e0e0e0', // Example background color for active button
-    },
-    reasonButtonText: {
-        color: 'black',
-        fontSize: 16,
-        // Other text styling as needed
-    },
-    activeReasonButtonText: {
-        fontWeight: 'bold', // Bold text for active button
-    },
+    borderColor: "#ddd",
+  },
+  activeReasonButton: {
+    backgroundColor: "#e0e0e0", // Example background color for active button
+  },
+  reasonButtonText: {
+    color: "black",
+    fontSize: 16,
+    // Other text styling as needed
+  },
+  activeReasonButtonText: {
+    fontWeight: "bold", // Bold text for active button
+  },
   icon: {
     marginRight: 16,
   },
@@ -250,65 +325,65 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
   modalView: {
-    width: '80%',
-    backgroundColor: 'white',
+    width: "80%",
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
-    width: 0,
-    height: 2
+      width: 0,
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
   },
   submitButton: {
-    backgroundColor: 'red', 
-    padding: 8, 
-    borderRadius: 5, 
-    alignItems: 'center',
-    justifyContent: 'center', 
-    width: '80%', 
-    marginBottom: 10, 
+    backgroundColor: "red",
+    padding: 8,
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "80%",
+    marginBottom: 10,
   },
-  secondButton:{
-    backgroundColor: 'blue', 
-    padding: 8, 
-    borderRadius: 5, 
-    alignItems: 'center',
-    justifyContent: 'center', 
-    width: '80%', 
-    marginBottom: 10, 
+  secondButton: {
+    backgroundColor: "blue",
+    padding: 8,
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "80%",
+    marginBottom: 10,
   },
   submitButtonText: {
-    color: 'white', 
-    fontSize: 16,     
+    color: "white",
+    fontSize: 16,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     padding: 10,
     borderRadius: 5,
-    width: '80%',
+    width: "80%",
     marginBottom: 10,
   },
   reportButton: {
-      backgroundColor: 'red',
-      padding: 10,
-      borderRadius: 5,
-      alignItems: 'center',
-      width: '80%',
-      marginBottom: 20,
+    backgroundColor: "red",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    width: "80%",
+    marginBottom: 20,
   },
   reportButtonText: {
-      color: 'white',
+    color: "white",
   },
   container: {
     flex: 1,

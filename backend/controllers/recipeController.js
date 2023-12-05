@@ -139,16 +139,16 @@ exports.deleteRecipe = asyncHandler(async (req, res) => {
 // Report recipe
 exports.reportRecipe = asyncHandler(async (req, res) => {
   const recipeId = req.params.recipeId;
-  const { userId, feedback, additionalComment } = req.body; 
+  const { userId, feedback, additionalComment } = req.body;
 
   const recipe = await Recipe.findById(recipeId);
 
   if (!recipe) {
-      return res.status(404).json({ message: "Recipe not found" });
+    return res.status(404).json({ message: "Recipe not found" });
   }
 
   recipe.isReported = true;
-  recipe.reportedBy.push({ user: userId, feedback, additionalComment});
+  recipe.reportedBy.push({ user: userId, feedback, additionalComment });
 
   await recipe.save();
 
@@ -157,6 +157,26 @@ exports.reportRecipe = asyncHandler(async (req, res) => {
 
 // Get the reported Recipes
 exports.getReportedRecipes = asyncHandler(async (req, res) => {
-  const reportedRecipes = await Recipe.find({ isReported: true }).populate('reportedBy.user', 'username');
+  const reportedRecipes = await Recipe.find({ isReported: true }).populate(
+    "reportedBy.user",
+    "username"
+  );
   res.json(reportedRecipes);
+});
+
+// PATCH reviews and ratings on a recipe
+exports.postRating = asyncHandler(async (req, res) => {
+  const rating = await Recipe.findByIdAndUpdate(
+    { _id: req.body.id },
+    {
+      $push: {
+        reviewsAndRatings: {
+          name: req.body.name,
+          reviews: req.body.reviews,
+          ratings: req.body.ratings,
+        },
+      },
+    }
+  );
+  res.status(200).json(rating);
 });

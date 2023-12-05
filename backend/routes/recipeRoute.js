@@ -19,4 +19,7 @@ router.put("/updateRecipe/:recipeId", recipeController.updateRecipe);
 //food => DELETE
 router.delete("/deleteRecipe/:recipeId", recipeController.deleteRecipe);
 
+// submit ratings -> POST
+router.post("/ratings", recipeController.postRating);
+
 module.exports = router;
