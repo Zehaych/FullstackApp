@@ -26,6 +26,7 @@ export default function MembersRecipeInfoScreen({ route }) {
   const [userReview, setUserReview] = useState("");
   const [userRating, setUserRating] = useState("");
   const [submittedReviews, setSubmittedReviews] = useState([]);
+  const [currentUserReviews, setCurrentUserReviews] = useState([]);
 
   const [reportModalVisible, setReportModalVisible] = useState(false);
   const [reportReason, setReportReason] = useState("");
@@ -206,7 +207,17 @@ export default function MembersRecipeInfoScreen({ route }) {
             return { ...review, username }; // Append the fetched username to the review object
           })
         );
-        setSubmittedReviews(reviewsWithUsernames);
+
+        // Separate the reviews into two arrays
+        const currentUserReviews = reviewsWithUsernames
+          .filter((review) => review.name === currentUser._id)
+          .reverse();
+        const otherUserReviews = reviewsWithUsernames
+          .filter((review) => review.name !== currentUser._id)
+          .reverse();
+
+        setSubmittedReviews(otherUserReviews);
+        setCurrentUserReviews(currentUserReviews);
       } else {
         console.error("Failed to fetch recipe details");
       }
@@ -276,49 +287,88 @@ export default function MembersRecipeInfoScreen({ route }) {
           <Text>{recipeData.calories}</Text>
         </View>
         {/* <AddRatingsScreen /> */}
-        <Text style={styles.subTitle}>NutriRizz Community Reviews </Text>
+        {currentUserReviews.length === 0 && (
+          <Text style={styles.title}>Recipe Review </Text>
+        )}
 
-        <View style={styles.mainBox}>
-          {/* <View style={styles.section}> */}
-          <Text style={styles.subTitle}>Review: </Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your review"
-            value={userReview}
-            onChangeText={setUserReview}
-            multiline
-          />
-          {/* </View> */}
-          <Text style={styles.subTitle}>Rating: </Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your rating (1-5)"
-            value={userRating}
-            onChangeText={(text) => setUserRating(text.replace(/[^1-5]/g, ""))}
-            keyboardType="numeric"
-          />
-
-          <Button title="Submit Review" onPress={submitReviewAndRating} />
-        </View>
-
-        <View style={styles.mainBox}>
-          <View style={styles.section}>
-            {/* Displaying submitted reviews */}
-            {submittedReviews.length > 0 && (
-              <View style={styles.submittedReviewsContainer}>
-                {submittedReviews.map((review, index) => (
-                  <View key={index} style={styles.reviewItem}>
-                    {/* You might need to adjust these fields based on your data structure */}
-                    <Text style={styles.reviewText}>
-                      {review.username}: {review.reviews} (Rating:{" "}
-                      {review.ratings})
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            )}
+        {/* Only show review submission form if the user hasn't submitted a review yet */}
+        {currentUserReviews.length === 0 && (
+          <View style={styles.mainBox}>
+            <View style={styles.section}>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your review"
+                value={userReview}
+                onChangeText={setUserReview}
+                multiline
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your rating (1-5)"
+                value={userRating}
+                onChangeText={(text) =>
+                  setUserRating(text.replace(/[^1-5]/g, ""))
+                }
+                keyboardType="numeric"
+              />
+              <Button title="Submit Review" onPress={submitReviewAndRating} />
+            </View>
           </View>
-        </View>
+        )}
+
+        {/* "Your Review" section */}
+        {currentUserReviews.length > 0 && (
+          <View>
+            <Text style={styles.title}>Your Review</Text>
+
+            {currentUserReviews.map((review, index) => (
+              <View key={index} style={styles.mainBox}>
+                <View style={styles.section}>
+                  <Text style={styles.reviewLabel}>Name:</Text>
+                  <Text style={styles.reviewContent}>{review.username}</Text>
+                </View>
+
+                <View style={styles.section}>
+                  <Text style={styles.reviewLabel}>Review:</Text>
+                  <Text style={styles.reviewContent}>{review.reviews}</Text>
+                </View>
+
+                <Text style={styles.reviewLabel}>Rating:</Text>
+                <Text style={styles.reviewContent}>{review.ratings}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* "Community Reviews" section */}
+        <Text style={styles.title}>Community Reviews</Text>
+        {submittedReviews.length > 0 ? (
+          // <View style={styles.mainBox}>
+          <View style={styles.submittedReviewsContainer}>
+            {submittedReviews.map((review, index) => (
+              <View key={index} style={styles.mainBox}>
+                <View style={styles.section}>
+                  <Text style={styles.reviewLabel}>Name:</Text>
+                  <Text style={styles.reviewContent}>{review.username}</Text>
+                </View>
+
+                <View style={styles.section}>
+                  <Text style={styles.reviewLabel}>Review:</Text>
+                  <Text style={styles.reviewContent}>{review.reviews}</Text>
+                </View>
+
+                <Text style={styles.reviewLabel}>Rating:</Text>
+                <Text style={styles.reviewContent}>{review.ratings}</Text>
+              </View>
+            ))}
+          </View>
+        ) : (
+          // </View>
+          <View style={styles.mainBox}>
+            <Text style={styles.noReviewsText}>No reviews yet</Text>
+          </View>
+        )}
+
         <StatusBar style="auto" />
       </View>
 
@@ -540,16 +590,31 @@ const styles = StyleSheet.create({
   boldText: {
     fontWeight: "bold",
   },
-  submittedReviewsContainer: {
-    marginTop: 20,
-  },
+  // submittedReviewsContainer: {
+  //   marginTop: 20,
+  // },
   reviewItem: {
-    backgroundColor: "#f0f0f0",
+    // backgroundColor: "#f0f0f0",
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
   },
+  reviewLabel: {
+    fontWeight: "bold",
+    color: "#333",
+    marginTop: 5,
+  },
+  reviewContent: {
+    color: "#333",
+    marginBottom: 5,
+  },
   reviewText: {
     fontSize: 14,
+  },
+  noReviewsText: {
+    color: "#333",
+    textAlign: "center",
+    marginTop: 10,
+    fontSize: 16,
   },
 });
