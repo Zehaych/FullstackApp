@@ -7,43 +7,92 @@ const SummaryWeeklyScreen = () => {
     const [currentUser, setCurrentUser] = useContext(Context);
     const [weeklyCalories, setWeeklyCalories] = useState([]);
 
-    const targetCalories = currentUser.calorie * 7;
+    const targetCalories = currentUser.calorie;
+    //const targetCalories = currentUser.calorie * 7;
     const CaloriesLog = currentUser.dailyCaloriesLog;
 
+    useEffect(() => {
+        //calculate weekly total calories and set the state
+        const weeklyData = calculateWeeklyData(CaloriesLog, targetCalories);
+        setWeeklyCalories(weeklyData);
+    }, [CaloriesLog, targetCalories]);
+
+    //week Number of the year
     const getWeekNumber = (date) => {
         const d = new Date(date);
-        d.setHours(0, 0, 0, 0);
-        d.setDate(d.getDate() + 4 - (d.getDay() || 7));
-        const yearStart = new Date(d.getFullYear(), 0, 1);
+        d.setHours(0, 0, 0, 0);             // Set to 12 midnight  
+        d.setDate(d.getDate() + 4 - (d.getDay() || 7));             //  Set to nearest Thursday: current date + 4 - current day number, make Sunday's day number 7
+        const yearStart = new Date(d.getFullYear(), 0, 1);          // start of current year
         const weekNumber = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        console.log("weekNumber: " + weekNumber);
         return weekNumber;
     };
-    
-    //aggregate daily data into weekly totals
-    const weeklyData = CaloriesLog.reduce((acc, entry) => {
-        const date = new Date(entry.date);
-        const weekNumber = getWeekNumber(date);
-    
-        //init the weekly total if not exists
-        if (!acc[weekNumber]) {
-            acc[weekNumber] = 0;
-        }
 
-        acc[weekNumber] += entry.total_calories;
+    //calculate weekly total calories and set the state
+    const calculateWeeklyData = (dailyCaloriesLog, dailyTargetCalories) => {
+        const weeklyData = [];
+        let currentWeek = null;
+        let weeklyTotal = 0;
     
-        return acc;
-    }, {});
+        //iterate through daily calories log
+        for (const entry of dailyCaloriesLog) {
+            const entryDate = new Date(entry.date);
+            const entryWeek = getWeekNumber(entryDate);
+        
+            // Check if a new week starts
+            if (currentWeek !== entryWeek) {
+                //save weekly data for the previous week
+                if (currentWeek !== null) {
+                    weeklyData.push({
+                        week: currentWeek,
+                        totalCalories: weeklyTotal,
+                        exceededTarget: weeklyTotal > dailyTargetCalories * 7, //compare weekly total with weekly target
+                    });
+                }
+        
+                //get for the new week
+                currentWeek = entryWeek;
+                weeklyTotal = 0;
+            }
+        
+            //add daily calories for the current week
+            weeklyTotal += entry.total_calories;
+        }
     
+        // Save the last week
+        if (currentWeek !== null) {
+            weeklyData.push({
+                week: currentWeek,
+                totalCalories: weeklyTotal,
+                exceededTarget: weeklyTotal > dailyTargetCalories * 7,
+            });
+        }
+    
+        return weeklyData;
+    };
+
     const chartData = {
-        labels: Object.keys(weeklyData).map((week) => `Week ${week}`),
+        labels: weeklyCalories.map((week) => `Week ${week.week}`),
         datasets: [
             {
-                data: Object.values(weeklyData),
+                data: weeklyCalories.map((week) => week.totalCalories),
+                color: (opacity = 1) => (week.exceededTarget ? `rgba(255, 0, 0, ${opacity})` : `rgba(134, 65, 244, ${opacity})`),
             },
         ],
     };
     
+    const chartConfig = {
+        backgroundGradientFrom: '#fff',
+        backgroundGradientTo: '#fff',
+        color: (opacity = 1) => `rgba(0, 224, 255, ${opacity})`,
+        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+        style: {
+            borderRadius: 16,
+        },
+    };
     
+            
+
 
     return (
         <View style={styles.container}>
@@ -54,19 +103,11 @@ const SummaryWeeklyScreen = () => {
                 data={chartData}
                 width={Dimensions.get("window").width - 16}
                 height={220}
-                yAxisSuffix="k"
-                chartConfig={{
-                    backgroundGradientFrom: "#fff",
-                    backgroundGradientTo: "#fff",
-                    color: (opacity = 1) => `rgba(0, 224, 255, ${opacity})`,
-                    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                    style: {
-                        borderRadius: 16,
-                    },
-                }}
-                verticalLabelRotation={15}
+                yAxisSuffix=" Cal"
+                chartConfig={chartConfig}
+                verticalLabelRotation={0}
             />
-            <Text style={styles.text}>Weekly's total Calories intake: ahahahahaha</Text>
+            <Text style={styles.text}>Weekly's total Calories intake: </Text>
             <View style={styles.componentContainer}>
                 <View style={styles.leftComponent}>
                     <Text style={styles.text}>Weekly intake: </Text>
@@ -139,6 +180,41 @@ const styles = StyleSheet.create({
 });
 
 /*
+
+const getWeekNumber = (date) => {
+        const d = new Date(date);
+        d.setHours(0, 0, 0, 0);             // Set to 12 midnight  
+        d.setDate(d.getDate() + 4 - (d.getDay() || 7));             //  Set to nearest Thursday: current date + 4 - current day number, make Sunday's day number 7
+        const yearStart = new Date(d.getFullYear(), 0, 1);          // start of current year
+        const weekNumber = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        console.log("weekNumber: " + weekNumber);
+        return weekNumber;
+    };
+    
+    //aggregate daily data into weekly totals
+    const weeklyData = CaloriesLog.reduce((acc, entry) => {
+        const date = new Date(entry.date);
+        const weekNumber = getWeekNumber(date);
+    
+        //init the weekly total if not exists
+        if (!acc[weekNumber]) {
+            acc[weekNumber] = 0;
+        }
+
+        acc[weekNumber] += entry.total_calories;
+    
+        return acc;
+    }, {});
+    
+    const chartData = {
+        labels: Object.keys(weeklyData).map((week) => `Week ${week}`),
+        datasets: [
+            {
+                data: Object.values(weeklyData),
+            },
+        ],
+    };
+
 
 useEffect(() => {
         // Calculate total calories for the past week
