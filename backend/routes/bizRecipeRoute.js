@@ -15,6 +15,8 @@ router.post("/reportBizRecipe/:recipeId", bizRecipeController.reportBizRecipe);
 
 //food => PUT
 router.put("/updateBizRecipe/:recipeId", bizRecipeController.updateBizRecipe);
+router.put("/dismissReport/:recipeId", bizRecipeController.dismissReport);
+
 
 //food => DELETE
 router.delete(

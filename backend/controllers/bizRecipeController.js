@@ -111,3 +111,19 @@ exports.getReportedBizRecipes = asyncHandler(async (req, res) => {
   const reportedRecipes = await BizRecipe.find({ isReported: true }).populate('reportedBy.user', 'username');
   res.json(reportedRecipes);
 });
+
+//Dismiss report
+exports.dismissReport = asyncHandler(async (req, res) => {
+  const recipeId = req.params.recipeId;
+
+  const recipe = await BizRecipe.findById(recipeId);
+  if (!recipe) {
+      return res.status(404).json({ message: "Recipe not found" });
+  }
+
+  recipe.isReported = false;
+  recipe.reportedBy = []; // Optionally clear the reportedBy array
+  await recipe.save();
+
+  res.status(200).json({ message: "Report dismissed successfully" });
+});
