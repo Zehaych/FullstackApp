@@ -10,6 +10,7 @@ router.get("/getBizRecipeId/:bizRecipeId", bizRecipeController.getBizRecipeId);
 
 //food => POST
 router.post("/", bizRecipeController.postBizRecipe);
+router.post("/reportBizRecipe/:recipeId", bizRecipeController.reportBizRecipe);
 
 //food => PUT
 router.put("/updateBizRecipe/:recipeId", bizRecipeController.updateBizRecipe);

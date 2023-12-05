@@ -86,3 +86,22 @@ exports.deleteBizRecipe = asyncHandler(async (req, res) => {
 
   res.status(200).json({ message: "Recipe deleted successfully" });
 });
+
+// Report recipe
+exports.reportBizRecipe = asyncHandler(async (req, res) => {
+  const recipeId = req.params.recipeId;
+  const { userId, feedback, additionalComment } = req.body; 
+
+  const recipe = await BizRecipe.findById(recipeId);
+
+  if (!recipe) {
+      return res.status(404).json({ message: "Recipe not found" });
+  }
+
+  recipe.isReported = true;
+  recipe.reportedBy.push({ user: userId, feedback, additionalComment});
+
+  await recipe.save();
+
+  res.status(200).json({ message: "Recipe reported successfully" });
+});

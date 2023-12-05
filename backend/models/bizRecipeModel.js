@@ -1,4 +1,24 @@
+
 const mongoose = require("mongoose");
+
+const reportSchema = mongoose.Schema({
+  user: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: true
+  },
+  feedback: {
+      type: String,
+      required: true
+  },
+  additionalComment: {
+      type: String
+  },
+  reportedAt: {
+      type: Date,
+      default: Date.now
+  }
+});
 
 const bizRecipeSchema = mongoose.Schema(
   {
@@ -31,6 +51,11 @@ const bizRecipeSchema = mongoose.Schema(
       ref: "User",
       required: true,
     },
+    isReported: {
+      type: Boolean,
+      default: false
+    },
+    reportedBy: [reportSchema]
   },
   {
     timestamps: true,
