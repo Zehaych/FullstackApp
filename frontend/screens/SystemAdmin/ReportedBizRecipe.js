@@ -3,46 +3,72 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react
 import { Context } from "../../store/context";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from 'react-native-gesture-handler';
+import { useFocusEffect } from '@react-navigation/native';
 
 const ReportedBizRecipe = () => {
     const [reportedRecipes, setReportedRecipes] = useState([]);
     const navigation = useNavigation();
     const [currentUser, setCurrentUser] = useContext(Context);
 
-    useEffect(() => {
-        fetchReportedRecipes();
-    }, []);
+    // useEffect(() => {
+    //     fetchReportedRecipes();
+    // }, []);
 
-    const fetchReportedRecipes = async () => {
-        try {
-            const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/bizrecipe/getReportedBizRecipe`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+    // const fetchReportedRecipes = async () => {
+    //     try {
+    //         const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/bizrecipe/getReportedBizRecipe`, {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //         });
 
-            if (response.ok) {
-                const data = await response.json();
-                setReportedRecipes(data);
-            } else {
-                Alert.alert('Error', 'Failed to fetch reported recipes.');
+    //         if (response.ok) {
+    //             const data = await response.json();
+    //             setReportedRecipes(data);
+    //         } else {
+    //             Alert.alert('Error', 'Failed to fetch reported recipes.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error fetching reported recipes:', error);
+    //         Alert.alert('Error', 'An error occurred while fetching reported recipes.');
+    //     }
+    // };
+
+    useFocusEffect(
+        React.useCallback(()=> {
+        const fetchReportedRecipes = async () => {
+            try {
+                const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/bizrecipe/getReportedBizRecipe`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+    
+                if (response.ok) {
+                    const data = await response.json();
+                    setReportedRecipes(data);
+                } else {
+                    Alert.alert('Error', 'Failed to fetch reported recipes.');
+                }
+            } catch (error) {
+                console.error('Error fetching reported recipes:', error);
+                Alert.alert('Error', 'An error occurred while fetching reported recipes.');
             }
-        } catch (error) {
-            console.error('Error fetching reported recipes:', error);
-            Alert.alert('Error', 'An error occurred while fetching reported recipes.');
-        }
-    };
+        };
+        fetchReportedRecipes();
+        } 
+        ,[]));
     
     const handleRecipePress = (recipe) => {
         navigation.navigate('ReportedBizRecipeDetails', { recipe });
     };
 
     return (
-        <ScrollView>
         <View style={styles.container}>
         <Text style={styles.title}>{currentUser.username}</Text>
-        <Text style={styles.subtitle}>Reported Community Recipes</Text>
+        <Text style={styles.subtitle}>Reported Business Partner Recipes</Text>
         <FlatList
                 data={reportedRecipes}
                 keyExtractor={item => item._id}
@@ -56,7 +82,6 @@ const ReportedBizRecipe = () => {
                 )}
         />
         </View>
-        </ScrollView>
     );
 };
 

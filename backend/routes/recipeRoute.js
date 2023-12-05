@@ -15,6 +15,7 @@ router.post("/reportRecipe/:recipeId", recipeController.reportRecipe);
 
 //food => PUT
 router.put("/updateRecipe/:recipeId", recipeController.updateRecipe);
+router.put("/dismissReport/:recipeId", recipeController.dismissReport);
 
 //food => DELETE
 router.delete("/deleteRecipe/:recipeId", recipeController.deleteRecipe);

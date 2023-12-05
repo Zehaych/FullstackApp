@@ -164,6 +164,22 @@ exports.getReportedRecipes = asyncHandler(async (req, res) => {
   res.json(reportedRecipes);
 });
 
+//Dismiss report
+exports.dismissReport = asyncHandler(async (req, res) => {
+  const recipeId = req.params.recipeId;
+
+  const recipe = await Recipe.findById(recipeId);
+  if (!recipe) {
+    return res.status(404).json({ message: "Recipe not found" });
+  }
+
+  recipe.isReported = false;
+  recipe.reportedBy = []; // Optionally clear the reportedBy array
+  await recipe.save();
+
+  res.status(200).json({ message: "Report dismissed successfully" });
+});
+
 // PATCH reviews and ratings on a recipe
 exports.postRating = asyncHandler(async (req, res) => {
   const rating = await Recipe.findByIdAndUpdate(

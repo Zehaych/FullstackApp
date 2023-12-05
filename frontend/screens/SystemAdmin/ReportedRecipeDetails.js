@@ -3,24 +3,56 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react
 import { Context } from "../../store/context";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from 'react-native-gesture-handler';
-
+import { useFocusEffect } from "@react-navigation/native";
 
 const ReportedRecipeDetails = ({ route }) => {
     const { recipe } = route.params;
     const navigation = useNavigation();
     const [currentUser, setCurrentUser] = useContext(Context);
 
+
+    const dismissReport = async (recipeId) => {
+        try {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/recipe/dismissReport/${recipeId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            console.log('Dismissing report for recipeId:', recipeId);
+
+            if (response.ok) {
+                Alert.alert('Success', 'Report dismissed as false.');
+            } else {
+                Alert.alert('Error', 'Failed to dismiss the report.');
+            }
+        } catch (error) {
+            console.error('Error dismissing report:', error);
+            Alert.alert('Error', 'An error occurred while dismissing the report.');
+        }
+    };
+
+
+    
     return (
         <ScrollView>
         <View style={styles.container}>
             <Text style={styles.recipeTitle}>Reported Recipe: {recipe.name}</Text>
+          
             <View style={styles.reportsContainer}>
+                <TouchableOpacity
+                    style={styles.dismissButton}
+                    onPress={() => dismissReport(recipe._id)}
+                >
+                <Text style={styles.buttonText}>Dismiss Report</Text>
+                </TouchableOpacity>
                 {recipe.reportedBy.map((report, index) => (
                     <View key={index} style={styles.reportItem}>
                         <Text style={styles.reportText}>User ID: {report.user.username}</Text>
                         <Text style={styles.reportText}>Feedback: {report.feedback}</Text>
                         <Text style={styles.reportText}>Additional Comment: {report.additionalComment}</Text>
                         <Text style={styles.reportText}>Reported At: {new Date(report.reportedAt).toLocaleString()}</Text>
+                      
                     </View>
                 ))}
             </View>
@@ -30,6 +62,16 @@ const ReportedRecipeDetails = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+    dismissButton: {
+        backgroundColor: 'green', // Choose your color
+        padding: 10,
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+    },
     container:{
         marginTop: 30,
     },
