@@ -44,6 +44,7 @@ const ProgressScreen = () => {
 
   const [recommendedRecipes, setRecommendedRecipes] = useState([]);
   // const targetCalories = 2000; // Set your desired target calories here
+  const [users, setUsers] = useState([]); // State to store the list of users
 
   const targetCalories = currentUser.calorie;
   // const API_KEY = "0a379b4c97a648aeb0051120265dcfca";
@@ -74,6 +75,22 @@ const ProgressScreen = () => {
 
   // nav for recommandation
   const navigation = useNavigation();
+
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/user/getUserTypes?userType=user&_id=${currentUser._id}`
+      );
+      const data = await response.json();
+      setUsers([data]); // Set the data as an array, as you're only fetching one user
+    } catch (error) {
+      console.error("Failed to fetch current user:", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchCurrentUser();
+  }, [currentUser]);
 
   const handleRecipeDetails = (recipeId) => {
     // Navigate to OnlineRecipeInfoScreen with the recipe details
@@ -371,8 +388,10 @@ const ProgressScreen = () => {
       Alert.alert("An error occurred: " + error.message);
     }
   };
+
   const handleSummary = () => {
-    navigation.navigate("TabDWMScreen");
+    const user = users[0];
+    navigation.navigate("TabDWMScreen", { user });
   };
 
   return (
@@ -520,9 +539,11 @@ const ProgressScreen = () => {
               </Button>
             </View>
           </View>
-          <Button onPress={() => handleSummary()} style={styles.submitButton}>
-            View Summary
-          </Button>
+          <TouchableOpacity>
+            <Button onPress={handleSummary} style={styles.submitButton}>
+              View Summary
+            </Button>
+          </TouchableOpacity>
         </SafeAreaView>
       </TouchableWithoutFeedback>
     </ScrollView>  
