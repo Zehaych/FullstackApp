@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Context } from "../../store/context";
 import { useNavigation } from "@react-navigation/native";
+import { ScrollView } from 'react-native-gesture-handler';
 
 const ReportedRecipe = () => {
     const [reportedRecipes, setReportedRecipes] = useState([]);
@@ -38,6 +39,7 @@ const ReportedRecipe = () => {
     };
 
     return (
+        <ScrollView>
         <View style={styles.container}>
         <Text style={styles.title}>{currentUser.username}</Text>
         <Text style={styles.subtitle}>Reported Community Recipes</Text>
@@ -54,6 +56,7 @@ const ReportedRecipe = () => {
                 )}
         />
         </View>
+        </ScrollView>
     );
 };
 
