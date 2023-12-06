@@ -561,7 +561,7 @@ exports.validateAdminPassword = asyncHandler(async (req, res) => {
   const { password } = req.body;
 
   // Specific admin user in the database.
-  const adminUser = await User.findOne({ username: 'testadmin' }); //Admin username
+  const adminUser = await User.findOne({ userType: 'admin' }); //Admin username
 
   if (!adminUser) {
       return res.status(404).json({ message: "Admin user not found" });

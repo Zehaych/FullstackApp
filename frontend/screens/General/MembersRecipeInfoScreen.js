@@ -17,6 +17,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../../store/context";
 import AddRatingsScreen from "../User/AddRatingsScreen";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import MaskedView from "@react-native-masked-view/masked-view";
 
 export default function MembersRecipeInfoScreen({ route }) {
   const recipeData = route.params.recipeData;
@@ -27,6 +28,10 @@ export default function MembersRecipeInfoScreen({ route }) {
   const [userRating, setUserRating] = useState("");
   const [submittedReviews, setSubmittedReviews] = useState([]);
   const [currentUserReviews, setCurrentUserReviews] = useState([]);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editReview, setEditReview] = useState("");
+  const [editRating, setEditRating] = useState("");
+  const [editingReviewId, setEditingReviewId] = useState(null);
 
   const [reportModalVisible, setReportModalVisible] = useState(false);
   const [reportReason, setReportReason] = useState("");
@@ -101,6 +106,131 @@ export default function MembersRecipeInfoScreen({ route }) {
   };
 
   // new
+  // When the edit icon is clicked
+  const handleEditClick = (reviewId, currentReview, currentRating) => {
+    setEditingReviewId(reviewId);
+    setEditReview(currentReview);
+    setEditRating(currentRating);
+    setEditModalVisible(true);
+  };
+
+  // Submit the edited review
+  const submitEditedReview = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/recipe/editRating/${recipeData._id}`,
+        {
+          method: "PATCH", // Or POST, depending on your backend setup
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            recipeId: recipeData._id,
+            reviewId: editingReviewId,
+            newReview: editReview,
+            newRating: Number(editRating),
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const updatedRecipeData = await response.json();
+
+        // Update the local state with the new recipe data
+        route.params.recipeData = updatedRecipeData;
+
+        // Update the state for reviews with usernames
+        const reviewsWithUsernames = await Promise.all(
+          updatedRecipeData.reviewsAndRatings.map(async (review) => {
+            const username = await fetchUsernameById(review.name);
+            return { ...review, username };
+          })
+        );
+
+        const currentUserReviews = reviewsWithUsernames
+          .filter((review) => review.name === currentUser._id)
+          .reverse();
+        const otherUserReviews = reviewsWithUsernames
+          .filter((review) => review.name !== currentUser._id)
+          .reverse();
+
+        setSubmittedReviews(otherUserReviews);
+        setCurrentUserReviews(currentUserReviews);
+
+        Alert.alert("Success", "Your review has been updated.");
+      } else {
+        Alert.alert("Error", "Failed to update the review.");
+      }
+    } catch (error) {
+      console.error("Error updating review:", error);
+      Alert.alert("Error", "An error occurred while updating the review.");
+    }
+
+    // Close the edit modal
+    setEditModalVisible(false);
+  };
+
+  const confirmDeleteReview = (reviewId) => {
+    Alert.alert(
+      "Delete Review",
+      "Are you sure you want to delete your review?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "OK", onPress: () => deleteReview(reviewId) },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const deleteReview = async (reviewId) => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/recipe/deleteRating/${recipeData._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ reviewId }),
+        }
+      );
+
+      if (response.ok) {
+        // Update the reviews list
+        const updatedReviews = submittedReviews.filter(
+          (review) => review._id !== reviewId
+        );
+        setSubmittedReviews(updatedReviews);
+
+        // Recalculate average rating and total ratings
+        const totalRatings = updatedReviews.length;
+        const sumRatings = updatedReviews.reduce(
+          (acc, curr) => acc + curr.ratings,
+          0
+        );
+        const averageRating = totalRatings > 0 ? sumRatings / totalRatings : 0;
+
+        // Update the state
+        route.params.recipeData.averageRating = averageRating;
+        route.params.recipeData.totalRatings = totalRatings;
+
+        // Reflect these changes in your component's state
+        setCurrentUserReviews([]);
+        // Optionally call fetchReviews() if you need to update other parts of the state
+
+        Alert.alert(
+          "Review Deleted",
+          "Your review has been successfully deleted."
+        );
+      } else {
+        Alert.alert("Error", "Failed to delete the review.");
+      }
+    } catch (error) {
+      console.error("Error deleting review:", error);
+      Alert.alert("Error", "An error occurred while deleting the review.");
+    }
+  };
+
   const submitReviewAndRating = async () => {
     if (!userReview.trim() || !userRating.trim()) {
       Alert.alert("Error", "Please enter both review and rating.");
@@ -125,17 +255,33 @@ export default function MembersRecipeInfoScreen({ route }) {
       );
 
       if (response.ok) {
+        // Assuming you get the updated recipe data in the response
         const updatedRecipeData = await response.json();
 
-        // Update local state with new recipe data
+        // Update the local state with the new recipe data
         route.params.recipeData = updatedRecipeData;
-        setSubmittedReviews(updatedRecipeData.reviewsAndRatings);
+
+        // Update the state for reviews with usernames
+        const reviewsWithUsernames = await Promise.all(
+          updatedRecipeData.reviewsAndRatings.map(async (review) => {
+            const username = await fetchUsernameById(review.name);
+            return { ...review, username };
+          })
+        );
+
+        const currentUserReviews = reviewsWithUsernames
+          .filter((review) => review.name === currentUser._id)
+          .reverse();
+        const otherUserReviews = reviewsWithUsernames
+          .filter((review) => review.name !== currentUser._id)
+          .reverse();
+
+        setSubmittedReviews(otherUserReviews);
+        setCurrentUserReviews(currentUserReviews);
+
+        // Reset form fields
         setUserReview("");
         setUserRating("");
-
-        // Optionally, update average rating and total ratings in local state
-        // setAverageRating(updatedRecipeData.averageRating);
-        // setTotalRatings(updatedRecipeData.totalRatings);
 
         Alert.alert("Success", "Your review has been submitted.");
       } else {
@@ -156,14 +302,27 @@ export default function MembersRecipeInfoScreen({ route }) {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            // Include any necessary headers, like authorization tokens
           },
         }
       );
 
       if (response.ok) {
         const data = await response.json();
-        setSubmittedReviews(data.reviewsAndRatings); // Assuming the response contains a reviewsAndRatings field
+        const reviewsWithUsernames = await Promise.all(
+          data.reviewsAndRatings.map(async (review) => {
+            const username = await fetchUsernameById(review.name);
+            return { ...review, username };
+          })
+        );
+
+        // Update the local state with the fetched data
+        setSubmittedReviews(data.reviewsAndRatings);
+        setCurrentUserReviews(
+          reviewsWithUsernames.filter(
+            (review) => review.name === currentUser._id
+          )
+        );
+        setEditingReviewId(null); // Reset editing review ID
       } else {
         console.error("Failed to fetch recipe details");
       }
@@ -171,9 +330,12 @@ export default function MembersRecipeInfoScreen({ route }) {
       console.error("Error fetching recipe details:", error);
     }
   };
-  useEffect(() => {
-    fetchReviews();
-  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchReviews();
+    }, [recipeData._id, currentUser._id])
+  );
 
   useFocusEffect(
     React.useCallback(() => {
@@ -278,6 +440,47 @@ export default function MembersRecipeInfoScreen({ route }) {
     fetchAllReviews();
   }, []);
 
+  const Star = ({ filled, partiallyFilled }) => {
+    return (
+      <View style={{ position: "relative" }}>
+        <Icon name="star-outline" color="grey" size={24} />
+        {(filled || partiallyFilled > 0) && (
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: partiallyFilled ? `${partiallyFilled * 100}%` : "100%",
+              overflow: "hidden",
+            }}
+          >
+            <Icon name="star" color="orange" size={24} />
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  const Rating = ({ rating }) => {
+    const fullStars = Math.floor(rating);
+    const partialStar = rating % 1;
+    const emptyStars = 5 - fullStars - (partialStar > 0 ? 1 : 0);
+
+    return (
+      <View style={{ flexDirection: "row" }}>
+        {[...Array(fullStars)].map((_, i) => (
+          <Star key={`full_${i}`} filled />
+        ))}
+        {partialStar > 0 && (
+          <Star key="partial" partiallyFilled={partialStar} />
+        )}
+        {[...Array(emptyStars)].map((_, i) => (
+          <Star key={`empty_${i}`} />
+        ))}
+      </View>
+    );
+  };
+
   return (
     <ScrollView style={styles.container}>
       <TouchableOpacity
@@ -293,9 +496,19 @@ export default function MembersRecipeInfoScreen({ route }) {
           <Image source={{ uri: recipeData.image }} style={styles.image} />
         </View>
         <Text style={styles.title}>{recipeData.name}</Text>
-        <Text>Average Rating: {recipeData.averageRating.toFixed(1)}</Text>
-        <Text>Total Ratings: {recipeData.totalRatings}</Text>
 
+        <View style={styles.ratingContainer}>
+          <Rating rating={recipeData.averageRating} />
+          <Text style={styles.ratingText}>
+            {recipeData.averageRating.toFixed(1)}
+          </Text>
+        </View>
+        <View style={styles.ratingContainer}>
+          <Icon name="person" size={24} color="#333333" />
+          <Text style={{ marginLeft: 8 }}>
+            {recipeData.totalRatings} people rated
+          </Text>
+        </View>
         <View style={styles.mainBox}>
           <View style={styles.section}>
             <Text style={styles.subTitle}>Created by: </Text>
@@ -369,7 +582,27 @@ export default function MembersRecipeInfoScreen({ route }) {
         {/* "Your Review" section */}
         {currentUserReviews.length > 0 && (
           <View>
-            <Text style={styles.title}>Your Review</Text>
+            <Text style={styles.title}>
+              Your Review{" "}
+              <TouchableOpacity
+                onPress={() =>
+                  handleEditClick(
+                    currentUserReviews[0]._id,
+                    currentUserReviews[0].reviews,
+                    currentUserReviews[0].ratings
+                  )
+                }
+                style={styles.editIcon}
+              >
+                <Icon name="edit" size={24} color="#FF6347" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => confirmDeleteReview(currentUserReviews[0]._id)}
+                style={styles.deleteIcon}
+              >
+                <Icon name="delete" size={24} color="#FF6347" />
+              </TouchableOpacity>
+            </Text>
 
             {currentUserReviews.map((review, index) => (
               <View key={index} style={styles.mainBox}>
@@ -385,6 +618,7 @@ export default function MembersRecipeInfoScreen({ route }) {
 
                 <Text style={styles.reviewLabel}>Rating:</Text>
                 <Text style={styles.reviewContent}>{review.ratings}</Text>
+                {/* Edit icon */}
               </View>
             ))}
           </View>
@@ -421,6 +655,55 @@ export default function MembersRecipeInfoScreen({ route }) {
 
         <StatusBar style="auto" />
       </View>
+      {/* Edit Review Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={editModalVisible}
+        onRequestClose={() => setEditModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TextInput
+              style={styles.input}
+              placeholder="Edit your review"
+              value={editReview}
+              onChangeText={setEditReview}
+              multiline
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Edit your rating (1-5)"
+              value={editRating.toString()}
+              onChangeText={(text) => {
+                // Allow only numbers 1 to 5
+                const newRating = text.replace(/[^1-5]/g, "");
+                // If the input is not a number or out of range, reset it to empty or the closest valid number
+                setEditRating(
+                  newRating === ""
+                    ? ""
+                    : Math.max(1, Math.min(5, parseInt(newRating)))
+                );
+              }}
+              keyboardType="numeric"
+            />
+            {/* Save Changes Button */}
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={submitEditedReview}
+            >
+              <Text style={styles.submitButtonText}>Save Changes</Text>
+            </TouchableOpacity>
+            {/* Close Button */}
+            <TouchableOpacity
+              style={styles.secondButton}
+              onPress={() => setEditModalVisible(false)}
+            >
+              <Text style={styles.submitButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       <Modal
         animationType="slide"
@@ -544,7 +827,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    alignSelf: "center", // Center the modal horizontally
+    marginTop: "50%", // Adjust as needed to center the modal vertically
   },
+
   submitButton: {
     backgroundColor: "red",
     padding: 8,
@@ -666,5 +952,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
     fontSize: 16,
+  },
+  ratingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 5,
+  },
+  ratingText: {
+    marginLeft: 8,
   },
 });
