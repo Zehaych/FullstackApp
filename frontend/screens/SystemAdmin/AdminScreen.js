@@ -143,7 +143,7 @@ const AdminScreen = () => {
       <TouchableRipple onPress={handleFoodRequested}>
         <View style={styles.menuItem}>
           <Icon
-            name="book-alert"
+            name="food"
             size={25}
             color="#FF6347"
             style={styles.icon}
