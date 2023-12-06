@@ -25,6 +25,7 @@ export default function MembersRecipeInfoScreen({ route }) {
 
   // new
   const [userReview, setUserReview] = useState("");
+  const [isCreator, setIsCreator] = useState(false);
   // const [userRating, setUserRating] = useState("");
   const [submittedReviews, setSubmittedReviews] = useState([]);
   const [currentUserReviews, setCurrentUserReviews] = useState([]);
@@ -65,6 +66,7 @@ export default function MembersRecipeInfoScreen({ route }) {
         }
         const user = await response.json();
         setUsername(user.username); // Update the state
+        setIsCreator(currentUser._id === recipeData.submitted_by); // Check if the current user is the recipe creator
       } catch (error) {
         console.error("Error fetching user data:", error);
         setUsername("Unknown User"); // Fallback username
@@ -74,7 +76,7 @@ export default function MembersRecipeInfoScreen({ route }) {
     if (recipeData && recipeData.submitted_by) {
       fetchUsername();
     }
-  }, [recipeData]);
+  }, [recipeData, currentUser._id]);
 
   // const fetchUsernames = async (reviews) => {
   //   const userIds = reviews.map((review) => review.name);
@@ -524,12 +526,12 @@ export default function MembersRecipeInfoScreen({ route }) {
           <Text>{recipeData.calories}</Text>
         </View>
         {/* <AddRatingsScreen /> */}
-        {currentUserReviews.length === 0 && (
-          <Text style={styles.title}>Recipe Review </Text>
-        )}
+        {currentUserReviews.length === 0 ||
+          (isCreator && <Text style={styles.title}>Recipe Review </Text>)}
 
-        {/* Only show review submission form if the user hasn't submitted a review yet */}
-        {currentUserReviews.length === 0 && (
+        {/* Only show review submission form if the user hasn't submitted a review yet and is not the creator */}
+
+        {currentUserReviews.length === 0 && !isCreator && (
           <View style={styles.mainBox}>
             <View style={styles.section}>
               <TextInput
@@ -549,48 +551,59 @@ export default function MembersRecipeInfoScreen({ route }) {
         )}
 
         {/* "Your Review" section */}
-        {currentUserReviews.length > 0 && (
+
+        {isCreator ? (
           <View>
-            <Text style={styles.title}>
-              Your Review{" "}
-              <TouchableOpacity
-                onPress={() =>
-                  handleEditClick(
-                    currentUserReviews[0]._id,
-                    currentUserReviews[0].reviews,
-                    currentUserReviews[0].ratings
-                  )
-                }
-                style={styles.editIcon}
-              >
-                <Icon name="edit" size={24} color="#FF6347" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => confirmDeleteReview(currentUserReviews[0]._id)}
-                style={styles.deleteIcon}
-              >
-                <Icon name="delete" size={24} color="#FF6347" />
-              </TouchableOpacity>
-            </Text>
+            <Text style={styles.title}>Your Review</Text>
 
-            {currentUserReviews.map((review, index) => (
-              <View key={index} style={styles.mainBox}>
-                <View style={styles.section}>
-                  <Text style={styles.reviewLabel}>Name:</Text>
-                  <Text style={styles.reviewContent}>{review.username}</Text>
-                </View>
-
-                <View style={styles.section}>
-                  <Text style={styles.reviewLabel}>Review:</Text>
-                  <Text style={styles.reviewContent}>{review.reviews}</Text>
-                </View>
-
-                <Text style={styles.reviewLabel}>Rating:</Text>
-                <Rating rating={review.ratings} />
-                {/* Edit icon */}
-              </View>
-            ))}
+            <View style={styles.mainBox}>
+              <Text style={styles.noReviewsText}>
+                Recipe creator cannot add their own review.
+              </Text>
+            </View>
           </View>
+        ) : (
+          currentUserReviews.length > 0 && (
+            <View>
+              <Text style={styles.title}>
+                Your Review{" "}
+                <TouchableOpacity
+                  onPress={() =>
+                    handleEditClick(
+                      currentUserReviews[0]._id,
+                      currentUserReviews[0].reviews,
+                      currentUserReviews[0].ratings
+                    )
+                  }
+                  style={styles.editIcon}
+                >
+                  <Icon name="edit" size={24} color="#007BFF" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => confirmDeleteReview(currentUserReviews[0]._id)}
+                  style={styles.deleteIcon}
+                >
+                  <Icon name="delete" size={24} color="#FF6347" />
+                </TouchableOpacity>
+              </Text>
+              {currentUserReviews.map((review, index) => (
+                <View key={index} style={styles.mainBox}>
+                  <View style={styles.section}>
+                    <Text style={styles.reviewLabel}>Name:</Text>
+                    <Text style={styles.reviewContent}>{review.username}</Text>
+                  </View>
+
+                  <View style={styles.section}>
+                    <Text style={styles.reviewLabel}>Review:</Text>
+                    <Text style={styles.reviewContent}>{review.reviews}</Text>
+                  </View>
+
+                  <Text style={styles.reviewLabel}>Rating:</Text>
+                  <Rating rating={review.ratings} />
+                </View>
+              ))}
+            </View>
+          )
         )}
 
         {/* "Community Reviews" section */}
