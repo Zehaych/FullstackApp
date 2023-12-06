@@ -17,6 +17,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../../store/context";
 import AddRatingsScreen from "../User/AddRatingsScreen";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import MaskedView from "@react-native-masked-view/masked-view";
 
 export default function MembersRecipeInfoScreen({ route }) {
   const recipeData = route.params.recipeData;
@@ -439,6 +440,47 @@ export default function MembersRecipeInfoScreen({ route }) {
     fetchAllReviews();
   }, []);
 
+  const Star = ({ filled, partiallyFilled }) => {
+    return (
+      <View style={{ position: "relative" }}>
+        <Icon name="star-outline" color="grey" size={24} />
+        {(filled || partiallyFilled > 0) && (
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: partiallyFilled ? `${partiallyFilled * 100}%` : "100%",
+              overflow: "hidden",
+            }}
+          >
+            <Icon name="star" color="orange" size={24} />
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  const Rating = ({ rating }) => {
+    const fullStars = Math.floor(rating);
+    const partialStar = rating % 1;
+    const emptyStars = 5 - fullStars - (partialStar > 0 ? 1 : 0);
+
+    return (
+      <View style={{ flexDirection: "row" }}>
+        {[...Array(fullStars)].map((_, i) => (
+          <Star key={`full_${i}`} filled />
+        ))}
+        {partialStar > 0 && (
+          <Star key="partial" partiallyFilled={partialStar} />
+        )}
+        {[...Array(emptyStars)].map((_, i) => (
+          <Star key={`empty_${i}`} />
+        ))}
+      </View>
+    );
+  };
+
   return (
     <ScrollView style={styles.container}>
       <TouchableOpacity
@@ -454,9 +496,19 @@ export default function MembersRecipeInfoScreen({ route }) {
           <Image source={{ uri: recipeData.image }} style={styles.image} />
         </View>
         <Text style={styles.title}>{recipeData.name}</Text>
-        <Text>Average Rating: {recipeData.averageRating.toFixed(1)}</Text>
-        <Text>Total Ratings: {recipeData.totalRatings}</Text>
 
+        <View style={styles.ratingContainer}>
+          <Rating rating={recipeData.averageRating} />
+          <Text style={styles.ratingText}>
+            {recipeData.averageRating.toFixed(1)}
+          </Text>
+        </View>
+        <View style={styles.ratingContainer}>
+          <Icon name="person" size={24} color="#333333" />
+          <Text style={{ marginLeft: 8 }}>
+            {recipeData.totalRatings} people rated
+          </Text>
+        </View>
         <View style={styles.mainBox}>
           <View style={styles.section}>
             <Text style={styles.subTitle}>Created by: </Text>
@@ -900,5 +952,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
     fontSize: 16,
+  },
+  ratingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 5,
+  },
+  ratingText: {
+    marginLeft: 8,
   },
 });
