@@ -10,30 +10,6 @@ const ReportedBizRecipe = () => {
     const navigation = useNavigation();
     const [currentUser, setCurrentUser] = useContext(Context);
 
-    // useEffect(() => {
-    //     fetchReportedRecipes();
-    // }, []);
-
-    // const fetchReportedRecipes = async () => {
-    //     try {
-    //         const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/bizrecipe/getReportedBizRecipe`, {
-    //             method: 'GET',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //         });
-
-    //         if (response.ok) {
-    //             const data = await response.json();
-    //             setReportedRecipes(data);
-    //         } else {
-    //             Alert.alert('Error', 'Failed to fetch reported recipes.');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error fetching reported recipes:', error);
-    //         Alert.alert('Error', 'An error occurred while fetching reported recipes.');
-    //     }
-    // };
 
     useFocusEffect(
         React.useCallback(()=> {
@@ -102,7 +78,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
-        backgroundColor: '#f5f5f5', // Adjust background color as needed
+        backgroundColor: '#f5f5f5',
     },
     recipeItem: {
         backgroundColor: 'white',
