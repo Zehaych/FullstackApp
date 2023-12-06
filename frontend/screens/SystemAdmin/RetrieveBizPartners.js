@@ -22,9 +22,6 @@ export default function RetrieveUsers() {
     fetchUsersByType("bizpartner");
   }, []);
 
-  // useFocusEffect(() => {
-  //   fetchUsersByType("bizpartner");
-  // }, []);
 
   const fetchUsersByType = async (userType) => {
     try {
