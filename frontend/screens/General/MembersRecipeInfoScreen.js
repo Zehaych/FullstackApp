@@ -25,13 +25,14 @@ export default function MembersRecipeInfoScreen({ route }) {
 
   // new
   const [userReview, setUserReview] = useState("");
-  const [userRating, setUserRating] = useState("");
+  // const [userRating, setUserRating] = useState("");
   const [submittedReviews, setSubmittedReviews] = useState([]);
   const [currentUserReviews, setCurrentUserReviews] = useState([]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editReview, setEditReview] = useState("");
-  const [editRating, setEditRating] = useState("");
+  const [editRating, setEditRating] = useState(0);
   const [editingReviewId, setEditingReviewId] = useState(null);
+  const [userRating, setUserRating] = useState(0); // Updated for star rating
 
   const [reportModalVisible, setReportModalVisible] = useState(false);
   const [reportReason, setReportReason] = useState("");
@@ -75,34 +76,34 @@ export default function MembersRecipeInfoScreen({ route }) {
     }
   }, [recipeData]);
 
-  const fetchUsernames = async (reviews) => {
-    const userIds = reviews.map((review) => review.name);
-    const uniqueUserIds = [...new Set(userIds)]; // Remove duplicates
-    const usernamesMap = {};
+  // const fetchUsernames = async (reviews) => {
+  //   const userIds = reviews.map((review) => review.name);
+  //   const uniqueUserIds = [...new Set(userIds)]; // Remove duplicates
+  //   const usernamesMap = {};
 
-    await Promise.all(
-      uniqueUserIds.map(async (userId) => {
-        try {
-          const response = await fetch(
-            `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${userId}`
-          );
-          if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.status}`);
-          }
-          const userData = await response.json();
-          usernamesMap[userId] = userData.username;
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-          usernamesMap[userId] = "Unknown"; // Fallback username
-        }
-      })
-    );
+  //   await Promise.all(
+  //     uniqueUserIds.map(async (userId) => {
+  //       try {
+  //         const response = await fetch(
+  //           `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${userId}`
+  //         );
+  //         if (!response.ok) {
+  //           throw new Error(`Network response was not ok: ${response.status}`);
+  //         }
+  //         const userData = await response.json();
+  //         usernamesMap[userId] = userData.username;
+  //       } catch (error) {
+  //         console.error("Error fetching user data:", error);
+  //         usernamesMap[userId] = "Unknown"; // Fallback username
+  //       }
+  //     })
+  //   );
 
-    return reviews.map((review) => ({
-      ...review,
-      username: usernamesMap[review.name] || "Unknown",
-    }));
-  };
+  //   return reviews.map((review) => ({
+  //     ...review,
+  //     username: usernamesMap[review.name] || "Unknown",
+  //   }));
+  // };
 
   // useEffect(() => {
   //   fetchUsernames();
@@ -268,7 +269,7 @@ export default function MembersRecipeInfoScreen({ route }) {
   };
 
   const submitReviewAndRating = async () => {
-    if (!userReview.trim() || !userRating.trim()) {
+    if (!userReview.trim() || userRating === 0) {
       Alert.alert("Error", "Please enter both review and rating.");
       return;
     }
@@ -408,6 +409,11 @@ export default function MembersRecipeInfoScreen({ route }) {
     );
   };
 
+  // Function to handle changes in star rating
+  const handleRatingChange = (newRating) => {
+    setUserRating(newRating);
+  };
+
   const Rating = ({ rating }) => {
     const fullStars = Math.floor(rating);
     const partialStar = rating % 1;
@@ -423,6 +429,27 @@ export default function MembersRecipeInfoScreen({ route }) {
         )}
         {[...Array(emptyStars)].map((_, i) => (
           <Star key={`empty_${i}`} />
+        ))}
+      </View>
+    );
+  };
+
+  // StarRatingInput component (centralized)
+  const StarRatingInput = ({ maxRating = 5, rating, onRatingChange }) => {
+    return (
+      <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        {/* Centering the stars */}
+        {[...Array(maxRating)].map((_, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => onRatingChange(index + 1)}
+          >
+            <Icon
+              name={index < rating ? "star" : "star-outline"}
+              color="orange"
+              size={30}
+            />
+          </TouchableOpacity>
         ))}
       </View>
     );
@@ -512,14 +539,9 @@ export default function MembersRecipeInfoScreen({ route }) {
                 onChangeText={setUserReview}
                 multiline
               />
-              <TextInput
-                style={styles.input}
-                placeholder="Enter your rating (1-5)"
-                value={userRating}
-                onChangeText={(text) =>
-                  setUserRating(text.replace(/[^1-5]/g, ""))
-                }
-                keyboardType="numeric"
+              <StarRatingInput
+                rating={userRating}
+                onRatingChange={handleRatingChange}
               />
               <Button title="Submit Review" onPress={submitReviewAndRating} />
             </View>
@@ -564,7 +586,7 @@ export default function MembersRecipeInfoScreen({ route }) {
                 </View>
 
                 <Text style={styles.reviewLabel}>Rating:</Text>
-                <Text style={styles.reviewContent}>{review.ratings}</Text>
+                <Rating rating={review.ratings} />
                 {/* Edit icon */}
               </View>
             ))}
@@ -589,7 +611,7 @@ export default function MembersRecipeInfoScreen({ route }) {
                 </View>
 
                 <Text style={styles.reviewLabel}>Rating:</Text>
-                <Text style={styles.reviewContent}>{review.ratings}</Text>
+                <Rating rating={review.ratings} />
               </View>
             ))}
           </View>
@@ -618,32 +640,21 @@ export default function MembersRecipeInfoScreen({ route }) {
               onChangeText={setEditReview}
               multiline
             />
-            <TextInput
-              style={styles.input}
-              placeholder="Edit your rating (1-5)"
-              value={editRating.toString()}
-              onChangeText={(text) => {
-                // Allow only numbers 1 to 5
-                const newRating = text.replace(/[^1-5]/g, "");
-                // If the input is not a number or out of range, reset it to empty or the closest valid number
-                setEditRating(
-                  newRating === ""
-                    ? ""
-                    : Math.max(1, Math.min(5, parseInt(newRating)))
-                );
-              }}
-              keyboardType="numeric"
+            {/* Star rating input for editing rating */}
+            <StarRatingInput
+              rating={editRating}
+              onRatingChange={(newRating) => setEditRating(newRating)}
             />
             {/* Save Changes Button */}
             <TouchableOpacity
-              style={styles.submitButton}
+              style={styles.secondButton}
               onPress={submitEditedReview}
             >
               <Text style={styles.submitButtonText}>Save Changes</Text>
             </TouchableOpacity>
             {/* Close Button */}
             <TouchableOpacity
-              style={styles.secondButton}
+              style={styles.submitButton}
               onPress={() => setEditModalVisible(false)}
             >
               <Text style={styles.submitButtonText}>Close</Text>
@@ -805,7 +816,7 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     padding: 10,
     borderRadius: 5,
-    width: "80%",
+    width: "100%",
     marginBottom: 10,
   },
   reportButton: {
