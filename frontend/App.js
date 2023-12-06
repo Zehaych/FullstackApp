@@ -41,6 +41,7 @@ import ReportedRecipe from "./screens/SystemAdmin/ReportedRecipe";
 import ReportedRecipeDetails from "./screens/SystemAdmin/ReportedRecipeDetails";
 import ReportedBizRecipe from "./screens/SystemAdmin/ReportedBizRecipe";
 import ReportedBizRecipeDetails from "./screens/SystemAdmin/ReportedBizRecipeDetail";
+import SubmitFoodRequest from "./screens/User/FoodRequestScreen";
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,11 @@ function App() {
     <Context.Provider value={[currentUser, setCurrentUser]}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="LogInScreen">
+          <Stack.Screen
+            name="SubmitFoodRequest"
+            component={SubmitFoodRequest}
+            options={{ headerShown: false}}
+          />
           <Stack.Screen
             name="ReportedBizRecipeDetails"
             component={ReportedBizRecipeDetails}

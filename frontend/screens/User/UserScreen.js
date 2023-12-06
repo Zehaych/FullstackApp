@@ -33,6 +33,10 @@ const UserScreen = () => {
       },
     ]);
   };
+  
+  const handleSubmitFoodRequest = () => {
+    navigation.navigate("SubmitFoodRequest")
+  };
 
   const onSettingsPressed = () => {
     navigation.push("Settings");
@@ -140,6 +144,13 @@ const UserScreen = () => {
           <View style={styles.menuItem}>
             <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
             <Text style={styles.menuItemText}>View Added Recipe</Text>
+          </View>
+        </TouchableRipple> 
+
+        <TouchableRipple onPress={handleSubmitFoodRequest}>
+          <View style={styles.menuItem}>
+            <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>Add Food & Drinks Request</Text>
           </View>
         </TouchableRipple>
 
