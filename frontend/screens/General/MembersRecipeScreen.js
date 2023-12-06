@@ -27,16 +27,28 @@ export default function MembersRecipeScreen({ navigation }) {
   };
 
   useEffect(() => {
-    fetch(url)
-      .then((response) => {
-        if (!response.ok) {
+    let isMounted = true; // flag to track mounted state
+
+    const fetchRecipes = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(url);
+        if (!response.ok)
           throw new Error(`Network response was not ok: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((json) => setData(json))
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+        const json = await response.json();
+        if (isMounted) setData(json); // set data only if component is mounted
+      } catch (error) {
+        console.log(error);
+      } finally {
+        if (isMounted) setLoading(false); // set loading to false only if component is mounted
+      }
+    };
+
+    fetchRecipes();
+
+    return () => {
+      isMounted = false; // cleanup function to set flag false
+    };
   }, [url]);
 
   const fetchRecipes = () => {

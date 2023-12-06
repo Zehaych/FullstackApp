@@ -53,24 +53,60 @@ export default function MembersRecipeInfoScreen({ route }) {
     setActiveReason(reason);
   };
 
-  const fetchUsername = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${recipeData.submitted_by}`
-      );
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status}`);
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${recipeData.submitted_by}`
+        );
+        if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.status}`);
+        }
+        const user = await response.json();
+        setUsername(user.username); // Update the state
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setUsername("Unknown User"); // Fallback username
       }
-      const user = await response.json();
-      setUsername(user.username);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
+    };
+
+    if (recipeData && recipeData.submitted_by) {
+      fetchUsername();
     }
+  }, [recipeData]);
+
+  const fetchUsernames = async (reviews) => {
+    const userIds = reviews.map((review) => review.name);
+    const uniqueUserIds = [...new Set(userIds)]; // Remove duplicates
+    const usernamesMap = {};
+
+    await Promise.all(
+      uniqueUserIds.map(async (userId) => {
+        try {
+          const response = await fetch(
+            `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${userId}`
+          );
+          if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.status}`);
+          }
+          const userData = await response.json();
+          usernamesMap[userId] = userData.username;
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          usernamesMap[userId] = "Unknown"; // Fallback username
+        }
+      })
+    );
+
+    return reviews.map((review) => ({
+      ...review,
+      username: usernamesMap[review.name] || "Unknown",
+    }));
   };
 
-  useEffect(() => {
-    fetchUsername();
-  }, []);
+  // useEffect(() => {
+  //   fetchUsernames();
+  // }, []);
 
   const reportRecipe = async () => {
     try {
@@ -293,99 +329,6 @@ export default function MembersRecipeInfoScreen({ route }) {
     }
   };
 
-  // new
-  const fetchReviews = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/recipe/getRecipeId/${recipeData._id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        const reviewsWithUsernames = await Promise.all(
-          data.reviewsAndRatings.map(async (review) => {
-            const username = await fetchUsernameById(review.name);
-            return { ...review, username };
-          })
-        );
-
-        // Update the local state with the fetched data
-        setSubmittedReviews(data.reviewsAndRatings);
-        setCurrentUserReviews(
-          reviewsWithUsernames.filter(
-            (review) => review.name === currentUser._id
-          )
-        );
-        setEditingReviewId(null); // Reset editing review ID
-      } else {
-        console.error("Failed to fetch recipe details");
-      }
-    } catch (error) {
-      console.error("Error fetching recipe details:", error);
-    }
-  };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchReviews();
-    }, [recipeData._id, currentUser._id])
-  );
-
-  useFocusEffect(
-    React.useCallback(() => {
-      // Fetch the updated recipe data including reviews and ratings
-      const fetchUpdatedRecipeData = async () => {
-        try {
-          const response = await fetch(
-            `${process.env.EXPO_PUBLIC_IP}/recipe/getRecipeId/${recipeData._id}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-
-          if (response.ok) {
-            const updatedRecipeData = await response.json();
-            // Update the route params with the new recipe data
-            route.params.recipeData = updatedRecipeData;
-
-            // Update the state for reviews
-            const reviewsWithUsernames = await Promise.all(
-              updatedRecipeData.reviewsAndRatings.map(async (review) => {
-                const username = await fetchUsernameById(review.name);
-                return { ...review, username };
-              })
-            );
-
-            const currentUserReviews = reviewsWithUsernames
-              .filter((review) => review.name === currentUser._id)
-              .reverse();
-            const otherUserReviews = reviewsWithUsernames
-              .filter((review) => review.name !== currentUser._id)
-              .reverse();
-
-            setSubmittedReviews(otherUserReviews);
-            setCurrentUserReviews(currentUserReviews);
-          } else {
-            console.error("Failed to fetch updated recipe data");
-          }
-        } catch (error) {
-          console.error("Error fetching updated recipe data:", error);
-        }
-      };
-
-      fetchUpdatedRecipeData();
-    }, [recipeData._id, currentUser._id])
-  );
-
   // Function to fetch username based on UserId
   const fetchUsernameById = async (userId) => {
     try {
@@ -396,49 +339,53 @@ export default function MembersRecipeInfoScreen({ route }) {
         throw new Error(`Network response was not ok: ${response.status}`);
       }
       const userData = await response.json();
-      return userData.username; // Assuming the user object has a username field
+      return userData.username;
     } catch (error) {
       console.error("Error fetching user data:", error);
-      return null; // Return null or a placeholder string if the username can't be fetched
+      return null;
     }
   };
 
   // Function to fetch all reviews and update the state with usernames
-  const fetchAllReviews = async () => {
+  const fetchRecipeDataAndUpdateState = async () => {
     try {
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_IP}/recipe/getRecipeId/${recipeData._id}`
       );
-      if (response.ok) {
-        const data = await response.json();
-        const reviewsWithUsernames = await Promise.all(
-          data.reviewsAndRatings.map(async (review) => {
-            const username = await fetchUsernameById(review.name);
-            return { ...review, username }; // Append the fetched username to the review object
-          })
-        );
-
-        // Separate the reviews into two arrays
-        const currentUserReviews = reviewsWithUsernames
-          .filter((review) => review.name === currentUser._id)
-          .reverse();
-        const otherUserReviews = reviewsWithUsernames
-          .filter((review) => review.name !== currentUser._id)
-          .reverse();
-
-        setSubmittedReviews(otherUserReviews);
-        setCurrentUserReviews(currentUserReviews);
-      } else {
-        console.error("Failed to fetch recipe details");
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status}`);
       }
+      const data = await response.json();
+
+      // Update the route params with the new recipe data
+      route.params.recipeData = data;
+
+      // Update the state for reviews with usernames
+      const reviewsWithUsernames = await Promise.all(
+        data.reviewsAndRatings.map(async (review) => {
+          const username = await fetchUsernameById(review.name);
+          return { ...review, username };
+        })
+      );
+
+      const currentUserReviews = reviewsWithUsernames
+        .filter((review) => review.name === currentUser._id)
+        .reverse();
+      const otherUserReviews = reviewsWithUsernames
+        .filter((review) => review.name !== currentUser._id)
+        .reverse();
+
+      setSubmittedReviews(otherUserReviews);
+      setCurrentUserReviews(currentUserReviews);
     } catch (error) {
       console.error("Error fetching recipe details:", error);
     }
   };
 
+  // Use the function in useEffect or useFocusEffect
   useEffect(() => {
-    fetchAllReviews();
-  }, []);
+    fetchRecipeDataAndUpdateState();
+  }, [recipeData._id, currentUser._id]);
 
   const Star = ({ filled, partiallyFilled }) => {
     return (
