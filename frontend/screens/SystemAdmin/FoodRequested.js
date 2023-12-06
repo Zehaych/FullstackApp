@@ -80,7 +80,6 @@ const FoodRequested = () => {
                             </View>
                         </View>
                     )}
-                    
                 />
             )}
         </View>
@@ -108,7 +107,6 @@ const styles = StyleSheet.create({
       },
     container: {
         marginTop: 30,
-        flex: 1,
         backgroundColor: '#f5f5f5',
         padding: 10,
     },
