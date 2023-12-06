@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { useFocusEffect } from '@react-navigation/native';
 import SummaryDailyScreen from "./SummaryDailyScreen";
 import SummaryWeeklyScreen from "./SummaryWeeklyScreen";
 import SummaryMonthlyScreen from "./SummaryMonthlyScreen";
+import { Context } from "../../store/context";
 
 const Tab = createMaterialTopTabNavigator();
 
-const SummaryNavigation = ( ) => {
+const TabDWMScreen = ({ route }) => {
+    const { user } = route.params; // Retrieve the user data passed from the previous screen
+    const [currentUser, setCurrentUser] = useContext(Context);
+    const currentUserData = user.find(user => user._id === currentUser._id);
+    console.log("user: " + currentUserData.username);
+
     return (
         <Tab.Navigator
         initialRouteName="Daily"
@@ -34,11 +41,11 @@ const SummaryNavigation = ( ) => {
             },
         })}
         >
-            <Tab.Screen name="Daily" component={SummaryDailyScreen} />
-            <Tab.Screen name="Weekly" component={SummaryWeeklyScreen} />
-            <Tab.Screen name="Monthly" component={SummaryMonthlyScreen} />
+            <Tab.Screen name="Daily" component={SummaryDailyScreen} initialParams={{ user }} options={{tabBarLabel: 'Daily',}}/>
+            <Tab.Screen name="Weekly" component={SummaryWeeklyScreen} initialParams={{ user }} options={{tabBarLabel: 'Daily',}}/>
+            <Tab.Screen name="Monthly" component={SummaryMonthlyScreen} initialParams={{ user }} options={{tabBarLabel: 'Daily',}}/>
         </Tab.Navigator>
     );
 };
 
-export default SummaryNavigation;
+export default TabDWMScreen;

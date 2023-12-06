@@ -2,15 +2,22 @@ import React, { useState, useEffect, useContext } from "react";
 import { View, SafeAreaView, StyleSheet, Text } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Context } from "../../store/context";
+import { useFocusEffect } from '@react-navigation/native';
 
 
-const SummaryDailyScreen = () => {
+const SummaryDailyScreen = ({ route }) => {
+    const { user } = route.params; // Retrieve the user data passed from the previous screen
     const [currentUser, setCurrentUser] = useContext(Context);
     const [dailyCalories, setDailyCalories] = useState([]);
-
+    const [userData, setUserData] = useState(user);
+    
+    const currentUserData = userData.find(user => user._id === currentUser._id);
+    console.log("1.=============== userData: " + currentUserData.username + " " + " CaloriesLog: " + currentUserData.dailyCaloriesLog[currentUserData.dailyCaloriesLog.length - 1].total_calories);
+    
     //current user's calorie goal and daily calorie log
-    const targetCalories = currentUser.calorie;
-    const CaloriesLog = currentUser.dailyCaloriesLog;
+    const targetCalories = currentUserData.calorie;
+    const CaloriesLog = currentUserData.dailyCaloriesLog;
+    console.log("2.-------------- userData: " + currentUserData.username + " " + " CaloriesLog: " + CaloriesLog[CaloriesLog.length - 1].total_calories);
 
     //console.log(currentUser.dailyCaloriesLog.length + " " + CaloriesLog.length);  
 
@@ -19,7 +26,7 @@ const SummaryDailyScreen = () => {
 
     // Get total calories from the latest data entry
     const latestTotalCalories = latestDataEntry ? latestDataEntry.total_calories : 0;
-    console.log("latestTotalCalories: " + latestTotalCalories);
+    console.log("3.************** userData: " + currentUserData.username + "  latestTotalCalories: " + latestTotalCalories);
 
     //calories left to consume
     const caloriesLeft = targetCalories - latestTotalCalories;
@@ -137,6 +144,41 @@ const styles = StyleSheet.create({
 
 
 /*
+useFocusEffect(
+        React.useCallback(() => {
+            const fetchUserData = async () => {
+                try {
+                const userId = userData._id; 
+                const response = await fetch(
+                    `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${userId}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    setUserData(data); // Update the userData with the fetched data
+                } else {
+                    console.error("Failed to fetch user data");
+                    // Handle errors as appropriate
+                }
+                } catch (error) {
+                console.error("Error fetching user data:", error);
+                // Handle errors as appropriate
+                }
+            };
+        
+            fetchUserData();
+        }, [])
+    );
+    console.log("userData: " + userData);
+
+
+
 
 <AnimatedCircularProgress
                 size={200}

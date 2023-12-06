@@ -2,14 +2,20 @@ import React, { useState, useEffect, useContext } from "react";
 import { View, Dimensions, StyleSheet, Text } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import { Context } from "../../store/context";
+import { useFocusEffect } from '@react-navigation/native';
 
-const SummaryWeeklyScreen = () => {
+const SummaryWeeklyScreen = ({ route }) => {
+    const { user } = route.params; // Retrieve the user data passed from the previous screen
     const [currentUser, setCurrentUser] = useContext(Context);
     const [weeklyCalories, setWeeklyCalories] = useState([]);
+    const [userData, setUserData] = useState(user);
+    const currentUserData = userData.find(user => user._id === currentUser._id);
 
-    const targetCalories = currentUser.calorie;
+    const targetCalories = currentUserData.calorie;
     //const targetCalories = currentUser.calorie * 7;
-    const CaloriesLog = currentUser.dailyCaloriesLog;
+    const CaloriesLog = currentUserData.dailyCaloriesLog;
+    console.log("1.=====weekly===== userData: " + currentUserData.username + "  CurrentUser's targetCalories: " + CaloriesLog[CaloriesLog.length - 1].total_calories);
+        
 
     useEffect(() => {
         //calculate weekly total calories and set the state
@@ -107,7 +113,7 @@ const SummaryWeeklyScreen = () => {
                 chartConfig={chartConfig}
                 verticalLabelRotation={0}
             />
-            <Text style={styles.text}>Weekly's total Calories intake: </Text>
+            <Text style={styles.text}>Weekly's total Calories intake:   </Text>
             <View style={styles.componentContainer}>
                 <View style={styles.leftComponent}>
                     <Text style={styles.text}>Weekly intake: </Text>

@@ -76,22 +76,6 @@ const ProgressScreen = () => {
   // nav for recommandation
   const navigation = useNavigation();
 
-  const fetchCurrentUser = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/user/getUserTypes?userType=user&_id=${currentUser._id}`
-      );
-      const data = await response.json();
-      setUsers([data]); // Set the data as an array, as you're only fetching one user
-    } catch (error) {
-      console.error("Failed to fetch current user:", error);
-    }
-  };
-  
-  useEffect(() => {
-    fetchCurrentUser();
-  }, [currentUser]);
-
   const handleRecipeDetails = (recipeId) => {
     // Navigate to OnlineRecipeInfoScreen with the recipe details
     navigation.navigate("Online Recipe Information", { recipeId });
@@ -389,10 +373,32 @@ const ProgressScreen = () => {
     }
   };
 
-  const handleSummary = () => {
-    const user = users[0];
-    navigation.navigate("TabDWMScreen", { user });
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/user/getUserTypes?userType=user&_id=${users._id}`
+      );
+      const data = await response.json();
+      setUsers([data]);
+      return data; 
+    } catch (error) {
+      console.error("Failed to fetch current user:", error);
+      throw error;
+    }
   };
+  
+  const handleSummary = async () => {
+    try {
+      const userData = await fetchCurrentUser();
+      navigation.navigate("TabDWMScreen", { user: userData });
+    } catch (error) {
+      console.error("Error fetching current user data:", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchCurrentUser(); 
+  }, []);
 
   return (
     <ScrollView style={styles.scrollContainer}>

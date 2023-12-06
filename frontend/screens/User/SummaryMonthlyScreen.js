@@ -3,21 +3,26 @@ import { View, SafeAreaView, StyleSheet, Text, Dimensions } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import { Context } from "../../store/context";
 
-const SummaryMonthlyScreen = () => {
+const SummaryMonthlyScreen = ({route}) => {
+    const { user } = route.params; // Retrieve the user data passed from the previous screen
     const [currentUser, setCurrentUser] = useContext(Context);
     const [monthlyCalories, setMonthlyCalories] = useState([]);
     const [monthlyData, setMonthlyData] = useState([]);
+    const [userData, setUserData] = useState(user);
 
-    const averageTargetCalories = (currentUser.calorie * 365)/12;        //use day in month with the month from calender?
-    const CaloriesLog = currentUser.dailyCaloriesLog;
+    const currentUserData = userData.find(user => user._id === currentUser._id);
 
-    const dailyCaloriesLogEntries = currentUser.dailyCaloriesLog.map((entry) => (
+    const averageTargetCalories = (currentUserData.calorie * 365)/12;        //use day in month with the month from calender?
+    const CaloriesLog = currentUserData.dailyCaloriesLog;
+    console.log("1.=====monthly===== userData: " + currentUserData.username + "  CurrentUser's targetCalories: " + CaloriesLog[CaloriesLog.length - 1].total_calories);
+
+    const dailyCaloriesLogEntries = currentUserData.dailyCaloriesLog.map((entry) => (
         <View key={entry._id}>
             <Text>Date: {new Date(entry.date).toDateString()}</Text>
             <Text>Total Calories: {entry.total_calories}</Text>
         </View>
     ));     //test
-    console.log("dailyCaloriesLog: " + currentUser.dailyCaloriesLog[4].date);
+    console.log("dailyCaloriesLog: " + currentUserData.dailyCaloriesLog[4].date);
     
     useEffect(() => {
         const today = new Date();
@@ -38,7 +43,7 @@ const SummaryMonthlyScreen = () => {
             }, 0);
         
             const daysInMonth = monthEndDate.getDate();
-            const targetCaloriesForMonth = currentUser.calorie * daysInMonth;
+            const targetCaloriesForMonth = currentUserData.calorie * daysInMonth;
         
             data.push({
                 month: monthStartDate.toLocaleString('default', { month: 'short' }), // Month name
