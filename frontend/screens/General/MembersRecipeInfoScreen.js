@@ -586,7 +586,7 @@ export default function MembersRecipeInfoScreen({ route }) {
                 </View>
 
                 <Text style={styles.reviewLabel}>Rating:</Text>
-                <Text style={styles.reviewContent}>{review.ratings}</Text>
+                <Rating rating={review.ratings} />
                 {/* Edit icon */}
               </View>
             ))}
@@ -611,7 +611,7 @@ export default function MembersRecipeInfoScreen({ route }) {
                 </View>
 
                 <Text style={styles.reviewLabel}>Rating:</Text>
-                <Text style={styles.reviewContent}>{review.ratings}</Text>
+                <Rating rating={review.ratings} />
               </View>
             ))}
           </View>
@@ -647,14 +647,14 @@ export default function MembersRecipeInfoScreen({ route }) {
             />
             {/* Save Changes Button */}
             <TouchableOpacity
-              style={styles.submitButton}
+              style={styles.secondButton}
               onPress={submitEditedReview}
             >
               <Text style={styles.submitButtonText}>Save Changes</Text>
             </TouchableOpacity>
             {/* Close Button */}
             <TouchableOpacity
-              style={styles.secondButton}
+              style={styles.submitButton}
               onPress={() => setEditModalVisible(false)}
             >
               <Text style={styles.submitButtonText}>Close</Text>
