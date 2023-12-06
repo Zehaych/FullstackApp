@@ -33,11 +33,13 @@ const ProgressScreen = () => {
   const [search, setSearch] = useState("");
   const [memberRecipes, setMemberRecipes] = useState([]);
   const [onlineRecipes, setOnlineRecipes] = useState([]);
+  const [foodAndDrinks, setFoodAndDrinks] = useState([]);
   const [selectedDropdownValue, setSelectedDropdownValue] = useState("All");
   const [breakfastRecipe, setBreakfastRecipe] = useState(null);
   const [lunchRecipe, setLunchRecipe] = useState(null);
   const [dinnerRecipe, setDinnerRecipe] = useState(null);
   const [selectedRecipeId, setSelectedRecipeId] = useState(null); //sparate for online and member recipe if not work
+  const [selectedFoodAndDrink, setSelectedFoodAndDrink] = useState(null);
   const [recipeDetails, setRecipeDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentUser, setCurrentUser] = useContext(Context);
@@ -113,6 +115,20 @@ const ProgressScreen = () => {
     //.finally(() => setLoading(false));
   }, []);
 
+  //food and drinks data
+  useEffect(() => {
+    const url = `${process.env.EXPO_PUBLIC_IP}/foodanddrinks`;
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((json) => setFoodAndDrinks(json))
+      .catch((error) => console.log(error));
+  }, []);
+
   // //online recipe data
   // useEffect(() => {
   //   if (search) {
@@ -148,6 +164,7 @@ const ProgressScreen = () => {
     setOnlineRecipes([]);
     setRecipeDetails(null);
     setSelectedRecipeId(null);
+    setSelectedFoodAndDrink(null);
   };
 
   // handle lunch meal dropdown
@@ -157,6 +174,7 @@ const ProgressScreen = () => {
     setOnlineRecipes([]);
     setRecipeDetails(null);
     setSelectedRecipeId(null);
+    setSelectedFoodAndDrink(null);
   };
 
   // handle dinner meal dropdown
@@ -166,6 +184,7 @@ const ProgressScreen = () => {
     setOnlineRecipes([]);
     setRecipeDetails(null);
     setSelectedRecipeId(null);
+    setSelectedFoodAndDrink(null);
   };
 
   //handle search data
@@ -235,6 +254,22 @@ const ProgressScreen = () => {
       setDinnerRecipe(selectedRecipe);
     }
   };
+
+  const handleFoodAndDrinks = (recipeId) => {
+    const selectedFoodAndDrink = foodAndDrinks.find(
+      (recipe) => recipe._id === recipeId
+    );
+    setSelectedFoodAndDrink(selectedFoodAndDrink);
+
+    if (selectedDropdownValue === "bf") {
+      setBreakfastRecipe(selectedFoodAndDrink);
+    } else if (selectedDropdownValue === "lunch") {
+      setLunchRecipe(selectedFoodAndDrink);
+    } else if (selectedDropdownValue === "din") {
+      setDinnerRecipe(selectedFoodAndDrink);
+    }
+  };
+
 
   // for rendering meal recipe
   const renderMealRecipe = (mealRecipe) => {
@@ -340,6 +375,7 @@ const ProgressScreen = () => {
     setOnlineRecipes([]);
     setSelectedRecipeId(null);
     setRecipeDetails(null);
+    setSelectedFoodAndDrink(null);
   };
 
   //handle submit
@@ -459,6 +495,22 @@ const ProgressScreen = () => {
               onChangeText={(text) => handleSearch(text)}
             />
           </View>
+
+          <Text style={styles.subTitle}>Available food and drinks</Text>
+          <Picker
+            selectedValue={setSelectedFoodAndDrink ? setSelectedFoodAndDrink._id : null}
+            onValueChange={(itemValue) => handleFoodAndDrinks(itemValue)}
+            style={styles.dropdown}
+          >
+            <Picker.Item label="Select food and drinks" value={null} />
+            {foodAndDrinks.map((recipe) => (
+              <Picker.Item
+                key={recipe._id}
+                label={recipe.name}
+                value={recipe._id}
+              />
+            ))}
+          </Picker>
 
           {/* list of recipes */}
           <View style={styles.searchList}>
