@@ -45,6 +45,10 @@ const AdminScreen = () => {
     navigation.navigate("BizPartnerSignUp");
   };
 
+  const handleFoodRequested = () => {
+    navigation.navigate("FoodRequested");
+  };
+
   const handleRetrieveUserAccount = () => {
     navigation.navigate("RetrieveUserAccount");
   };
@@ -136,6 +140,19 @@ const AdminScreen = () => {
         </View>
       </TouchableRipple>
 
+      <TouchableRipple onPress={handleFoodRequested}>
+        <View style={styles.menuItem}>
+          <Icon
+            name="book-alert"
+            size={25}
+            color="#FF6347"
+            style={styles.icon}
+          />
+          <Text style={styles.menuItemText}>
+            Food Requested
+          </Text>
+        </View>
+      </TouchableRipple>
 
       <TouchableRipple onPress={onLogOutPressed}>
         <View style={styles.menuItem}>
