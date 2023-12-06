@@ -254,8 +254,29 @@ export default function MembersRecipeInfoScreen({ route }) {
       );
 
       if (response.ok) {
-        // Refetch reviews to update the state with the latest data
-        fetchReviews();
+        // Assuming you get the updated recipe data in the response
+        const updatedRecipeData = await response.json();
+
+        // Update the local state with the new recipe data
+        route.params.recipeData = updatedRecipeData;
+
+        // Update the state for reviews with usernames
+        const reviewsWithUsernames = await Promise.all(
+          updatedRecipeData.reviewsAndRatings.map(async (review) => {
+            const username = await fetchUsernameById(review.name);
+            return { ...review, username };
+          })
+        );
+
+        const currentUserReviews = reviewsWithUsernames
+          .filter((review) => review.name === currentUser._id)
+          .reverse();
+        const otherUserReviews = reviewsWithUsernames
+          .filter((review) => review.name !== currentUser._id)
+          .reverse();
+
+        setSubmittedReviews(otherUserReviews);
+        setCurrentUserReviews(currentUserReviews);
 
         // Reset form fields
         setUserReview("");
