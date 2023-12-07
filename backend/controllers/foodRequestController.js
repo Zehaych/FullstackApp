@@ -53,4 +53,20 @@ exports.rejectFoodRequest = asyncHandler(async (req, res) => {
     });
 });
 
+exports.approveFoodRequest = asyncHandler(async (req, res) => {
+    const requestId = req.params.id;
+
+    const foodRequest = await FoodRequest.findById(requestId);
+    if (!foodRequest) {
+        return res.status(404).json({ message: "Food request not found" });
+    }
+
+    foodRequest.status = 'approved';
+    await foodRequest.save();
+
+    res.status(200).json({ 
+        message: "Food request approved successfully",
+        foodRequest: foodRequest 
+    });
+});
 

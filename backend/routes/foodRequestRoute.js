@@ -11,4 +11,6 @@ router.post('/createFoodRequest', foodRequestController.createFoodRequest);
 
 //foodRequest => PUT
 router.put('/rejectFoodRequest/:id', foodRequestController.rejectFoodRequest);
+router.put('/approveFoodRequest/:id', foodRequestController.approveFoodRequest);
+
 module.exports = router;
