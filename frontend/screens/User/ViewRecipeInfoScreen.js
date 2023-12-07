@@ -68,7 +68,7 @@ export default function ViewRecipeInfoScreen({ route }) {
         setUsername(user.username); // Update the state
         setIsCreator(currentUser._id === recipe.submitted_by); // Check if the current user is the recipe creator
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        // console.error("Error fetching user data:", error);
         setUsername("Unknown User"); // Fallback username
       }
     };
@@ -276,10 +276,10 @@ export default function ViewRecipeInfoScreen({ route }) {
         throw new Error(`Network response was not ok: ${response.status}`);
       }
       const userData = await response.json();
-      return userData.username;
+      return userData.username || "Deleted User";
     } catch (error) {
-      console.error("Error fetching user data:", error);
-      return null;
+      // console.error("Error fetching user data:", error);
+      return "Deleted User";
     }
   };
 
@@ -580,7 +580,9 @@ export default function ViewRecipeInfoScreen({ route }) {
                 <View key={index} style={styles.mainBox}>
                   <View style={styles.section}>
                     <Text style={styles.reviewLabel}>Name:</Text>
-                    <Text style={styles.reviewContent}>{review.username}</Text>
+                    <Text style={styles.reviewContent}>
+                      {review.username || "Deleted User"}
+                    </Text>
                   </View>
 
                   <View style={styles.section}>
@@ -605,7 +607,9 @@ export default function ViewRecipeInfoScreen({ route }) {
               <View key={index} style={styles.mainBox}>
                 <View style={styles.section}>
                   <Text style={styles.reviewLabel}>Name:</Text>
-                  <Text style={styles.reviewContent}>{review.username}</Text>
+                  <Text style={styles.reviewContent}>
+                    {review.username || "Deleted User"}
+                  </Text>
                 </View>
 
                 <View style={styles.section}>
