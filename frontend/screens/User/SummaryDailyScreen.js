@@ -32,6 +32,10 @@ const SummaryDailyScreen = ({ route }) => {
     const caloriesLeft = targetCalories - latestTotalCalories;
     //calories more to consume
     const caloriesMore = latestTotalCalories - targetCalories;
+
+    const roundedCaloriesLeft = caloriesLeft.toFixed(2);
+
+    const roundedCaloriesMore = caloriesMore.toFixed(2);
     //percentage of calories consumed
     const percentage = (latestTotalCalories / targetCalories) * 100;
 
@@ -60,7 +64,7 @@ const SummaryDailyScreen = ({ route }) => {
                         {latestTotalCalories} / {targetCalories} Cal consumed
                         </Text>
                         <Text style={styles.chartText}>
-                            {exceededTarget ? `${caloriesMore} Cal more` : `${caloriesLeft} Cal left`}
+                            {exceededTarget ? `${roundedCaloriesMore} Cal more` : `${roundedCaloriesLeft} Cal left`}
                         </Text>
                     </View>
                     )}

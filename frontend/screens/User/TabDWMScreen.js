@@ -42,8 +42,8 @@ const TabDWMScreen = ({ route }) => {
         })}
         >
             <Tab.Screen name="Daily" component={SummaryDailyScreen} initialParams={{ user }} options={{tabBarLabel: 'Daily',}}/>
-            <Tab.Screen name="Weekly" component={SummaryWeeklyScreen} initialParams={{ user }} options={{tabBarLabel: 'Daily',}}/>
-            <Tab.Screen name="Monthly" component={SummaryMonthlyScreen} initialParams={{ user }} options={{tabBarLabel: 'Daily',}}/>
+            <Tab.Screen name="Weekly" component={SummaryWeeklyScreen} initialParams={{ user }} options={{tabBarLabel: 'Weekly',}}/>
+            <Tab.Screen name="Monthly" component={SummaryMonthlyScreen} initialParams={{ user }} options={{tabBarLabel: 'Monthly',}}/>
         </Tab.Navigator>
     );
 };

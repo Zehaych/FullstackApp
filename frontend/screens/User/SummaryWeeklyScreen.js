@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Dimensions, StyleSheet, Text } from "react-native";
+import { View, Dimensions, StyleSheet, Text, ScrollView } from "react-native";
 import { BarChart } from "react-native-chart-kit";
+import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Context } from "../../store/context";
 import { useFocusEffect } from '@react-navigation/native';
+//import { calculateWeeklyDataUtil } from './utils';
 
 const SummaryWeeklyScreen = ({ route }) => {
     const { user } = route.params; // Retrieve the user data passed from the previous screen
@@ -10,6 +12,7 @@ const SummaryWeeklyScreen = ({ route }) => {
     const [weeklyCalories, setWeeklyCalories] = useState([]);
     const [userData, setUserData] = useState(user);
     const currentUserData = userData.find(user => user._id === currentUser._id);
+    const [weeklyData, setWeeklyData] = useState([]);
 
     const targetCalories = currentUserData.calorie;
     //const targetCalories = currentUser.calorie * 7;
@@ -19,8 +22,9 @@ const SummaryWeeklyScreen = ({ route }) => {
 
     useEffect(() => {
         //calculate weekly total calories and set the state
-        const weeklyData = calculateWeeklyData(CaloriesLog, targetCalories);
-        setWeeklyCalories(weeklyData);
+        const calWeeklyData = calculateWeeklyData(CaloriesLog, targetCalories);
+        setWeeklyCalories(calWeeklyData);
+        setWeeklyData(calWeeklyData);
     }, [CaloriesLog, targetCalories]);
 
     //week Number of the year
@@ -39,6 +43,7 @@ const SummaryWeeklyScreen = ({ route }) => {
         const weeklyData = [];
         let currentWeek = null;
         let weeklyTotal = 0;
+        let weeklyDays = [];
     
         //iterate through daily calories log
         for (const entry of dailyCaloriesLog) {
@@ -52,6 +57,7 @@ const SummaryWeeklyScreen = ({ route }) => {
                     weeklyData.push({
                         week: currentWeek,
                         totalCalories: weeklyTotal,
+                        dailyCalories: weeklyDays, // Save daily details for the week
                         exceededTarget: weeklyTotal > dailyTargetCalories * 7, //compare weekly total with weekly target
                     });
                 }
@@ -59,10 +65,15 @@ const SummaryWeeklyScreen = ({ route }) => {
                 //get for the new week
                 currentWeek = entryWeek;
                 weeklyTotal = 0;
+                weeklyDays = [];
             }
         
             //add daily calories for the current week
             weeklyTotal += entry.total_calories;
+            weeklyDays.push({
+                day: entryDate.getDay(), // Assuming you want to track the day as well
+                total_calories: entry.total_calories,
+            });
         }
     
         // Save the last week
@@ -70,6 +81,7 @@ const SummaryWeeklyScreen = ({ route }) => {
             weeklyData.push({
                 week: currentWeek,
                 totalCalories: weeklyTotal,
+                dailyCalories: weeklyDays,
                 exceededTarget: weeklyTotal > dailyTargetCalories * 7,
             });
         }
@@ -96,9 +108,11 @@ const SummaryWeeklyScreen = ({ route }) => {
             borderRadius: 16,
         },
     };
-    
-            
 
+    const weeklyTargetCalories = targetCalories * 7; 
+    const roundTargetCalories = weeklyTargetCalories.toFixed(2);
+
+    // Determine if calories exceeded the target
 
     return (
         <View style={styles.container}>
@@ -113,17 +127,34 @@ const SummaryWeeklyScreen = ({ route }) => {
                 chartConfig={chartConfig}
                 verticalLabelRotation={0}
             />
-            <Text style={styles.text}>Weekly's total Calories intake:   </Text>
-            <View style={styles.componentContainer}>
-                <View style={styles.leftComponent}>
-                    <Text style={styles.text}>Weekly intake: </Text>
-                    <Text style={styles.subText}></Text>
-                </View>
-                <View style={styles.rightComponent}>
-                    <Text style={styles.text}>Target Calories:</Text>
-                    <Text style={styles.subText}>{targetCalories} Cal</Text>
-                </View>
-            </View>
+            <Text style={styles.text}>Weekly's total Calories intake: </Text>
+            <ScrollView style={styles.chartContainer}>
+                {weeklyData.map((week) => (
+                    <View key={week.week}>
+                        <Text style={styles.chartTextBold}>Weekly Intake - Week {week.week}</Text>
+                        <View style={styles.chartContainerToo}>
+                            <AnimatedCircularProgress
+                            size={200}
+                            width={15}
+                            fill={week.totalCalories / (roundTargetCalories) * 100} // Fill percentage based on the ratio
+                            tintColor="#00e0ff"
+                            backgroundColor="#3d5875"
+                            >
+                                {(fill) => (
+                                    <View>
+                                        <Text style={styles.chartTextBold}>
+                                        {week.totalCalories} / {roundTargetCalories} Cal consumed
+                                        </Text>
+                                        <Text style={styles.chartText}>
+                                            {week.totalCalories > roundTargetCalories ? `${(week.totalCalories - roundTargetCalories).toFixed(2)} Cal left` : `${(roundTargetCalories - week.totalCalories).toFixed(2)} Cal more`}
+                                        </Text>
+                                    </View>
+                                )}
+                            </AnimatedCircularProgress>
+                        </View>
+                    </View>
+                ))}
+            </ScrollView>
         </View>
     );
 };
@@ -140,6 +171,19 @@ const styles = StyleSheet.create({
     textContainer: {    
         marginTop: 10,
         marginBottom: 10,
+    },
+    chartContainer: {
+        marginTop: 25,
+        marginBottom: 25,
+        margin: 5,
+    },
+    chartContainerToo: {
+        flex: 1,
+        marginTop: 10,
+        marginBottom: 10,
+        margin: 5,
+        alignItems: "center",
+        alignContent: "center",
     },
     componentContainer: {
         flexDirection: "row", // Arrange components horizontally from left to right
