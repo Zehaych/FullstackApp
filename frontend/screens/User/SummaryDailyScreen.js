@@ -64,7 +64,7 @@ const SummaryDailyScreen = ({ route }) => {
                         {latestTotalCalories} / {targetCalories} Cal consumed
                         </Text>
                         <Text style={styles.chartText}>
-                            {exceededTarget ? `${roundedCaloriesMore} Cal more` : `${roundedCaloriesLeft} Cal left`}
+                            {exceededTarget ? `${roundedCaloriesMore} Cal more` : `${roundedCaloriesLeft} Cal less`}
                         </Text>
                     </View>
                     )}

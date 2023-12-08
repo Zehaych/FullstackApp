@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, SafeAreaView, StyleSheet, Text, Dimensions } from "react-native";
+import { View, ScrollView, StyleSheet, Text, Dimensions } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import { Context } from "../../store/context";
+import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 const SummaryMonthlyScreen = ({route}) => {
     const { user } = route.params; // Retrieve the user data passed from the previous screen
     const [currentUser, setCurrentUser] = useContext(Context);
-    const [monthlyCalories, setMonthlyCalories] = useState([]);
+    //const [monthlyCalories, setMonthlyCalories] = useState([]);
     const [monthlyData, setMonthlyData] = useState([]);
+    const [monthlyDataProgress, setMonthlyDataProgress] = useState([]);
     const [userData, setUserData] = useState(user);
 
     const currentUserData = userData.find(user => user._id === currentUser._id);
@@ -49,6 +51,7 @@ const SummaryMonthlyScreen = ({route}) => {
                 month: monthStartDate.toLocaleString('default', { month: 'short' }), // Month name
                 consumed: monthlyCalories,
                 target: targetCaloriesForMonth,
+                progress: (monthlyCalories / targetCaloriesForMonth) * 100,
             });
         }
     
@@ -105,6 +108,35 @@ const SummaryMonthlyScreen = ({route}) => {
                     <Text style={styles.subText}>{averageTargetCalories} kCal</Text>
                 </View>
             </View>
+            <ScrollView style={styles.chartContainer}>
+                {monthlyData.map((month) => (
+                    <View key={month.month}>
+                        <Text style={styles.chartTextBold}>
+                            Monthly Intake - {month.month}
+                        </Text>
+                        <View style={styles.chartContainerToo}>
+                            <AnimatedCircularProgress
+                            size={200}
+                            width={15}
+                            fill={month.progress}
+                            tintColor="#00e0ff"
+                            backgroundColor="#3d5875"
+                            >
+                            {(fill) => (
+                                <View>
+                                <Text style={styles.chartTextBold}>
+                                    {(month.consumed).toFixed(2)} / {(month.target).toFixed(2)} Cal consumed
+                                </Text>
+                                <Text style={styles.chartText}>
+                                    {month.consumed > month.target ? `${(month.consumed - month.target).toFixed(2)} Cal more`  : `${(month.target - month.consumed).toFixed(2)} Cal less` }
+                                </Text>
+                                </View>
+                            )}
+                            </AnimatedCircularProgress>
+                        </View>
+                    </View>
+                ))}
+            </ScrollView>
         </View>
     );
 };
@@ -122,6 +154,19 @@ const styles = StyleSheet.create({
     textContainer: {    
         marginTop: 10,
         marginBottom: 10,
+    },
+    chartContainer: {
+        marginTop: 25,
+        marginBottom: 25,
+        margin: 5,
+    },
+    chartContainerToo: {
+        flex: 1,
+        marginTop: 10,
+        marginBottom: 10,
+        margin: 5,
+        alignItems: "center",
+        alignContent: "center",
     },
     componentContainer: {
         flexDirection: "row", // Arrange components horizontally from left to right
