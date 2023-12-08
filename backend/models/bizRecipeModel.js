@@ -100,8 +100,16 @@ const bizRecipeSchema = mongoose.Schema(
           required: true,
         },
         status: {
-          type: [String],
-          required: true,
+          type: String,
+          enum: [
+            "Rejected",
+            "Pending",
+            "Preparing",
+            "On the way",
+            "Arriving",
+            "Done",
+          ],
+          default: "Pending", // Set default status value to 'Pending'
         },
       },
     ],

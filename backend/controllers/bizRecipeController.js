@@ -3,6 +3,8 @@ const asyncHandler = require("express-async-handler");
 
 const BizRecipe = require("../models/bizRecipeModel");
 
+const User = require("../models/userModel");
+
 //@desc GET all business recipe items
 //@route GET /bizRecipe
 //@access public
@@ -138,7 +140,7 @@ exports.dismissReport = asyncHandler(async (req, res) => {
 });
 
 // @desc Submit an order for a business recipe
-// @route POST /bizRecipe/order/:bizRecipeId
+// @route POST
 // @access public (or private if you require authentication)
 const SERVICE_FEE = 4.0; // A fixed service fee
 
@@ -184,4 +186,31 @@ exports.submitOrder = asyncHandler(async (req, res) => {
   res
     .status(200)
     .json({ message: "Order submitted successfully", order: order });
+});
+
+// Assuming this is added in your existing backend controller file
+
+//@desc GET all orders sorted by date (newest first)
+//@route GET /bizRecipe/getOrders
+//@access public (or private if authentication is needed)
+//@desc GET all orders with recipe names
+//@route GET /bizRecipe/orders
+//@access public
+exports.getOrders = asyncHandler(async (req, res) => {
+  const recipes = await BizRecipe.find()
+    // .sort({ "orderedBy.dateToDeliver": -1 })
+    .populate("orderedBy.name", "username"); // Populate the user details
+
+  const ordersWithRecipeName = recipes
+    .map((recipe) => {
+      return recipe.orderedBy.map((order) => {
+        return {
+          ...order._doc, // Spread all properties of the order
+          recipeName: recipe.name, // Add the recipe name to each order
+        };
+      });
+    })
+    .flat();
+
+  res.json(ordersWithRecipeName);
 });

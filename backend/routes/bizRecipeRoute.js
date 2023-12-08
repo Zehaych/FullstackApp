@@ -25,4 +25,6 @@ router.delete(
 
 router.post("/submitOrder/:bizRecipeId", bizRecipeController.submitOrder);
 
+router.get("/getOrders", bizRecipeController.getOrders);
+
 module.exports = router;
