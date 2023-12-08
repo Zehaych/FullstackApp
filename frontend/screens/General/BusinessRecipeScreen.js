@@ -17,12 +17,6 @@ export default function BusinessRecipeScreen({ navigation }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [cart, setCart] = useState([]);
-
-  const addToCart = (recipeData) => {
-    setCart([...cart, recipeData]);
-  };
-
   const url = `${process.env.EXPO_PUBLIC_IP}/bizRecipe`;
 
   //navigate to recipe info page
@@ -58,13 +52,7 @@ export default function BusinessRecipeScreen({ navigation }) {
           >
             <Image source={{ uri: item.image }} style={styles.image} />
             <Text style={styles.recipeTitle}> {item.name}</Text>
-            {/* Add to Cart button */}
-            <TouchableOpacity
-              onPress={() => addToCart(item)}
-              style={styles.addToCartButton}
-            >
-              <Text>Add to Cart</Text>
-            </TouchableOpacity>
+            <Text>Created by bizowner</Text>
           </TouchableOpacity>
         )}
       />
@@ -126,14 +114,6 @@ const styles = StyleSheet.create({
     //color: "white",
     //padding: 5, // Add some padding
     //borderRadius: 5, // Add border radius for the background
-  },
-  addToCartButton: {
-    backgroundColor: "cyan",
-    padding: 8,
-    borderRadius: 5,
-    marginTop: 5,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
 
