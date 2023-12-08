@@ -136,3 +136,52 @@ exports.dismissReport = asyncHandler(async (req, res) => {
 
   res.status(200).json({ message: "Report dismissed successfully" });
 });
+
+// @desc Submit an order for a business recipe
+// @route POST /bizRecipe/order/:bizRecipeId
+// @access public (or private if you require authentication)
+const SERVICE_FEE = 4.0; // A fixed service fee
+
+exports.submitOrder = asyncHandler(async (req, res) => {
+  const { bizRecipeId } = req.params;
+  const {
+    userId,
+    quantity,
+    preferences,
+    timeToDeliver,
+    dateToDeliver,
+    deliveryAddress,
+  } = req.body;
+
+  // Find the recipe by ID
+  const bizRecipe = await BizRecipe.findById(bizRecipeId);
+
+  if (!bizRecipe) {
+    res.status(404);
+    throw new Error("Recipe not found");
+  }
+
+  // Calculate total price including the service fee
+  const totalPrice = bizRecipe.price * quantity + SERVICE_FEE;
+
+  // Create order object
+  const order = {
+    name: userId,
+    quantity: quantity,
+    totalPrice: totalPrice,
+    preferences: preferences,
+    timeToDeliver: timeToDeliver,
+    dateToDeliver: dateToDeliver,
+    deliveryAddress: deliveryAddress,
+  };
+
+  // Add order to the recipe
+  bizRecipe.orderedBy.push(order);
+
+  // Save the updated recipe
+  await bizRecipe.save();
+
+  res
+    .status(200)
+    .json({ message: "Order submitted successfully", order: order });
+});

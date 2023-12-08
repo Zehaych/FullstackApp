@@ -54,6 +54,10 @@ const BizPartnerScreen = () => {
     navigation.push("View Business Recipe");
   };
 
+  const onViewOrdersPressed = () => {
+    navigation.push("View Orders");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.userInfoSection}>
@@ -96,6 +100,13 @@ const BizPartnerScreen = () => {
           <View style={styles.menuItem}>
             <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
             <Text style={styles.menuItemText}>View Added Recipe</Text>
+          </View>
+        </TouchableRipple>
+
+        <TouchableRipple onPress={onViewOrdersPressed}>
+          <View style={styles.menuItem}>
+            <Icon name="clipboard-list-outline" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>View Customer Orders</Text>
           </View>
         </TouchableRipple>
 

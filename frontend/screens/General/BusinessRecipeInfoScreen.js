@@ -219,7 +219,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
           </TouchableOpacity>
         </View> */}
         {/* <Text style={styles.totalPrice}>Total Price: {getTotalPrice()}</Text> */}
-        <Text style={styles.subTitle}>Do you want us to cook for you? </Text>
+        <Text style={styles.message}>Do you want us to prepare for you? </Text>
 
         <StatusBar style="auto" />
       </View>
@@ -464,7 +464,7 @@ const styles = StyleSheet.create({
     borderColor: "#CCCCCC",
     borderRadius: 10,
     padding: 10,
-    marginBottom: 30,
+    marginBottom: 20,
   },
   section: {
     borderBottomWidth: 1,
@@ -480,5 +480,11 @@ const styles = StyleSheet.create({
   },
   boldText: {
     fontWeight: "bold",
+  },
+  message: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#333",
   },
 });

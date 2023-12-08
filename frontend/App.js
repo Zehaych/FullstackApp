@@ -45,6 +45,7 @@ import SubmitFoodRequest from "./screens/User/FoodRequestScreen";
 import FoodRequested from "./screens/SystemAdmin/FoodRequested";
 import FoodAndDrinksInfo from "./screens/SystemAdmin/FoodAndDrinksInfo";
 import ViewRequest from "./screens/User/ViewRequest";
+import ViewOrdersScreen from "./screens/BizPartner/ViewOrdersScreen";
 
 const Stack = createStackNavigator();
 
@@ -58,42 +59,42 @@ function App() {
           <Stack.Screen
             name="ViewRequest"
             component={ViewRequest}
-            options={{ headerShown: false}}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="FoodAndDrinksInfo"
             component={FoodAndDrinksInfo}
-            options={{ headerShown: false}}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="FoodRequested"
             component={FoodRequested}
-            options={{ headerShown: false}}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="SubmitFoodRequest"
             component={SubmitFoodRequest}
-            options={{ headerShown: false}}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="ReportedBizRecipeDetails"
             component={ReportedBizRecipeDetails}
-            options={{ headerShown: false}}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="ReportedBizRecipe"
             component={ReportedBizRecipe}
-            options={{ headerShown: false}}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="ReportedRecipeDetails"
             component={ReportedRecipeDetails}
-            options={{ headerShown: false}}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="ReportedRecipe"
             component={ReportedRecipe}
-            options={{ headerShown: false}}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="UserInfo"
@@ -181,6 +182,8 @@ function App() {
             name="Business Recipe Info"
             component={ViewBizRecipeInfoScreen}
           />
+
+          <Stack.Screen name="View Orders" component={ViewOrdersScreen} />
           <Stack.Screen
             name="Edit Business Recipe"
             component={EditBizRecipeScreen}

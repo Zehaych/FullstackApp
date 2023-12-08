@@ -17,11 +17,12 @@ router.post("/reportBizRecipe/:recipeId", bizRecipeController.reportBizRecipe);
 router.put("/updateBizRecipe/:recipeId", bizRecipeController.updateBizRecipe);
 router.put("/dismissReport/:recipeId", bizRecipeController.dismissReport);
 
-
 //food => DELETE
 router.delete(
   "/deleteBizRecipe/:recipeId",
   bizRecipeController.deleteBizRecipe
 );
+
+router.post("/submitOrder/:bizRecipeId", bizRecipeController.submitOrder);
 
 module.exports = router;

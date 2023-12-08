@@ -12,6 +12,8 @@ import {
 import React, { useState, useEffect, useContext } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Context } from "../../store/context";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-picker/picker";
 
 export default function PreferencesScreen({ route, navigation }) {
   const { recipeData } = route.params;
@@ -28,11 +30,79 @@ export default function PreferencesScreen({ route, navigation }) {
   const [cvv, setCvv] = useState("");
   const [address, setAddress] = useState("");
 
-  const handlePayment = () => {
-    // Dummy payment logic (for demonstration purposes)
-    if (cardNumber && cardholderName && expiryDate && cvv && address) {
-      alert("Payment successful!");
-      navigation.navigate("TabScreen");
+  const [date, setDate] = useState(new Date());
+  const [mode, setMode] = useState("date");
+  const [show, setShow] = useState(false);
+  const [selectedTime, setSelectedTime] = useState("12:30-13:00");
+
+  const [serviceFee, setServiceFee] = useState(4.0);
+
+  const getTotalPayment = () => {
+    const subtotal = totalPrice;
+    const total = subtotal + serviceFee;
+    return total.toFixed(2);
+  };
+
+  const onChangeDate = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(false);
+    setDate(currentDate);
+  };
+
+  const showDatePicker = () => {
+    setShow(true);
+    setMode("date");
+  };
+
+  const formatDate = (date) => {
+    // Format the date
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  };
+
+  const handleSubmitPayment = async () => {
+    if (
+      cardNumber &&
+      cardholderName &&
+      expiryDate &&
+      cvv &&
+      address &&
+      date &&
+      selectedTime
+    ) {
+      const orderData = {
+        userId: currentUser._id, // Replace with the actual user ID from context or state
+        quantity: quantity,
+        preferences: currentOrder.preferences,
+        timeToDeliver: selectedTime,
+        dateToDeliver: formatDate(date),
+        deliveryAddress: address,
+        totalPrice: getTotalPayment(), // This should include the service fee
+      };
+
+      try {
+        const response = await fetch(
+          `${process.env.EXPO_PUBLIC_IP}/bizRecipe/submitOrder/${recipeData._id}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(orderData),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Something went wrong!");
+        }
+
+        const responseData = await response.json();
+        alert(
+          "Payment successful! Track your order status from Business Recipes."
+        );
+        navigation.navigate("TabScreen");
+      } catch (error) {
+        alert("Payment failed: " + error.message);
+      }
     } else {
       alert("Please fill in all payment details.");
     }
@@ -110,8 +180,30 @@ export default function PreferencesScreen({ route, navigation }) {
               numberOfLines={4}
             />
           </View>
-        </View>
 
+          <View style={styles.mainBox}>
+            <View style={styles.quantityContainer}>
+              <Text style={styles.quantityLabel}>Quantity:</Text>
+              <TouchableOpacity
+                style={styles.quantityButton}
+                onPress={decrementQuantity}
+              >
+                <Icon name="minus" size={20} color="white" />
+              </TouchableOpacity>
+              <Text style={styles.quantity}>{quantity}</Text>
+              <TouchableOpacity
+                style={styles.quantityButton}
+                onPress={incrementQuantity}
+              >
+                <Icon name="plus" size={20} color="white" />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.totalPrice}>
+              Total Price: {getTotalPrice()}
+            </Text>
+          </View>
+        </View>
+        {/* 
         <View style={styles.mainBox}>
           <View style={styles.quantityContainer}>
             <Text style={styles.quantityLabel}>Quantity:</Text>
@@ -130,7 +222,7 @@ export default function PreferencesScreen({ route, navigation }) {
             </TouchableOpacity>
           </View>
           <Text style={styles.totalPrice}>Total Price: {getTotalPrice()}</Text>
-        </View>
+        </View> */}
 
         {/* </View> */}
 
@@ -174,16 +266,88 @@ export default function PreferencesScreen({ route, navigation }) {
               value={address}
               onChangeText={(text) => setAddress(text)}
             />
+            <Text style={styles.label}>Delivery Date:</Text>
+
             {/* <Button title="Submit Payment" onPress={handlePayment} /> */}
+            <TouchableOpacity
+              onPress={showDatePicker}
+              style={styles.datePickerButton}
+            >
+              <Text style={styles.buttonText}>Select Date</Text>
+            </TouchableOpacity>
+            {show && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={date}
+                mode={mode}
+                is24Hour={true}
+                display="default"
+                onChange={onChangeDate}
+              />
+            )}
+            {/* Display selected date */}
+            <Text style={styles.selectedDateText}>
+              Selected Date: {formatDate(date)}
+            </Text>
+
+            <Text style={styles.label}>Delivery Time:</Text>
+            <Picker
+              selectedValue={selectedTime}
+              style={styles.picker}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedTime(itemValue)
+              }
+            >
+              <Picker.Item label="07:30 - 08:00" value="07:30-08:00" />
+              <Picker.Item label="08:00 - 08:30" value="08:00-08:30" />
+              <Picker.Item label="08:30 - 09:00" value="08:30-09:00" />
+              <Picker.Item label="09:00 - 09:30" value="09:00-09:30" />
+              <Picker.Item label="09:30 - 10:00" value="09:30-10:00" />
+              <Picker.Item label="10:00 - 10:30" value="10:00-10:30" />
+              <Picker.Item label="10:30 - 11:00" value="10:30-11:00" />
+              <Picker.Item label="11:00 - 11:30" value="11:00-11:30" />
+              <Picker.Item label="11:30 - 12:00" value="11:30-12:00" />
+              <Picker.Item label="12:00 - 12:30" value="12:00-12:30" />
+              <Picker.Item label="12:30 - 13:00" value="12:30-13:00" />
+              <Picker.Item label="13:00 - 13:30" value="13:00-13:30" />
+              <Picker.Item label="13:30 - 14:00" value="13:30-14:00" />
+              <Picker.Item label="14:00 - 14:30" value="14:00-14:30" />
+              <Picker.Item label="14:30 - 15:00" value="14:30-15:00" />
+              <Picker.Item label="15:00 - 15:30" value="15:00-15:30" />
+              <Picker.Item label="15:30 - 16:00" value="15:30-16:00" />
+              <Picker.Item label="16:00 - 16:30" value="16:00-16:30" />
+              <Picker.Item label="16:30 - 17:00" value="16:30-17:00" />
+              <Picker.Item label="17:00 - 17:30" value="17:00-17:30" />
+              <Picker.Item label="17:30 - 18:00" value="17:30-18:00" />
+              <Picker.Item label="18:00 - 18:30" value="18:00-18:30" />
+              <Picker.Item label="18:30 - 19:00" value="18:30-19:00" />
+              <Picker.Item label="19:00 - 19:30" value="19:00-19:30" />
+              <Picker.Item label="19:30 - 20:00" value="19:30-20:00" />
+              <Picker.Item label="20:00 - 20:30" value="20:00-20:30" />
+              <Picker.Item label="20:30 - 21:00" value="20:30-21:00" />
+              <Picker.Item label="21:00 - 21:30" value="21:00-21:30" />
+              <Picker.Item label="21:30 - 22:00" value="21:30-22:00" />
+
+              {/* Add more time slots as needed */}
+            </Picker>
+            <Text style={styles.priceTag}>Subtotal: {getTotalPrice()}</Text>
+            <Text style={styles.priceTag}>
+              Service fees: ${serviceFee.toFixed(2)}
+            </Text>
+            <Text style={styles.totalPrice}>
+              Total payment: ${getTotalPayment()}
+            </Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleSubmitPayment}
+            >
+              <Text style={styles.buttonText}>Submit payment</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
         <StatusBar style="auto" />
       </View>
-
-      <TouchableOpacity style={styles.button} onPress={handlePayment}>
-        <Text style={styles.buttonText}>Submit payment</Text>
-      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -243,7 +407,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   quantityButton: {
-    backgroundColor: "#ddd",
+    backgroundColor: "#0066cc",
     borderRadius: 5,
     padding: 8,
     marginHorizontal: 10,
@@ -255,6 +419,12 @@ const styles = StyleSheet.create({
   totalPrice: {
     fontSize: 18,
     fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 10,
+    color: "#333",
+  },
+  priceTag: {
+    fontSize: 15,
     textAlign: "center",
     marginTop: 10,
     color: "#333",
@@ -280,7 +450,7 @@ const styles = StyleSheet.create({
     borderColor: "#CCCCCC",
     borderRadius: 10,
     padding: 10,
-    marginBottom: 20,
+    marginBottom: 30,
   },
   section: {
     borderBottomWidth: 1,
@@ -311,5 +481,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 5,
+  },
+  datePickerButton: {
+    backgroundColor: "orange",
+    padding: 10,
+    borderRadius: 10,
+    margin: 20,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  picker: {
+    height: 50,
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  selectedDateText: {
+    // fontSize: 18,
+    // fontWeight: "bold",
+    textAlign: "center",
+    color: "#333",
+    marginBottom: 20,
   },
 });
