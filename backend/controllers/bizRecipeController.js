@@ -7,7 +7,10 @@ const BizRecipe = require("../models/bizRecipeModel");
 //@route GET /bizRecipe
 //@access public
 exports.getBizRecipe = asyncHandler(async (req, res) => {
-  const bizRecipes = await BizRecipe.find();
+  const bizRecipes = await BizRecipe.find().populate(
+    "submitted_by",
+    "username"
+  );
   res.json(bizRecipes);
 });
 
@@ -16,8 +19,11 @@ exports.getBizRecipe = asyncHandler(async (req, res) => {
 //@access public
 exports.getBizRecipeId = asyncHandler(async (req, res) => {
   const bizRecipeId = req.params.bizRecipeId;
-  const bizRecipes = await BizRecipe.findById(bizRecipeId);
-  res.status(200).json(bizRecipes);
+  const bizRecipe = await BizRecipe.findById(bizRecipeId).populate(
+    "submitted_by",
+    "username"
+  );
+  res.status(200).json(bizRecipe);
 });
 
 //@desc     POST 1 food
@@ -90,16 +96,16 @@ exports.deleteBizRecipe = asyncHandler(async (req, res) => {
 // Report recipe
 exports.reportBizRecipe = asyncHandler(async (req, res) => {
   const recipeId = req.params.recipeId;
-  const { userId, feedback, additionalComment } = req.body; 
+  const { userId, feedback, additionalComment } = req.body;
 
   const recipe = await BizRecipe.findById(recipeId);
 
   if (!recipe) {
-      return res.status(404).json({ message: "Recipe not found" });
+    return res.status(404).json({ message: "Recipe not found" });
   }
 
   recipe.isReported = true;
-  recipe.reportedBy.push({ user: userId, feedback, additionalComment});
+  recipe.reportedBy.push({ user: userId, feedback, additionalComment });
 
   await recipe.save();
 
@@ -108,7 +114,10 @@ exports.reportBizRecipe = asyncHandler(async (req, res) => {
 
 // Get the reported Biz Recipes
 exports.getReportedBizRecipes = asyncHandler(async (req, res) => {
-  const reportedRecipes = await BizRecipe.find({ isReported: true }).populate('reportedBy.user', 'username');
+  const reportedRecipes = await BizRecipe.find({ isReported: true }).populate(
+    "reportedBy.user",
+    "username"
+  );
   res.json(reportedRecipes);
 });
 
@@ -118,7 +127,7 @@ exports.dismissReport = asyncHandler(async (req, res) => {
 
   const recipe = await BizRecipe.findById(recipeId);
   if (!recipe) {
-      return res.status(404).json({ message: "Recipe not found" });
+    return res.status(404).json({ message: "Recipe not found" });
   }
 
   recipe.isReported = false;

@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Context } from "../../store/context";
 import { useFocusEffect } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default function ViewBizRecipeScreen({ navigation }) {
   const [recipes, setRecipes] = useState([]);
@@ -30,7 +31,8 @@ export default function ViewBizRecipeScreen({ navigation }) {
       // Filter recipes to include only those submitted by the current user
       if (Array.isArray(allRecipes)) {
         const userRecipes = allRecipes.filter(
-          (recipe) => recipe.submitted_by === currentUser._id
+          (recipe) =>
+            recipe.submitted_by && recipe.submitted_by._id === currentUser._id
         );
         setRecipes(userRecipes);
       } else {
@@ -74,6 +76,18 @@ export default function ViewBizRecipeScreen({ navigation }) {
             >
               <Image source={{ uri: item.image }} style={styles.image} />
               <Text style={styles.recipeTitle}>{item.name}</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Icon name="person-pin" size={24} color="#333333" />
+                <Text style={{ marginLeft: 8 }}>
+                  {item.submitted_by.username}
+                </Text>
+              </View>
             </TouchableOpacity>
           )}
         />

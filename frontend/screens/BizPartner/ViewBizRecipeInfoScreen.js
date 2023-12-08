@@ -37,24 +37,30 @@ export default function ViewBizRecipeInfoScreen({ route }) {
     }
   };
 
-  const fetchUsername = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${recipe.submitted_by}`
-      );
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status}`);
-      }
-      const user = await response.json();
-      setUsername(user.username);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
+  // const fetchUsername = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${recipe.submitted_by}`
+  //     );
+  //     if (!response.ok) {
+  //       throw new Error(`Network response was not ok: ${response.status}`);
+  //     }
+  //     const user = await response.json();
+  //     setUsername(user.username);
+  //   } catch (error) {
+  //     console.error("Error fetching user data:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchUsername();
+  // }, []);
 
   useEffect(() => {
-    fetchUsername();
-  }, []);
+    if (recipe && recipe.submitted_by) {
+      setUsername(recipe.submitted_by.username);
+    }
+  }, [recipe]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -125,7 +131,7 @@ export default function ViewBizRecipeInfoScreen({ route }) {
 
         <View style={styles.mainBox}>
           <View style={styles.section}>
-            <Text style={styles.subTitle}>Created by: </Text>
+            <Text style={styles.subTitle}>Company name: </Text>
             <Text>{username}</Text>
           </View>
 

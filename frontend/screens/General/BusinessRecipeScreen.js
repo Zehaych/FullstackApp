@@ -12,6 +12,7 @@ import {
   Dimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default function BusinessRecipeScreen({ navigation }) {
   const [data, setData] = useState([]);
@@ -52,7 +53,18 @@ export default function BusinessRecipeScreen({ navigation }) {
           >
             <Image source={{ uri: item.image }} style={styles.image} />
             <Text style={styles.recipeTitle}> {item.name}</Text>
-            <Text>Created by bizowner</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Icon name="person-pin" size={24} color="#333333" />
+              <Text style={{ marginLeft: 8 }}>
+                {item.submitted_by.username}
+              </Text>
+            </View>
           </TouchableOpacity>
         )}
       />

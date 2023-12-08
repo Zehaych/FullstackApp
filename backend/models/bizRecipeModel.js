@@ -78,6 +78,10 @@ const bizRecipeSchema = mongoose.Schema(
           type: String,
           required: true,
         },
+        dateToDeliver: {
+          type: String,
+          required: true,
+        },
         deliveryAddress: {
           type: String,
           required: true,
@@ -112,6 +116,10 @@ const bizRecipeSchema = mongoose.Schema(
           required: true,
         },
         timeToDeliver: {
+          type: String,
+          required: true,
+        },
+        dateToDeliver: {
           type: String,
           required: true,
         },
