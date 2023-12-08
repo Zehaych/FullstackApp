@@ -146,7 +146,7 @@ const SummaryWeeklyScreen = ({ route }) => {
                                         {week.totalCalories} / {roundTargetCalories} Cal consumed
                                         </Text>
                                         <Text style={styles.chartText}>
-                                            {week.totalCalories > roundTargetCalories ? `${(week.totalCalories - roundTargetCalories).toFixed(2)} Cal left` : `${(roundTargetCalories - week.totalCalories).toFixed(2)} Cal more`}
+                                            {week.totalCalories > roundTargetCalories ? `${(week.totalCalories - roundTargetCalories).toFixed(2)} Cal more` : `${(roundTargetCalories - week.totalCalories).toFixed(2)} Cal less`}
                                         </Text>
                                     </View>
                                 )}
