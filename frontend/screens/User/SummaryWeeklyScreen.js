@@ -110,7 +110,7 @@ const SummaryWeeklyScreen = ({ route }) => {
     };
 
     const weeklyTargetCalories = targetCalories * 7; 
-    const roundTargetCalories = weeklyTargetCalories.toFixed(2);
+    const roundTargetCalories = Math.round(weeklyTargetCalories);
 
     // Determine if calories exceeded the target
 
@@ -143,10 +143,10 @@ const SummaryWeeklyScreen = ({ route }) => {
                                 {(fill) => (
                                     <View>
                                         <Text style={styles.chartTextBold}>
-                                        {week.totalCalories} / {roundTargetCalories} Cal consumed
+                                        {Math.round(week.totalCalories)} / {roundTargetCalories} Cal consumed
                                         </Text>
                                         <Text style={styles.chartText}>
-                                            {week.totalCalories > roundTargetCalories ? `${(week.totalCalories - roundTargetCalories).toFixed(2)} Cal more` : `${(roundTargetCalories - week.totalCalories).toFixed(2)} Cal less`}
+                                            {week.totalCalories > roundTargetCalories ? `${Math.round(week.totalCalories - roundTargetCalories)} Cal more` : `${Math.round(roundTargetCalories - week.totalCalories)} Cal less`}
                                         </Text>
                                     </View>
                                 )}

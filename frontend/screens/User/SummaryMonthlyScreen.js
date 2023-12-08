@@ -46,12 +46,13 @@ const SummaryMonthlyScreen = ({route}) => {
         
             const daysInMonth = monthEndDate.getDate();
             const targetCaloriesForMonth = currentUserData.calorie * daysInMonth;
-        
+            const progress = (monthlyCalories / targetCaloriesForMonth) * 100;
+
             data.push({
                 month: monthStartDate.toLocaleString('default', { month: 'short' }), // Month name
                 consumed: monthlyCalories,
                 target: targetCaloriesForMonth,
-                progress: (monthlyCalories / targetCaloriesForMonth) * 100,
+                progress: progress,
             });
         }
     
@@ -73,6 +74,34 @@ const SummaryMonthlyScreen = ({route}) => {
             },
         ],
     };
+
+    //sort decending
+    // const sortedMonthlyData = [...monthlyData].sort((a, b) => {
+    //     return new Date(b.month + " 1, 2000") - new Date(a.month + " 1, 2000");
+    // });
+    
+    // const progressChartData = {
+    //     labels: monthlyData.map((entry) => entry.month),
+    //     datasets: [
+    //         {
+    //             data: monthlyData.map((entry) => ({
+    //                 month: entry.month,
+    //                 consumed: entry.consumed,
+    //                 target: entry.target,
+    //                 progress: entry.progress,
+    //             })),
+    //             color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+    //             label: "Consumed",
+    //         },
+    //         {
+    //             data: monthlyData.map(() => 0), // Placeholder for the target in progress chart
+    //             color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
+    //             label: "Target",
+    //         },
+    //     ],
+    // };
+    
+    
 
     const chartConfig = {
         backgroundGradientFrom: "#fff",
@@ -100,12 +129,12 @@ const SummaryMonthlyScreen = ({route}) => {
             />
             <View style={styles.componentContainer}>
                 <View style={styles.leftComponent}>
-                    <Text style={styles.text}>(AVG)Monthly intake: </Text>
-                    <Text style={styles.subText}>hahahahhaha</Text>
+                    <Text style={styles.text}>(AVG)Latest Month: </Text>
+                    <Text style={styles.subText}></Text>
                 </View>
                 <View style={styles.rightComponent}>
                     <Text style={styles.text}>(AVG)Target Calories:</Text>
-                    <Text style={styles.subText}>{averageTargetCalories} kCal</Text>
+                    <Text style={styles.subText}>{Math.round(averageTargetCalories)} Cal</Text>
                 </View>
             </View>
             <ScrollView style={styles.chartContainer}>
@@ -125,10 +154,10 @@ const SummaryMonthlyScreen = ({route}) => {
                             {(fill) => (
                                 <View>
                                 <Text style={styles.chartTextBold}>
-                                    {(month.consumed).toFixed(2)} / {(month.target).toFixed(2)} Cal consumed
+                                    {Math.round(month.consumed)} / {Math.round(month.target)} Cal consumed
                                 </Text>
                                 <Text style={styles.chartText}>
-                                    {month.consumed > month.target ? `${(month.consumed - month.target).toFixed(2)} Cal more`  : `${(month.target - month.consumed).toFixed(2)} Cal less` }
+                                    {month.consumed > month.target ? `${Math.round(month.consumed - month.target)} Cal more`  : `${Math.round(month.target - month.consumed)} Cal less` }
                                 </Text>
                                 </View>
                             )}

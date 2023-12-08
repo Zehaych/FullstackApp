@@ -15,7 +15,7 @@ const SummaryDailyScreen = ({ route }) => {
     console.log("1.=============== userData: " + currentUserData.username + " " + " CaloriesLog: " + currentUserData.dailyCaloriesLog[currentUserData.dailyCaloriesLog.length - 1].total_calories);
     
     //current user's calorie goal and daily calorie log
-    const targetCalories = currentUserData.calorie;
+    const targetCalories = Math.round(currentUserData.calorie);
     const CaloriesLog = currentUserData.dailyCaloriesLog;
     console.log("2.-------------- userData: " + currentUserData.username + " " + " CaloriesLog: " + CaloriesLog[CaloriesLog.length - 1].total_calories);
 
@@ -33,9 +33,12 @@ const SummaryDailyScreen = ({ route }) => {
     //calories more to consume
     const caloriesMore = latestTotalCalories - targetCalories;
 
-    const roundedCaloriesLeft = caloriesLeft.toFixed(2);
+    //const roundedCaloriesLeft = caloriesLeft.toFixed(2);
+    const roundedCaloriesLeft = Math.round(caloriesLeft);
 
-    const roundedCaloriesMore = caloriesMore.toFixed(2);
+    //const roundedCaloriesMore = caloriesMore.toFixed(2);
+    const roundedCaloriesMore = Math.round(caloriesMore);
+    
     //percentage of calories consumed
     const percentage = (latestTotalCalories / targetCalories) * 100;
 

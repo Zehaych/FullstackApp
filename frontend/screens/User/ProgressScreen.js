@@ -117,7 +117,7 @@ const ProgressScreen = () => {
 
   //food and drinks data
   useEffect(() => {
-    const url = `${process.env.EXPO_PUBLIC_IP}/foodanddrinks`;
+    const url = `${process.env.EXPO_PUBLIC_IP}/foodanddrinks/getFoodAndDrinks`;
     fetch(url)
       .then((response) => {
         if (!response.ok) {
