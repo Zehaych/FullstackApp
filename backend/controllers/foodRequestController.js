@@ -70,3 +70,19 @@ exports.approveFoodRequest = asyncHandler(async (req, res) => {
     });
 });
 
+
+exports.getUserFoodRequests = asyncHandler(async (req, res) => {
+    const userId = req.params.userId; 
+
+    try {
+        const userFoodRequests = await FoodRequest.find({ submittedBy: userId })
+            .populate('submittedBy', 'username');
+
+        res.status(200).json(userFoodRequests);
+    } catch (error) {
+        res.status(500).json({ message: "Error retrieving user food requests", error: error.message });
+    }
+});
+
+
+

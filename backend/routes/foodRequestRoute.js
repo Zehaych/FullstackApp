@@ -4,6 +4,7 @@ const foodRequestController = require("../controllers/foodRequestController");
 
 //foodRequest => GET
 router.get('/getFoodRequests', foodRequestController.getFoodRequests);
+router.get('/getUserFoodRequests/:userId', foodRequestController.getUserFoodRequests);
 
 
 //foodRequest => POST

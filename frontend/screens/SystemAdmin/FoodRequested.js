@@ -126,6 +126,8 @@ const FoodRequested = () => {
         const success = await postToFoodAndDrinks(foodData);
         if (success) {
         await approveFoodRequest(currentRequest._id);
+        setModalVisible(false);
+        fetchFoodRequests();
         } else {
         setModalVisible(false);
         fetchFoodRequests(); // Refresh the list
@@ -277,11 +279,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
       },
     buttonContainer: {
-        margin: 10,
-        overflow: "hidden",
-        justifyContent: "center",
-        alignItems: "center",
-      },
+        marginVertical: 8,
+        borderRadius: 5,
+    },
     button: {
         backgroundColor: "#007bff", // Blue color for the primary button
         padding: 10,

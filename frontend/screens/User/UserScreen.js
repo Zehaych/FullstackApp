@@ -39,6 +39,10 @@ const UserScreen = () => {
     ]);
   };
 
+  const handleNavigateToViewRequest = () => {
+    navigation.navigate("ViewRequest")
+  };
+
   const handleSubmitFoodRequest = () => {
     navigation.navigate("SubmitFoodRequest");
   };
@@ -159,8 +163,15 @@ const UserScreen = () => {
 
           <TouchableRipple onPress={handleSubmitFoodRequest}>
             <View style={styles.menuItem}>
-              <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
+              <Icon name="silverware-variant" color="#FF6347" size={25} />
               <Text style={styles.menuItemText}>Add Food & Drinks Request</Text>
+            </View>
+          </TouchableRipple>
+
+          <TouchableRipple onPress={handleNavigateToViewRequest}>
+            <View style={styles.menuItem}>
+              <Icon name="silverware-variant" color="#FF6347" size={25} />
+              <Text style={styles.menuItemText}>View Request Status</Text>
             </View>
           </TouchableRipple>
 

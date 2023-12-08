@@ -20,6 +20,7 @@ import {
   Touchable,
 } from "react-native";
 import { Context } from "../../store/context";
+import FoodAndDrinksInfo from "./FoodAndDrinksInfo";
 
 const AdminScreen = () => {
   const navigation = useNavigation();
@@ -66,6 +67,9 @@ const AdminScreen = () => {
     navigation.navigate("ReportedBizRecipe");
   };
 
+  const handleNavigateFoodAndDrinks = () => {
+    navigation.navigate("FoodAndDrinksInfo");
+  };
 
   return (
     <View style={styles.container}>
@@ -150,6 +154,20 @@ const AdminScreen = () => {
           />
           <Text style={styles.menuItemText}>
             Food Requested
+          </Text>
+        </View>
+      </TouchableRipple>
+
+      <TouchableRipple onPress={handleNavigateFoodAndDrinks}>
+        <View style={styles.menuItem}>
+          <Icon
+            name="food"
+            size={25}
+            color="#FF6347"
+            style={styles.icon}
+          />
+          <Text style={styles.menuItemText}>
+            Food And Drinks Database
           </Text>
         </View>
       </TouchableRipple>
