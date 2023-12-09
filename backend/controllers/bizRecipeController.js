@@ -175,10 +175,12 @@ exports.submitOrder = asyncHandler(async (req, res) => {
     timeToDeliver: timeToDeliver,
     dateToDeliver: dateToDeliver,
     deliveryAddress: deliveryAddress,
+    estimatedArrivalTime: req.body.estimatedArrivalTime,
+    status: req.body.status,
   };
 
   // Add order to the recipe
-  bizRecipe.orderedBy.push(order);
+  bizRecipe.orderInfo.push(order);
 
   // Save the updated recipe
   await bizRecipe.save();
@@ -188,29 +190,70 @@ exports.submitOrder = asyncHandler(async (req, res) => {
     .json({ message: "Order submitted successfully", order: order });
 });
 
-// Assuming this is added in your existing backend controller file
-
-//@desc GET all orders sorted by date (newest first)
-//@route GET /bizRecipe/getOrders
-//@access public (or private if authentication is needed)
-//@desc GET all orders with recipe names
-//@route GET /bizRecipe/orders
-//@access public
 exports.getOrders = asyncHandler(async (req, res) => {
-  const recipes = await BizRecipe.find()
-    // .sort({ "orderedBy.dateToDeliver": -1 })
-    .populate("orderedBy.name", "username"); // Populate the user details
+  try {
+    // Fetch all BizRecipe documents and populate user details in the orderInfo
+    const recipes = await BizRecipe.find().populate(
+      "orderInfo.name",
+      "username"
+    );
 
-  const ordersWithRecipeName = recipes
-    .map((recipe) => {
-      return recipe.orderedBy.map((order) => {
-        return {
-          ...order._doc, // Spread all properties of the order
-          recipeName: recipe.name, // Add the recipe name to each order
-        };
-      });
-    })
-    .flat();
+    // Extract orderInfo from each BizRecipe and add the recipe name
+    const ordersWithRecipeName = recipes.reduce((acc, recipe) => {
+      // Check if orderInfo exists and is an array
+      if (Array.isArray(recipe.orderInfo)) {
+        const orders = recipe.orderInfo.map((order) => {
+          return {
+            ...order.toObject(), // Convert mongoose document to plain object
+            recipeName: recipe.name, // Add the recipe name to each order
+            userName: order.name ? order.name.username : undefined, // Add username from populated field
+          };
+        });
+        return acc.concat(orders); // Accumulate all orders
+      }
+      return acc;
+    }, []);
 
-  res.json(ordersWithRecipeName);
+    res.json(ordersWithRecipeName);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+exports.updateOrder = asyncHandler(async (req, res) => {
+  const { orderId, estimatedArrivalTime, status } = req.body;
+
+  // Find the recipe containing the order
+  const bizRecipe = await BizRecipe.findOne({ "orderInfo._id": orderId });
+
+  if (!bizRecipe) {
+    res.status(404);
+    throw new Error("Order not found");
+  }
+
+  // Find and update the specific order in 'orderInfo'
+  const orderIndex = bizRecipe.orderInfo.findIndex(
+    (order) => order._id.toString() === orderId
+  );
+
+  if (orderIndex === -1) {
+    res.status(404);
+    throw new Error("Order not found in orderInfo");
+  }
+
+  // Update the specific fields in the order
+  if (status === "Rejected") {
+    // Remove the order if it is rejected
+    bizRecipe.orderInfo.splice(orderIndex, 1);
+  } else {
+    // Otherwise, update the necessary fields
+    bizRecipe.orderInfo[orderIndex].estimatedArrivalTime = estimatedArrivalTime;
+    bizRecipe.orderInfo[orderIndex].status = status;
+  }
+
+  // Save the updated recipe
+  await bizRecipe.save();
+
+  res.status(200).json({ message: "Order updated successfully" });
 });

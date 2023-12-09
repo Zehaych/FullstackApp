@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, Button } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 
 const ViewOrdersScreen = () => {
   const [orders, setOrders] = useState([]);
+
   const [selectedStatus, setSelectedStatus] = useState({});
   const [selectedDate, setSelectedDate] = useState({});
-
   const [showPicker, setShowPicker] = useState({});
 
   useEffect(() => {
@@ -18,15 +25,8 @@ const ViewOrdersScreen = () => {
         );
         const data = await response.json();
         setOrders(data);
-
-        // Set default status for each order
-        const defaultStatuses = {};
-        data.forEach((item) => {
-          defaultStatuses[item._id] = "Pending";
-        });
-        setSelectedStatus(defaultStatuses);
       } catch (error) {
-        console.error("Error fetching data: ", error);
+        console.error("Error fetching orders: ", error);
       }
     };
 
@@ -48,36 +48,102 @@ const ViewOrdersScreen = () => {
     // Hide the picker regardless of the user's action
     setShowPicker({ ...showPicker, [item._id]: false });
   };
+  const formatTime = (date) => {
+    let hours = String(date.getHours()).padStart(2, "0");
+    let minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
 
-  const submitOrderChanges = (item) => {
-    // Logic to submit the changes
-    console.log(
-      "Submitting order:",
-      item._id,
-      selectedStatus[item._id],
-      selectedDate[item._id]
-    );
-    // Here you would typically make a PUT/POST request to your backend
+  const updateOrder = async (item) => {
+    if (
+      !selectedStatus[item._id] ||
+      selectedStatus[item._id] === "Select status:"
+    ) {
+      alert("Please select a valid status.");
+      return;
+    }
+    if (!selectedDate[item._id]) {
+      alert("Please select an estimated arrival time");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/bizRecipe/updateOrder`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            orderId: item._id, // ID of the order to update
+            estimatedArrivalTime: formatTime(selectedDate[item._id]), // Format the date into a time string
+            status: selectedStatus[item._id], // Status selected from the picker
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error updating order");
+      }
+
+      const data = await response.json();
+      console.log("Order update response:", data);
+      // Update the local state to reflect changes immediately
+      if (selectedStatus[item._id] === "Rejected") {
+        // Remove the order from the local state if it is rejected
+        const updatedOrders = orders.filter((order) => order._id !== item._id);
+        setOrders(updatedOrders);
+
+        alert("Order has been deleted.");
+      } else {
+        // Update the local state to reflect changes immediately
+        const updatedOrders = orders.map((order) => {
+          if (order._id === item._id) {
+            return {
+              ...order,
+              status: selectedStatus[item._id],
+              estimatedArrivalTime: formatTime(selectedDate[item._id]),
+            };
+          }
+          return order;
+        });
+
+        setOrders(updatedOrders);
+
+        alert("Order changes updated.");
+      }
+    } catch (error) {
+      console.error("Error updating order:", error);
+      alert("Error updating order. Please try again.");
+    }
   };
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
-      <Text style={styles.titleText}>{item.recipeName}</Text>
-      {/* Add recipe name as title */}
-      <Text style={styles.itemText}>Name: {item.name.username}</Text>
-      <Text style={styles.itemText}>Total Price: ${item.totalPrice}</Text>
-      <Text style={styles.itemText}>Quantity: {item.quantity}</Text>
-      <Text style={styles.itemText}>Preferences: {item.preferences}</Text>
-      <Text style={styles.itemText}>Date to Deliver: {item.dateToDeliver}</Text>
-      <Text style={styles.itemText}>Time to Deliver: {item.timeToDeliver}</Text>
-      <Text style={styles.itemText}>
+      <Text style={styles.title}>{item.recipeName}</Text>
+      <Text style={styles.subtitle}>
+        Name: {item.userName ? item.userName : "N/A"}
+      </Text>
+      <Text style={styles.subtitle}>Total Price: ${item.totalPrice}</Text>
+      <Text style={styles.subtitle}>Quantity: {item.quantity}</Text>
+      <Text style={styles.subtitle}>Preferences: {item.preferences}</Text>
+      <Text style={styles.subtitle}>Date to Deliver: {item.dateToDeliver}</Text>
+      <Text style={styles.subtitle}>Time to Deliver: {item.timeToDeliver}</Text>
+      <Text style={styles.subtitle}>
         Delivery Address: {item.deliveryAddress}
       </Text>
+      <Text style={styles.subtitle}>Status: {item.status}</Text>
+      <Text style={styles.subtitle}>
+        Estimated Arrival Time: {item.estimatedArrivalTime}
+      </Text>
+
       <Picker
-        selectedValue={selectedStatus[item._id]}
-        style={{ height: 50, width: 200 }}
+        selectedValue={selectedStatus[item._id] || ""}
+        style={{ height: 50, width: "100%" }}
         onValueChange={(itemValue) => onStatusChange(item, itemValue)}
       >
+        <Picker.Item label="Select status:" value="" />
         <Picker.Item label="Rejected" value="Rejected" />
         <Picker.Item label="Pending" value="Pending" />
         <Picker.Item label="Preparing" value="Preparing" />
@@ -96,19 +162,25 @@ const ViewOrdersScreen = () => {
         />
       )}
 
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Estimated Arrival Time"
-          onPress={() => showTimepicker(item)}
-          color="#28a745"
-        />
-        <View style={styles.separator} />
-        <Button
-          title="Submit"
-          onPress={() => submitOrderChanges(item)}
-          color="#007bff"
-        />
-      </View>
+      <Button
+        title="Select Arrival Time"
+        onPress={() => showTimepicker(item)}
+        color="#28a745"
+      />
+
+      <Text style={styles.timeText}>
+        {selectedDate[item._id]
+          ? `Time selected: ${formatTime(selectedDate[item._id])}`
+          : "Time not selected"}
+      </Text>
+
+      <View style={styles.separator} />
+
+      <Button
+        title="Submit"
+        onPress={() => updateOrder(item)}
+        color="#007bff"
+      />
     </View>
   );
 
@@ -116,35 +188,61 @@ const ViewOrdersScreen = () => {
     <FlatList
       data={orders}
       renderItem={renderItem}
-      keyExtractor={(item) => item._id}
+      keyExtractor={(item) => item._id.toString()}
     />
   );
 };
 
+export default ViewOrdersScreen;
+
 const styles = StyleSheet.create({
   itemContainer: {
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "white",
     padding: 20,
     marginVertical: 8,
-    marginHorizontal: 16,
-    borderRadius: 5,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
-  titleText: {
-    fontSize: 18,
+  title: {
+    fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
   },
-  itemText: {
+  subtitle: {
+    // fontWeight: "bold",
     fontSize: 16,
     marginBottom: 5,
   },
   buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 10,
+  },
+  button: {
+    backgroundColor: "#007bff",
+    borderRadius: 5,
+    padding: 10,
+  },
+  buttonText: {
+    color: "white",
+    textAlign: "center",
+  },
+  timeText: {
+    marginTop: 5,
+    fontSize: 16,
+    color: "#555",
+    textAlign: "center",
   },
   separator: {
     height: 10,
   },
 });
-
-export default ViewOrdersScreen;

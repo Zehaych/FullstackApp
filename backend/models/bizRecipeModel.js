@@ -55,7 +55,7 @@ const bizRecipeSchema = mongoose.Schema(
       default: false,
     },
     reportedBy: [reportSchema],
-    orderedBy: [
+    orderInfo: [
       {
         name: {
           type: mongoose.Types.ObjectId,
@@ -86,70 +86,15 @@ const bizRecipeSchema = mongoose.Schema(
           type: String,
           required: true,
         },
-      },
-    ],
-    deliveredBy: [
-      {
-        deliveredTo: {
-          type: mongoose.Types.ObjectId,
-          ref: "User",
-          required: true,
-        },
         estimatedArrivalTime: {
           type: String,
           required: true,
+          default: "-",
         },
         status: {
           type: String,
-          enum: [
-            "Rejected",
-            "Pending",
-            "Preparing",
-            "On the way",
-            "Arriving",
-            "Done",
-          ],
-          default: "Pending", // Set default status value to 'Pending'
+          default: "Pending",
         },
-      },
-    ],
-    orderHistory: [
-      {
-        quantity: {
-          type: Number,
-          required: true,
-        },
-        totalPrice: {
-          type: Number,
-          required: true,
-        },
-        timeToDeliver: {
-          type: String,
-          required: true,
-        },
-        dateToDeliver: {
-          type: String,
-          required: true,
-        },
-        dailyPriceLog: [
-          {
-            date: {
-              type: Date,
-              default: Date.now,
-            },
-            total_price: {
-              type: Number,
-              default: 0,
-            },
-          },
-        ],
-        deliveredTo: [
-          {
-            type: mongoose.Types.ObjectId,
-            ref: "User",
-            required: true,
-          },
-        ],
       },
     ],
   },
@@ -160,3 +105,42 @@ const bizRecipeSchema = mongoose.Schema(
 );
 
 module.exports = mongoose.model("BizRecipe", bizRecipeSchema);
+// orderHistory: [
+//   {
+//     quantity: {
+//       type: Number,
+//       required: true,
+//     },
+//     totalPrice: {
+//       type: Number,
+//       required: true,
+//     },
+//     timeToDeliver: {
+//       type: String,
+//       required: true,
+//     },
+//     dateToDeliver: {
+//       type: String,
+//       required: true,
+//     },
+//     dailyPriceLog: [
+//       {
+//         date: {
+//           type: Date,
+//           default: Date.now,
+//         },
+//         total_price: {
+//           type: Number,
+//           default: 0,
+//         },
+//       },
+//     ],
+//     deliveredTo: [
+//       {
+//         type: mongoose.Types.ObjectId,
+//         ref: "User",
+//         required: true,
+//       },
+//     ],
+//   },
+// ],

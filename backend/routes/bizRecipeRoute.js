@@ -27,4 +27,6 @@ router.post("/submitOrder/:bizRecipeId", bizRecipeController.submitOrder);
 
 router.get("/getOrders", bizRecipeController.getOrders);
 
+router.post("/updateOrder", bizRecipeController.updateOrder);
+
 module.exports = router;

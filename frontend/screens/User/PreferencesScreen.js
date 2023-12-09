@@ -77,6 +77,8 @@ export default function PreferencesScreen({ route, navigation }) {
         dateToDeliver: formatDate(date),
         deliveryAddress: address,
         totalPrice: getTotalPayment(), // This should include the service fee
+        estimatedArrivalTime: "-",
+        status: "Pending",
       };
 
       try {
