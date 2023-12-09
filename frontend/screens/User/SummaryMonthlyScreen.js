@@ -78,30 +78,34 @@ const SummaryMonthlyScreen = ({route}) => {
     //sort decending
     // const sortedMonthlyData = [...monthlyData].sort((a, b) => {
     //     return new Date(b.month + " 1, 2000") - new Date(a.month + " 1, 2000");
-    // });
+    // });  
+
+    const monthNumbers = {
+        Jan: 1,
+        Feb: 2,
+        Mar: 3,
+        Apr: 4,
+        May: 5,
+        Jun: 6,
+        Jul: 7,
+        Aug: 8,
+        Sep: 9,
+        Oct: 10,
+        Nov: 11,
+        Dec: 12
+    };
+
+    const monthlyDataSorted = [...monthlyData];
     
-    // const progressChartData = {
-    //     labels: monthlyData.map((entry) => entry.month),
-    //     datasets: [
-    //         {
-    //             data: monthlyData.map((entry) => ({
-    //                 month: entry.month,
-    //                 consumed: entry.consumed,
-    //                 target: entry.target,
-    //                 progress: entry.progress,
-    //             })),
-    //             color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
-    //             label: "Consumed",
-    //         },
-    //         {
-    //             data: monthlyData.map(() => 0), // Placeholder for the target in progress chart
-    //             color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
-    //             label: "Target",
-    //         },
-    //     ],
-    // };
-    
-    
+    monthlyDataSorted.sort((a, b) => {
+        if (monthNumbers[a.month] > monthNumbers[b.month]) {
+            return -1;
+        }
+        if (monthNumbers[a.month] < monthNumbers[b.month]) {
+            return 1;
+        }
+        return 0;
+    });
 
     const chartConfig = {
         backgroundGradientFrom: "#fff",
@@ -138,7 +142,7 @@ const SummaryMonthlyScreen = ({route}) => {
                 </View>
             </View>
             <ScrollView style={styles.chartContainer}>
-                {monthlyData.map((month) => (
+                {monthlyDataSorted.map((month) => (
                     <View key={month.month}>
                         <Text style={styles.chartTextBold}>
                             Monthly Intake - {month.month}
