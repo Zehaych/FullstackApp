@@ -112,7 +112,7 @@ const SummaryWeeklyScreen = ({ route }) => {
     const weeklyTargetCalories = targetCalories * 7; 
     const roundTargetCalories = Math.round(weeklyTargetCalories);
 
-    // Determine if calories exceeded the target
+    const weeklyDataSorted = [...weeklyData].sort((a, b) => b.week - a.week);
 
     return (
         <View style={styles.container}>
@@ -129,7 +129,7 @@ const SummaryWeeklyScreen = ({ route }) => {
             />
             <Text style={styles.text}>Weekly's total Calories intake: </Text>
             <ScrollView style={styles.chartContainer}>
-                {weeklyData.map((week) => (
+                {weeklyDataSorted.map((week) => (
                     <View key={week.week}>
                         <Text style={styles.chartTextBold}>Weekly Intake - Week {week.week}</Text>
                         <View style={styles.chartContainerToo}>
