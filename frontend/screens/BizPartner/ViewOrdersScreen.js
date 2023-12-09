@@ -18,6 +18,13 @@ const ViewOrdersScreen = () => {
         );
         const data = await response.json();
         setOrders(data);
+
+        // Set default status for each order
+        const defaultStatuses = {};
+        data.forEach((item) => {
+          defaultStatuses[item._id] = "Pending";
+        });
+        setSelectedStatus(defaultStatuses);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -26,7 +33,7 @@ const ViewOrdersScreen = () => {
     fetchOrders();
   }, []);
 
-  const onStatusChange = (value, item) => {
+  const onStatusChange = (item, value) => {
     setSelectedStatus({ ...selectedStatus, [item._id]: value });
   };
 
@@ -35,14 +42,11 @@ const ViewOrdersScreen = () => {
   };
 
   const onDateChange = (event, selectedDateValue, item) => {
-    setShowPicker((currentShowPicker) => {
-      const newShowPicker = { ...currentShowPicker, [item._id]: false };
-      if (event.type === "set") {
-        const currentDate = selectedDateValue || selectedDate[item._id];
-        setSelectedDate({ ...selectedDate, [item._id]: currentDate });
-      }
-      return newShowPicker;
-    });
+    const currentDate = selectedDateValue || selectedDate[item._id];
+    setSelectedDate({ ...selectedDate, [item._id]: currentDate });
+
+    // Hide the picker regardless of the user's action
+    setShowPicker({ ...showPicker, [item._id]: false });
   };
 
   const submitOrderChanges = (item) => {
@@ -71,7 +75,7 @@ const ViewOrdersScreen = () => {
       </Text>
       <Picker
         selectedValue={selectedStatus[item._id]}
-        style={{ height: 50, width: 150 }}
+        style={{ height: 50, width: 200 }}
         onValueChange={(itemValue) => onStatusChange(item, itemValue)}
       >
         <Picker.Item label="Rejected" value="Rejected" />
@@ -81,6 +85,7 @@ const ViewOrdersScreen = () => {
         <Picker.Item label="Arriving" value="Arriving" />
         <Picker.Item label="Done" value="Done" />
       </Picker>
+
       {showPicker[item._id] && (
         <DateTimePicker
           value={selectedDate[item._id] || new Date()}
@@ -91,11 +96,19 @@ const ViewOrdersScreen = () => {
         />
       )}
 
-      <Button
-        title="Estimated Arrival Time"
-        onPress={() => showTimepicker(item)}
-      />
-      <Button title="Submit" onPress={() => submitOrderChanges(item)} />
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Estimated Arrival Time"
+          onPress={() => showTimepicker(item)}
+          color="#28a745"
+        />
+        <View style={styles.separator} />
+        <Button
+          title="Submit"
+          onPress={() => submitOrderChanges(item)}
+          color="#007bff"
+        />
+      </View>
     </View>
   );
 
@@ -125,6 +138,12 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 16,
     marginBottom: 5,
+  },
+  buttonContainer: {
+    marginTop: 10,
+  },
+  separator: {
+    height: 10,
   },
 });
 
