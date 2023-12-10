@@ -29,4 +29,6 @@ router.get("/getOrders", bizRecipeController.getOrders);
 
 router.post("/updateOrder", bizRecipeController.updateOrder);
 
+router.get("/getOrderHistory", bizRecipeController.getOrderHistory);
+
 module.exports = router;

@@ -58,6 +58,10 @@ const BizPartnerScreen = () => {
     navigation.push("View Orders");
   };
 
+  const onCompletedtOrdersPressed = () => {
+    navigation.push("Completed Orders");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.userInfoSection}>
@@ -107,6 +111,13 @@ const BizPartnerScreen = () => {
           <View style={styles.menuItem}>
             <Icon name="clipboard-list-outline" color="#FF6347" size={25} />
             <Text style={styles.menuItemText}>View Customer Orders</Text>
+          </View>
+        </TouchableRipple>
+
+        <TouchableRipple onPress={onCompletedtOrdersPressed}>
+          <View style={styles.menuItem}>
+            <Icon name="clipboard-list-outline" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>View Completed Orders</Text>
           </View>
         </TouchableRipple>
 

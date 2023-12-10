@@ -40,7 +40,7 @@ const UserScreen = () => {
   };
 
   const handleNavigateToViewRequest = () => {
-    navigation.navigate("ViewRequest")
+    navigation.navigate("ViewRequest");
   };
 
   const handleSubmitFoodRequest = () => {
@@ -67,8 +67,8 @@ const UserScreen = () => {
     navigation.push("Track Progress");
   };
 
-  const onAddBizRecipePressed = () => {
-    navigation.push("Add Business Recipe");
+  const onPastOrderspressed = () => {
+    navigation.push("Past Orders");
   };
 
   const onCalculateCaloriePressed = () => {
@@ -172,6 +172,13 @@ const UserScreen = () => {
             <View style={styles.menuItem}>
               <Icon name="silverware-variant" color="#FF6347" size={25} />
               <Text style={styles.menuItemText}>View Request Status</Text>
+            </View>
+          </TouchableRipple>
+
+          <TouchableRipple onPress={onPastOrderspressed}>
+            <View style={styles.menuItem}>
+              <Icon name="clipboard-list-outline" color="#FF6347" size={25} />
+              <Text style={styles.menuItemText}>View Past Orders</Text>
             </View>
           </TouchableRipple>
 

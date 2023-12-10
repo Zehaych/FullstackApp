@@ -18,7 +18,6 @@ import ProgressScreen from "./screens/User/ProgressScreen";
 import AddBizRecipeScreen from "./screens/BizPartner/AddBizRecipeScreen";
 import BusinessRecipeScreen from "./screens/General/BusinessRecipeScreen";
 import BusinessRecipeInfoScreen from "./screens/General/BusinessRecipeInfoScreen";
-import PaymentScreen from "./screens/User/PaymentScreen";
 import ChangeEmailScreen from "./screens/User/ChangeEmailScreen";
 import ChangeUsernameScreen from "./screens/User/ChangeUsernameScreen";
 import ChangePasswordScreen from "./screens/User/ChangePasswordScreen";
@@ -31,7 +30,7 @@ import RetrieveBizPartners from "./screens/SystemAdmin/RetrieveBizPartners";
 import TabDWMScreen from "./screens/User/TabDWMScreen";
 import BizPartnerInfo from "./screens/SystemAdmin/BizPartnerInfo";
 import UserInfo from "./screens/SystemAdmin/UserInfo";
-import PreferencesScreen from "./screens/User/PreferencesScreen";
+import PaymentScreen from "./screens/User/PaymentScreen";
 import ViewRecipeInfoScreen from "./screens/User/ViewRecipeInfoScreen";
 import EditRecipeScreen from "./screens/User/EditRecipeScreen";
 import ViewBizRecipeScreen from "./screens/BizPartner/ViewBizRecipeScreen";
@@ -46,6 +45,8 @@ import FoodRequested from "./screens/SystemAdmin/FoodRequested";
 import FoodAndDrinksInfo from "./screens/SystemAdmin/FoodAndDrinksInfo";
 import ViewRequest from "./screens/User/ViewRequest";
 import ViewOrdersScreen from "./screens/BizPartner/ViewOrdersScreen";
+import CompletedOrdersScreen from "./screens/BizPartner/CompletedOrdersScreen";
+import ViewPastOrdersScreen from "./screens/User/ViewPastOrdersScreen";
 
 const Stack = createStackNavigator();
 
@@ -185,6 +186,10 @@ function App() {
 
           <Stack.Screen name="View Orders" component={ViewOrdersScreen} />
           <Stack.Screen
+            name="Completed Orders"
+            component={CompletedOrdersScreen}
+          />
+          <Stack.Screen
             name="Edit Business Recipe"
             component={EditBizRecipeScreen}
           />
@@ -217,16 +222,19 @@ function App() {
             component={BusinessRecipeInfoScreen}
             options={{ headerTransparent: true, headerTitle: "" }}
           />
+
           <Stack.Screen
             name="TabDWMScreen"
             component={TabDWMScreen}
             options={{ headerTitle: "" }}
           />
-          <Stack.Screen
-            name="Preferences"
-            component={PreferencesScreen}
+
+          <Stack.Screen name="Past Orders" component={ViewPastOrdersScreen} />
+          {/* <Stack.Screen
+            name="Payment"
+            component={PaymentScreen}
             options={{ headerTransparent: true, headerTitle: "" }}
-          />
+          /> */}
 
           <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="User Profile" component={UserScreen} />
