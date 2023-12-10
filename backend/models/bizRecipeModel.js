@@ -97,6 +97,60 @@ const bizRecipeSchema = mongoose.Schema(
         },
       },
     ],
+    orderHistory: [
+      {
+        name: {
+          type: mongoose.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+        totalPrice: {
+          type: Number,
+          required: true,
+        },
+        preferences: {
+          type: String,
+          default: "",
+        },
+        timeToDeliver: {
+          type: String,
+          required: true,
+        },
+        dateToDeliver: {
+          type: String,
+          required: true,
+        },
+        deliveryAddress: {
+          type: String,
+          required: true,
+        },
+        estimatedArrivalTime: {
+          type: String,
+          required: true,
+          default: "-",
+        },
+        status: {
+          type: String,
+          default: "Pending",
+        },
+        dailyPriceLog: [
+          {
+            date: {
+              type: Date,
+              default: Date.now,
+            },
+            total_price: {
+              type: Number,
+              default: 0,
+            },
+          },
+        ],
+      },
+    ],
   },
 
   {
@@ -105,42 +159,3 @@ const bizRecipeSchema = mongoose.Schema(
 );
 
 module.exports = mongoose.model("BizRecipe", bizRecipeSchema);
-// orderHistory: [
-//   {
-//     quantity: {
-//       type: Number,
-//       required: true,
-//     },
-//     totalPrice: {
-//       type: Number,
-//       required: true,
-//     },
-//     timeToDeliver: {
-//       type: String,
-//       required: true,
-//     },
-//     dateToDeliver: {
-//       type: String,
-//       required: true,
-//     },
-//     dailyPriceLog: [
-//       {
-//         date: {
-//           type: Date,
-//           default: Date.now,
-//         },
-//         total_price: {
-//           type: Number,
-//           default: 0,
-//         },
-//       },
-//     ],
-//     deliveredTo: [
-//       {
-//         type: mongoose.Types.ObjectId,
-//         ref: "User",
-//         required: true,
-//       },
-//     ],
-//   },
-// ],

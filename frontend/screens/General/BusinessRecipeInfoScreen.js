@@ -54,11 +54,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
   };
 
   const navigateToPayment = () => {
-    navigation.navigate("Payment");
-  };
-
-  const navigateToPreferences = () => {
-    navigation.navigate("Preferences", {
+    navigation.navigate("Payment", {
       recipeData: recipeData,
     });
   };
@@ -224,7 +220,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
         <StatusBar style="auto" />
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={navigateToPreferences}>
+      <TouchableOpacity style={styles.button} onPress={navigateToPayment}>
         <Text style={styles.buttonText}>Prepare this meal for me</Text>
       </TouchableOpacity>
 

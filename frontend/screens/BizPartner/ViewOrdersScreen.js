@@ -55,6 +55,10 @@ const ViewOrdersScreen = () => {
   };
 
   const updateOrder = async (item) => {
+    // Check if the status is 'Rejected' and bypass the time selection
+    if (selectedStatus[item._id] === "Rejected") {
+      return handleOrderDeletion(item);
+    }
     if (
       !selectedStatus[item._id] ||
       selectedStatus[item._id] === "Select status:"
@@ -90,8 +94,11 @@ const ViewOrdersScreen = () => {
       const data = await response.json();
       console.log("Order update response:", data);
       // Update the local state to reflect changes immediately
-      if (selectedStatus[item._id] === "Rejected") {
-        // Remove the order from the local state if it is rejected
+      if (
+        selectedStatus[item._id] === "Rejected" ||
+        selectedStatus[item._id] === "Done"
+      ) {
+        // Remove the order from the local state if it is rejected or done
         const updatedOrders = orders.filter((order) => order._id !== item._id);
         setOrders(updatedOrders);
 
@@ -119,10 +126,85 @@ const ViewOrdersScreen = () => {
     }
   };
 
+  const handleOrderDeletion = async (item) => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/bizRecipe/updateOrder`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            orderId: item._id, // ID of the order to delete
+            status: "Rejected", // Status set to Rejected
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error updating order");
+      }
+
+      const data = await response.json();
+      console.log("Order update response:", data);
+
+      // Update the local state to reflect the deletion immediately
+      setOrders((prevOrders) =>
+        prevOrders.filter((order) => order._id !== item._id)
+      );
+
+      alert("Order has been deleted.");
+    } catch (error) {
+      console.error("Error updating order:", error);
+      alert("Error updating order. Please try again.");
+    }
+  };
+
+  const renderEmptyComponent = () => {
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>There are no orders at the moment.</Text>
+      </View>
+    );
+  };
+
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <Text style={styles.title}>{item.recipeName}</Text>
       <Text style={styles.subtitle}>
+        <Text style={styles.boldLabel}>Name:</Text>{" "}
+        {item.userName ? item.userName : "N/A"}
+      </Text>
+      <Text style={styles.subtitle}>
+        <Text style={styles.boldLabel}>Total Price:</Text> ${item.totalPrice}
+      </Text>
+      <Text style={styles.subtitle}>
+        <Text style={styles.boldLabel}>Quantity:</Text> {item.quantity}
+      </Text>
+      <Text style={styles.subtitle}>
+        <Text style={styles.boldLabel}>Preferences:</Text> {item.preferences}
+      </Text>
+      <Text style={styles.subtitle}>
+        <Text style={styles.boldLabel}>Date to Deliver:</Text>{" "}
+        {item.dateToDeliver}
+      </Text>
+      <Text style={styles.subtitle}>
+        <Text style={styles.boldLabel}>Time to Deliver:</Text>{" "}
+        {item.timeToDeliver}
+      </Text>
+      <Text style={styles.subtitle}>
+        <Text style={styles.boldLabel}>Delivery Address:</Text>{" "}
+        {item.deliveryAddress}
+      </Text>
+      <Text style={styles.subtitle}>
+        <Text style={styles.boldLabel}>Status:</Text> {item.status}
+      </Text>
+      <Text style={styles.subtitle}>
+        <Text style={styles.boldLabel}>Estimated Arrival Time:</Text>{" "}
+        {item.estimatedArrivalTime}
+      </Text>
+      {/* <Text style={styles.subtitle}>
         Name: {item.userName ? item.userName : "N/A"}
       </Text>
       <Text style={styles.subtitle}>Total Price: ${item.totalPrice}</Text>
@@ -136,7 +218,7 @@ const ViewOrdersScreen = () => {
       <Text style={styles.subtitle}>Status: {item.status}</Text>
       <Text style={styles.subtitle}>
         Estimated Arrival Time: {item.estimatedArrivalTime}
-      </Text>
+      </Text> */}
 
       <Picker
         selectedValue={selectedStatus[item._id] || ""}
@@ -189,6 +271,7 @@ const ViewOrdersScreen = () => {
       data={orders}
       renderItem={renderItem}
       keyExtractor={(item) => item._id.toString()}
+      ListEmptyComponent={renderEmptyComponent}
     />
   );
 };
@@ -244,5 +327,16 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 10,
+  },
+  emptyContainer: {
+    marginTop: 50,
+    alignItems: "center",
+  },
+  emptyText: {
+    fontSize: 18,
+    color: "#555",
+  },
+  boldLabel: {
+    fontWeight: "bold",
   },
 });

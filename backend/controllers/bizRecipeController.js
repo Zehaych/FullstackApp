@@ -21,10 +21,15 @@ exports.getBizRecipe = asyncHandler(async (req, res) => {
 //@access public
 exports.getBizRecipeId = asyncHandler(async (req, res) => {
   const bizRecipeId = req.params.bizRecipeId;
-  const bizRecipe = await BizRecipe.findById(bizRecipeId).populate(
-    "submitted_by",
-    "username"
-  );
+  const bizRecipe = await BizRecipe.findById(bizRecipeId)
+    .populate("submitted_by", "username")
+    .populate("orderInfo.name", "username"); // Populate orderInfo array
+
+  if (!bizRecipe) {
+    res.status(404);
+    throw new Error("Recipe not found");
+  }
+
   res.status(200).json(bizRecipe);
 });
 
@@ -228,32 +233,67 @@ exports.updateOrder = asyncHandler(async (req, res) => {
   const bizRecipe = await BizRecipe.findOne({ "orderInfo._id": orderId });
 
   if (!bizRecipe) {
-    res.status(404);
-    throw new Error("Order not found");
+    res.status(404).send("Order not found");
+    return;
   }
 
-  // Find and update the specific order in 'orderInfo'
   const orderIndex = bizRecipe.orderInfo.findIndex(
     (order) => order._id.toString() === orderId
   );
 
   if (orderIndex === -1) {
-    res.status(404);
-    throw new Error("Order not found in orderInfo");
+    res.status(404).send("Order not found in orderInfo");
+    return;
   }
 
-  // Update the specific fields in the order
-  if (status === "Rejected") {
-    // Remove the order if it is rejected
+  if (status === "Done") {
+    // Move to orderHistory and remove from orderInfo
+    const completedOrder = bizRecipe.orderInfo[orderIndex];
+    completedOrder.estimatedArrivalTime = estimatedArrivalTime;
+    completedOrder.status = status;
+
+    bizRecipe.orderHistory.push(completedOrder);
+    bizRecipe.orderInfo.splice(orderIndex, 1);
+  } else if (status === "Rejected") {
+    // Remove the order if rejected
     bizRecipe.orderInfo.splice(orderIndex, 1);
   } else {
-    // Otherwise, update the necessary fields
+    // Update orderInfo for other statuses
     bizRecipe.orderInfo[orderIndex].estimatedArrivalTime = estimatedArrivalTime;
     bizRecipe.orderInfo[orderIndex].status = status;
   }
 
-  // Save the updated recipe
   await bizRecipe.save();
-
   res.status(200).json({ message: "Order updated successfully" });
+});
+
+exports.getOrderHistory = asyncHandler(async (req, res) => {
+  try {
+    // Fetch all BizRecipe documents and populate user details in the orderHistory
+    const recipes = await BizRecipe.find().populate(
+      "orderHistory.name",
+      "username"
+    );
+
+    // Extract orderHistory from each BizRecipe and add the recipe name
+    const orderHistoriesWithRecipeName = recipes.reduce((acc, recipe) => {
+      // Check if orderHistory exists and is an array
+      if (Array.isArray(recipe.orderHistory)) {
+        const histories = recipe.orderHistory.map((history) => {
+          return {
+            ...history.toObject(), // Convert mongoose document to plain object
+            recipeName: recipe.name, // Add the recipe name to each history item
+            userName: history.name ? history.name.username : undefined, // Add username from populated field
+          };
+        });
+        return acc.concat(histories); // Accumulate all history items
+      }
+      return acc;
+    }, []);
+
+    res.json(orderHistoriesWithRecipeName);
+  } catch (error) {
+    console.error("Error fetching order history:", error);
+    res.status(500).send("Server Error");
+  }
 });
