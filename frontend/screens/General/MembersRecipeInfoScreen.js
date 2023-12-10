@@ -13,6 +13,7 @@ import {
   Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import IconToo from "react-native-vector-icons/FontAwesome";
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../../store/context";
 import AddRatingsScreen from "../User/AddRatingsScreen";
@@ -49,6 +50,8 @@ export default function MembersRecipeInfoScreen({ route }) {
   const [currentUser, setCurrentUser] = useContext(Context);
 
   const [activeReason, setActiveReason] = useState(null);
+
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const handleReasonPress = (reason) => {
     setReportReason(reason);
@@ -457,16 +460,35 @@ export default function MembersRecipeInfoScreen({ route }) {
     );
   };
 
+  const handleFavoriteIcon = () => {
+    setIsFavorite((prev) => !prev);
+  };
+
   return (
     <ScrollView style={styles.container}>
-      <TouchableOpacity
-        style={styles.menuItem}
-        onPress={() => setReportModalVisible(true)}
-      >
-        <View>
-          <Icon name="report" color="#FF6347" size={25} style={styles.icon} />
-        </View>
-      </TouchableOpacity>
+      <View style={styles.menuContainer}>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => setReportModalVisible(true)}
+        >
+          <View>
+            <Icon name="report" color="#FF6347" size={25} style={styles.icon} />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={handleFavoriteIcon}
+        >
+          <View>
+            <IconToo 
+              name={isFavorite ? "heart" : "heart-o"}
+              size={25}
+              color={isFavorite ? "red" : "black"}
+              style={styles.icon}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
       <View>
         <View style={styles.imageContainer}>
           <Image source={{ uri: recipeData.image }} style={styles.image} />
@@ -767,6 +789,10 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 16,
+  },
+  menuContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end', 
   },
   menuItem: {
     marginTop: 15,
