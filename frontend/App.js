@@ -47,6 +47,7 @@ import ViewRequest from "./screens/User/ViewRequest";
 import ViewOrdersScreen from "./screens/BizPartner/ViewOrdersScreen";
 import CompletedOrdersScreen from "./screens/BizPartner/CompletedOrdersScreen";
 import ViewPastOrdersScreen from "./screens/User/ViewPastOrdersScreen";
+import OrderStatusScreen from "./screens/User/OrderStatusScreen";
 
 const Stack = createStackNavigator();
 
@@ -235,6 +236,7 @@ function App() {
             component={PaymentScreen}
             options={{ headerTransparent: true, headerTitle: "" }}
           /> */}
+          <Stack.Screen name="Order Status" component={OrderStatusScreen} />
 
           <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="User Profile" component={UserScreen} />

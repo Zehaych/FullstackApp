@@ -146,8 +146,7 @@ exports.dismissReport = asyncHandler(async (req, res) => {
 
 // @desc Submit an order for a business recipe
 // @route POST
-// @access public (or private if you require authentication)
-const SERVICE_FEE = 4.0; // A fixed service fee
+const SERVICE_FEE = 4.0; // fixed service fee
 
 exports.submitOrder = asyncHandler(async (req, res) => {
   const { bizRecipeId } = req.params;

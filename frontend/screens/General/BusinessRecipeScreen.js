@@ -11,15 +11,62 @@ import {
   FlatList,
   Dimensions,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { Context } from "../../store/context";
 
 export default function BusinessRecipeScreen({ navigation }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [ongoingOrder, setOngoingOrder] = useState(null);
+  const [currentUser, setCurrentUser] = useContext(Context);
 
   const url = `${process.env.EXPO_PUBLIC_IP}/bizRecipe`;
 
+  const fetchOngoingOrders = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/bizRecipe/getOrders`
+      );
+      const orders = await response.json();
+      // Filter for ongoing orders for the current user
+      const userOngoingOrders = orders.filter(
+        (order) => order.name._id === currentUser._id && order.status !== "Done"
+      );
+      setOngoingOrder(userOngoingOrders);
+    } catch (error) {
+      console.error("Error fetching ongoing orders:", error);
+    }
+  };
+
+  const handleOrderStatusClick = () => {
+    // Navigate to a screen where the user can view all their ongoing orders
+    navigation.navigate("Order Status", { orders: ongoingOrder });
+  };
+
+  // In the render part
+  {
+    ongoingOrder && ongoingOrder.length > 0 && (
+      <TouchableOpacity
+        style={styles.orderStatusBanner}
+        onPress={handleOrderStatusClick}
+      >
+        <Text style={styles.orderStatusText}>
+          You have {ongoingOrder.length} ongoing orders
+        </Text>
+      </TouchableOpacity>
+    );
+  }
+
+  useEffect(() => {
+    fetch(url)
+      .then((response) => response.json())
+      .then((json) => setData(json))
+      .catch((error) => console.log(error));
+
+    // Fetch ongoing orders for the current user
+    fetchOngoingOrders();
+  }, [url]);
   //navigate to recipe info page
   const handleRecipeInfo = (recipeData) => {
     navigation.navigate("Business Recipe Information", { recipeData });
@@ -68,6 +115,17 @@ export default function BusinessRecipeScreen({ navigation }) {
           </TouchableOpacity>
         )}
       />
+      {/* Order status banner */}
+      {ongoingOrder && ongoingOrder.length > 0 && (
+        <TouchableOpacity
+          style={styles.orderStatusBanner}
+          onPress={handleOrderStatusClick}
+        >
+          <Text style={styles.orderStatusText}>
+            You have {ongoingOrder.length} ongoing orders. Tap to view details.
+          </Text>
+        </TouchableOpacity>
+      )}
 
       <StatusBar style="auto" />
     </SafeAreaView>
@@ -126,6 +184,20 @@ const styles = StyleSheet.create({
     //color: "white",
     //padding: 5, // Add some padding
     //borderRadius: 5, // Add border radius for the background
+  },
+  orderStatusBanner: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    right: 10,
+    backgroundColor: "orange",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  orderStatusText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
 
