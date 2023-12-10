@@ -236,6 +236,7 @@ exports.updateOrder = asyncHandler(async (req, res) => {
     return;
   }
 
+  // Find the index of the order in the orderInfo array
   const orderIndex = bizRecipe.orderInfo.findIndex(
     (order) => order._id.toString() === orderId
   );
@@ -245,24 +246,15 @@ exports.updateOrder = asyncHandler(async (req, res) => {
     return;
   }
 
-  if (status === "Done") {
-    // Move to orderHistory and remove from orderInfo
-    const completedOrder = bizRecipe.orderInfo[orderIndex];
-    completedOrder.estimatedArrivalTime = estimatedArrivalTime;
-    completedOrder.status = status;
+  // Update the order in the orderInfo array
+  bizRecipe.orderInfo[orderIndex].status = status;
+  bizRecipe.orderInfo[orderIndex].estimatedArrivalTime =
+    estimatedArrivalTime ||
+    bizRecipe.orderInfo[orderIndex].estimatedArrivalTime;
 
-    bizRecipe.orderHistory.push(completedOrder);
-    bizRecipe.orderInfo.splice(orderIndex, 1);
-  } else if (status === "Rejected") {
-    // Remove the order if rejected
-    bizRecipe.orderInfo.splice(orderIndex, 1);
-  } else {
-    // Update orderInfo for other statuses
-    bizRecipe.orderInfo[orderIndex].estimatedArrivalTime = estimatedArrivalTime;
-    bizRecipe.orderInfo[orderIndex].status = status;
-  }
-
+  // Save the changes
   await bizRecipe.save();
+
   res.status(200).json({ message: "Order updated successfully" });
 });
 

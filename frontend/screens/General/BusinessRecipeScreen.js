@@ -31,7 +31,7 @@ export default function BusinessRecipeScreen({ navigation }) {
       const orders = await response.json();
       // Filter for ongoing orders for the current user
       const userOngoingOrders = orders.filter(
-        (order) => order.name._id === currentUser._id && order.status !== "Done"
+        (order) => order.name._id === currentUser._id
       );
       setOngoingOrder(userOngoingOrders);
     } catch (error) {

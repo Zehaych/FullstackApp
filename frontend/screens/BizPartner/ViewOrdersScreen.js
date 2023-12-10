@@ -24,7 +24,29 @@ const ViewOrdersScreen = () => {
           `${process.env.EXPO_PUBLIC_IP}/bizRecipe/getOrders`
         );
         const data = await response.json();
-        setOrders(data);
+
+        // Sort the orders
+        const sortedData = data.sort((a, b) => {
+          // Place 'Rejected' orders at the bottom
+          if (a.status === "Rejected" && b.status !== "Rejected") return 1;
+          if (b.status === "Rejected" && a.status !== "Rejected") return -1;
+
+          // Place 'Done' orders above 'Rejected' but below others
+          if (a.status === "Done" && b.status !== "Done") return 1;
+          if (b.status === "Done" && a.status !== "Done") return -1;
+
+          // Convert dateToDeliver to MM/DD/YYYY format and extract the start time from timeToDeliver
+          const [dayA, monthA, yearA] = a.dateToDeliver.split("/");
+          const startTimeA = a.timeToDeliver.split("-")[0];
+          const [dayB, monthB, yearB] = b.dateToDeliver.split("/");
+          const startTimeB = b.timeToDeliver.split("-")[0];
+
+          const dateA = new Date(`${monthA}/${dayA}/${yearA} ${startTimeA}`);
+          const dateB = new Date(`${monthB}/${dayB}/${yearB} ${startTimeB}`);
+          return dateA - dateB;
+        });
+
+        setOrders(sortedData);
       } catch (error) {
         console.error("Error fetching orders: ", error);
       }
@@ -55,19 +77,13 @@ const ViewOrdersScreen = () => {
   };
 
   const updateOrder = async (item) => {
-    // Check if the status is 'Rejected' and bypass the time selection
-    if (selectedStatus[item._id] === "Rejected") {
-      return handleOrderDeletion(item);
-    }
-    if (
-      !selectedStatus[item._id] ||
-      selectedStatus[item._id] === "Select status:"
-    ) {
+    if (!selectedStatus[item._id]) {
       alert("Please select a valid status.");
       return;
     }
-    if (!selectedDate[item._id]) {
-      alert("Please select an estimated arrival time");
+
+    if (selectedStatus[item._id] !== "Rejected" && !selectedDate[item._id]) {
+      alert("Please select an estimated arrival time for the order.");
       return;
     }
 
@@ -80,9 +96,12 @@ const ViewOrdersScreen = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            orderId: item._id, // ID of the order to update
-            estimatedArrivalTime: formatTime(selectedDate[item._id]), // Format the date into a time string
-            status: selectedStatus[item._id], // Status selected from the picker
+            orderId: item._id,
+            estimatedArrivalTime:
+              selectedStatus[item._id] === "Rejected"
+                ? "-"
+                : formatTime(selectedDate[item._id]),
+            status: selectedStatus[item._id],
           }),
         }
       );
@@ -91,83 +110,69 @@ const ViewOrdersScreen = () => {
         throw new Error("Error updating order");
       }
 
-      const data = await response.json();
-      console.log("Order update response:", data);
-      // Update the local state to reflect changes immediately
-      if (
-        selectedStatus[item._id] === "Rejected" ||
-        selectedStatus[item._id] === "Done"
-      ) {
-        // Remove the order from the local state if it is rejected or done
-        const updatedOrders = orders.filter((order) => order._id !== item._id);
-        setOrders(updatedOrders);
+      const updatedOrderData = await response.json();
+      console.log("Order update response:", updatedOrderData);
 
-        alert("Order has been deleted.");
-      } else {
-        // Update the local state to reflect changes immediately
-        const updatedOrders = orders.map((order) => {
-          if (order._id === item._id) {
-            return {
-              ...order,
-              status: selectedStatus[item._id],
-              estimatedArrivalTime: formatTime(selectedDate[item._id]),
-            };
-          }
-          return order;
-        });
-
-        setOrders(updatedOrders);
-
-        alert("Order changes updated.");
-      }
-    } catch (error) {
-      console.error("Error updating order:", error);
-      alert("Error updating order. Please try again.");
-    }
-  };
-
-  const handleOrderDeletion = async (item) => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/bizRecipe/updateOrder`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            orderId: item._id, // ID of the order to delete
-            status: "Rejected", // Status set to Rejected
-          }),
+      // Update the order in the local state
+      const updatedOrders = orders.map((order) => {
+        if (order._id === item._id) {
+          return {
+            ...order,
+            status: selectedStatus[item._id],
+            estimatedArrivalTime:
+              selectedStatus[item._id] === "Rejected"
+                ? "-"
+                : formatTime(selectedDate[item._id]),
+          };
         }
-      );
+        return order;
+      });
 
-      if (!response.ok) {
-        throw new Error("Error updating order");
-      }
-
-      const data = await response.json();
-      console.log("Order update response:", data);
-
-      // Update the local state to reflect the deletion immediately
-      setOrders((prevOrders) =>
-        prevOrders.filter((order) => order._id !== item._id)
-      );
-
-      alert("Order has been deleted.");
+      setOrders(updatedOrders);
+      alert("Order status updated successfully.");
     } catch (error) {
       console.error("Error updating order:", error);
       alert("Error updating order. Please try again.");
     }
   };
 
-  const renderEmptyComponent = () => {
-    return (
-      <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>There are no orders at the moment.</Text>
-      </View>
-    );
-  };
+  // useEffect(() => {
+  //   const fetchOrders = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `${process.env.EXPO_PUBLIC_IP}/bizRecipe/getOrders`
+  //       );
+  //       const data = await response.json();
+
+  //       // Sort the orders
+  //       const sortedData = data.sort((a, b) => {
+  //         // Place 'Rejected' orders at the bottom
+  //         if (a.status === "Rejected" && b.status !== "Rejected") return 1;
+  //         if (b.status === "Rejected" && a.status !== "Rejected") return -1;
+
+  //         // Place 'Done' orders above 'Rejected' but below others
+  //         if (a.status === "Done" && b.status !== "Done") return 1;
+  //         if (b.status === "Done" && a.status !== "Done") return -1;
+
+  //         // Convert dateToDeliver to MM/DD/YYYY format and extract the start time from timeToDeliver
+  //         const [dayA, monthA, yearA] = a.dateToDeliver.split("/");
+  //         const startTimeA = a.timeToDeliver.split("-")[0];
+  //         const [dayB, monthB, yearB] = b.dateToDeliver.split("/");
+  //         const startTimeB = b.timeToDeliver.split("-")[0];
+
+  //         const dateA = new Date(`${monthA}/${dayA}/${yearA} ${startTimeA}`);
+  //         const dateB = new Date(`${monthB}/${dayB}/${yearB} ${startTimeB}`);
+  //         return dateA - dateB;
+  //       });
+
+  //       setOrders(sortedData);
+  //     } catch (error) {
+  //       console.error("Error fetching orders: ", error);
+  //     }
+  //   };
+
+  //   fetchOrders();
+  // }, []);
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
@@ -259,19 +264,34 @@ const ViewOrdersScreen = () => {
       <View style={styles.separator} />
 
       <Button
-        title="Submit"
+        title="Update Order Status"
         onPress={() => updateOrder(item)}
         color="#007bff"
       />
     </View>
   );
 
+  //   return (
+  //     <FlatList
+  //       data={orders}
+  //       renderItem={renderItem}
+  //       keyExtractor={(item) => item._id.toString()}
+  //       ListEmptyComponent={renderEmptyComponent}
+  //     />
+  //   );
+  // };
   return (
     <FlatList
       data={orders}
       renderItem={renderItem}
       keyExtractor={(item) => item._id.toString()}
-      ListEmptyComponent={renderEmptyComponent}
+      ListEmptyComponent={
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>
+            There are no orders at the moment.
+          </Text>
+        </View>
+      }
     />
   );
 };
