@@ -107,6 +107,8 @@ const SummaryMonthlyScreen = ({route}) => {
         return 0;
     });
 
+    const latestMonthData = monthlyDataSorted.length > 0 ? monthlyDataSorted[0] : null;
+
     const chartConfig = {
         backgroundGradientFrom: "#fff",
         backgroundGradientTo: "#fff",
@@ -133,8 +135,12 @@ const SummaryMonthlyScreen = ({route}) => {
             />
             <View style={styles.componentContainer}>
                 <View style={styles.leftComponent}>
-                    <Text style={styles.text}>(AVG)Latest Month: </Text>
-                    <Text style={styles.subText}></Text>
+                    <Text style={styles.text}>Latest Month intake: </Text>
+                    {latestMonthData && (
+                        <>
+                            <Text style={styles.subText}>{latestMonthData.month} - {Math.round(latestMonthData.consumed)} Cal</Text>
+                        </>
+                    )}
                 </View>
                 <View style={styles.rightComponent}>
                     <Text style={styles.text}>(AVG)Target Calories:</Text>
