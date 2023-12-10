@@ -252,6 +252,15 @@ exports.updateOrder = asyncHandler(async (req, res) => {
     estimatedArrivalTime ||
     bizRecipe.orderInfo[orderIndex].estimatedArrivalTime;
 
+  // If the order status is 'Done', also add it to orderHistory
+  if (status === "Done") {
+    const completedOrder = {
+      ...bizRecipe.orderInfo[orderIndex].toObject(),
+      historyDate: new Date(),
+    };
+    bizRecipe.orderHistory.push(completedOrder); // Add to orderHistory
+  }
+
   // Save the changes
   await bizRecipe.save();
 

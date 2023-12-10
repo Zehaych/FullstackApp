@@ -17,6 +17,8 @@ const ViewOrdersScreen = () => {
   const [selectedDate, setSelectedDate] = useState({});
   const [showPicker, setShowPicker] = useState({});
 
+  const [disabledOrders, setDisabledOrders] = useState({});
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -46,6 +48,14 @@ const ViewOrdersScreen = () => {
           return dateA - dateB;
         });
 
+        // Initialize the disabledOrders state
+        const initialDisabledState = data.reduce((acc, order) => {
+          acc[order._id] =
+            order.status === "Rejected" || order.status === "Done";
+          return acc;
+        }, {});
+
+        setDisabledOrders(initialDisabledState);
         setOrders(sortedData);
       } catch (error) {
         console.error("Error fetching orders: ", error);
@@ -108,6 +118,16 @@ const ViewOrdersScreen = () => {
 
       if (!response.ok) {
         throw new Error("Error updating order");
+      }
+
+      if (response.ok) {
+        // Mark the order as disabled if the status is 'Rejected' or 'Done'
+        if (
+          selectedStatus[item._id] === "Rejected" ||
+          selectedStatus[item._id] === "Done"
+        ) {
+          setDisabledOrders((prev) => ({ ...prev, [item._id]: true }));
+        }
       }
 
       const updatedOrderData = await response.json();
@@ -174,42 +194,45 @@ const ViewOrdersScreen = () => {
   //   fetchOrders();
   // }, []);
 
-  const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-      <Text style={styles.title}>{item.recipeName}</Text>
-      <Text style={styles.subtitle}>
-        <Text style={styles.boldLabel}>Name:</Text>{" "}
-        {item.userName ? item.userName : "N/A"}
-      </Text>
-      <Text style={styles.subtitle}>
-        <Text style={styles.boldLabel}>Total Price:</Text> ${item.totalPrice}
-      </Text>
-      <Text style={styles.subtitle}>
-        <Text style={styles.boldLabel}>Quantity:</Text> {item.quantity}
-      </Text>
-      <Text style={styles.subtitle}>
-        <Text style={styles.boldLabel}>Preferences:</Text> {item.preferences}
-      </Text>
-      <Text style={styles.subtitle}>
-        <Text style={styles.boldLabel}>Date to Deliver:</Text>{" "}
-        {item.dateToDeliver}
-      </Text>
-      <Text style={styles.subtitle}>
-        <Text style={styles.boldLabel}>Time to Deliver:</Text>{" "}
-        {item.timeToDeliver}
-      </Text>
-      <Text style={styles.subtitle}>
-        <Text style={styles.boldLabel}>Delivery Address:</Text>{" "}
-        {item.deliveryAddress}
-      </Text>
-      <Text style={styles.subtitle}>
-        <Text style={styles.boldLabel}>Status:</Text> {item.status}
-      </Text>
-      <Text style={styles.subtitle}>
-        <Text style={styles.boldLabel}>Estimated Arrival Time:</Text>{" "}
-        {item.estimatedArrivalTime}
-      </Text>
-      {/* <Text style={styles.subtitle}>
+  const renderItem = ({ item }) => {
+    const isDisabled = disabledOrders[item._id];
+
+    return (
+      <View style={styles.itemContainer}>
+        <Text style={styles.title}>{item.recipeName}</Text>
+        <Text style={styles.subtitle}>
+          <Text style={styles.boldLabel}>Name:</Text>{" "}
+          {item.userName ? item.userName : "N/A"}
+        </Text>
+        <Text style={styles.subtitle}>
+          <Text style={styles.boldLabel}>Total Price:</Text> ${item.totalPrice}
+        </Text>
+        <Text style={styles.subtitle}>
+          <Text style={styles.boldLabel}>Quantity:</Text> {item.quantity}
+        </Text>
+        <Text style={styles.subtitle}>
+          <Text style={styles.boldLabel}>Preferences:</Text> {item.preferences}
+        </Text>
+        <Text style={styles.subtitle}>
+          <Text style={styles.boldLabel}>Date to Deliver:</Text>{" "}
+          {item.dateToDeliver}
+        </Text>
+        <Text style={styles.subtitle}>
+          <Text style={styles.boldLabel}>Time to Deliver:</Text>{" "}
+          {item.timeToDeliver}
+        </Text>
+        <Text style={styles.subtitle}>
+          <Text style={styles.boldLabel}>Delivery Address:</Text>{" "}
+          {item.deliveryAddress}
+        </Text>
+        <Text style={styles.subtitle}>
+          <Text style={styles.boldLabel}>Status:</Text> {item.status}
+        </Text>
+        <Text style={styles.subtitle}>
+          <Text style={styles.boldLabel}>Estimated Arrival Time:</Text>{" "}
+          {item.estimatedArrivalTime}
+        </Text>
+        {/* <Text style={styles.subtitle}>
         Name: {item.userName ? item.userName : "N/A"}
       </Text>
       <Text style={styles.subtitle}>Total Price: ${item.totalPrice}</Text>
@@ -224,52 +247,50 @@ const ViewOrdersScreen = () => {
       <Text style={styles.subtitle}>
         Estimated Arrival Time: {item.estimatedArrivalTime}
       </Text> */}
-
-      <Picker
-        selectedValue={selectedStatus[item._id] || ""}
-        style={{ height: 50, width: "100%" }}
-        onValueChange={(itemValue) => onStatusChange(item, itemValue)}
-      >
-        <Picker.Item label="Select status:" value="" />
-        <Picker.Item label="Rejected" value="Rejected" />
-        <Picker.Item label="Pending" value="Pending" />
-        <Picker.Item label="Preparing" value="Preparing" />
-        <Picker.Item label="On the way" value="On the way" />
-        <Picker.Item label="Arriving" value="Arriving" />
-        <Picker.Item label="Done" value="Done" />
-      </Picker>
-
-      {showPicker[item._id] && (
-        <DateTimePicker
-          value={selectedDate[item._id] || new Date()}
-          mode="time"
-          is24Hour={true}
-          display="default"
-          onChange={(event, date) => onDateChange(event, date, item)}
+        <Picker
+          selectedValue={selectedStatus[item._id] || ""}
+          style={{ height: 50, width: "100%" }}
+          onValueChange={(itemValue) => onStatusChange(item, itemValue)}
+          enabled={!isDisabled} // Disable the picker if the order is marked as disabled
+        >
+          <Picker.Item label="Select status:" value="" />
+          <Picker.Item label="Rejected" value="Rejected" />
+          <Picker.Item label="Pending" value="Pending" />
+          <Picker.Item label="Preparing" value="Preparing" />
+          <Picker.Item label="On the way" value="On the way" />
+          <Picker.Item label="Arriving" value="Arriving" />
+          <Picker.Item label="Done" value="Done" />
+        </Picker>
+        {showPicker[item._id] && (
+          <DateTimePicker
+            value={selectedDate[item._id] || new Date()}
+            mode="time"
+            is24Hour={true}
+            display="default"
+            onChange={(event, date) => onDateChange(event, date, item)}
+          />
+        )}
+        <Button
+          title="Select Arrival Time"
+          onPress={() => showTimepicker(item)}
+          color="#28a745"
+          disabled={isDisabled} // Disable the button if the order is marked as disabled
         />
-      )}
-
-      <Button
-        title="Select Arrival Time"
-        onPress={() => showTimepicker(item)}
-        color="#28a745"
-      />
-
-      <Text style={styles.timeText}>
-        {selectedDate[item._id]
-          ? `Time selected: ${formatTime(selectedDate[item._id])}`
-          : "Time not selected"}
-      </Text>
-
-      <View style={styles.separator} />
-
-      <Button
-        title="Update Order Status"
-        onPress={() => updateOrder(item)}
-        color="#007bff"
-      />
-    </View>
-  );
+        <Text style={styles.timeText}>
+          {selectedDate[item._id]
+            ? `Time selected: ${formatTime(selectedDate[item._id])}`
+            : "Time not selected"}
+        </Text>
+        <View style={styles.separator} />
+        <Button
+          title="Update Order Status"
+          onPress={() => updateOrder(item)}
+          color="#007bff"
+          disabled={isDisabled} // Disable the button if the order is marked as disabled
+        />
+      </View>
+    );
+  };
 
   //   return (
   //     <FlatList
