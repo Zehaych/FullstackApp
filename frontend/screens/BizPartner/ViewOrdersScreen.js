@@ -27,24 +27,33 @@ const ViewOrdersScreen = () => {
         );
         const data = await response.json();
 
+        // Function to parse date strings into Date objects
+        const parseDate = (dateStr, timeStr) => {
+          const [day, month, year] = dateStr.split("/");
+          const [hour, minute] = timeStr.split(":");
+          return new Date(year, month - 1, day, hour, minute);
+        };
+
         // Sort the orders
         const sortedData = data.sort((a, b) => {
-          // Place 'Rejected' orders at the bottom
+          // Prioritize 'Rejected' and 'Done' statuses
           if (a.status === "Rejected" && b.status !== "Rejected") return 1;
           if (b.status === "Rejected" && a.status !== "Rejected") return -1;
-
-          // Place 'Done' orders above 'Rejected' but below others
           if (a.status === "Done" && b.status !== "Done") return 1;
           if (b.status === "Done" && a.status !== "Done") return -1;
 
-          // Convert dateToDeliver to MM/DD/YYYY format and extract the start time from timeToDeliver
-          const [dayA, monthA, yearA] = a.dateToDeliver.split("/");
-          const startTimeA = a.timeToDeliver.split("-")[0];
-          const [dayB, monthB, yearB] = b.dateToDeliver.split("/");
-          const startTimeB = b.timeToDeliver.split("-")[0];
+          // Parse dates for 'Rejected' and 'Done' statuses
+          if (a.status === "Rejected" || a.status === "Done") {
+            const dateA = parseDate(a.dateToDeliver, a.estimatedArrivalTime);
+            const dateB = parseDate(b.dateToDeliver, b.estimatedArrivalTime);
+            return dateA - dateB;
+          }
 
-          const dateA = new Date(`${monthA}/${dayA}/${yearA} ${startTimeA}`);
-          const dateB = new Date(`${monthB}/${dayB}/${yearB} ${startTimeB}`);
+          // Parse dates for other statuses
+          const [timeToDeliverA] = a.timeToDeliver.split("-");
+          const [timeToDeliverB] = b.timeToDeliver.split("-");
+          const dateA = parseDate(a.dateToDeliver, timeToDeliverA);
+          const dateB = parseDate(b.dateToDeliver, timeToDeliverB);
           return dateA - dateB;
         });
 

@@ -13,6 +13,25 @@ const ViewPastOrdersScreen = () => {
           `${process.env.EXPO_PUBLIC_IP}/bizRecipe/getOrderHistory`
         );
         const data = await response.json();
+
+        // Sort the past orders by date and time
+        const sortedData = data.sort((a, b) => {
+          // Convert dateToDeliver to MM/DD/YYYY format for sorting
+          const [dayA, monthA, yearA] = a.dateToDeliver.split("/");
+          const [dayB, monthB, yearB] = b.dateToDeliver.split("/");
+
+          // Combine the date and time into a full datetime string
+          const dateTimeStringA = `${yearA}-${monthA}-${dayA}T${a.estimatedArrivalTime}:00`;
+          const dateTimeStringB = `${yearB}-${monthB}-${dayB}T${b.estimatedArrivalTime}:00`;
+
+          // Create Date objects from the datetime strings
+          const dateTimeA = new Date(dateTimeStringA);
+          const dateTimeB = new Date(dateTimeStringB);
+
+          // Sort in descending order - most recent first
+          return dateTimeB - dateTimeA;
+        });
+
         if (data && currentUser) {
           // Filter orders to only include those that match currentUser._id
           const filteredOrders = data.filter(
@@ -40,6 +59,8 @@ const ViewPastOrdersScreen = () => {
       <Text style={styles.subtitle}>
         Delivery Address: {item.deliveryAddress}
       </Text>
+      <Text style={styles.subtitle}>Delivery Date: {item.dateToDeliver}</Text>
+
       <Text style={styles.subtitle}>
         Food Arrival Time: {item.estimatedArrivalTime}
       </Text>

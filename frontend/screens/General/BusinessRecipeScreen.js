@@ -85,6 +85,16 @@ export default function BusinessRecipeScreen({ navigation }) {
       .finally(() => setLoading(false));
   }, [url]);
 
+  useEffect(() => {
+    fetchOngoingOrders();
+
+    // Set up an interval to refresh ongoing orders
+    const interval = setInterval(() => {
+      fetchOngoingOrders();
+    }, 5000); // Refresh every 5 seconds
+
+    return () => clearInterval(interval); // Clear interval on component unmount
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>All business recipes</Text>

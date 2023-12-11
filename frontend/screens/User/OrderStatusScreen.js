@@ -19,7 +19,24 @@ const OrderStatusScreen = () => {
           const filteredOrders = orders.filter(
             (order) => order.name._id === currentUser._id
           );
-          setUserOrders(filteredOrders);
+
+          // Sort the filtered orders by date and time
+          const sortedOrders = filteredOrders.sort((a, b) => {
+            const [dayA, monthA, yearA] = a.dateToDeliver.split("/");
+            const startTimeA = a.timeToDeliver.split("-")[0];
+            const [dayB, monthB, yearB] = b.dateToDeliver.split("/");
+            const startTimeB = b.timeToDeliver.split("-")[0];
+            const dateTimeA = new Date(
+              `${yearA}-${monthA}-${dayA}T${startTimeA}`
+            );
+            const dateTimeB = new Date(
+              `${yearB}-${monthB}-${dayB}T${startTimeB}`
+            );
+
+            return dateTimeA - dateTimeB; // Sort in ascending order
+          });
+
+          setUserOrders(sortedOrders);
         }
       } catch (error) {
         if (isMounted) {

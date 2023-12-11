@@ -475,12 +475,9 @@ export default function MembersRecipeInfoScreen({ route }) {
             <Icon name="report" color="#FF6347" size={25} style={styles.icon} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={handleFavoriteIcon}
-        >
+        <TouchableOpacity style={styles.menuItem} onPress={handleFavoriteIcon}>
           <View>
-            <IconToo 
+            <IconToo
               name={isFavorite ? "heart" : "heart-o"}
               size={25}
               color={isFavorite ? "red" : "black"}
@@ -554,20 +551,24 @@ export default function MembersRecipeInfoScreen({ route }) {
         {/* Only show review submission form if the user hasn't submitted a review yet and is not the creator */}
 
         {currentUserReviews.length === 0 && !isCreator && (
-          <View style={styles.mainBox}>
-            <View style={styles.section}>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter your review"
-                value={userReview}
-                onChangeText={setUserReview}
-                multiline
-              />
-              <StarRatingInput
-                rating={userRating}
-                onRatingChange={handleRatingChange}
-              />
-              <Button title="Submit Review" onPress={submitReviewAndRating} />
+          <View>
+            <Text style={styles.title}>Your Review</Text>
+
+            <View style={styles.mainBox}>
+              <View style={styles.section}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your review"
+                  value={userReview}
+                  onChangeText={setUserReview}
+                  multiline
+                />
+                <StarRatingInput
+                  rating={userRating}
+                  onRatingChange={handleRatingChange}
+                />
+                <Button title="Submit Review" onPress={submitReviewAndRating} />
+              </View>
             </View>
           </View>
         )}
@@ -791,8 +792,8 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   menuContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end', 
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   menuItem: {
     marginTop: 15,
