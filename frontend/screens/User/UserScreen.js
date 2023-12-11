@@ -40,7 +40,7 @@ const UserScreen = () => {
   };
 
   const handleNavigateToViewRequest = () => {
-    navigation.navigate("ViewRequest");
+    navigation.navigate("View Request");
   };
 
   const handleSubmitFoodRequest = () => {

@@ -55,8 +55,12 @@ const SubmitFoodRequest = () => {
     };
     
 
+    // const handleGoBack = () => {
+    //     navigation.navigate("User Profile");
+    // };
+
     const handleGoBack = () => {
-        navigation.navigate("User Profile");
+        navigation.goBack();
     };
 
     return (

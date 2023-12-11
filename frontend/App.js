@@ -59,9 +59,9 @@ function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="LogInScreen">
           <Stack.Screen
-            name="ViewRequest"
+            name="View Request"
             component={ViewRequest}
-            options={{ headerShown: false }}
+            options={{ headerTitle: "Request Status" }}
           />
           <Stack.Screen
             name="FoodAndDrinksInfo"
