@@ -11,6 +11,7 @@ import {
   Button,
   Modal,
   Alert,
+  Dimensions,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import IconToo from "react-native-vector-icons/FontAwesome";
@@ -19,6 +20,9 @@ import { Context } from "../../store/context";
 import AddRatingsScreen from "../User/AddRatingsScreen";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import MaskedView from "@react-native-masked-view/masked-view";
+import Swiper from "react-native-swiper";
+
+const { width, height } = Dimensions.get("window");
 
 export default function MembersRecipeInfoScreen({ route }) {
   const recipeData = route.params.recipeData;
@@ -35,6 +39,8 @@ export default function MembersRecipeInfoScreen({ route }) {
   const [editRating, setEditRating] = useState(0);
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [userRating, setUserRating] = useState(0); // Updated for star rating
+
+  const [activeSlide, setActiveSlide] = useState(0);
 
   const [reportModalVisible, setReportModalVisible] = useState(false);
   const [reportReason, setReportReason] = useState("");
@@ -81,38 +87,27 @@ export default function MembersRecipeInfoScreen({ route }) {
     }
   }, [recipeData, currentUser._id]);
 
-  // const fetchUsernames = async (reviews) => {
-  //   const userIds = reviews.map((review) => review.name);
-  //   const uniqueUserIds = [...new Set(userIds)]; // Remove duplicates
-  //   const usernamesMap = {};
+  // Function to handle Swiper's index change
+  const onIndexChanged = (index) => {
+    setActiveSlide(index);
+  };
 
-  //   await Promise.all(
-  //     uniqueUserIds.map(async (userId) => {
-  //       try {
-  //         const response = await fetch(
-  //           `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${userId}`
-  //         );
-  //         if (!response.ok) {
-  //           throw new Error(`Network response was not ok: ${response.status}`);
-  //         }
-  //         const userData = await response.json();
-  //         usernamesMap[userId] = userData.username;
-  //       } catch (error) {
-  //         console.error("Error fetching user data:", error);
-  //         usernamesMap[userId] = "Unknown"; // Fallback username
-  //       }
-  //     })
-  //   );
+  // Function to move to the next slide
+  const moveToNextSlide = () => {
+    if (activeSlide < submittedReviews.length - 1) {
+      swiperRef.scrollBy(1);
+    }
+  };
 
-  //   return reviews.map((review) => ({
-  //     ...review,
-  //     username: usernamesMap[review.name] || "Unknown",
-  //   }));
-  // };
+  // Function to move to the previous slide
+  const moveToPrevSlide = () => {
+    if (activeSlide > 0) {
+      swiperRef.scrollBy(-1);
+    }
+  };
 
-  // useEffect(() => {
-  //   fetchUsernames();
-  // }, []);
+  // Reference to the Swiper component
+  let swiperRef;
 
   const reportRecipe = async () => {
     try {
@@ -634,29 +629,39 @@ export default function MembersRecipeInfoScreen({ route }) {
         {/* "Community Reviews" section */}
         <Text style={styles.title}>Community Reviews</Text>
         {submittedReviews.length > 0 ? (
-          // <View style={styles.mainBox}>
-          <View style={styles.submittedReviewsContainer}>
-            {submittedReviews.map((review, index) => (
-              <View key={index} style={styles.mainBox}>
-                <View style={styles.section}>
-                  <Text style={styles.reviewLabel}>Name:</Text>
-                  <Text style={styles.reviewContent}>
-                    {review.username || "Deleted User"}
-                  </Text>
-                </View>
+          <View>
+            <Swiper
+              ref={(swiper) => {
+                swiperRef = swiper;
+              }}
+              style={styles.swiperContainer}
+              showsButtons={false}
+              loop={false}
+              autoplay={true}
+              autoplayTimeout={5} // Set autoplay timeout to 5 seconds
+              // onIndexChanged={onIndexChanged}
+            >
+              {submittedReviews.map((review, index) => (
+                <View key={index} style={styles.mainBox}>
+                  <View style={styles.section}>
+                    <Text style={styles.reviewLabel}>Name:</Text>
+                    <Text style={styles.reviewContent}>
+                      {review.username || "Deleted User"}
+                    </Text>
+                  </View>
 
-                <View style={styles.section}>
-                  <Text style={styles.reviewLabel}>Review:</Text>
-                  <Text style={styles.reviewContent}>{review.reviews}</Text>
-                </View>
+                  <View style={styles.section}>
+                    <Text style={styles.reviewLabel}>Review:</Text>
+                    <Text style={styles.reviewContent}>{review.reviews}</Text>
+                  </View>
 
-                <Text style={styles.reviewLabel}>Rating:</Text>
-                <Rating rating={review.ratings} />
-              </View>
-            ))}
+                  <Text style={styles.reviewLabel}>Rating:</Text>
+                  <Rating rating={review.ratings} />
+                </View>
+              ))}
+            </Swiper>
           </View>
         ) : (
-          // </View>
           <View style={styles.mainBox}>
             <Text style={styles.noReviewsText}>No reviews yet</Text>
           </View>
@@ -932,7 +937,6 @@ const styles = StyleSheet.create({
   //   marginTop: 20,
   // },
   reviewItem: {
-    // backgroundColor: "#f0f0f0",
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
@@ -963,5 +967,8 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     marginLeft: 8,
+  },
+  swiperContainer: {
+    height: height < 700 ? height * 0.4 : height * 0.36,
   },
 });

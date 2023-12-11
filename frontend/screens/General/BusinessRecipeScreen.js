@@ -91,7 +91,7 @@ export default function BusinessRecipeScreen({ navigation }) {
     // Set up an interval to refresh ongoing orders
     const interval = setInterval(() => {
       fetchOngoingOrders();
-    }, 5000); // Refresh every 5 seconds
+    }, 5000); // every 1000 is 1 second
 
     return () => clearInterval(interval); // Clear interval on component unmount
   }, []);
