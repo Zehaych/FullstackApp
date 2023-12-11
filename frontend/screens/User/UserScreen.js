@@ -33,7 +33,11 @@ const UserScreen = () => {
         onPress: () => {
           // setCurrentUser(null);
           // AsyncStorage.removeItem("userId");
-          navigation.navigate("LogInScreen");
+          //navigation.navigate("LogInScreen");
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "LogInScreen" }],
+          });
         },
       },
     ]);

@@ -35,7 +35,11 @@ const AdminScreen = () => {
         onPress: async () => {
           // await AsyncStorage.removeItem("userId");
           // setCurrentUser(null);
-          navigation.navigate("LogInScreen");
+          //navigation.navigate("LogInScreen");
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "LogInScreen" }],
+          });
         },
       },
     ]);
