@@ -55,6 +55,31 @@ const bizRecipeSchema = mongoose.Schema(
       default: false,
     },
     reportedBy: [reportSchema],
+    reviewsAndRatings: [
+      {
+        name: {
+          type: mongoose.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        reviews: {
+          type: String,
+          required: true,
+        },
+        ratings: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+    averageRating: {
+      type: Number,
+      default: 0,
+    },
+    totalRatings: {
+      type: Number,
+      default: 0,
+    },
     orderInfo: [
       {
         name: {

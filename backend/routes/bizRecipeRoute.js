@@ -7,6 +7,16 @@ router.get("/", bizRecipeController.getBizRecipe);
 
 //food => GET
 router.get("/getBizRecipeId/:bizRecipeId", bizRecipeController.getBizRecipeId);
+
+//food => GET
+router.get("/getBizRecipeByUserId", bizRecipeController.getBizRecipeByUserId);
+
+//food => GET
+router.get(
+  "/getBizRecipeIdByUserId/:bizRecipeId",
+  bizRecipeController.getBizRecipeIdByUserId
+);
+
 router.get("/getReportedBizRecipe", bizRecipeController.getReportedBizRecipes);
 
 //food => POST
@@ -30,5 +40,14 @@ router.get("/getOrders", bizRecipeController.getOrders);
 router.post("/updateOrder", bizRecipeController.updateOrder);
 
 router.get("/getOrderHistory", bizRecipeController.getOrderHistory);
+
+// submit ratings -> POST
+router.post("/ratings", bizRecipeController.postRating);
+
+// edit ratings -> PATCH
+router.patch("/editRating/:bizRecipeId", bizRecipeController.editRating);
+
+// delete ratings -> DELETE
+router.delete("/deleteRating/:bizRecipeId", bizRecipeController.deleteRating);
 
 module.exports = router;

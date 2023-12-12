@@ -32,7 +32,7 @@ export default function ViewBizRecipeScreen({ navigation }) {
       if (Array.isArray(allRecipes)) {
         const userRecipes = allRecipes.filter(
           (recipe) =>
-            recipe.submitted_by && recipe.submitted_by._id === currentUser._id
+            recipe.submitted_by && recipe.submitted_by === currentUser._id
         );
         setRecipes(userRecipes);
       } else {

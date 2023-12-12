@@ -182,7 +182,7 @@ const UserScreen = () => {
           <TouchableRipple onPress={onPastOrderspressed}>
             <View style={styles.menuItem}>
               <Icon name="clipboard-list-outline" color="#FF6347" size={25} />
-              <Text style={styles.menuItemText}>View Past Orders</Text>
+              <Text style={styles.menuItemText}>View Completed Orders</Text>
             </View>
           </TouchableRipple>
 

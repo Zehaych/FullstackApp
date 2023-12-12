@@ -9,10 +9,7 @@ const User = require("../models/userModel");
 //@route GET /bizRecipe
 //@access public
 exports.getBizRecipe = asyncHandler(async (req, res) => {
-  const bizRecipes = await BizRecipe.find().populate(
-    "submitted_by",
-    "username"
-  );
+  const bizRecipes = await BizRecipe.find();
   res.json(bizRecipes);
 });
 
@@ -20,6 +17,28 @@ exports.getBizRecipe = asyncHandler(async (req, res) => {
 //@route POST /bizRecipe/:bizRecipeId
 //@access public
 exports.getBizRecipeId = asyncHandler(async (req, res) => {
+  const bizRecipeId = req.params.bizRecipeId;
+  const bizRecipe = await BizRecipe.findById(bizRecipeId);
+
+  if (!bizRecipe) {
+    res.status(404);
+    throw new Error("Recipe not found");
+  }
+
+  res.status(200).json(bizRecipe);
+});
+
+// get BizRecipe by populating
+exports.getBizRecipeByUserId = asyncHandler(async (req, res) => {
+  const bizRecipes = await BizRecipe.find().populate(
+    "submitted_by",
+    "username"
+  );
+  res.json(bizRecipes);
+});
+
+// get BizRecipe's ID by populating
+exports.getBizRecipeIdByUserId = asyncHandler(async (req, res) => {
   const bizRecipeId = req.params.bizRecipeId;
   const bizRecipe = await BizRecipe.findById(bizRecipeId)
     .populate("submitted_by", "username")
@@ -295,5 +314,122 @@ exports.getOrderHistory = asyncHandler(async (req, res) => {
   } catch (error) {
     console.error("Error fetching order history:", error);
     res.status(500).send("Server Error");
+  }
+});
+
+exports.postRating = asyncHandler(async (req, res) => {
+  const recipeId = req.body.id;
+  const userId = req.body.name; // Assuming this is the user's ID
+  const userReview = req.body.reviews;
+  const userRating = req.body.ratings;
+
+  try {
+    // Find the recipe by ID and push the new rating
+    const recipe = await BizRecipe.findById(recipeId);
+
+    if (!recipe) {
+      return res.status(404).json({ message: "Recipe not found" });
+    }
+
+    recipe.reviewsAndRatings.push({
+      name: userId,
+      reviews: userReview,
+      ratings: userRating,
+    });
+
+    // Calculate the new average rating and total ratings
+    const totalRatings = recipe.reviewsAndRatings.length;
+    const sumRatings = recipe.reviewsAndRatings.reduce(
+      (acc, curr) => acc + curr.ratings,
+      0
+    );
+    const averageRating = sumRatings / totalRatings;
+
+    recipe.averageRating = averageRating;
+    recipe.totalRatings = totalRatings;
+
+    await recipe.save();
+
+    res.status(200).json(recipe);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error updating recipe ratings", error: error.message });
+  }
+});
+
+// Edit a review
+exports.editRating = asyncHandler(async (req, res) => {
+  const { recipeId, reviewId, newReview, newRating } = req.body;
+
+  try {
+    const recipe = await BizRecipe.findById(recipeId);
+    if (!recipe) {
+      return res.status(404).json({ message: "Recipe not found" });
+    }
+
+    // Find and update the specific review
+    const reviewIndex = recipe.reviewsAndRatings.findIndex((r) =>
+      r._id.equals(reviewId)
+    );
+    if (reviewIndex !== -1) {
+      recipe.reviewsAndRatings[reviewIndex].reviews = newReview;
+      recipe.reviewsAndRatings[reviewIndex].ratings = newRating;
+    } else {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    const totalRatings = recipe.reviewsAndRatings.length;
+    const sumRatings = recipe.reviewsAndRatings.reduce(
+      (acc, curr) => acc + curr.ratings,
+      0
+    );
+    const averageRating = sumRatings / totalRatings;
+
+    recipe.averageRating = averageRating;
+    recipe.totalRatings = totalRatings;
+
+    await recipe.save();
+    res.status(200).json(recipe);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error updating review", error: error.message });
+  }
+});
+
+// Delete a review
+exports.deleteRating = asyncHandler(async (req, res) => {
+  const recipeId = req.params.bizRecipeId;
+  const reviewId = req.body.reviewId;
+
+  try {
+    const recipe = await BizRecipe.findById(recipeId);
+    if (!recipe) {
+      return res.status(404).json({ message: "Recipe not found" });
+    }
+
+    // Remove the review
+    recipe.reviewsAndRatings = recipe.reviewsAndRatings.filter(
+      (review) => !review._id.equals(reviewId)
+    );
+
+    // Recalculate average rating and total ratings
+    const totalRatings = recipe.reviewsAndRatings.length;
+    const sumRatings = recipe.reviewsAndRatings.reduce(
+      (acc, curr) => acc + curr.ratings,
+      0
+    );
+    const averageRating = totalRatings > 0 ? sumRatings / totalRatings : 0;
+
+    recipe.averageRating = averageRating;
+    recipe.totalRatings = totalRatings;
+
+    await recipe.save();
+    res.status(200).json(recipe);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error deleting review", error: error.message });
   }
 });

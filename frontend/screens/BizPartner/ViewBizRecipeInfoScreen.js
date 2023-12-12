@@ -24,7 +24,7 @@ export default function ViewBizRecipeInfoScreen({ route }) {
   const fetchRecipeDetails = async () => {
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/bizRecipe/getBizRecipeId/${recipe._id}`
+        `${process.env.EXPO_PUBLIC_IP}/bizRecipe/getBizRecipeIdByUserId/${recipe._id}`
       );
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status}`);

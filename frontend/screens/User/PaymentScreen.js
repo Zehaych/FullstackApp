@@ -72,7 +72,7 @@ export default function PaymentScreen({ route, navigation }) {
       try {
         // Fetch recipe details including orderInfo
         const recipeResponse = await fetch(
-          `${process.env.EXPO_PUBLIC_IP}/bizRecipe/getBizRecipeId/${recipeData._id}`,
+          `${process.env.EXPO_PUBLIC_IP}/bizRecipe/getBizRecipeIdByUserId/${recipeData._id}`,
           {
             method: "GET",
             headers: {
