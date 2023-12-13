@@ -339,7 +339,7 @@ const ProgressScreen = () => {
         totalCalories += dinnerRecipe.nutrition.nutrients[0].amount;
       }
     }
-    return totalCalories;
+    return totalCalories.toFixed(2);
   };
 
   const handleObjectiveIcon = () => {
@@ -574,7 +574,7 @@ const ProgressScreen = () => {
           <View style={styles.componentContainer}>
             <View style={styles.leftComponent}>
               <Text style={styles.smallHeadings}>Total Calories</Text>
-              <Text style={styles.smallText}>{handleTotalCalories()} kcal</Text>
+              <Text style={styles.smallText}>{handleTotalCalories()} cal</Text>
             </View>
             <View style={styles.middleComponent}>
               <Text style={styles.smallHeadings}>Target Calories</Text>
