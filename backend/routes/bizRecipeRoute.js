@@ -50,4 +50,6 @@ router.patch("/editRating/:bizRecipeId", bizRecipeController.editRating);
 // delete ratings -> DELETE
 router.delete("/deleteRating/:bizRecipeId", bizRecipeController.deleteRating);
 
+router.post("/clearOrders", bizRecipeController.clearDoneOrRejectedOrders);
+
 module.exports = router;

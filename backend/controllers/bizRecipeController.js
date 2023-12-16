@@ -433,3 +433,25 @@ exports.deleteRating = asyncHandler(async (req, res) => {
       .json({ message: "Error deleting review", error: error.message });
   }
 });
+
+exports.clearDoneOrRejectedOrders = asyncHandler(async (req, res) => {
+  const userId = req.body.userId;
+  try {
+    await BizRecipe.updateMany(
+      {
+        "orderInfo.name": userId,
+        "orderInfo.status": { $in: ["Done", "Rejected"] },
+      },
+      { $pull: { orderInfo: { status: { $in: ["Done", "Rejected"] } } } }
+    );
+    res.json({ success: true, message: "Orders cleared successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Error clearing orders",
+        error: error.message,
+      });
+  }
+});

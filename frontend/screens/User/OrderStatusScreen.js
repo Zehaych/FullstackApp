@@ -1,10 +1,62 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { Context } from "../../store/context";
 
 const OrderStatusScreen = () => {
   const [userOrders, setUserOrders] = useState([]);
   const [currentUser, setCurrentUser] = useContext(Context);
+
+  // Check if there are any 'Done' or 'Rejected' orders
+  const hasDoneOrRejectedOrders = userOrders.some((order) =>
+    ["Done", "Rejected"].includes(order.status)
+  );
+
+  const confirmOrderClear = () => {
+    Alert.alert(
+      "Confirm Deletion",
+      "Do you want to clear all done or rejected orders?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "OK", onPress: () => clearOrders() },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const clearOrders = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/bizRecipe/clearOrders`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId: currentUser._id }),
+        }
+      );
+      const result = await response.json();
+      if (result.success) {
+        setUserOrders(
+          userOrders.filter(
+            (order) => !["Done", "Rejected"].includes(order.status)
+          )
+        );
+        Alert.alert("Success", "Orders cleared successfully");
+      } else {
+        Alert.alert("Error", "Failed to clear orders");
+      }
+    } catch (error) {
+      console.error("Error clearing orders:", error);
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -89,20 +141,37 @@ const OrderStatusScreen = () => {
   );
 
   return (
-    <FlatList
-      data={userOrders}
-      renderItem={renderOrderItem}
-      keyExtractor={(item) => item._id.toString()}
-      ListEmptyComponent={
-        <Text style={styles.emptyText}>No ongoing orders.</Text>
-      }
-    />
+    <View style={styles.container}>
+      {/* Conditionally render the button */}
+      {hasDoneOrRejectedOrders && (
+        <TouchableOpacity
+          onPress={confirmOrderClear}
+          style={styles.deleteButton}
+        >
+          <Text style={styles.deleteButtonText}>
+            Clear Done/Rejected Orders
+          </Text>
+        </TouchableOpacity>
+      )}
+
+      <FlatList
+        data={userOrders}
+        renderItem={renderOrderItem}
+        keyExtractor={(item) => item._id.toString()}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No ongoing orders.</Text>
+        }
+      />
+    </View>
   );
 };
 
 export default OrderStatusScreen;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   orderContainer: {
     backgroundColor: "white",
     padding: 20,
@@ -132,5 +201,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     marginTop: 50,
+  },
+  deleteButton: {
+    backgroundColor: "#FF6347",
+    padding: 10,
+    borderRadius: 5,
+    margin: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  deleteButtonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
