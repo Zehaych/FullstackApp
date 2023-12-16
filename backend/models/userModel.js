@@ -68,15 +68,27 @@ const userSchema = new Schema({
   },
   dailyCaloriesLog: [
     {
-        date: {
-            type: Date,
-            default: Date.now
-        },
-        total_calories: {
-            type: Number,
-            default: 0
-        }
-    }
+      date: {
+        type: Date,
+        default: Date.now,
+      },
+      total_calories: {
+        type: Number,
+        default: 0,
+      },
+    },
+  ],
+  favouriteRecipes: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Recipe",
+    },
+  ],
+  favouriteBizRecipes: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "BizRecipe",
+    },
   ],
 });
 
