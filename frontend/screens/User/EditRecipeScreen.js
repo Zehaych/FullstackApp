@@ -16,13 +16,13 @@ import * as ImagePicker from "expo-image-picker";
 
 const EditRecipeScreen = ({ route }) => {
   const navigation = useNavigation();
-  const { recipe } = route.params; // Assuming recipe data is passed as a parameter
+  const { recipeData } = route.params; // Assuming recipe data is passed as a parameter
 
-  const [name, setName] = useState(recipe.name);
-  const [ingredients, setIngredients] = useState(recipe.ingredients);
-  const [instructions, setInstructions] = useState(recipe.instructions);
-  const [calories, setCalories] = useState(recipe.calories.toString());
-  const [image, setImage] = useState(recipe.image);
+  const [name, setName] = useState(recipeData.name);
+  const [ingredients, setIngredients] = useState(recipeData.ingredients);
+  const [instructions, setInstructions] = useState(recipeData.instructions);
+  const [calories, setCalories] = useState(recipeData.calories.toString());
+  const [image, setImage] = useState(recipeData.image);
 
   const handleInstructionChange = (text, index) => {
     const newInstruction = [...instructions];
@@ -87,19 +87,22 @@ const EditRecipeScreen = ({ route }) => {
     console.log("Image:", image);
 
     // PUT request to update the recipe
-    fetch(`${process.env.EXPO_PUBLIC_IP}/recipe/updateRecipe/${recipe._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        ingredients,
-        instructions,
-        calories,
-        image,
-      }),
-    })
+    fetch(
+      `${process.env.EXPO_PUBLIC_IP}/recipe/updateRecipe/${recipeData._id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          ingredients,
+          instructions,
+          calories,
+          image,
+        }),
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         Alert.alert("Success", "Recipe updated successfully");

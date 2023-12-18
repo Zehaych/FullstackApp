@@ -22,7 +22,7 @@ import Swiper from "react-native-swiper";
 
 const { width, height } = Dimensions.get("window");
 
-export default function BusinessRecipeInfoScreen({ route, navigation }) {
+export default function ViewBizFavouriteRecipeInfo({ route, navigation }) {
   // const { recipeData } = route.params;
   const recipeData = route.params.recipeData;
 
@@ -581,22 +581,16 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
           </View>
         </TouchableOpacity>
 
-        {/* Render heart icon only if currentUser.userType is 'user' */}
-        {currentUser.userType === "user" && (
-          <TouchableOpacity
-            style={styles.menuItem}
-            onPress={handleFavoriteIcon}
-          >
-            <View>
-              <IconToo
-                name={isFavorite ? "heart" : "heart-o"}
-                size={25}
-                color={isFavorite ? "red" : "black"}
-                style={styles.icon}
-              />
-            </View>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity style={styles.menuItem} onPress={handleFavoriteIcon}>
+          <View>
+            <IconToo
+              name={isFavorite ? "heart" : "heart-o"}
+              size={25}
+              color={isFavorite ? "red" : "black"}
+              style={styles.icon}
+            />
+          </View>
+        </TouchableOpacity>
       </View>
 
       <View>

@@ -110,7 +110,7 @@ export default function ViewRecipeScreen({ navigation }) {
             <TouchableOpacity
               style={styles.recipeMember}
               onPress={() =>
-                navigation.navigate("View Recipe Info", { recipe: item })
+                navigation.navigate("View Recipe Info", { recipeData: item })
               }
             >
               <Image source={{ uri: item.image }} style={styles.image} />

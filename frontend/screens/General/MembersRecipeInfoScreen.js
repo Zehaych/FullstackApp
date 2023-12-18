@@ -455,10 +455,74 @@ export default function MembersRecipeInfoScreen({ route }) {
     );
   };
 
-  const handleFavoriteIcon = () => {
-    setIsFavorite((prev) => !prev);
+  const handleFavoriteIcon = async () => {
+    const action = isFavorite ? "remove" : "add";
+
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/user/updateFavorites/${currentUser._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            recipeId: recipeData._id,
+            action: action,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        // Update the favorite state locally
+        setIsFavorite((prev) => !prev);
+
+        // Update the currentUser context
+        const updatedFavorites =
+          action === "add"
+            ? [...currentUser.favouriteRecipes, recipeData._id]
+            : currentUser.favouriteRecipes.filter(
+                (id) => id !== recipeData._id
+              );
+        setCurrentUser({ ...currentUser, favouriteRecipes: updatedFavorites });
+
+        // Notify the user
+        if (action === "add") {
+          Alert.alert(
+            "Added to Favorites",
+            "This recipe has been added to your favorites."
+          );
+        } else {
+          Alert.alert(
+            "Removed from Favorites",
+            "This recipe has been removed from your favorites."
+          );
+        }
+      } else {
+        Alert.alert("Error", "Failed to update favorites.");
+      }
+    } catch (error) {
+      console.error("Error updating favorites:", error);
+      Alert.alert("Error", "An error occurred while updating the favorites.");
+    }
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkIfFavorite = () => {
+        const isFav = currentUser.favouriteRecipes.includes(recipeData._id);
+        setIsFavorite(isFav);
+      };
+
+      if (currentUser && recipeData) {
+        checkIfFavorite();
+      }
+
+      return () => {
+        // Optional cleanup if needed
+      };
+    }, [currentUser, recipeData])
+  );
   return (
     <ScrollView style={styles.container}>
       <View style={styles.menuContainer}>
@@ -470,16 +534,22 @@ export default function MembersRecipeInfoScreen({ route }) {
             <Icon name="report" color="#FF6347" size={25} style={styles.icon} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={handleFavoriteIcon}>
-          <View>
-            <IconToo
-              name={isFavorite ? "heart" : "heart-o"}
-              size={25}
-              color={isFavorite ? "red" : "black"}
-              style={styles.icon}
-            />
-          </View>
-        </TouchableOpacity>
+        {/* Render heart icon only if currentUser.userType is 'user' */}
+        {currentUser.userType === "user" && (
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={handleFavoriteIcon}
+          >
+            <View>
+              <IconToo
+                name={isFavorite ? "heart" : "heart-o"}
+                size={25}
+                color={isFavorite ? "red" : "black"}
+                style={styles.icon}
+              />
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
       <View>
         <View style={styles.imageContainer}>

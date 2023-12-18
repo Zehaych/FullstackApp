@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   Button,
+  Alert,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -98,7 +99,7 @@ export default function PaymentScreen({ route, navigation }) {
 
         if (hasOngoingOrder) {
           alert(
-            "You have an ongoing order for this recipe, please cancel your order to reorder again."
+            "You have an ongoing order for this recipe, please complete your order before ordering again."
           );
           return;
         }
@@ -141,6 +142,18 @@ export default function PaymentScreen({ route, navigation }) {
     } else {
       alert("Please fill in all payment details.");
     }
+  };
+
+  const confirmAndSubmitPayment = () => {
+    Alert.alert(
+      "Confirm Order Submission",
+      "Once you make this order, you will not be able to cancel it. Do you wish to continue?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "OK", onPress: handleSubmitPayment },
+      ],
+      { cancelable: false }
+    );
   };
 
   const incrementQuantity = () => {
@@ -374,7 +387,7 @@ export default function PaymentScreen({ route, navigation }) {
             </Text>
             <TouchableOpacity
               style={styles.button}
-              onPress={handleSubmitPayment}
+              onPress={confirmAndSubmitPayment}
             >
               <Text style={styles.buttonText}>Submit payment</Text>
             </TouchableOpacity>

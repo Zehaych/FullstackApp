@@ -13,19 +13,19 @@ import {
   Alert,
   Dimensions,
 } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
-import IconToo from "react-native-vector-icons/FontAwesome";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import IconToo from "react-native-vector-icons/FontAwesome";
+import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../../store/context";
+import AddRatingsScreen from "../User/AddRatingsScreen";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import MaskedView from "@react-native-masked-view/masked-view";
 import Swiper from "react-native-swiper";
 
 const { width, height } = Dimensions.get("window");
 
-export default function BusinessRecipeInfoScreen({ route, navigation }) {
-  // const { recipeData } = route.params;
+export default function ViewFavouriteRecipeInfo({ route }) {
   const recipeData = route.params.recipeData;
-
   const [username, setUsername] = useState("");
 
   // new
@@ -39,6 +39,8 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
   const [editRating, setEditRating] = useState(0);
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [userRating, setUserRating] = useState(0); // Updated for star rating
+
+  const [activeSlide, setActiveSlide] = useState(0);
 
   const [reportModalVisible, setReportModalVisible] = useState(false);
   const [reportReason, setReportReason] = useState("");
@@ -57,8 +59,10 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
 
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const [quantity, setQuantity] = useState(1);
-  const [totalPrice, setTotalPrice] = useState(recipeData.price);
+  const handleReasonPress = (reason) => {
+    setReportReason(reason);
+    setActiveReason(reason);
+  };
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -83,74 +87,32 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
     }
   }, [recipeData, currentUser._id]);
 
+  // Function to handle Swiper's index change
+  const onIndexChanged = (index) => {
+    setActiveSlide(index);
+  };
+
+  // Function to move to the next slide
+  const moveToNextSlide = () => {
+    if (activeSlide < submittedReviews.length - 1) {
+      swiperRef.scrollBy(1);
+    }
+  };
+
+  // Function to move to the previous slide
+  const moveToPrevSlide = () => {
+    if (activeSlide > 0) {
+      swiperRef.scrollBy(-1);
+    }
+  };
+
   // Reference to the Swiper component
   let swiperRef;
-
-  const incrementQuantity = () => {
-    const newQuantity = quantity + 1;
-    setQuantity(newQuantity);
-    setTotalPrice(newQuantity * recipeData.price);
-  };
-
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      const newQuantity = quantity - 1;
-      setQuantity(newQuantity);
-      setTotalPrice(newQuantity * recipeData.price);
-    }
-  };
-
-  const navigateToPayment = () => {
-    navigation.navigate("Payment", {
-      recipeData: recipeData,
-    });
-  };
-
-  const formatPrice = (price) => {
-    return `$${price.toFixed(2)}`;
-  };
-
-  const getTotalPrice = () => {
-    return formatPrice(totalPrice);
-  };
-
-  //   const url = `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${recipeData.submitted_by}`;
-
-  // const fetchUsername = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${recipeData.submitted_by}`
-  //     );
-  //     if (!response.ok) {
-  //       throw new Error(`Network response was not ok: ${response.status}`);
-  //     }
-  //     const user = await response.json();
-  //     setUsername(user.username);
-  //   } catch (error) {
-  //     console.error("Error fetching user data:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchUsername();
-  // }, []);
-
-  useEffect(() => {
-    if (recipeData && recipeData.submitted_by) {
-      setUsername(recipeData.submitted_by.username);
-    }
-  }, [recipeData]);
-
-  //All Functions for reporting
-  const handleReasonPress = (reason) => {
-    setReportReason(reason);
-    setActiveReason(reason);
-  };
 
   const reportRecipe = async () => {
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/bizrecipe/reportBizRecipe/${recipeData._id}`,
+        `${process.env.EXPO_PUBLIC_IP}/recipe/reportRecipe/${recipeData._id}`,
         {
           method: "POST",
           headers: {
@@ -193,7 +155,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
   const submitEditedReview = async () => {
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/bizrecipe/editRating/${recipeData._id}`,
+        `${process.env.EXPO_PUBLIC_IP}/recipe/editRating/${recipeData._id}`,
         {
           method: "PATCH", // Or POST, depending on your backend setup
           headers: {
@@ -260,7 +222,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
   const deleteReview = async (reviewId) => {
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/bizrecipe/deleteRating/${recipeData._id}`,
+        `${process.env.EXPO_PUBLIC_IP}/recipe/deleteRating/${recipeData._id}`,
         {
           method: "DELETE",
           headers: {
@@ -298,10 +260,6 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
           "Your review has been successfully deleted."
         );
       } else {
-        console.log("Printing review Id");
-        console.log(reviewId);
-        console.log("Printing recipe id");
-        console.log(recipeId);
         Alert.alert("Error", "Failed to delete the review.");
       }
     } catch (error) {
@@ -318,7 +276,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
 
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/bizrecipe/ratings`,
+        `${process.env.EXPO_PUBLIC_IP}/recipe/ratings`,
         {
           method: "POST",
           headers: {
@@ -393,7 +351,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
   const fetchRecipeDataAndUpdateState = async () => {
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/bizrecipe/getBizRecipeId/${recipeData._id}`
+        `${process.env.EXPO_PUBLIC_IP}/recipe/getRecipeId/${recipeData._id}`
       );
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status}`);
@@ -502,7 +460,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
 
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/user/updateBizFavorites/${currentUser._id}`,
+        `${process.env.EXPO_PUBLIC_IP}/user/updateFavorites/${currentUser._id}`,
         {
           method: "PATCH",
           headers: {
@@ -522,14 +480,11 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
         // Update the currentUser context
         const updatedFavorites =
           action === "add"
-            ? [...currentUser.favouriteBizRecipes, recipeData._id]
-            : currentUser.favouriteBizRecipes.filter(
+            ? [...currentUser.favouriteRecipes, recipeData._id]
+            : currentUser.favouriteRecipes.filter(
                 (id) => id !== recipeData._id
               );
-        setCurrentUser({
-          ...currentUser,
-          favouriteBizRecipes: updatedFavorites,
-        });
+        setCurrentUser({ ...currentUser, favouriteRecipes: updatedFavorites });
 
         // Notify the user
         if (action === "add") {
@@ -555,7 +510,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       const checkIfFavorite = () => {
-        const isFav = currentUser.favouriteBizRecipes.includes(recipeData._id);
+        const isFav = currentUser.favouriteRecipes.includes(recipeData._id);
         setIsFavorite(isFav);
       };
 
@@ -568,7 +523,6 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
       };
     }, [currentUser, recipeData])
   );
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.menuContainer}>
@@ -580,25 +534,17 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
             <Icon name="report" color="#FF6347" size={25} style={styles.icon} />
           </View>
         </TouchableOpacity>
-
-        {/* Render heart icon only if currentUser.userType is 'user' */}
-        {currentUser.userType === "user" && (
-          <TouchableOpacity
-            style={styles.menuItem}
-            onPress={handleFavoriteIcon}
-          >
-            <View>
-              <IconToo
-                name={isFavorite ? "heart" : "heart-o"}
-                size={25}
-                color={isFavorite ? "red" : "black"}
-                style={styles.icon}
-              />
-            </View>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity style={styles.menuItem} onPress={handleFavoriteIcon}>
+          <View>
+            <IconToo
+              name={isFavorite ? "heart" : "heart-o"}
+              size={25}
+              color={isFavorite ? "red" : "black"}
+              style={styles.icon}
+            />
+          </View>
+        </TouchableOpacity>
       </View>
-
       <View>
         <View style={styles.imageContainer}>
           <Image source={{ uri: recipeData.image }} style={styles.image} />
@@ -617,10 +563,9 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
             {recipeData.totalRatings} people rated
           </Text>
         </View>
-
         <View style={styles.mainBox}>
           <View style={styles.section}>
-            <Text style={styles.subTitle}>Company name: </Text>
+            <Text style={styles.subTitle}>Created by: </Text>
             <Text>{username}</Text>
           </View>
 
@@ -633,7 +578,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
                 <Text style={{ color: "red", fontWeight: "bold" }}>
                   {currentUser.foodRestrictions.join(", ")}
                 </Text>{" "}
-                when preparing/ordering the recipe. {"\n"}
+                when preparing the recipe. {"\n"}
               </Text>
             </View>
           )}
@@ -647,31 +592,17 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
 
           <View style={styles.section}>
             <Text style={styles.subTitle}>Instructions: </Text>
-            <View>
-              {recipeData.instructions.map((instruction, index) => (
-                <Text key={index}>
-                  <Text style={styles.boldText}>Step {index + 1}:</Text>{" "}
-                  {instruction} {"\n"}
-                </Text>
-              ))}
-            </View>
+            {recipeData.instructions.map((instruction, index) => (
+              <Text key={index}>
+                <Text style={styles.boldText}>Step {index + 1}:</Text>{" "}
+                {instruction} {"\n"}
+              </Text>
+            ))}
           </View>
 
-          <View style={styles.section}>
-            <Text style={styles.subTitle}>Calories: </Text>
-            <Text>{recipeData.calories}</Text>
-          </View>
-          <View style={styles.section}>
-            <Text style={styles.subTitle}>Price: </Text>
-            <Text>{formatPrice(recipeData.price)}</Text>
-          </View>
-          <Text style={styles.message}>Do you want us to prepare for you?</Text>
-
-          <TouchableOpacity style={styles.button} onPress={navigateToPayment}>
-            <Text style={styles.buttonText}>Prepare this meal for me</Text>
-          </TouchableOpacity>
+          <Text style={styles.subTitle}>Calories: </Text>
+          <Text>{recipeData.calories}</Text>
         </View>
-
         {/* <AddRatingsScreen /> */}
         {currentUserReviews.length === 0 ||
           (isCreator && <Text style={styles.title}>Recipe Review </Text>)}
@@ -1016,11 +947,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FCFCD3",
     padding: 20,
+
+    //alignItems: "center",
   },
+  //style for the image
   imageContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "center", // Center the image vertically
+    alignItems: "center", // Center the image horizontally
     padding: 10,
   },
   image: {
@@ -1030,7 +964,6 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     borderRadius: 20,
   },
-
   title: {
     color: "#333333",
     fontSize: 30,
@@ -1041,43 +974,6 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 20,
     fontWeight: "bold",
-  },
-  button: {
-    backgroundColor: "#0066cc",
-    padding: 10,
-    borderRadius: 10,
-    margin: 20,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  quantityContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  quantityLabel: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginRight: 10,
-  },
-  quantityButton: {
-    backgroundColor: "#ddd",
-    borderRadius: 5,
-    padding: 5,
-  },
-  quantity: {
-    fontSize: 20,
-    marginHorizontal: 10,
-  },
-  totalPrice: {
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginTop: 10,
   },
   mainBox: {
     borderWidth: 2,
@@ -1101,12 +997,9 @@ const styles = StyleSheet.create({
   boldText: {
     fontWeight: "bold",
   },
-  message: {
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#333",
-  },
+  // submittedReviewsContainer: {
+  //   marginTop: 20,
+  // },
   reviewItem: {
     padding: 10,
     borderRadius: 5,

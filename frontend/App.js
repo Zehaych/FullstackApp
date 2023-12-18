@@ -48,6 +48,10 @@ import ViewOrdersScreen from "./screens/BizPartner/ViewOrdersScreen";
 import CompletedOrdersScreen from "./screens/BizPartner/CompletedOrdersScreen";
 import ViewPastOrdersScreen from "./screens/User/ViewPastOrdersScreen";
 import OrderStatusScreen from "./screens/User/OrderStatusScreen";
+import ViewFavouritesScreen from "./screens/User/ViewFavouritesScreen";
+import ViewFavouriteRecipeInfo from "./screens/User/ViewFavouriteRecipeInfo";
+import ViewBizFavouritesScreen from "./screens/User/ViewBizFavouritesScreen";
+import ViewBizFavouriteRecipeInfo from "./screens/User/ViewBizFavouriteRecipeInfo";
 
 const Stack = createStackNavigator();
 
@@ -171,9 +175,33 @@ function App() {
             component={AddBizRecipeScreen}
           />
           <Stack.Screen name="View Recipe" component={ViewRecipeScreen} />
+
+          <Stack.Screen
+            name="View Favourites"
+            component={ViewFavouritesScreen}
+          />
+
+          <Stack.Screen
+            name="ViewFavouriteRecipeInfo"
+            component={ViewFavouriteRecipeInfo}
+            options={{ headerTransparent: true, headerTitle: "" }}
+          />
+
+          <Stack.Screen
+            name="View Business Favourites"
+            component={ViewBizFavouritesScreen}
+          />
+
+          <Stack.Screen
+            name="ViewBizFavouriteRecipeInfo"
+            component={ViewBizFavouriteRecipeInfo}
+            options={{ headerTransparent: true, headerTitle: "" }}
+          />
+
           <Stack.Screen
             name="View Recipe Info"
             component={ViewRecipeInfoScreen}
+            options={{ headerTransparent: true, headerTitle: "" }}
           />
 
           <Stack.Screen
@@ -183,6 +211,7 @@ function App() {
           <Stack.Screen
             name="Business Recipe Info"
             component={ViewBizRecipeInfoScreen}
+            options={{ headerTransparent: true, headerTitle: "" }}
           />
 
           <Stack.Screen name="View Orders" component={ViewOrdersScreen} />

@@ -1,82 +1,147 @@
-import React, { useState, useEffect, useContext } from "react";
+import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
   Text,
   View,
   Image,
   ScrollView,
-  StatusBar,
-  Button,
-  Alert,
-  TouchableOpacity,
   TextInput,
+  TouchableOpacity,
+  TouchableRipple,
+  Button,
   Modal,
+  Alert,
+  Dimensions,
 } from "react-native";
-import { Context } from "../../store/context";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import IconToo from "react-native-vector-icons/FontAwesome";
+import React, { useState, useEffect, useContext } from "react";
+import { Context } from "../../store/context";
+import AddRatingsScreen from "../User/AddRatingsScreen";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import MaskedView from "@react-native-masked-view/masked-view";
+import Swiper from "react-native-swiper";
+
+const { width, height } = Dimensions.get("window");
 
 export default function ViewRecipeInfoScreen({ route }) {
   const navigation = useNavigation();
 
-  const [recipe, setRecipe] = useState(route.params.recipe);
-  //   const { recipe } = route.params;
+  const recipeData = route.params.recipeData;
   const [username, setUsername] = useState("");
-  const [currentUser, setCurrentUser] = useContext(Context);
 
-  const [isCreator, setIsCreator] = useState(false);
+  // new
   const [userReview, setUserReview] = useState("");
+  const [isCreator, setIsCreator] = useState(false);
+  // const [userRating, setUserRating] = useState("");
+  const [submittedReviews, setSubmittedReviews] = useState([]);
+  const [currentUserReviews, setCurrentUserReviews] = useState([]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editReview, setEditReview] = useState("");
   const [editRating, setEditRating] = useState(0);
   const [editingReviewId, setEditingReviewId] = useState(null);
-  const [userRating, setUserRating] = useState(0);
-  const [submittedReviews, setSubmittedReviews] = useState([]);
-  const [currentUserReviews, setCurrentUserReviews] = useState([]); // Initialize currentUserReviews
+  const [userRating, setUserRating] = useState(0); // Updated for star rating
 
-  const fetchRecipeDetails = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/recipe/getRecipeId/${recipe._id}`
-      );
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status}`);
-      }
-      const updatedRecipe = await response.json();
-      setRecipe(updatedRecipe);
-      // Fetch username or other necessary data here
-    } catch (error) {
-      console.error("Error fetching recipe data:", error);
-    }
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  const [reportModalVisible, setReportModalVisible] = useState(false);
+  const [reportReason, setReportReason] = useState("");
+  const reportReasons = [
+    "Inappropriate Content",
+    "False Information",
+    "Offensive Language",
+    "Health Misinformation",
+    "Plagiarism",
+  ];
+  const [additionalDetails, setAdditionalDetails] = useState("");
+
+  const [currentUser, setCurrentUser] = useContext(Context);
+
+  const [activeReason, setActiveReason] = useState(null);
+
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const handleReasonPress = (reason) => {
+    setReportReason(reason);
+    setActiveReason(reason);
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchRecipeDetails();
-    }, [])
-  );
   useEffect(() => {
     const fetchUsername = async () => {
       try {
         const response = await fetch(
-          `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${recipe.submitted_by}`
+          `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${recipeData.submitted_by}`
         );
         if (!response.ok) {
           throw new Error(`Network response was not ok: ${response.status}`);
         }
         const user = await response.json();
         setUsername(user.username); // Update the state
-        setIsCreator(currentUser._id === recipe.submitted_by); // Check if the current user is the recipe creator
+        setIsCreator(currentUser._id === recipeData.submitted_by); // Check if the current user is the recipe creator
       } catch (error) {
         // console.error("Error fetching user data:", error);
         setUsername("Unknown User"); // Fallback username
       }
     };
 
-    if (recipe && recipe.submitted_by) {
+    if (recipeData && recipeData.submitted_by) {
       fetchUsername();
     }
-  }, [recipe, currentUser._id]);
+  }, [recipeData, currentUser._id]);
+
+  // Function to handle Swiper's index change
+  const onIndexChanged = (index) => {
+    setActiveSlide(index);
+  };
+
+  // Function to move to the next slide
+  const moveToNextSlide = () => {
+    if (activeSlide < submittedReviews.length - 1) {
+      swiperRef.scrollBy(1);
+    }
+  };
+
+  // Function to move to the previous slide
+  const moveToPrevSlide = () => {
+    if (activeSlide > 0) {
+      swiperRef.scrollBy(-1);
+    }
+  };
+
+  // Reference to the Swiper component
+  let swiperRef;
+
+  const reportRecipe = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/recipe/reportRecipe/${recipeData._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: currentUser._id,
+            feedback: reportReason,
+            additionalComment: additionalDetails,
+          }),
+        }
+      );
+      console.log(recipeData._id);
+      console.log(currentUser._id);
+      if (response.ok) {
+        Alert.alert(
+          "Report Submitted",
+          "Your report has been submitted for review."
+        );
+      } else {
+        Alert.alert("Report Failed", "Failed to submit the report.");
+      }
+    } catch (error) {
+      console.error("Error reporting recipe:", error);
+      Alert.alert("Error", "An error occurred while submitting the report.");
+    }
+  };
 
   // new
   // When the edit icon is clicked
@@ -91,14 +156,14 @@ export default function ViewRecipeInfoScreen({ route }) {
   const submitEditedReview = async () => {
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/recipe/editRating/${recipe._id}`,
+        `${process.env.EXPO_PUBLIC_IP}/recipe/editRating/${recipeData._id}`,
         {
-          method: "PATCH", // Or POST, depending on your backend setup
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            recipeId: recipe._id,
+            recipeId: recipeData._id,
             reviewId: editingReviewId,
             newReview: editReview,
             newRating: Number(editRating),
@@ -107,14 +172,14 @@ export default function ViewRecipeInfoScreen({ route }) {
       );
 
       if (response.ok) {
-        const updatedRecipe = await response.json();
+        const updatedRecipeData = await response.json();
 
         // Update the local state with the new recipe data
-        route.params.recipe = updatedRecipe;
+        route.params.recipeData = updatedRecipeData;
 
         // Update the state for reviews with usernames
         const reviewsWithUsernames = await Promise.all(
-          updatedRecipe.reviewsAndRatings.map(async (review) => {
+          updatedRecipeData.reviewsAndRatings.map(async (review) => {
             const username = await fetchUsernameById(review.name);
             return { ...review, username };
           })
@@ -158,7 +223,7 @@ export default function ViewRecipeInfoScreen({ route }) {
   const deleteReview = async (reviewId) => {
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/recipe/deleteRating/${recipe._id}`,
+        `${process.env.EXPO_PUBLIC_IP}/recipe/deleteRating/${recipeData._id}`,
         {
           method: "DELETE",
           headers: {
@@ -184,8 +249,8 @@ export default function ViewRecipeInfoScreen({ route }) {
         const averageRating = totalRatings > 0 ? sumRatings / totalRatings : 0;
 
         // Update the state
-        route.params.recipe.averageRating = averageRating;
-        route.params.recipe.totalRatings = totalRatings;
+        route.params.recipeData.averageRating = averageRating;
+        route.params.recipeData.totalRatings = totalRatings;
 
         // Reflect these changes in your component's state
         setCurrentUserReviews([]);
@@ -219,7 +284,7 @@ export default function ViewRecipeInfoScreen({ route }) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: recipe._id,
+            id: recipeData._id,
             name: currentUser._id,
             reviews: userReview,
             ratings: Number(userRating),
@@ -229,14 +294,14 @@ export default function ViewRecipeInfoScreen({ route }) {
 
       if (response.ok) {
         // Assuming you get the updated recipe data in the response
-        const updatedRecipe = await response.json();
+        const updatedRecipeData = await response.json();
 
         // Update the local state with the new recipe data
-        route.params.recipe = updatedRecipe;
+        route.params.recipeData = updatedRecipeData;
 
         // Update the state for reviews with usernames
         const reviewsWithUsernames = await Promise.all(
-          updatedRecipe.reviewsAndRatings.map(async (review) => {
+          updatedRecipeData.reviewsAndRatings.map(async (review) => {
             const username = await fetchUsernameById(review.name);
             return { ...review, username };
           })
@@ -287,7 +352,7 @@ export default function ViewRecipeInfoScreen({ route }) {
   const fetchRecipeDataAndUpdateState = async () => {
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/recipe/getRecipeId/${recipe._id}`
+        `${process.env.EXPO_PUBLIC_IP}/recipe/getRecipeId/${recipeData._id}`
       );
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status}`);
@@ -295,7 +360,7 @@ export default function ViewRecipeInfoScreen({ route }) {
       const data = await response.json();
 
       // Update the route params with the new recipe data
-      route.params.recipe = data;
+      route.params.recipeData = data;
 
       // Update the state for reviews with usernames
       const reviewsWithUsernames = await Promise.all(
@@ -319,10 +384,16 @@ export default function ViewRecipeInfoScreen({ route }) {
     }
   };
 
-  // Use the function in useEffect or useFocusEffect
+  // Use the function in useEffect and useFocusEffect
   useEffect(() => {
     fetchRecipeDataAndUpdateState();
-  }, [recipe._id, currentUser._id]);
+  }, [recipeData._id, currentUser._id]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchRecipeDataAndUpdateState();
+    }, [])
+  );
 
   const Star = ({ filled, partiallyFilled }) => {
     return (
@@ -390,9 +461,78 @@ export default function ViewRecipeInfoScreen({ route }) {
       </View>
     );
   };
-  //
+
+  const handleFavoriteIcon = async () => {
+    const action = isFavorite ? "remove" : "add";
+
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/user/updateFavorites/${currentUser._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            recipeId: recipeData._id,
+            action: action,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        // Update the favorite state locally
+        setIsFavorite((prev) => !prev);
+
+        // Update the currentUser context
+        const updatedFavorites =
+          action === "add"
+            ? [...currentUser.favouriteRecipes, recipeData._id]
+            : currentUser.favouriteRecipes.filter(
+                (id) => id !== recipeData._id
+              );
+        setCurrentUser({ ...currentUser, favouriteRecipes: updatedFavorites });
+
+        // Notify the user
+        if (action === "add") {
+          Alert.alert(
+            "Added to Favorites",
+            "This recipe has been added to your favorites."
+          );
+        } else {
+          Alert.alert(
+            "Removed from Favorites",
+            "This recipe has been removed from your favorites."
+          );
+        }
+      } else {
+        Alert.alert("Error", "Failed to update favorites.");
+      }
+    } catch (error) {
+      console.error("Error updating favorites:", error);
+      Alert.alert("Error", "An error occurred while updating the favorites.");
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkIfFavorite = () => {
+        const isFav = currentUser.favouriteRecipes.includes(recipeData._id);
+        setIsFavorite(isFav);
+      };
+
+      if (currentUser && recipeData) {
+        checkIfFavorite();
+      }
+
+      return () => {
+        // Optional cleanup if needed
+      };
+    }, [currentUser, recipeData])
+  );
+
   const handleEditPress = () => {
-    navigation.navigate("Edit Recipe", { recipe });
+    navigation.navigate("Edit Recipe", { recipeData });
   };
 
   const handleDeletePress = () => {
@@ -415,7 +555,7 @@ export default function ViewRecipeInfoScreen({ route }) {
   const deleteRecipe = async () => {
     try {
       const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/recipe/deleteRecipe/${recipe._id}`,
+        `${process.env.EXPO_PUBLIC_IP}/recipe/deleteRecipe/${recipeData._id}`,
         {
           method: "DELETE",
           headers: {
@@ -438,28 +578,45 @@ export default function ViewRecipeInfoScreen({ route }) {
   };
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-    >
+    <ScrollView style={styles.container}>
+      <View style={styles.menuContainer}>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => setReportModalVisible(true)}
+        >
+          <View>
+            <Icon name="report" color="#FF6347" size={25} style={styles.icon} />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={handleFavoriteIcon}>
+          <View>
+            <IconToo
+              name={isFavorite ? "heart" : "heart-o"}
+              size={25}
+              color={isFavorite ? "red" : "black"}
+              style={styles.icon}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
       <View>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: recipe.image }} style={styles.image} />
+          <Image source={{ uri: recipeData.image }} style={styles.image} />
         </View>
-        <Text style={styles.title}>{recipe.name}</Text>
+        <Text style={styles.title}>{recipeData.name}</Text>
+
         <View style={styles.ratingContainer}>
-          <Rating rating={recipe.averageRating} />
+          <Rating rating={recipeData.averageRating} />
           <Text style={styles.ratingText}>
-            {recipe.averageRating.toFixed(1)}
+            {recipeData.averageRating.toFixed(1)}
           </Text>
         </View>
         <View style={styles.ratingContainer}>
           <Icon name="person" size={24} color="#333333" />
           <Text style={{ marginLeft: 8 }}>
-            {recipe.totalRatings} people rated
+            {recipeData.totalRatings} people rated
           </Text>
         </View>
-
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleEditPress}>
             <Text style={styles.buttonText}>Edit</Text>
@@ -471,14 +628,12 @@ export default function ViewRecipeInfoScreen({ route }) {
             <Text style={styles.buttonText}>Delete</Text>
           </TouchableOpacity>
         </View>
-
         <View style={styles.mainBox}>
           <View style={styles.section}>
             <Text style={styles.subTitle}>Created by: </Text>
             <Text>{username}</Text>
           </View>
 
-          {/* Display a warning based on user's food restrictions, if any */}
           {currentUser.foodRestrictions.length > 0 && (
             <View style={styles.section}>
               <Text style={styles.subTitle}>Disclaimer: </Text>
@@ -493,27 +648,25 @@ export default function ViewRecipeInfoScreen({ route }) {
             </View>
           )}
 
-          {/* Ingredients List */}
           <View style={styles.section}>
             <Text style={styles.subTitle}>Ingredients: </Text>
-            {recipe.ingredients.map((ingredient, index) => (
-              <Text key={index}>• {ingredient}</Text>
+            {recipeData.ingredients.map((ingredient, index) => (
+              <Text key={index}>• {ingredient} </Text>
             ))}
           </View>
 
-          {/* Cooking Instructions */}
           <View style={styles.section}>
             <Text style={styles.subTitle}>Instructions: </Text>
-            {recipe.instructions.map((instruction, index) => (
+            {recipeData.instructions.map((instruction, index) => (
               <Text key={index}>
-                Step {index + 1}: {instruction} {"\n"}
+                <Text style={styles.boldText}>Step {index + 1}:</Text>{" "}
+                {instruction} {"\n"}
               </Text>
             ))}
           </View>
 
-          {/* Display calories if available */}
           <Text style={styles.subTitle}>Calories: </Text>
-          <Text>{recipe.calories || "Not specified"}</Text>
+          <Text>{recipeData.calories}</Text>
         </View>
         {/* <AddRatingsScreen /> */}
         {currentUserReviews.length === 0 ||
@@ -522,20 +675,24 @@ export default function ViewRecipeInfoScreen({ route }) {
         {/* Only show review submission form if the user hasn't submitted a review yet and is not the creator */}
 
         {currentUserReviews.length === 0 && !isCreator && (
-          <View style={styles.mainBox}>
-            <View style={styles.section}>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter your review"
-                value={userReview}
-                onChangeText={setUserReview}
-                multiline
-              />
-              <StarRatingInput
-                rating={userRating}
-                onRatingChange={handleRatingChange}
-              />
-              <Button title="Submit Review" onPress={submitReviewAndRating} />
+          <View>
+            <Text style={styles.title}>Your Review</Text>
+
+            <View style={styles.mainBox}>
+              <View style={styles.section}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your review"
+                  value={userReview}
+                  onChangeText={setUserReview}
+                  multiline
+                />
+                <StarRatingInput
+                  rating={userRating}
+                  onRatingChange={handleRatingChange}
+                />
+                <Button title="Submit Review" onPress={submitReviewAndRating} />
+              </View>
             </View>
           </View>
         )}
@@ -601,29 +758,39 @@ export default function ViewRecipeInfoScreen({ route }) {
         {/* "Community Reviews" section */}
         <Text style={styles.title}>Community Reviews</Text>
         {submittedReviews.length > 0 ? (
-          // <View style={styles.mainBox}>
-          <View style={styles.submittedReviewsContainer}>
-            {submittedReviews.map((review, index) => (
-              <View key={index} style={styles.mainBox}>
-                <View style={styles.section}>
-                  <Text style={styles.reviewLabel}>Name:</Text>
-                  <Text style={styles.reviewContent}>
-                    {review.username || "Deleted User"}
-                  </Text>
-                </View>
+          <View>
+            <Swiper
+              ref={(swiper) => {
+                swiperRef = swiper;
+              }}
+              style={styles.swiperContainer}
+              showsButtons={false}
+              loop={false}
+              autoplay={true}
+              autoplayTimeout={5} // Set autoplay timeout to 5 seconds
+              // onIndexChanged={onIndexChanged}
+            >
+              {submittedReviews.map((review, index) => (
+                <View key={index} style={styles.mainBox}>
+                  <View style={styles.section}>
+                    <Text style={styles.reviewLabel}>Name:</Text>
+                    <Text style={styles.reviewContent}>
+                      {review.username || "Deleted User"}
+                    </Text>
+                  </View>
 
-                <View style={styles.section}>
-                  <Text style={styles.reviewLabel}>Review:</Text>
-                  <Text style={styles.reviewContent}>{review.reviews}</Text>
-                </View>
+                  <View style={styles.section}>
+                    <Text style={styles.reviewLabel}>Review:</Text>
+                    <Text style={styles.reviewContent}>{review.reviews}</Text>
+                  </View>
 
-                <Text style={styles.reviewLabel}>Rating:</Text>
-                <Rating rating={review.ratings} />
-              </View>
-            ))}
+                  <Text style={styles.reviewLabel}>Rating:</Text>
+                  <Rating rating={review.ratings} />
+                </View>
+              ))}
+            </Swiper>
           </View>
         ) : (
-          // </View>
           <View style={styles.mainBox}>
             <Text style={styles.noReviewsText}>No reviews yet</Text>
           </View>
@@ -669,9 +836,70 @@ export default function ViewRecipeInfoScreen({ route }) {
           </View>
         </View>
       </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={reportModalVisible}
+        onRequestClose={() => setReportModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View style={styles.reasonsContainer}>
+              {reportReasons.map((reason, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[
+                    styles.reasonButton,
+                    activeReason === reason ? styles.activeReasonButton : null,
+                  ]}
+                  onPress={() => handleReasonPress(reason)}
+                >
+                  <Text
+                    style={[
+                      styles.reasonButtonText,
+                      activeReason === reason
+                        ? styles.activeReasonButtonText
+                        : null,
+                    ]}
+                  >
+                    {reason}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Additional details (optional)"
+              value={additionalDetails}
+              onChangeText={setAdditionalDetails}
+              multiline
+            />
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={() => {
+                setReportModalVisible(false);
+                reportRecipe();
+              }}
+            >
+              <Text style={styles.submitButtonText}>Submit Report</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.secondButton}
+              onPress={() => {
+                setReportModalVisible(false);
+              }}
+            >
+              <Text style={styles.submitButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
+
 const styles = StyleSheet.create({
   reasonsContainer: {
     justifyContent: "flex-start",
@@ -696,6 +924,10 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 16,
+  },
+  menuContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   menuItem: {
     marginTop: 15,
@@ -834,7 +1066,6 @@ const styles = StyleSheet.create({
   //   marginTop: 20,
   // },
   reviewItem: {
-    // backgroundColor: "#f0f0f0",
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
@@ -865,6 +1096,9 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     marginLeft: 8,
+  },
+  swiperContainer: {
+    height: height < 700 ? height * 0.4 : height * 0.36,
   },
   buttonContainer: {
     flexDirection: "row",

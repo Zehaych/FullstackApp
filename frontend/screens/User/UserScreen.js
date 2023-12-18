@@ -84,6 +84,14 @@ const UserScreen = () => {
     // Navigate to the "Insert Medical History" screen
     navigation.push("Medical History");
   };
+  const onViewFavouritesPressed = () => {
+    // Navigate to the "Insert Medical History" screen
+    navigation.push("View Favourites");
+  };
+  const onViewBizFavouritesPressed = () => {
+    // Navigate to the "Insert Medical History" screen
+    navigation.push("View Business Favourites");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -162,6 +170,22 @@ const UserScreen = () => {
             <View style={styles.menuItem}>
               <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
               <Text style={styles.menuItemText}>View Added Recipe</Text>
+            </View>
+          </TouchableRipple>
+
+          <TouchableRipple onPress={onViewFavouritesPressed}>
+            <View style={styles.menuItem}>
+              <Icon name="heart" color="#FF6347" size={25} />
+              <Text style={styles.menuItemText}>
+                Favourite Community Recipe
+              </Text>
+            </View>
+          </TouchableRipple>
+
+          <TouchableRipple onPress={onViewBizFavouritesPressed}>
+            <View style={styles.menuItem}>
+              <Icon name="hand-heart-outline" color="#FF6347" size={25} />
+              <Text style={styles.menuItemText}>Favourite Business Recipe</Text>
             </View>
           </TouchableRipple>
 
@@ -262,7 +286,7 @@ const styles = StyleSheet.create({
   },
   menuItem: {
     flexDirection: "row",
-    paddingVertical: 10,
+    paddingVertical: 6,
     paddingHorizontal: 30,
     alignItems: "center",
     borderBottomWidth: 1,

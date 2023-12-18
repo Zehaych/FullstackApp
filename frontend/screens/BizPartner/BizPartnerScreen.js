@@ -182,6 +182,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 30,
     alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#dddddd",
   },
   menuItemText: {
     color: "#777777",

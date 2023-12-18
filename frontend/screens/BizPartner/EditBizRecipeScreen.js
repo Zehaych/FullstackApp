@@ -16,14 +16,14 @@ import * as ImagePicker from "expo-image-picker";
 
 const EditBizRecipeScreen = ({ route }) => {
   const navigation = useNavigation();
-  const { recipe } = route.params; // Assuming recipe data is passed as a parameter
+  const { recipeData } = route.params;
 
-  const [name, setName] = useState(recipe.name);
-  const [ingredients, setIngredients] = useState(recipe.ingredients);
-  const [instructions, setInstructions] = useState(recipe.instructions);
-  const [calories, setCalories] = useState(recipe.calories.toString());
-  const [image, setImage] = useState(recipe.image);
-  const [price, setPrice] = useState(recipe.price.toString());
+  const [name, setName] = useState(recipeData.name);
+  const [ingredients, setIngredients] = useState(recipeData.ingredients);
+  const [instructions, setInstructions] = useState(recipeData.instructions);
+  const [calories, setCalories] = useState(recipeData.calories.toString());
+  const [image, setImage] = useState(recipeData.image);
+  const [price, setPrice] = useState(recipeData.price.toString());
 
   const handleInstructionChange = (text, index) => {
     const newInstruction = [...instructions];
@@ -91,7 +91,7 @@ const EditBizRecipeScreen = ({ route }) => {
 
     // PUT request to update the recipe
     fetch(
-      `${process.env.EXPO_PUBLIC_IP}/bizRecipe/updateBizRecipe/${recipe._id}`,
+      `${process.env.EXPO_PUBLIC_IP}/bizRecipe/updateBizRecipe/${recipeData._id}`,
       {
         method: "PUT",
         headers: {
