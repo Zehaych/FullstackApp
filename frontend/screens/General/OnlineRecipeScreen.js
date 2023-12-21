@@ -11,20 +11,23 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import {
-  fetchRecipes,
-  fetchRecipeDetails,
-  fetchRandomRecipes,
-} from "../../assets/Api";
+import { fetchRecommendations, fetchRecipes } from "../../assets/Api";
+
 import { Context } from "../../store/context";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
+import { Dimensions } from "react-native";
+
+// make the search bar responsive even for smaller devices
+const screenWidth = Dimensions.get("window").width;
 
 const OnlineRecipeScreen = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [recipes, setRecipes] = useState([]);
   const [randomRecipes, setRandomRecipes] = useState([]);
+  const [mealPlanRecipes, setMealPlanRecipes] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [currentUser, setCurrentUser] = useContext(Context);
   const navigation = useNavigation();
 
@@ -32,28 +35,6 @@ const OnlineRecipeScreen = () => {
   const foodRestrictions = currentUser.foodRestrictions;
 
   const allergies = currentUser.allergies;
-
-  // useEffect(() => {
-  //   if (search) {
-  //     setLoading(true);
-
-  //     // Call the fetchRecipes function from api.js
-  //     fetchRecipes(search)
-  //       .then((data) => {
-  //         // Filter recipes based on user's medical history and allergies
-  //         const filteredRecipes = data.filter((recipe) => {
-  //               // Check if any allergenic ingredient is in the recipe
-  //               return !recipe.ingredients.some((ingredient) =>
-  //                 userAllergies.includes(ingredient)
-  //               );
-  //             });
-
-  //         setRecipes(filteredRecipes);
-  //       })
-  //       .catch((error) => console.error('Error fetching recipes:', error))
-  //       .finally(() => setLoading(false));
-  //   }
-  // }, [search, medicalFilterEnabled, userAllergies]);
 
   useEffect(() => {
     if (search) {
@@ -69,47 +50,21 @@ const OnlineRecipeScreen = () => {
     }
   }, [search, allergies]);
 
-  // useEffect(() => {
-  //   if (search) {
-  //     setLoading(true);
-
-  //     // Call the fetchRecipes function from api.js
-  //     fetchRecipes(search)
-  //       .then((data) => setRecipes(data))
-  //       .catch((error) => console.error("Error fetching recipes:", error))
-  //       .finally(() => setLoading(false));
-  //   }
-  // }, [search]);
-
-  //random recipes
+  // Fetch meal plan recipes based on user's calorie target and allergies
   useEffect(() => {
+    const targetCalories = currentUser.calorie;
+    const allergies = currentUser.allergies;
     setLoading(true);
 
-    //fetch 20 random recipes
-    const numberOfRecipes = 20;
-    fetchRandomRecipes(numberOfRecipes)
+    fetchRecommendations(targetCalories, allergies)
       .then((data) => {
-        setRandomRecipes(data);
+        setMealPlanRecipes(data.meals);
       })
-      .catch((error) => console.error("Error fetching random recipes:", error))
+      .catch((error) =>
+        console.error("Error fetching meal plan recipes:", error)
+      )
       .finally(() => setLoading(false));
-  }, []);
-
-  // //handle search data
-  // const handleSearch = (text) => {
-  //   // Check if the search query matches any restricted food items
-  //   if (foodRestrictions.includes(text)) {
-  //     // Optionally, show an error message or handle the case differently
-  //     console.error("This food item is restricted:", text);
-  //     alert("This food item is restricted as per your medical history:", text);
-  //     return;
-  //   }
-
-  //   setSearch(text);
-  //   if (!text) {
-  //     setRecipes([]); // Clear the recipes list
-  //   }
-  // };
+  }, [currentUser]);
 
   //handle search data
   const handleSearch = (text) => {
@@ -158,20 +113,23 @@ const OnlineRecipeScreen = () => {
           )}
         </View>
         {/* featured section */}
-        <Text style={styles.recommandation}>Featured Random Recipe</Text>
-        {/* random recipe */}
-        {/*data={randomRecipes.slice(0, 20)}*/}
+        <Text style={styles.recommandation}>Featured Meal Plan</Text>
+
         <FlatList
-          data={randomRecipes}
+          data={mealPlanRecipes}
           horizontal={true}
-          contentContainerStyle={styles.foodContainer}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => `${item.id}-${index}`}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.recipeMember}
               onPress={() => handleItemClick(item.id)}
             >
-              <Image source={{ uri: item.image }} style={styles.recipeImage} />
+              <Image
+                source={{
+                  uri: `https://spoonacular.com/recipeImages/${item.id}-312x231.${item.imageType}`,
+                }}
+                style={styles.recipeImage}
+              />
               <Text style={styles.recipeName}>{item.title}</Text>
             </TouchableOpacity>
           )}
@@ -188,11 +146,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FCFCD3",
     alignItems: "center",
+    paddingBottom: 10,
   },
   header: {},
   searchBar: {
     height: 50,
-    width: 385,
+    width: screenWidth - 20, // 20 is the total horizontal margin (10 on each side)
     borderColor: "gray",
     borderWidth: 1,
     borderRadius: 10,
@@ -249,128 +208,3 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 });
-
-/*
-
-  //old random recipes
-  // useEffect(() => {
-  //   // Fetch random recipe details
-  //   const randomRecipeIds = getRandomRecipeIds();
-  //   const fetchRecipePromises = randomRecipeIds.map((recipeId) =>
-  //     fetchRecipeDetails(recipeId)
-  //   );
-
-  //   Promise.all(fetchRecipePromises)
-  //     .then((data) => {
-  //       setRandomRecipes(data);
-  //     })
-  //     .catch((error) => console.error("Error fetching recipes:", error));
-  // }, []);
-
- // function getRandomRecipeIds() {
-  //   // Generate random recipe IDs (e.g., between 1 and 1000)
-  //   const randomIds = [];
-  //   while (randomIds.length < 10) {
-  //     const randomId = Math.floor(Math.random() * 1000) + 1;
-  //     if (!randomIds.includes(randomId)) {
-  //       randomIds.push(randomId);
-  //     }
-  //   }
-  //   return randomIds;
-  // }
-
-//const [medicalFilterEnabled, setMedicalFilterEnabled] = useState(false);
-  //const [userAllergies, setUserAllergies] = useState([]); //retrieve allergies from user profile to filter recipes
-
-//handle medical filter
-  // const handleMedicalFilter = () => {
-  //   setMedicalFilterEnabled((prev) => !prev);
-  // };
-
-
-    useEffect(() => {
-    if (search) {
-      setLoading(true);
-
-      // Call the fetchRecipes function from api.js
-      fetchRecipes(search)
-        .then((data) => {    
-          // Filter recipes if the medical filter is enabled
-          const filteredRecipes = medicalFilterEnabled
-            ? data.filter((recipe) => {
-                // Check if any allergenic ingredient is in the recipe
-                return !recipe.ingredients.some((ingredient) =>
-                  userAllergies.includes(ingredient)
-                );
-              })
-            : data;
-
-          setRecipes(filteredRecipes);
-        })
-        .catch((error) => console.error('Error fetching recipes:', error))
-        .finally(() => setLoading(false));
-    }
-  }, [search, medicalFilterEnabled, userAllergies]);
-
-
-<View style={styles.filterContainer}>
-          <View style={styles.leftComponent}>
-            <Text style={styles.toggleText}>Apply Medical Filter?  </Text>
-          </View>
-          <View style={styles.rightComponent}>
-            <TouchableOpacity onPress={handleMedicalFilter} style={styles.toggleButton}>
-              <Icon
-                name={medicalFilterEnabled ? 'toggle-on' : 'toggle-off'}
-                size={25}
-                color={medicalFilterEnabled ? 'orange' : 'black'}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-
-
-        filterContainer: {
-    flexDirection: 'row', // Arrange components horizontally from left to right
-    justifyContent: 'space-between', // Space them evenly
-    alignItems: 'center', // Center them vertically
-    paddingTop: 5,
-    paddingBottom: 5,
-  },
-  leftComponent: {
-    flex: 1, 
-    paddingTop: 5,
-    paddingBottom: 5,
-  },
-  rightComponent: {
-    flex: 1, 
-    paddingTop: 5,
-    paddingBottom: 5,
-  },
-  toggleText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    //textAlign: "center",
-    paddingLeft: 10,
-  },
-  toggleButton: {
-    alignItems: "flex-end",
-    paddingRight: 10,
-    borderRadius: 10,
-  },
-
-
-
-  <View style={styles.randomRecipes}>
-        <FlatList
-          data={getRandomRecipes(recipes, 20)} // Display 20 random recipes
-          numColumns={2} // 2 columns
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleItemClick(item.id)}>
-              <Text>{item.title}</Text>
-            </TouchableOpacity>
-            )}
-        />
-      </View>
-*/
