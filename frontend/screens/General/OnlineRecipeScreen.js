@@ -41,14 +41,14 @@ const OnlineRecipeScreen = () => {
       setLoading(true);
 
       // Call the fetchRecipes function from api.js with allergies
-      fetchRecipes(search, allergies)
+      fetchRecipes(search, foodRestrictions)
         .then((data) => {
           setRecipes(data);
         })
         .catch((error) => console.error("Error fetching recipes:", error))
         .finally(() => setLoading(false));
     }
-  }, [search, allergies]);
+  }, [search, foodRestrictions]);
 
   // Fetch meal plan recipes based on user's calorie target and allergies
   useEffect(() => {

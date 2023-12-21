@@ -4,11 +4,11 @@
 // const API_KEY = "c340febd6b744850a0a6b615ae95899b";
 // const API_KEY = "f4991d4623324aaaaad5a221c320c38f";
 // const API_KEY = "a0e96efb400344959ce64a39e0b5c786";
-// const API_KEY = "16b4790ed40a4172a9f8981cd5a333db";
+const API_KEY = "16b4790ed40a4172a9f8981cd5a333db";
 // const API_KEY = "0a379b4c97a648aeb0051120265dcfca";
 // const API_KEY = "896cbe4ca4d04cbaa770db45e4221a86";
 //  const API_KEY = "dcdece78ff304c2c8458ae107c8d6435";
-const API_KEY = "58a60f0d87ed4b93910367fe8a51d35d";
+// const API_KEY = "58a60f0d87ed4b93910367fe8a51d35d";
 
 //search recipes by query
 // export async function fetchRecipes(query) {
@@ -29,8 +29,8 @@ const API_KEY = "58a60f0d87ed4b93910367fe8a51d35d";
 //   }
 // }
 
-// search recipes by query and allergies
-export async function fetchRecipes(query, allergies) {
+// search recipes by query and foodRestrictions
+export async function fetchRecipes(query, foodRestrictions) {
   let url = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&query=${query}`;
 
   // Gather all intolerances into an array
@@ -48,48 +48,13 @@ export async function fetchRecipes(query, allergies) {
     "Tree Nut",
     "Wheat",
   ]
-    .filter((intolerance) => allergies.includes(intolerance))
+    .filter((intolerance) => foodRestrictions.includes(intolerance))
     .join(",");
 
   // If there are any intolerances, append them to the URL
   if (intolerances.length > 0) {
     url += `&intolerances=${intolerances}`;
   }
-
-  // commented as of today for testing
-  // if (foodRestrictions.includes("Sodium")) {
-  //   url += "&maxSodium=30";
-  // }
-  // if (foodRestrictions.includes("Saturated Fat")) {
-  //   url += "&maxSaturatedFat=0.2";
-  // }
-  // if (foodRestrictions.includes("Sugar")) {
-  //   url += "&maxSugar=0.3";
-  // }
-  // if (foodRestrictions.includes("Cholesterol")) {
-  //   url += "&maxCholesterol=0";
-  // }
-  // end of comment today
-
-  // // Define an object to map food restrictions to URL parameters
-  // const restrictionParams = {
-  //   Sodium: "maxSodium=30",
-  //   "Saturated Fat": "maxSaturatedFat=0.2",
-  //   Sugar: "maxSugar=0.3",
-  //   Cholesterol: "maxCholesterol=0",
-  // };
-
-  // // Iterate through the object to check each restriction and add the URL parameter if needed
-  // for (let restriction in restrictionParams) {
-  //   if (foodRestrictions.includes(restriction)) {
-  //     url += `&${restrictionParams[restriction]}`;
-  //   }
-  // }
-
-  // commented as of today for testing
-  // if (foodRestrictions.includes("Spicy")) {
-  //   url += "&excludeIngredients=curry,chilli,pepper,allspice";
-  // }
 
   try {
     const response = await fetch(url);
@@ -102,26 +67,90 @@ export async function fetchRecipes(query, allergies) {
 
     // Additional client-side filtering
     const filteredData = data.results.filter((recipe) => {
-      // Check if the recipe title includes any of the user's allergies
-      const containsAllergy = allergies.some((allergy) =>
-        recipe.title.toLowerCase().includes(allergy.toLowerCase())
+      // Check if the recipe title includes any of the user's foodRestrictions
+      const containsFoodRestrictions = foodRestrictions.some(
+        (foodRestriction) =>
+          recipe.title.toLowerCase().includes(foodRestriction.toLowerCase())
       );
 
       // Extra validation for some of the allergy products
       const containsDairy =
-        allergies.includes("Dairy") &&
+        foodRestrictions.includes("Dairy") &&
         (recipe.title.toLowerCase().includes("milk") ||
           recipe.title.toLowerCase().includes("cheese") ||
           recipe.title.toLowerCase().includes("yogurt") ||
-          recipe.title.toLowerCase().includes("cheesy"));
+          recipe.title.toLowerCase().includes("cheesy") ||
+          recipe.title.toLowerCase().includes("butter") ||
+          recipe.title.toLowerCase().includes("cream cheese") ||
+          recipe.title.toLowerCase().includes("ghee") ||
+          recipe.title.toLowerCase().includes("whey"));
 
       const containsEgg =
-        allergies.includes("Egg") &&
-        (recipe.title.toLowerCase().includes("egg") ||
-          recipe.title.toLowerCase().includes("eggs"));
+        foodRestrictions.includes("Egg") &&
+        recipe.title.toLowerCase().includes("eggs");
+
+      const containsSpicy =
+        foodRestrictions.includes("Spicy") &&
+        (recipe.title.toLowerCase().includes("spice") ||
+          recipe.title.toLowerCase().includes("spices") ||
+          recipe.title.toLowerCase().includes("chili") ||
+          recipe.title.toLowerCase().includes("chilli") ||
+          recipe.title.toLowerCase().includes("pepper") ||
+          recipe.title.toLowerCase().includes("curry") ||
+          recipe.title.toLowerCase().includes("hot") ||
+          recipe.title.toLowerCase().includes("allspice"));
+
+      const containsSugar =
+        foodRestrictions.includes("Sugar") &&
+        (recipe.title.toLowerCase().includes("sweet") ||
+          recipe.title.toLowerCase().includes("sugary") ||
+          recipe.title.toLowerCase().includes("sugared") ||
+          recipe.title.toLowerCase().includes("honey") ||
+          recipe.title.toLowerCase().includes("syrup") ||
+          recipe.title.toLowerCase().includes("molasses"));
+
+      const containsSalt =
+        foodRestrictions.includes("Sodium") &&
+        (recipe.title.toLowerCase().includes("salt") ||
+          recipe.title.toLowerCase().includes("salty") ||
+          recipe.title.toLowerCase().includes("salted") ||
+          recipe.title.toLowerCase().includes("brine") ||
+          recipe.title.toLowerCase().includes("soy sauce"));
+
+      const containsSaturatedFat =
+        foodRestrictions.includes("SaturatedFat") &&
+        (recipe.title.toLowerCase().includes("butter") ||
+          recipe.title.toLowerCase().includes("cheese") ||
+          recipe.title.toLowerCase().includes("fatty meat") ||
+          recipe.title.toLowerCase().includes("cream") ||
+          recipe.title.toLowerCase().includes("lard") ||
+          recipe.title.toLowerCase().includes("palm oil") ||
+          recipe.title.toLowerCase().includes("coconut oil"));
+
+      const containsCholesterol =
+        (foodRestrictions.includes("Cholesterol") &&
+          (recipe.title.toLowerCase().includes("egg") ||
+            recipe.title.toLowerCase().includes("cheese") ||
+            recipe.title.toLowerCase().includes("butter") ||
+            recipe.title.toLowerCase().includes("red meat") ||
+            recipe.title.toLowerCase().includes("pork") ||
+            recipe.title.toLowerCase().includes("chicken") ||
+            recipe.title.toLowerCase().includes("beef"))) ||
+        recipe.title.toLowerCase().includes("shrimp") ||
+        recipe.title.toLowerCase().includes("lobster") ||
+        recipe.title.toLowerCase().includes("lamb");
 
       // Filter out recipes that contain any allergy
-      return !containsAllergy && !containsDairy && !containsEgg;
+      return (
+        !containsFoodRestrictions &&
+        !containsDairy &&
+        !containsEgg &&
+        !containsSpicy &&
+        !containsSugar &&
+        !containsSalt &&
+        !containsSaturatedFat &&
+        !containsCholesterol
+      );
     });
 
     return filteredData;
