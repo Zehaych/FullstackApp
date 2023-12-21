@@ -33,25 +33,6 @@ import UserInfo from "./screens/SystemAdmin/UserInfo";
 import PaymentScreen from "./screens/User/PaymentScreen";
 import ViewRecipeInfoScreen from "./screens/User/ViewRecipeInfoScreen";
 import EditRecipeScreen from "./screens/User/EditRecipeScreen";
-import ViewBizRecipeScreen from "./screens/BizPartner/ViewBizRecipeScreen";
-import EditBizRecipeScreen from "./screens/BizPartner/EditBizRecipeScreen";
-import ViewBizRecipeInfoScreen from "./screens/BizPartner/ViewBizRecipeInfoScreen";
-import ReportedRecipe from "./screens/SystemAdmin/ReportedRecipe";
-import ReportedRecipeDetails from "./screens/SystemAdmin/ReportedRecipeDetails";
-import ReportedBizRecipe from "./screens/SystemAdmin/ReportedBizRecipe";
-import ReportedBizRecipeDetails from "./screens/SystemAdmin/ReportedBizRecipeDetail";
-import SubmitFoodRequest from "./screens/User/FoodRequestScreen";
-import FoodRequested from "./screens/SystemAdmin/FoodRequested";
-import FoodAndDrinksInfo from "./screens/SystemAdmin/FoodAndDrinksInfo";
-import ViewRequest from "./screens/User/ViewRequest";
-import ViewOrdersScreen from "./screens/BizPartner/ViewOrdersScreen";
-import CompletedOrdersScreen from "./screens/BizPartner/CompletedOrdersScreen";
-import ViewPastOrdersScreen from "./screens/User/ViewPastOrdersScreen";
-import OrderStatusScreen from "./screens/User/OrderStatusScreen";
-import ViewFavouritesScreen from "./screens/User/ViewFavouritesScreen";
-import ViewFavouriteRecipeInfo from "./screens/User/ViewFavouriteRecipeInfo";
-import ViewBizFavouritesScreen from "./screens/User/ViewBizFavouritesScreen";
-import ViewBizFavouriteRecipeInfo from "./screens/User/ViewBizFavouriteRecipeInfo";
 
 const Stack = createStackNavigator();
 
@@ -264,8 +245,7 @@ function App() {
             name="Payment"
             component={PaymentScreen}
             options={{ headerTransparent: true, headerTitle: "" }}
-          /> */}
-          <Stack.Screen name="Order Status" component={OrderStatusScreen} />
+          />
 
           <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="User Profile" component={UserScreen} />
