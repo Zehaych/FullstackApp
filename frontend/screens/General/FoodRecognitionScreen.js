@@ -10,7 +10,9 @@ const FoodRecognitionScreen = ({ navigation }) => {
 
     const [image, setImage] = useState(null);
 
-    const pickImage = async () => {
+
+
+    const handlePickImage = async () => {
         // Ask for permission to access the camera roll
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -33,24 +35,26 @@ const FoodRecognitionScreen = ({ navigation }) => {
         }
     };
 
+    const handleClassifyFood = async () => {
+    }
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <ScrollView style={styles.container}>
                 <StatusBar backgroundColor="white" barStyle="dark-content" />
                 <View style={styles.header}>
                     <Text style={styles.headerText}>Food Recognition</Text>
-
                 </View>
                 <View style={styles.body}>
                     {image && <Image source={image} style={{ width: 300, height: 300, marginTop: 24 }} />}
                     <View style={styles.buttonGroup}>
-                        <TouchableRipple style={styles.selectImageButton} onPress={pickImage}>
+                        <TouchableRipple style={styles.selectImageButton} onPress={handlePickImage}>
                             <View style={styles.selectImageButtonView}>
                                 <Text>Select Image</Text>
                             </View>
                         </TouchableRipple>
 
-                        <TouchableRipple style={styles.selectImageButton} onPress={pickImage}>
+                        <TouchableRipple style={styles.selectImageButton} onPress={handleClassifyFood}>
                             <View style={styles.selectImageButtonView}>
                                 <Text>Find Food</Text>
                             </View>
@@ -105,7 +109,7 @@ const styles = StyleSheet.create({
         padding: 8,
         borderRadius: 24,
         borderColor: '#FF6347'
-        
+
     }
 });
 
