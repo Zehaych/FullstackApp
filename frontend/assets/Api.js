@@ -312,8 +312,17 @@ export async function fetchWeeklyRecommendations(allergies) {
     }
     const data = await response.json();
 
-    // Flatten the meals for each day into a single array
-    const allMeals = Object.values(data.week).flatMap((day) => day.meals);
+    // Create a Set to track unique recipe IDs
+    const uniqueIds = new Set();
+
+    // Flatten the meals for each day into a single array and filter duplicates
+    const allMeals = Object.values(data.week)
+      .flatMap((day) => day.meals)
+      .filter((meal) => {
+        const isDuplicate = uniqueIds.has(meal.id);
+        uniqueIds.add(meal.id);
+        return !isDuplicate;
+      });
 
     return allMeals;
   } catch (error) {

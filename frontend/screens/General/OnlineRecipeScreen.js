@@ -112,7 +112,7 @@ const OnlineRecipeScreen = () => {
           )}
         </View>
         {/* featured section */}
-        <Text style={styles.recommandation}>Featured Meal Plan</Text>
+        <Text style={styles.recommandation}>Featured Random Recipe</Text>
 
         <FlatList
           data={mealPlanRecipes}
