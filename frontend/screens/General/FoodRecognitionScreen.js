@@ -1,3 +1,4 @@
+import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import { Image, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
@@ -6,9 +7,68 @@ import {
 } from 'react-native-paper';
 import { SafeAreaView } from "react-native-safe-area-context";
 
+const PAT = '51ce8aa8d91b476b8c771030d6d0a12a';
+// Specify the correct user_id/app_id pairings
+// Since you're making inferences outside your app's scope
+const USER_ID = 'clarifai';
+const APP_ID = 'main';
+// Change these to whatever model and image URL you want to use
+const MODEL_ID = 'food-item-recognition';
+const MODEL_VERSION_ID = '1d5fd481e0cf4826aa72ec3ff049e044';
+
 const FoodRecognitionScreen = ({ navigation }) => {
 
     const [image, setImage] = useState(null);
+    const [classifiedResults, setClassifiedResults] = useState([]);
+    const [base64, setBase64] = useState("")
+
+    const handleConvertImageToBase64 = async (imageUri) => {
+        try {
+            const base64 = await FileSystem.readAsStringAsync(imageUri, {
+                encoding: FileSystem.EncodingType.Base64,
+            });
+            setBase64(base64);
+        } catch (error) {
+            console.error('Error converting image to base64:', error);
+        }
+    };
+
+    const handleClassifyFood = async () => {
+        const raw = JSON.stringify({
+            "user_app_id": {
+                "user_id": USER_ID,
+                "app_id": APP_ID
+            },
+            "inputs": [
+                {
+                    "data": {
+                        "image": {
+                            // url: image.uri
+                            "base64": base64
+                        }
+                    }
+                }
+            ]
+        });
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': 'Key ' + PAT
+            },
+            body: raw
+        };
+        try {
+            fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
+                .then(response => response.text())
+                .then(result => setClassifiedResults(JSON.parse(result)?.outputs?.[0]?.data?.concepts))
+                .catch(error => console.log('error', error));
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
 
 
 
@@ -31,12 +91,10 @@ const FoodRecognitionScreen = ({ navigation }) => {
 
         if (!result.canceled) {
             // Set the selected image
-            setImage({ uri: result.uri });
+            setImage({ uri: result.assets[0].uri });
+            handleConvertImageToBase64(result.assets[0].uri)
         }
     };
-
-    const handleClassifyFood = async () => {
-    }
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -60,6 +118,27 @@ const FoodRecognitionScreen = ({ navigation }) => {
                             </View>
                         </TouchableRipple>
                     </View>
+
+                </View>
+                <View style={{ flex: 1, justifyContent: 'center' }}>
+                    {
+                        classifiedResults?.map((result, index) => {
+                            return (
+                                <View style={styles.classifiedResultsView} key={index}>
+                                    <View style={{ minWidth: "400px" }}>
+                                        <Text>
+                                            {result.name}
+                                        </Text>
+                                    </View>
+                                    <View>
+                                        <Text>
+                                            {`${(Number(result.value) * 100).toFixed(2)}%`}
+                                        </Text>
+                                    </View>
+                                </View>
+                            )
+                        })
+                    }
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -109,7 +188,13 @@ const styles = StyleSheet.create({
         padding: 8,
         borderRadius: 24,
         borderColor: '#FF6347'
-
+    },
+    classifiedResultsView: {
+        marginTop: 12,
+        gap: 48,
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center'
     }
 });
 
