@@ -11,7 +11,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { fetchRecommendations, fetchRecipes } from "../../assets/Api";
+import { fetchWeeklyRecommendations, fetchRecipes } from "../../assets/Api";
 
 import { Context } from "../../store/context";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -52,17 +52,16 @@ const OnlineRecipeScreen = () => {
 
   // Fetch meal plan recipes based on user's calorie target and allergies
   useEffect(() => {
-    const targetCalories = currentUser.calorie;
     const allergies = currentUser.allergies;
     setLoading(true);
 
-    fetchRecommendations(targetCalories, allergies)
-      .then((data) => {
-        setMealPlanRecipes(data.meals);
+    fetchWeeklyRecommendations(allergies)
+      .then((meals) => {
+        setMealPlanRecipes(meals);
       })
-      .catch((error) =>
-        console.error("Error fetching meal plan recipes:", error)
-      )
+      .catch((error) => {
+        console.error("Error fetching meal plan recipes:", error);
+      })
       .finally(() => setLoading(false));
   }, [currentUser]);
 
