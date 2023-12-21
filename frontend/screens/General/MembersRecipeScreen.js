@@ -11,7 +11,9 @@ import {
   FlatList,
   Dimensions,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default function MembersRecipeScreen({ navigation }) {
   const [data, setData] = useState([]);
@@ -25,6 +27,32 @@ export default function MembersRecipeScreen({ navigation }) {
   };
 
   useEffect(() => {
+    let isMounted = true; // flag to track mounted state
+
+    const fetchRecipes = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(url);
+        if (!response.ok)
+          throw new Error(`Network response was not ok: ${response.status}`);
+        const json = await response.json();
+        if (isMounted) setData(json); // set data only if component is mounted
+      } catch (error) {
+        console.log(error);
+      } finally {
+        if (isMounted) setLoading(false); // set loading to false only if component is mounted
+      }
+    };
+
+    fetchRecipes();
+
+    return () => {
+      isMounted = false; // cleanup function to set flag false
+    };
+  }, [url]);
+
+  const fetchRecipes = () => {
+    setLoading(true);
     fetch(url)
       .then((response) => {
         if (!response.ok) {
@@ -35,7 +63,55 @@ export default function MembersRecipeScreen({ navigation }) {
       .then((json) => setData(json))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
-  }, [url]);
+  };
+
+  // Use useFocusEffect to refetch recipes when the screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      fetchRecipes();
+      return () => {};
+    }, [url])
+  );
+
+  const Star = ({ filled, partiallyFilled }) => {
+    return (
+      <View style={{ position: "relative" }}>
+        <Icon name="star-outline" color="grey" size={24} />
+        {(filled || partiallyFilled > 0) && (
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: partiallyFilled ? `${partiallyFilled * 100}%` : "100%",
+              overflow: "hidden",
+            }}
+          >
+            <Icon name="star" color="orange" size={24} />
+          </View>
+        )}
+      </View>
+    );
+  };
+  const Rating = ({ rating }) => {
+    const fullStars = Math.floor(rating);
+    const partialStar = rating % 1;
+    const emptyStars = 5 - fullStars - (partialStar > 0 ? 1 : 0);
+
+    return (
+      <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        {[...Array(fullStars)].map((_, i) => (
+          <Star key={`full_${i}`} filled />
+        ))}
+        {partialStar > 0 && (
+          <Star key="partial" partiallyFilled={partialStar} />
+        )}
+        {[...Array(emptyStars)].map((_, i) => (
+          <Star key={`empty_${i}`} />
+        ))}
+      </View>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -52,6 +128,19 @@ export default function MembersRecipeScreen({ navigation }) {
           >
             <Image source={{ uri: item.image }} style={styles.image} />
             <Text style={styles.recipeTitle}> {item.name}</Text>
+            <Rating rating={item.averageRating} />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Icon name="person" size={24} color="#333333" />
+              <Text style={{ marginLeft: 8 }}>
+                {item.totalRatings} people rated
+              </Text>
+            </View>
           </TouchableOpacity>
         )}
       />

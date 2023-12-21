@@ -1,3 +1,15 @@
+// import { View, Text } from "react-native";
+// import React from "react";
+
+// const ViewBizFavouritesScreen = () => {
+//   return (
+//     <View>
+//       <Text>ViewBizFavouritesScreen</Text>
+//     </View>
+//   );
+// };
+
+// export default ViewBizFavouritesScreen;
 import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
@@ -12,15 +24,14 @@ import { Context } from "../../store/context";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
 
-export default function ViewRecipeScreen({ navigation }) {
-  const [recipes, setRecipes] = useState([]);
+export default function ViewBizFavouritesScreen({ navigation }) {
+  const [favouriteBizRecipes, setFavouriteBizRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useContext(Context);
 
-  const fetchUserRecipes = async () => {
+  const fetchFavouriteBizRecipes = async () => {
     try {
-      // Fetch all recipes
-      const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/recipe`, {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/bizrecipe`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -28,18 +39,17 @@ export default function ViewRecipeScreen({ navigation }) {
       });
       const allRecipes = await response.json();
 
-      // Filter recipes to include only those submitted by the current user
+      // Filter recipes to include only those in the user's favorites
       if (Array.isArray(allRecipes)) {
-        const userRecipes = allRecipes.filter(
-          (recipe) => recipe.submitted_by === currentUser._id
+        const userFavourites = allRecipes.filter((recipe) =>
+          currentUser.favouriteBizRecipes.includes(recipe._id)
         );
-        setRecipes(userRecipes);
+        setFavouriteBizRecipes(userFavourites);
       } else {
-        // Handle the case where 'allRecipes' is not as expected
         console.error("Unexpected response format:", allRecipes);
       }
     } catch (error) {
-      console.error("Error fetching recipes:", error);
+      console.error("Error fetching favorite recipes:", error);
     } finally {
       setLoading(false);
     }
@@ -47,13 +57,13 @@ export default function ViewRecipeScreen({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchUserRecipes();
-    }, [])
+      fetchFavouriteBizRecipes();
+    }, [currentUser.favouriteBizRecipes])
   );
 
   useEffect(() => {
-    fetchUserRecipes();
-  }, [currentUser._id]);
+    fetchFavouriteBizRecipes();
+  }, [currentUser.favouriteBizRecipes]);
 
   const Star = ({ filled, partiallyFilled }) => {
     return (
@@ -99,18 +109,20 @@ export default function ViewRecipeScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       {loading ? (
         <Text>Loading...</Text>
-      ) : recipes.length === 0 ? (
-        <Text>No recipes found.</Text>
+      ) : favouriteBizRecipes.length === 0 ? (
+        <Text>No favorite recipes found.</Text>
       ) : (
         <FlatList
-          data={recipes}
+          data={favouriteBizRecipes}
           numColumns={2}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.recipeMember}
               onPress={() =>
-                navigation.navigate("View Recipe Info", { recipeData: item })
+                navigation.navigate("ViewBizFavouriteRecipeInfo", {
+                  recipeData: item,
+                })
               }
             >
               <Image source={{ uri: item.image }} style={styles.image} />

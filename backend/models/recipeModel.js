@@ -1,5 +1,24 @@
 const mongoose = require("mongoose");
 
+const reportSchema = mongoose.Schema({
+  user: {
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  feedback: {
+    type: String,
+    required: true,
+  },
+  additionalComment: {
+    type: String,
+  },
+  reportedAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const recipeSchema = mongoose.Schema(
   {
     name: {
@@ -26,6 +45,36 @@ const recipeSchema = mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    isReported: {
+      type: Boolean,
+      default: false,
+    },
+    reportedBy: [reportSchema],
+    reviewsAndRatings: [
+      {
+        name: {
+          type: mongoose.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        reviews: {
+          type: String,
+          required: true,
+        },
+        ratings: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+    averageRating: {
+      type: Number,
+      default: 0,
+    },
+    totalRatings: {
+      type: Number,
+      default: 0,
     },
   },
   {

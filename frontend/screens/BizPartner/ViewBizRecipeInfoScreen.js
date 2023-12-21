@@ -22,8 +22,8 @@ import Swiper from "react-native-swiper";
 
 const { width, height } = Dimensions.get("window");
 
-export default function BusinessRecipeInfoScreen({ route, navigation }) {
-  // const { recipeData } = route.params;
+export default function ViewBizRecipeInfoScreen({ route, navigation }) {
+  // const navigation = useNavigation();
   const recipeData = route.params.recipeData;
 
   const [username, setUsername] = useState("");
@@ -114,27 +114,6 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
     return formatPrice(totalPrice);
   };
 
-  //   const url = `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${recipeData.submitted_by}`;
-
-  // const fetchUsername = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${recipeData.submitted_by}`
-  //     );
-  //     if (!response.ok) {
-  //       throw new Error(`Network response was not ok: ${response.status}`);
-  //     }
-  //     const user = await response.json();
-  //     setUsername(user.username);
-  //   } catch (error) {
-  //     console.error("Error fetching user data:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchUsername();
-  // }, []);
-
   useEffect(() => {
     if (recipeData && recipeData.submitted_by) {
       setUsername(recipeData.submitted_by.username);
@@ -155,10 +134,9 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            // Include any necessary headers, like authorization tokens
           },
           body: JSON.stringify({
-            userId: currentUser._id, // Assuming you have the current user's ID
+            userId: currentUser._id,
             feedback: reportReason,
             additionalComment: additionalDetails,
           }),
@@ -195,7 +173,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_IP}/bizrecipe/editRating/${recipeData._id}`,
         {
-          method: "PATCH", // Or POST, depending on your backend setup
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
@@ -425,10 +403,16 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
     }
   };
 
-  // Use the function in useEffect or useFocusEffect
+  // Use the function in useEffect and useFocusEffect
   useEffect(() => {
     fetchRecipeDataAndUpdateState();
   }, [recipeData._id, currentUser._id]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchRecipeDataAndUpdateState();
+    }, [])
+  );
 
   const Star = ({ filled, partiallyFilled }) => {
     return (
@@ -569,6 +553,52 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
     }, [currentUser, recipeData])
   );
 
+  const handleEditPress = () => {
+    navigation.navigate("Edit Business Recipe", { recipeData });
+  };
+
+  const handleDeletePress = () => {
+    Alert.alert(
+      "Delete Recipe",
+      "Are you sure you want to delete this recipe?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => deleteRecipe(),
+        },
+      ]
+    );
+  };
+
+  const deleteRecipe = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/bizRecipe/deleteBizRecipe/${recipeData._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.status}`);
+      }
+
+      // Navigate back or update the state after successful deletion
+      Alert.alert("Success", "Recipe deleted successfully");
+      navigation.navigate("View Business Recipe");
+    } catch (error) {
+      console.error("Error deleting recipe:", error);
+      Alert.alert("Error", "Failed to delete recipe");
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.menuContainer}>
@@ -616,6 +646,20 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
           <Text style={{ marginLeft: 8 }}>
             {recipeData.totalRatings} people rated
           </Text>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.buttonModify}
+            onPress={handleEditPress}
+          >
+            <Text style={styles.buttonModifyText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.buttonModify, styles.deleteButton]}
+            onPress={handleDeletePress}
+          >
+            <Text style={styles.buttonModifyText}>Delete</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.mainBox}>
@@ -1141,5 +1185,35 @@ const styles = StyleSheet.create({
   },
   swiperContainer: {
     height: height < 700 ? height * 0.4 : height * 0.36,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  buttonModify: {
+    backgroundColor: "#007BFF",
+    padding: 8, // Reduced padding
+    borderRadius: 5,
+    width: 90, // Reduced width
+    alignItems: "center",
+    marginHorizontal: 5, // Added horizontal margin for spacing
+    elevation: 2, // Added elevation for subtle shadow (Android)
+    shadowColor: "#000", // Shadow for iOS
+    shadowOffset: { width: 0, height: 2 }, // Shadow for iOS
+    shadowOpacity: 0.2, // Shadow for iOS
+    shadowRadius: 2, // Shadow for iOS
+  },
+  deleteButton: {
+    backgroundColor: "#FF4136",
+  },
+  buttonModifyText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+
+  contentContainer: {
+    paddingBottom: 30,
   },
 });

@@ -69,7 +69,7 @@ export default function BizPartnerSignUp() {
       navigation.navigate("AdminScreen");
     } else if (createUserResponse.status === 400) {
       const responseJson = await createUserResponse.json();
-      alert(responseJson.message); // Display the error message to the user
+      alert(responseJson.message); 
     } else {
       alert("Error creating account");
     }
@@ -93,7 +93,6 @@ export default function BizPartnerSignUp() {
           entering={FadeInUp.delay(200).duration(1000).springify()}
           source={require("../../assets/logo.png")}
           className="h-[250] w-90] mt-4"
-          //   className="h-[225] w-[90]"
         />
       </View>
 

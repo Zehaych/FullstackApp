@@ -12,14 +12,13 @@ import { Context } from "../../store/context";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
 
-export default function ViewRecipeScreen({ navigation }) {
-  const [recipes, setRecipes] = useState([]);
+export default function ViewFavouritesScreen({ navigation }) {
+  const [favouriteRecipes, setFavouriteRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useContext(Context);
 
-  const fetchUserRecipes = async () => {
+  const fetchFavouriteRecipes = async () => {
     try {
-      // Fetch all recipes
       const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/recipe`, {
         method: "GET",
         headers: {
@@ -28,18 +27,17 @@ export default function ViewRecipeScreen({ navigation }) {
       });
       const allRecipes = await response.json();
 
-      // Filter recipes to include only those submitted by the current user
+      // Filter recipes to include only those in the user's favorites
       if (Array.isArray(allRecipes)) {
-        const userRecipes = allRecipes.filter(
-          (recipe) => recipe.submitted_by === currentUser._id
+        const userFavourites = allRecipes.filter((recipe) =>
+          currentUser.favouriteRecipes.includes(recipe._id)
         );
-        setRecipes(userRecipes);
+        setFavouriteRecipes(userFavourites);
       } else {
-        // Handle the case where 'allRecipes' is not as expected
         console.error("Unexpected response format:", allRecipes);
       }
     } catch (error) {
-      console.error("Error fetching recipes:", error);
+      console.error("Error fetching favorite recipes:", error);
     } finally {
       setLoading(false);
     }
@@ -47,13 +45,13 @@ export default function ViewRecipeScreen({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchUserRecipes();
-    }, [])
+      fetchFavouriteRecipes();
+    }, [currentUser.favouriteRecipes])
   );
 
   useEffect(() => {
-    fetchUserRecipes();
-  }, [currentUser._id]);
+    fetchFavouriteRecipes();
+  }, [currentUser.favouriteRecipes]);
 
   const Star = ({ filled, partiallyFilled }) => {
     return (
@@ -99,18 +97,20 @@ export default function ViewRecipeScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       {loading ? (
         <Text>Loading...</Text>
-      ) : recipes.length === 0 ? (
-        <Text>No recipes found.</Text>
+      ) : favouriteRecipes.length === 0 ? (
+        <Text>No favorite recipes found.</Text>
       ) : (
         <FlatList
-          data={recipes}
+          data={favouriteRecipes}
           numColumns={2}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.recipeMember}
               onPress={() =>
-                navigation.navigate("View Recipe Info", { recipeData: item })
+                navigation.navigate("ViewFavouriteRecipeInfo", {
+                  recipeData: item,
+                })
               }
             >
               <Image source={{ uri: item.image }} style={styles.image} />

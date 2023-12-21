@@ -526,13 +526,13 @@ exports.postCalories = async (req, res) => {
   }
 };
 
-//Suspend User 
+//Suspend User
 exports.suspendUser = asyncHandler(async (req, res) => {
   const userId = req.params.id;
 
   const user = await User.findById(userId);
   if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    return res.status(404).json({ message: "User not found" });
   }
 
   user.isActive = false;
@@ -547,7 +547,7 @@ exports.unsuspendUser = asyncHandler(async (req, res) => {
 
   const user = await User.findById(userId);
   if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    return res.status(404).json({ message: "User not found" });
   }
 
   user.isActive = true;
@@ -561,16 +561,16 @@ exports.validateAdminPassword = asyncHandler(async (req, res) => {
   const { password } = req.body;
 
   // Specific admin user in the database.
-  const adminUser = await User.findOne({ username: 'testadmin' }); //Admin username
+  const adminUser = await User.findOne({ userType: "admin" }); //Admin username
 
   if (!adminUser) {
-      return res.status(404).json({ message: "Admin user not found" });
+    return res.status(404).json({ message: "Admin user not found" });
   }
 
   const isPasswordValid = await bcrypt.compare(password, adminUser.password);
 
   if (!isPasswordValid) {
-      return res.status(401).json({ isValid: false });
+    return res.status(401).json({ isValid: false });
   }
 
   res.status(200).json({ isValid: true });
@@ -583,7 +583,7 @@ exports.deleteBusinessPartner = asyncHandler(async (req, res) => {
   const businessPartner = await User.findById(userId);
 
   if (!businessPartner) {
-      return res.status(404).json({ message: "Business partner not found" });
+    return res.status(404).json({ message: "Business partner not found" });
   }
 
   await User.deleteOne({ _id: userId });
@@ -598,7 +598,7 @@ exports.deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findById(userId);
 
   if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    return res.status(404).json({ message: "User not found" });
   }
 
   await User.deleteOne({ _id: userId });
@@ -614,7 +614,7 @@ exports.updateUsername = asyncHandler(async (req, res) => {
   const user = await User.findById(userId);
 
   if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    return res.status(404).json({ message: "User not found" });
   }
 
   user.username = username;
@@ -623,7 +623,55 @@ exports.updateUsername = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Username updated successfully" });
 });
 
+exports.updateFavorites = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const { recipeId, action } = req.body;
 
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  if (action === "add") {
+    // Add the recipe to favorites if it's not already there
+    if (!user.favouriteRecipes.includes(recipeId)) {
+      user.favouriteRecipes.push(recipeId);
+    }
+  } else if (action === "remove") {
+    // Remove the recipe from favorites
+    user.favouriteRecipes = user.favouriteRecipes.filter(
+      (id) => id.toString() !== recipeId
+    );
+  }
+
+  await user.save();
+  res.status(200).json({ message: "Favorites updated successfully" });
+});
+
+exports.updateBizFavorites = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const { recipeId, action } = req.body;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  if (action === "add") {
+    // Add the recipe to favorites if it's not already there
+    if (!user.favouriteBizRecipes.includes(recipeId)) {
+      user.favouriteBizRecipes.push(recipeId);
+    }
+  } else if (action === "remove") {
+    // Remove the recipe from favorites
+    user.favouriteBizRecipes = user.favouriteBizRecipes.filter(
+      (id) => id.toString() !== recipeId
+    );
+  }
+
+  await user.save();
+  res.status(200).json({ message: "Favorites updated successfully" });
+});
 // exports.postCalories = async (req, res) => {
 //   const {id} = req.params;
 //   const {total_calories } = req.body;

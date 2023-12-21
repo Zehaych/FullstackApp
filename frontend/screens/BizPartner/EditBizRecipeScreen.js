@@ -14,15 +14,16 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 
-const EditRecipeScreen = ({ route }) => {
+const EditBizRecipeScreen = ({ route }) => {
   const navigation = useNavigation();
-  const { recipeData } = route.params; // Assuming recipe data is passed as a parameter
+  const { recipeData } = route.params;
 
   const [name, setName] = useState(recipeData.name);
   const [ingredients, setIngredients] = useState(recipeData.ingredients);
   const [instructions, setInstructions] = useState(recipeData.instructions);
   const [calories, setCalories] = useState(recipeData.calories.toString());
   const [image, setImage] = useState(recipeData.image);
+  const [price, setPrice] = useState(recipeData.price.toString());
 
   const handleInstructionChange = (text, index) => {
     const newInstruction = [...instructions];
@@ -62,7 +63,8 @@ const EditRecipeScreen = ({ route }) => {
       name === "" ||
       ingredients === "" ||
       calories === "" ||
-      image === ""
+      image === "" ||
+      price === ""
     ) {
       alert("Please fill in all fields.");
     }
@@ -85,10 +87,11 @@ const EditRecipeScreen = ({ route }) => {
     console.log("Instructions:", instructions);
     console.log("Calories:", calories);
     console.log("Image:", image);
+    console.log("Price:", price);
 
     // PUT request to update the recipe
     fetch(
-      `${process.env.EXPO_PUBLIC_IP}/recipe/updateRecipe/${recipeData._id}`,
+      `${process.env.EXPO_PUBLIC_IP}/bizRecipe/updateBizRecipe/${recipeData._id}`,
       {
         method: "PUT",
         headers: {
@@ -100,13 +103,14 @@ const EditRecipeScreen = ({ route }) => {
           instructions,
           calories,
           image,
+          price,
         }),
       }
     )
       .then((response) => response.json())
       .then((data) => {
         Alert.alert("Success", "Recipe updated successfully");
-        navigation.goBack(); // or navigate to appropriate screen
+        navigation.goBack();
       })
       .catch((error) => {
         console.error("Error updating recipe:", error);
@@ -181,6 +185,15 @@ const EditRecipeScreen = ({ route }) => {
           placeholder="Add Calories"
           value={calories}
           onChangeText={(text) => setCalories(text)}
+          keyboardType="numeric" // This ensures the keyboard displays numbers
+        />
+
+        <Text style={styles.label}>Price</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Add Price"
+          value={price}
+          onChangeText={(text) => setPrice(text)}
           keyboardType="numeric" // This ensures the keyboard displays numbers
         />
 
@@ -271,4 +284,4 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
 });
-export default EditRecipeScreen;
+export default EditBizRecipeScreen;

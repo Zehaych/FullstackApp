@@ -19,14 +19,13 @@ const BizPartnerInfo = ({ route, navigation }) => {
     React.useCallback(() => {
       const fetchUserData = async () => {
         try {
-          const userId = userData._id; // Assuming you have the user ID in the userData
+          const userId = userData._id; 
           const response = await fetch(
             `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${userId}`,
             {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                // Add any necessary headers like authorization tokens
               },
             }
           );
@@ -36,11 +35,9 @@ const BizPartnerInfo = ({ route, navigation }) => {
             setUserData(data); // Update the userData with the fetched data
           } else {
             console.error("Failed to fetch user data");
-            // Handle errors as appropriate
           }
         } catch (error) {
           console.error("Error fetching user data:", error);
-          // Handle errors as appropriate
         }
       };
 
@@ -56,15 +53,14 @@ const BizPartnerInfo = ({ route, navigation }) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            // Add any necessary headers like authorization tokens
           },
         }
       );
       const data = await response.json();
       if (response.ok) {
         alert("User suspended successfully");
-        const updatedUser = { ...userData, isActive: false }; // Update user's isActive property
-        setUserData(updatedUser); // Update the state with the modified user data
+        const updatedUser = { ...userData, isActive: false }; 
+        setUserData(updatedUser); 
       } else {
         alert(data.message || "Error suspending user");
       }
@@ -82,7 +78,6 @@ const BizPartnerInfo = ({ route, navigation }) => {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            // Add any necessary headers like authorization tokens
           },
         }
       );
@@ -145,14 +140,13 @@ const updateUsername = async () => {
           method: 'PUT',
           headers: {
               'Content-Type': 'application/json',
-              // Include any necessary headers, like authorization tokens
           },
           body: JSON.stringify({ username: newUsername }),
       });
 
       if (response.ok) {
           Alert.alert('Success', 'Username updated successfully.');
-          setUserData({ ...userData, username: newUsername }); // Update local state
+          setUserData({ ...userData, username: newUsername }); 
       } else {
           Alert.alert('Error', 'Failed to update username.');
       }
@@ -264,10 +258,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
   },
   modalView: {
-      width: '80%', // Adjust the width as needed
+      width: '80%', 
       backgroundColor: 'white',
       borderRadius: 20,
       padding: 20,
@@ -322,19 +316,19 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#333", // Adjust the color as needed
+    color: "#333",
   },
   userInfo: {
     fontSize: 20,
-    color: "#444", // Adjust the color as needed
+    color: "#444", 
     marginBottom: 10,
     padding: 10,
     borderWidth: 1,
-    borderColor: "#ddd", // Adjust the border color as needed
+    borderColor: "#ddd",
     borderRadius: 5,
-    width: "80%", // Adjust the width as needed
-    textAlign: "center", // Center-align text
-    backgroundColor: "white", // Adjust the background color as needed
+    width: "80%", 
+    textAlign: "center", 
+    backgroundColor: "white", 
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,

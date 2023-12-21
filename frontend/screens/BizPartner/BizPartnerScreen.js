@@ -28,7 +28,11 @@ const BizPartnerScreen = () => {
         onPress: () => {
           // setCurrentUser(null);
           // AsyncStorage.removeItem("userId");
-          navigation.navigate("LogInScreen");
+          //navigation.navigate("LogInScreen");
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "LogInScreen" }],
+          });
         },
       },
     ]);
@@ -48,6 +52,18 @@ const BizPartnerScreen = () => {
 
   const onAddBizRecipePressed = () => {
     navigation.push("Add Business Recipe");
+  };
+
+  const onViewBizRecipePressed = () => {
+    navigation.push("View Business Recipe");
+  };
+
+  const onViewOrdersPressed = () => {
+    navigation.push("View Orders");
+  };
+
+  const onCompletedtOrdersPressed = () => {
+    navigation.push("Completed Orders");
   };
 
   return (
@@ -85,6 +101,27 @@ const BizPartnerScreen = () => {
           <View style={styles.menuItem}>
             <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
             <Text style={styles.menuItemText}>Add Business Recipe</Text>
+          </View>
+        </TouchableRipple>
+
+        <TouchableRipple onPress={onViewBizRecipePressed}>
+          <View style={styles.menuItem}>
+            <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>View Added Recipe</Text>
+          </View>
+        </TouchableRipple>
+
+        <TouchableRipple onPress={onViewOrdersPressed}>
+          <View style={styles.menuItem}>
+            <Icon name="clipboard-list-outline" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>View Customer Orders</Text>
+          </View>
+        </TouchableRipple>
+
+        <TouchableRipple onPress={onCompletedtOrdersPressed}>
+          <View style={styles.menuItem}>
+            <Icon name="clipboard-list-outline" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>View Completed Orders</Text>
           </View>
         </TouchableRipple>
 
@@ -145,6 +182,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 30,
     alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#dddddd",
   },
   menuItemText: {
     color: "#777777",

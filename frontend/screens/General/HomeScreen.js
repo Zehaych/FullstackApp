@@ -8,7 +8,7 @@ import {
   ScrollView,
   StatusBar,
 } from "react-native";
-import { fetchRecipeDetails } from "../../assets/Api";
+import { fetchRecipeDetails, fetchRandomRecipes } from "../../assets/Api";
 
 const HomeScreen = ({ navigation }) => {
   const navigateToCommunityRecipes = () => {
@@ -25,31 +25,44 @@ const HomeScreen = ({ navigation }) => {
 
   const [randomRecipes, setRandomRecipes] = useState([]);
 
+  // useEffect(() => {
+  //   // Fetch random recipes by generating random recipe IDs
+  //   const randomRecipeIds = getRandomRecipeIds();
+  //   const fetchRecipePromises = randomRecipeIds.map((recipeId) =>
+  //     fetchRecipeDetails(recipeId)
+  //   );
+
+  //   Promise.all(fetchRecipePromises)
+  //     .then((data) => {
+  //       setRandomRecipes(data);
+  //     })
+  //     .catch((error) => console.error("Error fetching recipes:", error));
+  // }, []);
+
+  // function getRandomRecipeIds() {
+  //   // Generate random recipe IDs (e.g., between 1 and 1000)
+  //   const randomIds = [];
+  //   while (randomIds.length < 2) {
+  //     const randomId = Math.floor(Math.random() * 1000) + 1;
+  //     if (!randomIds.includes(randomId)) {
+  //       randomIds.push(randomId);
+  //     }
+  //   }
+  //   return randomIds;
+  // }
+
   useEffect(() => {
-    // Fetch random recipes by generating random recipe IDs
-    const randomRecipeIds = getRandomRecipeIds();
-    const fetchRecipePromises = randomRecipeIds.map((recipeId) =>
-      fetchRecipeDetails(recipeId)
-    );
-
-    Promise.all(fetchRecipePromises)
-      .then((data) => {
-        setRandomRecipes(data);
-      })
-      .catch((error) => console.error("Error fetching recipes:", error));
-  }, []);
-
-  function getRandomRecipeIds() {
-    // Generate random recipe IDs (e.g., between 1 and 1000)
-    const randomIds = [];
-    while (randomIds.length < 2) {
-      const randomId = Math.floor(Math.random() * 1000) + 1;
-      if (!randomIds.includes(randomId)) {
-        randomIds.push(randomId);
+    const fetchRecipes = async () => {
+      try {
+        const recipes = await fetchRandomRecipes(2);
+        setRandomRecipes(recipes);
+      } catch (error) {
+        console.error('Error fetching random recipes:', error);
       }
-    }
-    return randomIds;
-  }
+    };
+
+    fetchRecipes();
+  }, []); 
 
   const navigateToOnlineRecipesInfo = (recipeId) => {
     navigation.navigate("Online Recipe Information", { recipeId });

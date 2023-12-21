@@ -21,6 +21,7 @@ const recipeRoute = require("./routes/recipeRoute");
 const FoodAndDrinksRoute = require("./routes/FoodAndDrinksRoute");
 const userRoute = require("./routes/userRoute");
 const bizRecipeRoute = require("./routes/bizRecipeRoute");
+const foodRequestRoute = require("./routes/foodRequestRoute");
 
 // Middleware to handle and catch errors
 app.use(errorHandler);
@@ -30,6 +31,7 @@ app.use("/recipe", recipeRoute);
 app.use("/FoodAndDrinks", FoodAndDrinksRoute);
 app.use("/user", userRoute);
 app.use("/bizRecipe", bizRecipeRoute);
+app.use("/foodRequest", foodRequestRoute);
 
 // Start the server
 app.listen(port, () => {

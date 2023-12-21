@@ -33,22 +33,26 @@ const ProgressScreen = () => {
   const [search, setSearch] = useState("");
   const [memberRecipes, setMemberRecipes] = useState([]);
   const [onlineRecipes, setOnlineRecipes] = useState([]);
+  const [foodAndDrinks, setFoodAndDrinks] = useState([]);
   const [selectedDropdownValue, setSelectedDropdownValue] = useState("All");
   const [breakfastRecipe, setBreakfastRecipe] = useState(null);
   const [lunchRecipe, setLunchRecipe] = useState(null);
   const [dinnerRecipe, setDinnerRecipe] = useState(null);
   const [selectedRecipeId, setSelectedRecipeId] = useState(null); //sparate for online and member recipe if not work
+  const [selectedFoodAndDrink, setSelectedFoodAndDrink] = useState(null);
   const [recipeDetails, setRecipeDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentUser, setCurrentUser] = useContext(Context);
 
   const [recommendedRecipes, setRecommendedRecipes] = useState([]);
   // const targetCalories = 2000; // Set your desired target calories here
+  const [users, setUsers] = useState([]); // State to store the list of users
 
   const targetCalories = currentUser.calorie;
   // const API_KEY = "0a379b4c97a648aeb0051120265dcfca";
 
   const allergies = currentUser.allergies;
+  const foodRestrictions = currentUser.foodRestrictions;
 
   // const handleGenerateRecommendations = () => {
   //   // Call the Spoonacular API to generate daily meal recommendations
@@ -82,7 +86,7 @@ const ProgressScreen = () => {
 
   const handleGenerateRecommendations = () => {
     // Call the new function to fetch meal recommendations
-    fetchRecommendations(targetCalories, allergies)
+    fetchRecommendations(targetCalories, foodRestrictions)
       .then((data) => {
         console.log("Recommendations data:", data);
         // const recommendations = data.meals.map((meal) => meal.title);
@@ -112,6 +116,20 @@ const ProgressScreen = () => {
     //.finally(() => setLoading(false));
   }, []);
 
+  //food and drinks data
+  useEffect(() => {
+    const url = `${process.env.EXPO_PUBLIC_IP}/foodanddrinks/getFoodAndDrinks`;
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((json) => setFoodAndDrinks(json))
+      .catch((error) => console.log(error));
+  }, []);
+
   // //online recipe data
   // useEffect(() => {
   //   if (search) {
@@ -130,15 +148,15 @@ const ProgressScreen = () => {
     if (search) {
       setLoading(true);
 
-      // Call the fetchRecipes function from api.js with allergies
-      fetchRecipes(search, allergies)
+      // Call the fetchRecipes function from api.js with foodRestrictions
+      fetchRecipes(search, foodRestrictions)
         .then((data) => {
           setOnlineRecipes(data);
         })
         .catch((error) => console.error("Error fetching recipes:", error))
         .finally(() => setLoading(false));
     }
-  }, [search, allergies]);
+  }, [search, foodRestrictions]);
 
   // handle breakfast meal dropdown
   const handleBreakfastSelect = (recipeId) => {
@@ -147,6 +165,7 @@ const ProgressScreen = () => {
     setOnlineRecipes([]);
     setRecipeDetails(null);
     setSelectedRecipeId(null);
+    setSelectedFoodAndDrink(null);
   };
 
   // handle lunch meal dropdown
@@ -156,6 +175,7 @@ const ProgressScreen = () => {
     setOnlineRecipes([]);
     setRecipeDetails(null);
     setSelectedRecipeId(null);
+    setSelectedFoodAndDrink(null);
   };
 
   // handle dinner meal dropdown
@@ -165,6 +185,7 @@ const ProgressScreen = () => {
     setOnlineRecipes([]);
     setRecipeDetails(null);
     setSelectedRecipeId(null);
+    setSelectedFoodAndDrink(null);
   };
 
   //handle search data
@@ -232,6 +253,21 @@ const ProgressScreen = () => {
       setLunchRecipe(selectedRecipe);
     } else if (selectedDropdownValue === "din") {
       setDinnerRecipe(selectedRecipe);
+    }
+  };
+
+  const handleFoodAndDrinks = (recipeId) => {
+    const selectedFoodAndDrink = foodAndDrinks.find(
+      (recipe) => recipe._id === recipeId
+    );
+    setSelectedFoodAndDrink(selectedFoodAndDrink);
+
+    if (selectedDropdownValue === "bf") {
+      setBreakfastRecipe(selectedFoodAndDrink);
+    } else if (selectedDropdownValue === "lunch") {
+      setLunchRecipe(selectedFoodAndDrink);
+    } else if (selectedDropdownValue === "din") {
+      setDinnerRecipe(selectedFoodAndDrink);
     }
   };
 
@@ -303,7 +339,7 @@ const ProgressScreen = () => {
         totalCalories += dinnerRecipe.nutrition.nutrients[0].amount;
       }
     }
-    return totalCalories;
+    return totalCalories.toFixed(2);
   };
 
   const handleObjectiveIcon = () => {
@@ -339,6 +375,7 @@ const ProgressScreen = () => {
     setOnlineRecipes([]);
     setSelectedRecipeId(null);
     setRecipeDetails(null);
+    setSelectedFoodAndDrink(null);
   };
 
   //handle submit
@@ -371,9 +408,33 @@ const ProgressScreen = () => {
       Alert.alert("An error occurred: " + error.message);
     }
   };
-  const handleSummary = () => {
-    navigation.navigate("Summary");
+
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/user/getUserTypes?userType=user&_id=${users._id}`
+      );
+      const data = await response.json();
+      setUsers([data]);
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch current user:", error);
+      throw error;
+    }
   };
+
+  const handleSummary = async () => {
+    try {
+      const userData = await fetchCurrentUser();
+      navigation.navigate("TabDWMScreen", { user: userData });
+    } catch (error) {
+      console.error("Error fetching current user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCurrentUser();
+  }, []);
 
   return (
     <ScrollView style={styles.scrollContainer}>
@@ -382,7 +443,7 @@ const ProgressScreen = () => {
           Keyboard.dismiss();
         }}
       >
-        <SafeAreaView style={styles.container}>   
+        <SafeAreaView style={styles.container}>
           {/* dropdown to choose meal */}
           <View style={styles.pickerContainer}>
             <Text style={styles.mealSelector}>Choose meal to add</Text>
@@ -434,6 +495,24 @@ const ProgressScreen = () => {
               onChangeText={(text) => handleSearch(text)}
             />
           </View>
+
+          <Text style={styles.subTitle}>Available food and drinks</Text>
+          <Picker
+            selectedValue={
+              setSelectedFoodAndDrink ? setSelectedFoodAndDrink._id : null
+            }
+            onValueChange={(itemValue) => handleFoodAndDrinks(itemValue)}
+            style={styles.dropdown}
+          >
+            <Picker.Item label="Select food and drinks" value={null} />
+            {foodAndDrinks.map((recipe) => (
+              <Picker.Item
+                key={recipe._id}
+                label={recipe.name}
+                value={recipe._id}
+              />
+            ))}
+          </Picker>
 
           {/* list of recipes */}
           <View style={styles.searchList}>
@@ -497,7 +576,7 @@ const ProgressScreen = () => {
           <View style={styles.componentContainer}>
             <View style={styles.leftComponent}>
               <Text style={styles.smallHeadings}>Total Calories</Text>
-              <Text style={styles.smallText}>{handleTotalCalories()} kcal</Text>
+              <Text style={styles.smallText}>{handleTotalCalories()} cal</Text>
             </View>
             <View style={styles.middleComponent}>
               <Text style={styles.smallHeadings}>Target Calories</Text>
@@ -515,17 +594,22 @@ const ProgressScreen = () => {
               </Button>
             </View>
             <View style={styles.rightComponent}>
-              <Button onPress={() => handleSubmit()} style={styles.submitButton}>
+              <Button
+                onPress={() => handleSubmit()}
+                style={styles.submitButton}
+              >
                 Submit
               </Button>
             </View>
           </View>
-          <Button onPress={() => handleSummary()} style={styles.submitButton}>
-            View Summary
-          </Button>
+          <TouchableOpacity>
+            <Button onPress={handleSummary} style={styles.submitButton}>
+              View Summary
+            </Button>
+          </TouchableOpacity>
         </SafeAreaView>
       </TouchableWithoutFeedback>
-    </ScrollView>  
+    </ScrollView>
   );
 };
 

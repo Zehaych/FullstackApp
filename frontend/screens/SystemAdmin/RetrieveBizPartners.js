@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { Context } from "../../store/context";
 
 export default function RetrieveUsers() {
@@ -20,6 +21,7 @@ export default function RetrieveUsers() {
   useEffect(() => {
     fetchUsersByType("bizpartner");
   }, []);
+
 
   const fetchUsersByType = async (userType) => {
     try {

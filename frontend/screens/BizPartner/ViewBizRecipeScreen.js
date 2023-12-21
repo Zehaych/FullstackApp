@@ -9,18 +9,18 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Context } from "../../store/context";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
-export default function ViewRecipeScreen({ navigation }) {
+export default function ViewBizRecipeScreen({ navigation }) {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useContext(Context);
 
-  const fetchUserRecipes = async () => {
+  const fetchBizRecipes = async () => {
     try {
       // Fetch all recipes
-      const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/recipe`, {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/bizRecipe`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -31,7 +31,8 @@ export default function ViewRecipeScreen({ navigation }) {
       // Filter recipes to include only those submitted by the current user
       if (Array.isArray(allRecipes)) {
         const userRecipes = allRecipes.filter(
-          (recipe) => recipe.submitted_by === currentUser._id
+          (recipe) =>
+            recipe.submitted_by && recipe.submitted_by === currentUser._id
         );
         setRecipes(userRecipes);
       } else {
@@ -47,14 +48,13 @@ export default function ViewRecipeScreen({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchUserRecipes();
+      fetchBizRecipes();
     }, [])
   );
 
   useEffect(() => {
-    fetchUserRecipes();
+    fetchBizRecipes();
   }, [currentUser._id]);
-
   const Star = ({ filled, partiallyFilled }) => {
     return (
       <View style={{ position: "relative" }}>
@@ -110,7 +110,9 @@ export default function ViewRecipeScreen({ navigation }) {
             <TouchableOpacity
               style={styles.recipeMember}
               onPress={() =>
-                navigation.navigate("View Recipe Info", { recipeData: item })
+                navigation.navigate("Business Recipe Info", {
+                  recipeData: item,
+                })
               }
             >
               <Image source={{ uri: item.image }} style={styles.image} />

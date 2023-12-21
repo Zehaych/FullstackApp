@@ -18,7 +18,6 @@ import ProgressScreen from "./screens/User/ProgressScreen";
 import AddBizRecipeScreen from "./screens/BizPartner/AddBizRecipeScreen";
 import BusinessRecipeScreen from "./screens/General/BusinessRecipeScreen";
 import BusinessRecipeInfoScreen from "./screens/General/BusinessRecipeInfoScreen";
-import PaymentScreen from "./screens/User/PaymentScreen";
 import ChangeEmailScreen from "./screens/User/ChangeEmailScreen";
 import ChangeUsernameScreen from "./screens/User/ChangeUsernameScreen";
 import ChangePasswordScreen from "./screens/User/ChangePasswordScreen";
@@ -28,14 +27,31 @@ import DeleteAcountScreen from "./screens/User/DeleteAcountScreen";
 import ViewRecipeScreen from "./screens/User/ViewRecipeScreen";
 import RetrieveUserAccount from "./screens/SystemAdmin/RetrieveUserAccount";
 import RetrieveBizPartners from "./screens/SystemAdmin/RetrieveBizPartners";
-import SummaryScreen from "./screens/User/SummaryScreen";
+import TabDWMScreen from "./screens/User/TabDWMScreen";
 import BizPartnerInfo from "./screens/SystemAdmin/BizPartnerInfo";
 import UserInfo from "./screens/SystemAdmin/UserInfo";
-import PreferencesScreen from "./screens/User/PreferencesScreen";
+import PaymentScreen from "./screens/User/PaymentScreen";
 import ViewRecipeInfoScreen from "./screens/User/ViewRecipeInfoScreen";
 import EditRecipeScreen from "./screens/User/EditRecipeScreen";
-import TabDWMScreen from "./screens/User/TabDWMScreen";
-
+import ViewBizRecipeScreen from "./screens/BizPartner/ViewBizRecipeScreen";
+import EditBizRecipeScreen from "./screens/BizPartner/EditBizRecipeScreen";
+import ViewBizRecipeInfoScreen from "./screens/BizPartner/ViewBizRecipeInfoScreen";
+import ReportedRecipe from "./screens/SystemAdmin/ReportedRecipe";
+import ReportedRecipeDetails from "./screens/SystemAdmin/ReportedRecipeDetails";
+import ReportedBizRecipe from "./screens/SystemAdmin/ReportedBizRecipe";
+import ReportedBizRecipeDetails from "./screens/SystemAdmin/ReportedBizRecipeDetail";
+import SubmitFoodRequest from "./screens/User/FoodRequestScreen";
+import FoodRequested from "./screens/SystemAdmin/FoodRequested";
+import FoodAndDrinksInfo from "./screens/SystemAdmin/FoodAndDrinksInfo";
+import ViewRequest from "./screens/User/ViewRequest";
+import ViewOrdersScreen from "./screens/BizPartner/ViewOrdersScreen";
+import CompletedOrdersScreen from "./screens/BizPartner/CompletedOrdersScreen";
+import ViewPastOrdersScreen from "./screens/User/ViewPastOrdersScreen";
+import OrderStatusScreen from "./screens/User/OrderStatusScreen";
+import ViewFavouritesScreen from "./screens/User/ViewFavouritesScreen";
+import ViewFavouriteRecipeInfo from "./screens/User/ViewFavouriteRecipeInfo";
+import ViewBizFavouritesScreen from "./screens/User/ViewBizFavouritesScreen";
+import ViewBizFavouriteRecipeInfo from "./screens/User/ViewBizFavouriteRecipeInfo";
 
 const Stack = createStackNavigator();
 
@@ -46,6 +62,46 @@ function App() {
     <Context.Provider value={[currentUser, setCurrentUser]}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="LogInScreen">
+          <Stack.Screen
+            name="View Request"
+            component={ViewRequest}
+            options={{ headerTitle: "Request Status" }}
+          />
+          <Stack.Screen
+            name="FoodAndDrinksInfo"
+            component={FoodAndDrinksInfo}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="FoodRequested"
+            component={FoodRequested}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="SubmitFoodRequest"
+            component={SubmitFoodRequest}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ReportedBizRecipeDetails"
+            component={ReportedBizRecipeDetails}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ReportedBizRecipe"
+            component={ReportedBizRecipe}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ReportedRecipeDetails"
+            component={ReportedRecipeDetails}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ReportedRecipe"
+            component={ReportedRecipe}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="UserInfo"
             component={UserInfo}
@@ -119,9 +175,53 @@ function App() {
             component={AddBizRecipeScreen}
           />
           <Stack.Screen name="View Recipe" component={ViewRecipeScreen} />
+
+          <Stack.Screen
+            name="View Favourites"
+            component={ViewFavouritesScreen}
+          />
+
+          <Stack.Screen
+            name="ViewFavouriteRecipeInfo"
+            component={ViewFavouriteRecipeInfo}
+            options={{ headerTransparent: true, headerTitle: "" }}
+          />
+
+          <Stack.Screen
+            name="View Business Favourites"
+            component={ViewBizFavouritesScreen}
+          />
+
+          <Stack.Screen
+            name="ViewBizFavouriteRecipeInfo"
+            component={ViewBizFavouriteRecipeInfo}
+            options={{ headerTransparent: true, headerTitle: "" }}
+          />
+
           <Stack.Screen
             name="View Recipe Info"
             component={ViewRecipeInfoScreen}
+            options={{ headerTransparent: true, headerTitle: "" }}
+          />
+
+          <Stack.Screen
+            name="View Business Recipe"
+            component={ViewBizRecipeScreen}
+          />
+          <Stack.Screen
+            name="Business Recipe Info"
+            component={ViewBizRecipeInfoScreen}
+            options={{ headerTransparent: true, headerTitle: "" }}
+          />
+
+          <Stack.Screen name="View Orders" component={ViewOrdersScreen} />
+          <Stack.Screen
+            name="Completed Orders"
+            component={CompletedOrdersScreen}
+          />
+          <Stack.Screen
+            name="Edit Business Recipe"
+            component={EditBizRecipeScreen}
           />
 
           <Stack.Screen name="Edit Recipe" component={EditRecipeScreen} />
@@ -152,21 +252,21 @@ function App() {
             component={BusinessRecipeInfoScreen}
             options={{ headerTransparent: true, headerTitle: "" }}
           />
-          <Stack.Screen
-            name="Summary"
-            component={SummaryScreen}
-            options={{ headerTitle: "" }}
-          />
-          <Stack.Screen
-            name="Preferences"
-            component={PreferencesScreen}
-            options={{ headerTransparent: true, headerTitle: "" }}
-          />
+
           <Stack.Screen
             name="TabDWMScreen"
             component={TabDWMScreen}
-            options={{ headerShown: false }}
+            options={{ headerTitle: "" }}
           />
+
+          <Stack.Screen name="Past Orders" component={ViewPastOrdersScreen} />
+          {/* <Stack.Screen
+            name="Payment"
+            component={PaymentScreen}
+            options={{ headerTransparent: true, headerTitle: "" }}
+          /> */}
+          <Stack.Screen name="Order Status" component={OrderStatusScreen} />
+
           <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="User Profile" component={UserScreen} />
         </Stack.Navigator>

@@ -20,6 +20,7 @@ import {
   Touchable,
 } from "react-native";
 import { Context } from "../../store/context";
+import FoodAndDrinksInfo from "./FoodAndDrinksInfo";
 
 const AdminScreen = () => {
   const navigation = useNavigation();
@@ -34,7 +35,11 @@ const AdminScreen = () => {
         onPress: async () => {
           // await AsyncStorage.removeItem("userId");
           // setCurrentUser(null);
-          navigation.navigate("LogInScreen");
+          //navigation.navigate("LogInScreen");
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "LogInScreen" }],
+          });
         },
       },
     ]);
@@ -45,6 +50,10 @@ const AdminScreen = () => {
     navigation.navigate("BizPartnerSignUp");
   };
 
+  const handleFoodRequested = () => {
+    navigation.navigate("FoodRequested");
+  };
+
   const handleRetrieveUserAccount = () => {
     navigation.navigate("RetrieveUserAccount");
   };
@@ -52,6 +61,18 @@ const AdminScreen = () => {
   //Function to navigate to retrieve all business partners
   const handleNavigateBizPartner = () => {
     navigation.navigate("RetrieveBizPartners");
+  };
+
+  const handleNavigateReportedRecipe = () => {
+    navigation.navigate("ReportedRecipe");
+  };
+
+  const handleNavigateReportedBizRecipe = () => {
+    navigation.navigate("ReportedBizRecipe");
+  };
+
+  const handleNavigateFoodAndDrinks = () => {
+    navigation.navigate("FoodAndDrinksInfo");
   };
 
   return (
@@ -95,6 +116,62 @@ const AdminScreen = () => {
           />
           <Text style={styles.menuItemText}>
             Retrieve Business Partner accounts
+          </Text>
+        </View>
+      </TouchableRipple>
+
+      <TouchableRipple onPress={handleNavigateReportedRecipe}>
+        <View style={styles.menuItem}>
+          <Icon
+            name="book-alert"
+            size={25}
+            color="#FF6347"
+            style={styles.icon}
+          />
+          <Text style={styles.menuItemText}>
+            Reported Community Recipes
+          </Text>
+        </View>
+      </TouchableRipple>
+
+      <TouchableRipple onPress={handleNavigateReportedBizRecipe}>
+        <View style={styles.menuItem}>
+          <Icon
+            name="book-alert"
+            size={25}
+            color="#FF6347"
+            style={styles.icon}
+          />
+          <Text style={styles.menuItemText}>
+            Reported Business Partner Recipes
+          </Text>
+        </View>
+      </TouchableRipple>
+
+      <TouchableRipple onPress={handleFoodRequested}>
+        <View style={styles.menuItem}>
+          <Icon
+            name="food"
+            size={25}
+            color="#FF6347"
+            style={styles.icon}
+          />
+          <Text style={styles.menuItemText}>
+            Food Requested
+          </Text>
+        </View>
+      </TouchableRipple>
+
+      <TouchableRipple onPress={handleNavigateFoodAndDrinks}>
+        <View style={styles.menuItem}>
+          <Icon
+            name="food"
+            size={25}
+            color="#FF6347"
+            style={styles.icon}
+          />
+          <Text style={styles.menuItemText}>
+            Food And Drinks Database
           </Text>
         </View>
       </TouchableRipple>
