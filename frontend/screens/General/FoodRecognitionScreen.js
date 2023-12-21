@@ -29,7 +29,7 @@ const FoodRecognitionScreen = ({ navigation }) => {
             quality: 1,
         });
 
-        if (!result.cancelled) {
+        if (!result.canceled) {
             // Set the selected image
             setImage({ uri: result.uri });
         }
