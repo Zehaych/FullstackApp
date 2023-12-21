@@ -52,6 +52,7 @@ const ProgressScreen = () => {
   // const API_KEY = "0a379b4c97a648aeb0051120265dcfca";
 
   const allergies = currentUser.allergies;
+  const foodRestrictions = currentUser.foodRestrictions;
 
   // const handleGenerateRecommendations = () => {
   //   // Call the Spoonacular API to generate daily meal recommendations
@@ -85,7 +86,7 @@ const ProgressScreen = () => {
 
   const handleGenerateRecommendations = () => {
     // Call the new function to fetch meal recommendations
-    fetchRecommendations(targetCalories, allergies)
+    fetchRecommendations(targetCalories, foodRestrictions)
       .then((data) => {
         console.log("Recommendations data:", data);
         // const recommendations = data.meals.map((meal) => meal.title);
@@ -147,15 +148,15 @@ const ProgressScreen = () => {
     if (search) {
       setLoading(true);
 
-      // Call the fetchRecipes function from api.js with allergies
-      fetchRecipes(search, allergies)
+      // Call the fetchRecipes function from api.js with foodRestrictions
+      fetchRecipes(search, foodRestrictions)
         .then((data) => {
           setOnlineRecipes(data);
         })
         .catch((error) => console.error("Error fetching recipes:", error))
         .finally(() => setLoading(false));
     }
-  }, [search, allergies]);
+  }, [search, foodRestrictions]);
 
   // handle breakfast meal dropdown
   const handleBreakfastSelect = (recipeId) => {
@@ -269,7 +270,6 @@ const ProgressScreen = () => {
       setDinnerRecipe(selectedFoodAndDrink);
     }
   };
-
 
   // for rendering meal recipe
   const renderMealRecipe = (mealRecipe) => {
@@ -416,13 +416,13 @@ const ProgressScreen = () => {
       );
       const data = await response.json();
       setUsers([data]);
-      return data; 
+      return data;
     } catch (error) {
       console.error("Failed to fetch current user:", error);
       throw error;
     }
   };
-  
+
   const handleSummary = async () => {
     try {
       const userData = await fetchCurrentUser();
@@ -431,9 +431,9 @@ const ProgressScreen = () => {
       console.error("Error fetching current user data:", error);
     }
   };
-  
+
   useEffect(() => {
-    fetchCurrentUser(); 
+    fetchCurrentUser();
   }, []);
 
   return (
@@ -443,7 +443,7 @@ const ProgressScreen = () => {
           Keyboard.dismiss();
         }}
       >
-        <SafeAreaView style={styles.container}>   
+        <SafeAreaView style={styles.container}>
           {/* dropdown to choose meal */}
           <View style={styles.pickerContainer}>
             <Text style={styles.mealSelector}>Choose meal to add</Text>
@@ -498,7 +498,9 @@ const ProgressScreen = () => {
 
           <Text style={styles.subTitle}>Available food and drinks</Text>
           <Picker
-            selectedValue={setSelectedFoodAndDrink ? setSelectedFoodAndDrink._id : null}
+            selectedValue={
+              setSelectedFoodAndDrink ? setSelectedFoodAndDrink._id : null
+            }
             onValueChange={(itemValue) => handleFoodAndDrinks(itemValue)}
             style={styles.dropdown}
           >
@@ -592,7 +594,10 @@ const ProgressScreen = () => {
               </Button>
             </View>
             <View style={styles.rightComponent}>
-              <Button onPress={() => handleSubmit()} style={styles.submitButton}>
+              <Button
+                onPress={() => handleSubmit()}
+                style={styles.submitButton}
+              >
                 Submit
               </Button>
             </View>
@@ -604,7 +609,7 @@ const ProgressScreen = () => {
           </TouchableOpacity>
         </SafeAreaView>
       </TouchableWithoutFeedback>
-    </ScrollView>  
+    </ScrollView>
   );
 };
 

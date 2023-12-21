@@ -107,7 +107,12 @@ export async function fetchRecipes(query, foodRestrictions) {
           recipe.title.toLowerCase().includes("sugared") ||
           recipe.title.toLowerCase().includes("honey") ||
           recipe.title.toLowerCase().includes("syrup") ||
-          recipe.title.toLowerCase().includes("molasses"));
+          recipe.title.toLowerCase().includes("molasses") ||
+          recipe.title.toLowerCase().includes("cake") ||
+          recipe.title.toLowerCase().includes("candy") ||
+          recipe.title.toLowerCase().includes("chocolate") ||
+          recipe.title.toLowerCase().includes("candies") ||
+          recipe.title.toLowerCase().includes("chocolates"));
 
       const containsSalt =
         foodRestrictions.includes("Sodium") &&
@@ -269,29 +274,109 @@ export async function fetchRecipeIngredients(recipeId) {
 //   }
 // }
 
-export async function fetchRecommendations(targetCalories, allergies) {
+export async function fetchRecommendations(targetCalories, foodRestrictions) {
   let url = `https://api.spoonacular.com/mealplanner/generate?apiKey=${API_KEY}&timeFrame=day&targetCalories=${targetCalories}`;
 
-  // Gather all intolerances into an array and append them to the URL if they exist
-  const intolerances = [
-    "Egg",
-    "Dairy",
-    "Gluten",
-    "Grain",
-    "Peanut",
-    "Seafood",
-    "Sesame",
-    "Shellfish",
-    "Soy",
-    "Sulfite",
-    "Tree Nut",
-    "Wheat",
-  ]
-    .filter((intolerance) => allergies.includes(intolerance))
+  // // Gather all intolerances into an array and append them to the URL if they exist
+  // const intolerances = [
+  //   "Egg",
+  //   "Dairy",
+  //   "Gluten",
+  //   "Grain",
+  //   "Peanut",
+  //   "Seafood",
+  //   "Sesame",
+  //   "Shellfish",
+  //   "Soy",
+  //   "Sulfite",
+  //   "Tree Nut",
+  //   "Wheat",
+  // ]
+  //   .filter((intolerance) => allergies.includes(intolerance))
+  //   .join(",");
+
+  // if (intolerances.length > 0) {
+  //   url += `&exclude=${intolerances}`;
+  // }
+
+  const restrictionMap = {
+    Dairy: [
+      "milk",
+      "cheese",
+      "yogurt",
+      "butter",
+      "cream cheese",
+      "ghee",
+      "whey",
+      "dairy",
+    ],
+    Egg: ["egg", "eggs"],
+    Spicy: [
+      "spice",
+      "spices",
+      "chili",
+      "chilli",
+      "pepper",
+      "curry",
+      "hot",
+      "allspice",
+      "spicy",
+    ],
+    Sugar: [
+      "sweet",
+      "sugary",
+      "sugared",
+      "honey",
+      "syrup",
+      "molasses",
+      "cake",
+      "candy",
+      "chocolate",
+      "candies",
+      "chocolates",
+      "sugar",
+    ],
+    Sodium: ["salt", "salty", "salted", "brine", "soy sauce", "sodium"],
+    "Saturated Fat": [
+      "fatty meat",
+      "cream",
+      "lard",
+      "palm oil",
+      "coconut oil",
+      "saturated fat",
+    ],
+    Cholesterol: [
+      "red meat",
+      "pork",
+      "chicken",
+      "beef",
+      "shrimp",
+      "lobster",
+      "lamb",
+      "cholesterol",
+    ],
+    Soy: ["soy"],
+    Peanut: ["peanut"],
+    Seafood: ["seafood"],
+    Sulfite: ["sulfite"],
+    Gluten: ["gluten"],
+    Sesame: ["sesame"],
+    "Tree Nut": ["tree nut"],
+    Grain: ["grain"],
+    Shellfish: ["shellfish"],
+    Wheat: ["wheat"],
+  };
+
+  // Gather all ingredients to exclude based on foodRestrictions
+  const exclusions = foodRestrictions
+    .flatMap((restriction) => {
+      return restrictionMap[restriction] || [];
+    })
     .join(",");
 
-  if (intolerances.length > 0) {
-    url += `&exclude=${intolerances}`;
+  // Append the exclusions to the URL
+  if (exclusions.length > 0) {
+    url += `&exclude=${exclusions}`;
   }
 
   try {
@@ -309,29 +394,110 @@ export async function fetchRecommendations(targetCalories, allergies) {
   }
 }
 
-export async function fetchWeeklyRecommendations(allergies) {
+export async function fetchWeeklyRecommendations(foodRestrictions) {
   let url = `https://api.spoonacular.com/mealplanner/generate?apiKey=${API_KEY}&timeFrame=week`;
 
   // Gather all intolerances into an array and append them to the URL if they exist
-  const intolerances = [
-    "Egg",
-    "Dairy",
-    "Gluten",
-    "Grain",
-    "Peanut",
-    "Seafood",
-    "Sesame",
-    "Shellfish",
-    "Soy",
-    "Sulfite",
-    "Tree Nut",
-    "Wheat",
-  ]
-    .filter((intolerance) => allergies.includes(intolerance))
+  // const intolerances = [
+  //   "Egg",
+  //   "Dairy",
+  //   "Gluten",
+  //   "Grain",
+  //   "Peanut",
+  //   "Seafood",
+  //   "Sesame",
+  //   "Shellfish",
+  //   "Soy",
+  //   "Sulfite",
+  //   "Tree Nut",
+  //   "Wheat",
+  // ]
+  //   .filter((intolerance) => foodRestrictions.includes(intolerance))
+  //   .join(",");
+
+  // if (intolerances.length > 0) {
+  //   url += `&exclude=${intolerances}`;
+  // }
+
+  // Map of foodRestrictions to their corresponding ingredients
+  const restrictionMap = {
+    Dairy: [
+      "milk",
+      "cheese",
+      "yogurt",
+      "butter",
+      "cream cheese",
+      "ghee",
+      "whey",
+      "dairy",
+    ],
+    Egg: ["egg", "eggs"],
+    Spicy: [
+      "spice",
+      "spices",
+      "chili",
+      "chilli",
+      "pepper",
+      "curry",
+      "hot",
+      "allspice",
+      "spicy",
+    ],
+    Sugar: [
+      "sweet",
+      "sugary",
+      "sugared",
+      "honey",
+      "syrup",
+      "molasses",
+      "cake",
+      "candy",
+      "chocolate",
+      "candies",
+      "chocolates",
+      "sugar",
+    ],
+    Sodium: ["salt", "salty", "salted", "brine", "soy sauce", "sodium"],
+    "Saturated Fat": [
+      "fatty meat",
+      "cream",
+      "lard",
+      "palm oil",
+      "coconut oil",
+      "saturated fat",
+    ],
+    Cholesterol: [
+      "red meat",
+      "pork",
+      "chicken",
+      "beef",
+      "shrimp",
+      "lobster",
+      "lamb",
+      "cholesterol",
+    ],
+    Soy: ["soy"],
+    Peanut: ["peanut"],
+    Seafood: ["seafood"],
+    Sulfite: ["sulfite"],
+    Gluten: ["gluten"],
+    Sesame: ["sesame"],
+    "Tree Nut": ["tree nut"],
+    Grain: ["grain"],
+    Shellfish: ["shellfish"],
+    Wheat: ["wheat"],
+  };
+
+  // Gather all ingredients to exclude based on foodRestrictions
+  const exclusions = foodRestrictions
+    .flatMap((restriction) => {
+      return restrictionMap[restriction] || [];
+    })
     .join(",");
 
-  if (intolerances.length > 0) {
-    url += `&exclude=${intolerances}`;
+  // Append the exclusions to the URL
+  if (exclusions.length > 0) {
+    url += `&exclude=${exclusions}`;
   }
 
   try {
