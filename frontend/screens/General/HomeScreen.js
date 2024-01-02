@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Image,
   SafeAreaView,
@@ -7,15 +7,22 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  ImageBackground,
 } from "react-native";
 import {
   TouchableRipple
 } from 'react-native-paper';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { fetchRandomRecipes } from "../../assets/Api";
+import { Context } from "../../store/context";
 
 const HomeScreen = ({ navigation }) => {
+
+  const [randomRecipes, setRandomRecipes] = useState([]);
+  const [currentUser, setCurrentUser] = useContext(Context);
+  const [users, setUsers] = useState([]);
+
   const navigateToCommunityRecipes = () => {
     navigation.navigate("Community Recipes");
   };
@@ -30,9 +37,39 @@ const HomeScreen = ({ navigation }) => {
 
   const navigateToFoodRecognitionScreen = () => {
     navigation.navigate("FoodRecognitionScreen")
-  }
+  };
 
-  const [randomRecipes, setRandomRecipes] = useState([]);
+  const navigateToTrackProgressScreen = () => {
+    navigation.navigate("Track Progress")
+  };
+
+  const navigateToAddRecipeScreen = () => {
+    navigation.navigate("Add Recipe")
+  };
+  
+  const navigateToSummaryScreen = async () => {
+    try {
+      const userData = await fetchCurrentUser();
+      navigation.navigate("TabDWMScreen", { user: userData });
+    } catch (error) {
+      console.error("Error fetching current user data:", error);
+    }
+  };
+
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/user/getUserTypes?userType=user&_id=${users._id}`
+      );
+      const data = await response.json();
+      setUsers([data]);
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch current user:", error);
+      throw error;
+    }
+  };
+    
 
   // useEffect(() => {
   //   // Fetch random recipes by generating random recipe IDs
@@ -90,36 +127,46 @@ const HomeScreen = ({ navigation }) => {
             </View>
           </TouchableRipple>
         </View>
-        <Image
+        <ImageBackground
           source={require("../../assets/recipe_image.png")}
           style={styles.bannerImage}
-        />
+        >
+          <View style={styles.overlay}>
+            <Text style={styles.heyText}>Hello {currentUser.username}</Text>
+          </View>
+        </ImageBackground>
 
         <View style={styles.introSection}>
           <Text style={styles.introHeader}>Welcome to NutriRizz</Text>
           <View style={styles.introImages}>
             <View style={styles.introImage}>
-              <Image
-                source={require("../../assets/image1.png")}
-                style={styles.introImageImage}
-              />
-              <Text style={styles.introImageText}>Discover Recipes</Text>
+              <TouchableOpacity style={styles.introButton} onPress={navigateToTrackProgressScreen}>
+                <Image
+                  source={require("../../assets/image3.png")}
+                  style={styles.introImageImage}
+                />
+                <Text style={styles.introImageText}>Track Your Progress</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.introImage}>
-              <Image
-                source={require("../../assets/image2.png")}
-                style={styles.introImageImage}
-              />
-              <Text style={styles.introImageText}>Share Your Recipes</Text>
+              <TouchableOpacity style={styles.introButton} onPress={navigateToSummaryScreen}>
+                <Image
+                  source={require("../../assets/image1.png")}
+                  style={styles.introImageImage}
+                />
+                <Text style={styles.introImageText}>View Your Intakes</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.introImage}>
-              <Image
-                source={require("../../assets/image3.png")}
-                style={styles.introImageImage}
-              />
-              <Text style={styles.introImageText}>Track your Progress</Text>
-            </View>
-          </View>
+              <TouchableOpacity style={styles.introButton} onPress={navigateToAddRecipeScreen}>
+                <Image
+                  source={require("../../assets/image2.png")}
+                  style={styles.introImageImage}
+                />
+                <Text style={styles.introImageText}>Share Your Recipes</Text>
+              </TouchableOpacity>
+            </View>            
+          </View>          
           <TouchableOpacity style={styles.startButton} onPress={navigateToUser}>
             <Text style={styles.startButtonText}>Start Now</Text>
           </TouchableOpacity>
@@ -230,6 +277,17 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
   },
+  heyText: {
+    fontSize: 50,
+    fontWeight: "bold",
+    color: "white",
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0)', // Adjust the opacity/color as needed
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   bannerImage: {
     width: "100%",
     height: 200,
@@ -262,6 +320,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginTop: 10,
+    color: "black",
+    textAlign: "center",
+  },
+  introButton:{
+    backgroundColor: "#FCFCD3",
+    padding: 10,
+    borderRadius: 10,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
   },
   startButton: {
     backgroundColor: "#0066cc",
@@ -290,6 +358,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 10,
     padding: 10,
+    backgroundColor: "#FCFCD3",
   },
   featuredCardImage: {
     width: 150,
@@ -300,6 +369,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     fontWeight: "bold",
+    textAlign: "center",
   },
   communitySection: {
     marginBottom: 20,
@@ -312,6 +382,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 10,
     padding: 10,
+    backgroundColor: "#FCFCD3",
   },
   communityRecipeImage: {
     width: 150,
@@ -322,6 +393,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     fontWeight: "bold",
+    textAlign: "center",
   },
   button: {
     backgroundColor: "#0066cc",
