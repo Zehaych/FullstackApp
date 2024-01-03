@@ -21,7 +21,7 @@ import {
   fetchRecipes,
   fetchRecipeDetails,
   fetchRecommendations,
-} from "../../assets/Api";
+} from "../../services/Api";
 import { useNavigation } from "@react-navigation/native";
 //import { set } from "mongoose";
 //import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";

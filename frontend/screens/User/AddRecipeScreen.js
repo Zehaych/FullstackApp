@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
 import { Context } from "../../store/context";
 import * as ImagePicker from "expo-image-picker";
-import { storage } from "../../assets/firebase";
+import { storage } from "../../services/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const AddRecipeScreen = () => {

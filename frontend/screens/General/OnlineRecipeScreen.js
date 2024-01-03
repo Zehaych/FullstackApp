@@ -11,7 +11,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { fetchWeeklyRecommendations, fetchRecipes } from "../../assets/Api";
+import { fetchWeeklyRecommendations, fetchRecipes } from "../../services/Api";
 
 import { Context } from "../../store/context";
 import Icon from "react-native-vector-icons/FontAwesome";

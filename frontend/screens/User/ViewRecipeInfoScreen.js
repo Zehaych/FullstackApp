@@ -27,7 +27,7 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-import { storage } from "../../assets/firebase";
+import { storage } from "../../services/firebase";
 
 const { width, height } = Dimensions.get("window");
 

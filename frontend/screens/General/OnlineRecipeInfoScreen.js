@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { fetchRecipeDetails, fetchRecipeIngredients } from "../../assets/Api";
+import { fetchRecipeDetails, fetchRecipeIngredients } from "../../services/Api";
 import { Context } from "../../store/context";
 
 const OnlineRecipeInfoScreen = ({ route }) => {

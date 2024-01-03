@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
-import { storage } from "../../assets/firebase";
+import { storage } from "../../services/firebase";
 import {
   ref,
   deleteObject,
