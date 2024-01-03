@@ -13,6 +13,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
 import { Context } from "../../store/context";
 import * as ImagePicker from "expo-image-picker";
+import { storage } from "../../services/firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const AddBizRecipeScreen = () => {
   const navigation = useNavigation();
@@ -58,7 +60,7 @@ const AddBizRecipeScreen = () => {
     setIngredients(newIngredients);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Handle form submission here
     // You can access the form values in the name, ingredients, instructions, calories, and image variables
 
@@ -93,38 +95,45 @@ const AddBizRecipeScreen = () => {
     console.log("Image:", image);
     console.log("Price:", price);
 
-    fetch(`${process.env.EXPO_PUBLIC_IP}/bizRecipe`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: name,
-        ingredients: ingredients,
-        instructions: instructions,
-        calories: calories,
-        image: image,
-        price: price,
-        submitted_by: currentUser._id,
-      }),
-    })
-      .then((res) => {
-        console.log(res.status);
-        console.log(res.headers);
-        return res.json();
-      })
-      .then(
-        (result) => {
-          console.log(result);
-          // console.warn(result);
-          alert("Your recipe has been added into our Business Recipe.");
-          navigation.navigate("TabScreen");
+    try {
+      // Upload the image first and get the URL
+      const imageUrl = await uploadImage(image);
+
+      // Use the `imageUrl` in the POST request
+      fetch(`${process.env.EXPO_PUBLIC_IP}/bizRecipe`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        (error) => {
-          console.log(error);
-          // console.warn(error);
-        }
-      );
+        body: JSON.stringify({
+          name: name,
+          ingredients: ingredients,
+          instructions: instructions,
+          calories: calories,
+          image: imageUrl, // Use imageUrl here instead of local URI
+          price: price,
+          submitted_by: currentUser._id,
+        }),
+      })
+        .then((res) => {
+          console.log(res.status);
+          console.log(res.headers);
+          return res.json();
+        })
+        .then(
+          (result) => {
+            console.log(result);
+            alert("Your recipe has been added into our Business Recipe.");
+            navigation.navigate("TabScreen");
+          },
+          (error) => {
+            console.error(error);
+          }
+        );
+    } catch (error) {
+      console.error("Error uploading image or submitting form: ", error);
+      alert("Error uploading image or submitting form: ", error);
+    }
   };
 
   const selectImage = async () => {
@@ -139,6 +148,39 @@ const AddBizRecipeScreen = () => {
     } else if (result.assets && result.assets.length > 0) {
       // Access the selected image using the assets array
       setImage(result.assets[0].uri);
+    }
+  };
+
+  const uploadImage = async (uri) => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      const filename = uri.substring(uri.lastIndexOf("/") + 1);
+      const storageRef = ref(storage, `images/${filename}`);
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+
+      return new Promise((resolve, reject) => {
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            reject(error);
+          },
+          () => {
+            // Handle successful uploads on complete
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+            });
+          }
+        );
+      });
+    } catch (error) {
+      console.error("Error uploading image: ", error);
+      throw error;
     }
   };
 

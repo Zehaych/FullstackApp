@@ -10,16 +10,13 @@ import {
   View,
   ImageBackground,
 } from "react-native";
-import {
-  TouchableRipple
-} from 'react-native-paper';
+import { TouchableRipple } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { fetchRandomRecipes } from "../../assets/Api";
+import { fetchRandomRecipes } from "../../services/Api";
 import { Context } from "../../store/context";
-import * as Progress from 'react-native-progress';
+import * as Progress from "react-native-progress";
 
 const HomeScreen = ({ navigation }) => {
-
   const [randomRecipes, setRandomRecipes] = useState([]);
   const [currentUser, setCurrentUser] = useContext(Context);
   const [users, setUsers] = useState([]);
@@ -41,15 +38,15 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const navigateToFoodRecognitionScreen = () => {
-    navigation.navigate("FoodRecognitionScreen")
+    navigation.navigate("FoodRecognitionScreen");
   };
 
   const navigateToTrackProgressScreen = () => {
-    navigation.navigate("Track Progress")
+    navigation.navigate("Track Progress");
   };
 
   const navigateToAddRecipeScreen = () => {
-    navigation.navigate("Add Recipe")
+    navigation.navigate("Add Recipe");
   };
 
   const navigateToOnlineRecipesInfo = (recipeId) => {
@@ -80,10 +77,10 @@ const HomeScreen = ({ navigation }) => {
         const recipes = await fetchRandomRecipes(2);
         setRandomRecipes(recipes);
       } catch (error) {
-        console.error('Error fetching random recipes:', error);
+        console.error("Error fetching random recipes:", error);
       }
     };
-  
+
     fetchRecipes();
   }, []);
 
@@ -106,15 +103,17 @@ const HomeScreen = ({ navigation }) => {
     // Fetch user data when the component mounts
     const fetchData = async () => {
       try {
-        const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/getUserById/${currentUser._id}`);
+        const response = await fetch(
+          `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${currentUser._id}`
+        );
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const data = await response.json();
         setLatestUserData(data);
       } catch (error) {
         console.error(error);
-      }  finally {
+      } finally {
         setLoading(false);
       }
     };
@@ -125,19 +124,20 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     if (!loading && latestUserData) {
       const CaloriesLog = latestUserData.dailyCaloriesLog;
-      const latestDataEntry = CaloriesLog.length > 0 ? CaloriesLog[CaloriesLog.length - 1] : null;
-      const latestTotalCalories = latestDataEntry ? latestDataEntry.total_calories : 0;
+      const latestDataEntry =
+        CaloriesLog.length > 0 ? CaloriesLog[CaloriesLog.length - 1] : null;
+      const latestTotalCalories = latestDataEntry
+        ? latestDataEntry.total_calories
+        : 0;
       setLatestTotalCalories(latestTotalCalories);
     }
   }, [loading, latestUserData]);
   //console.log("targetCalories: " + CaloriesLog);
   //console.log("latestTotalCalories: " + latestTotalCalories);
-  
+
   const progress = (latestTotalCalories / latestUserData.calorie) * 100;
-  const progressBarColor = progress > 100 ? '#FF3925' : '#3EE649';
+  const progressBarColor = progress > 100 ? "#FF3925" : "#3EE649";
 
-
-  
   // useEffect(() => {
   //   // Fetch random recipes by generating random recipe IDs
   //   const randomRecipeIds = getRandomRecipeIds();
@@ -339,6 +339,25 @@ const HomeScreen = ({ navigation }) => {
             </TouchableOpacity>
             {/* Add more top community recipes here */}
           </View>
+          <View style={styles.communitySection}>
+            <Text style={styles.sectionHeader}>Top Community Recipes</Text>
+            {/* Display top community recipes */}
+            <TouchableOpacity style={styles.communityRecipe}>
+              <Image
+                source={require("../../assets/recipe3.jpg")}
+                style={styles.communityRecipeImage}
+              />
+              <Text style={styles.communityRecipeTitle}>Veggie Stir-Fry</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.communityRecipe}>
+              <Image
+                source={require("../../assets/recipe4.jpg")}
+                style={styles.communityRecipeImage}
+              />
+              <Text style={styles.communityRecipeTitle}>Homemade Pizza</Text>
+            </TouchableOpacity>
+            {/* Add more top community recipes here */}
+          </View>
 
           <TouchableOpacity
             style={styles.button}
@@ -505,8 +524,6 @@ const HomeScreen = ({ navigation }) => {
   }
 };
 
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -522,9 +539,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   headerText: {
     fontSize: 24,
@@ -532,8 +549,8 @@ const styles = StyleSheet.create({
   },
   chartContainer: {
     flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20,
     borderWidth: 1,
     padding: 10,
@@ -546,7 +563,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     margin: 5,
     textAlign: "center",
-  },  
+  },
   heyText: {
     fontSize: 30,
     fontWeight: "bold",
@@ -554,9 +571,9 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0)', // Adjust the opacity/color as needed
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0)", // Adjust the opacity/color as needed
+    justifyContent: "center",
+    alignItems: "center",
   },
   bannerImage: {
     width: "100%",
@@ -624,14 +641,14 @@ const styles = StyleSheet.create({
     color: "black",
     textAlign: "center",
   },
-  introButton:{
+  introButton: {
     backgroundColor: "#FCFCD3",
     padding: 10,
     borderRadius: 10,
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#ccc",
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -645,7 +662,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     alignItems: "center",
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -676,7 +693,7 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     backgroundColor: "#FCFCD3",
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -708,7 +725,7 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     backgroundColor: "#FCFCD3",
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -734,7 +751,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 20,
     alignItems: "center",
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,

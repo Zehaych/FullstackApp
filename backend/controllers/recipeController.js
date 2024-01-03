@@ -55,6 +55,17 @@ exports.postRecipe = asyncHandler(async (req, res) => {
 });
 
 exports.updateRecipe = asyncHandler(async (req, res) => {
+  if (
+    !req.body.name ||
+    !req.body.ingredients ||
+    !req.body.instructions ||
+    !req.body.calories ||
+    !req.body.image
+  ) {
+    res.status(400);
+    throw new Error("Please add a value for the recipe");
+  }
+
   const recipeId = req.params.recipeId;
 
   const recipe = await Recipe.findById(recipeId);
