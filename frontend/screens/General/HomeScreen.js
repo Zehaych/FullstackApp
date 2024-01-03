@@ -16,13 +16,18 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { fetchRandomRecipes } from "../../assets/Api";
 import { Context } from "../../store/context";
+import * as Progress from 'react-native-progress';
 
 const HomeScreen = ({ navigation }) => {
 
   const [randomRecipes, setRandomRecipes] = useState([]);
   const [currentUser, setCurrentUser] = useContext(Context);
   const [users, setUsers] = useState([]);
+  const [latestUserData, setLatestUserData] = useState([]);
+  const [latestTotalCalories, setLatestTotalCalories] = useState(0);
+  const [loading, setLoading] = useState(true);
 
+  // ==================== for navigation ====================
   const navigateToCommunityRecipes = () => {
     navigation.navigate("Community Recipes");
   };
@@ -69,8 +74,44 @@ const HomeScreen = ({ navigation }) => {
       throw error;
     }
   };
-    
 
+  //===============for progress bar================
+  useEffect(() => {
+    // Fetch user data when the component mounts
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/getUserById/${currentUser._id}`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setLatestUserData(data);
+      } catch (error) {
+        console.error(error);
+      }  finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [currentUser]);
+  //console.log("latestUserData: " + latestUserData + latestUserData.calorie);
+
+  useEffect(() => {
+    if (!loading && latestUserData) {
+      const CaloriesLog = latestUserData.dailyCaloriesLog;
+      const latestDataEntry = CaloriesLog.length > 0 ? CaloriesLog[CaloriesLog.length - 1] : null;
+      const latestTotalCalories = latestDataEntry ? latestDataEntry.total_calories : 0;
+      setLatestTotalCalories(latestTotalCalories);
+    }
+  }, [loading, latestUserData]);
+  //console.log("targetCalories: " + CaloriesLog);
+  //console.log("latestTotalCalories: " + latestTotalCalories);
+  
+  const progress = (latestTotalCalories / latestUserData.calorie) * 100;
+  const progressBarColor = progress > 100 ? '#FF3925' : '#3EE649';
+
+
+  
   // useEffect(() => {
   //   // Fetch random recipes by generating random recipe IDs
   //   const randomRecipeIds = getRandomRecipeIds();
@@ -97,6 +138,7 @@ const HomeScreen = ({ navigation }) => {
   //   return randomIds;
   // }
 
+  //============= online random recipes =================
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
@@ -138,6 +180,23 @@ const HomeScreen = ({ navigation }) => {
 
         <View style={styles.introSection}>
           <Text style={styles.introHeader}>Welcome to NutriRizz</Text>
+          <View style={styles.chartContainer}>
+            {loading ? (
+              <Text>Loading...</Text>
+            ) : (
+              <>
+                <Text style={[styles.progressText, { color: "black"}]}>Today's Calories Intake</Text>
+                <Progress.Bar
+                  progress={progress / 100}
+                  width={320}
+                  height={15}
+                  color={progressBarColor}
+                  borderColor="#black"
+                />
+                <Text style={[styles.progressText, { color: progressBarColor }]}>{Math.round(latestTotalCalories)} / {Math.round(latestUserData.calorie)} Cal consumed</Text>
+              </>
+            )}        
+          </View>
           <View style={styles.introImages}>
             <View style={styles.introImage}>
               <TouchableOpacity style={styles.introButton} onPress={navigateToTrackProgressScreen}>
@@ -262,7 +321,7 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
   },
   header: {
     padding: 20,
@@ -277,6 +336,23 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
   },
+  chartContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    borderWidth: 1,
+    padding: 10,
+    backgroundColor: "#FCFCD3",
+    borderRadius: 10,
+    borderColor: "#ccc",
+  },
+  progressText: {
+    fontSize: 15,
+    fontWeight: "bold",
+    margin: 5,
+    textAlign: "center",
+  },  
   heyText: {
     fontSize: 50,
     fontWeight: "bold",
@@ -330,12 +406,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#ccc",
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   startButton: {
     backgroundColor: "#0066cc",
     padding: 10,
     borderRadius: 10,
     alignItems: "center",
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   startButtonText: {
     color: "#fff",
@@ -359,6 +451,14 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     backgroundColor: "#FCFCD3",
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   featuredCardImage: {
     width: 150,
@@ -383,6 +483,14 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     backgroundColor: "#FCFCD3",
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   communityRecipeImage: {
     width: 150,
@@ -401,6 +509,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 20,
     alignItems: "center",
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   buttonText: {
     color: "#fff",
