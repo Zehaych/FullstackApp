@@ -89,6 +89,17 @@ exports.postBizRecipe = asyncHandler(async (req, res) => {
 });
 
 exports.updateBizRecipe = asyncHandler(async (req, res) => {
+  if (
+    !req.body.name ||
+    !req.body.ingredients ||
+    !req.body.instructions ||
+    !req.body.calories ||
+    !req.body.image
+  ) {
+    res.status(400);
+    throw new Error("Please add a value for the recipe");
+  }
+
   const recipeId = req.params.recipeId;
 
   const recipe = await BizRecipe.findById(recipeId);
@@ -446,12 +457,10 @@ exports.clearDoneOrRejectedOrders = asyncHandler(async (req, res) => {
     );
     res.json({ success: true, message: "Orders cleared successfully" });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error clearing orders",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error clearing orders",
+      error: error.message,
+    });
   }
 });
