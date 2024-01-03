@@ -185,7 +185,10 @@ const HomeScreen = ({ navigation }) => {
               <Text>Loading...</Text>
             ) : (
               <>
-                <Text style={[styles.progressText, { color: "black"}]}>Today's Calories Intake</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Icon name="target" size={20} color="green"/>
+                  <Text style={[styles.progressText, { color: "black"}]}>Today's Calories Intake</Text>
+                </View>
                 <Progress.Bar
                   progress={progress / 100}
                   width={320}
