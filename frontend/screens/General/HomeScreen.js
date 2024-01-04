@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { TouchableRipple } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { fetchRandomRecipes } from "../../services/Api";
+import { fetchRandomRecipes, fetchRecommendations } from "../../services/Api";
 import { Context } from "../../store/context";
 import * as Progress from "react-native-progress";
 
@@ -23,6 +23,9 @@ const HomeScreen = ({ navigation }) => {
   const [latestUserData, setLatestUserData] = useState([]);
   const [latestTotalCalories, setLatestTotalCalories] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [recommendedRecipes, setRecommendedRecipes] = useState([]);
+  const [communityRecipes, setCommunityRecipes] = useState([]);
+  const [businessRecipes, setBusinessRecipes] = useState([]);
 
   // ==================== for navigation ====================
   const navigateToCommunityRecipes = () => {
@@ -35,6 +38,10 @@ const HomeScreen = ({ navigation }) => {
 
   const navigateToOnlineRecipes = () => {
     navigation.navigate("Online Recipes");
+  };
+
+  const navigateToBusinessRecipes = () => {
+    navigation.navigate("Business Recipes");
   };
 
   const navigateToFoodRecognitionScreen = () => {
@@ -51,6 +58,14 @@ const HomeScreen = ({ navigation }) => {
 
   const navigateToOnlineRecipesInfo = (recipeId) => {
     navigation.navigate("Online Recipe Information", { recipeId });
+  };
+
+  const navigateToCommunityRecipesInfo = (recipeData) => {
+    navigation.navigate("Recipe Information", { recipeData });
+  };
+
+  const navigateToBusinessRecipesInfo = (recipeData) => {
+    navigation.navigate("Business Recipe Information", { recipeData });
   };
 
   const navigateToCalculateCaloriesScreen = () => {
@@ -134,9 +149,84 @@ const HomeScreen = ({ navigation }) => {
   }, [loading, latestUserData]);
   //console.log("targetCalories: " + CaloriesLog);
   //console.log("latestTotalCalories: " + latestTotalCalories);
-
-  const progress = (latestTotalCalories / latestUserData.calorie) * 100;
+  const targetCalories = latestUserData.calorie;
+  const progress = (latestTotalCalories / targetCalories) * 100;
   const progressBarColor = progress > 100 ? "#FF3925" : "#3EE649";
+
+  //======================for recommandation========================
+  const foodRestrictions = latestUserData.foodRestrictions;
+
+  useEffect(() => {
+    const generateRecommendations = async() => {
+      fetchRecommendations(targetCalories, foodRestrictions)
+        .then((data) => {
+          console.log("Recommendations data:", data);
+          setRecommendedRecipes(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching three meal recommendations:", error);
+          setRecommendedRecipes([]);
+        });
+    };
+    generateRecommendations();
+  }, [targetCalories, foodRestrictions]); 
+
+  // useEffect(() => {
+  //   const generateRecommendations = async () => {
+  //     try {
+  //       const data = await fetchRecommendations(targetCalories, foodRestrictions);
+  //       console.log("Recommendations data:", data);
+  
+  //       if (data && data.meals && Array.isArray(data.meals)) {
+  //         // Ensure that data.meals is defined and is an array before setting state
+  //         setRecommendedRecipes(data);
+  //       } else {
+  //         // If data.meals is undefined or not an array, set default state
+  //         setRecommendedRecipes({ meals: [] });
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching three meal recommendations:", error);
+  //       setRecommendedRecipes({ meals: [] });
+  //     }
+  //   };
+  
+  //   generateRecommendations();
+  // }, [targetCalories, foodRestrictions]);
+
+  //==================for top community recipes===================
+  useEffect(() => {
+    const fetchHighRatedRecipes = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.EXPO_PUBLIC_IP}/recipe/getHighRatedRecipes`
+        );
+        const data = await response.json();
+        setCommunityRecipes(data);
+      } catch (error) {
+        console.error("Error fetching high rated recipes:", error);
+      }
+    };
+
+    fetchHighRatedRecipes();
+  }, []);
+
+  //==================for top business recipes===================
+  useEffect(() => {
+    const fetchHighRatedBizRecipes = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.EXPO_PUBLIC_IP}/bizRecipe/getHighRatedBizRecipes`
+        );
+        const data = await response.json();
+        setBusinessRecipes(data);
+      } catch (error) {
+        console.error("Error fetching high rated recipes:", error);
+      }
+    };
+
+    fetchHighRatedBizRecipes();
+  }, []);
+
 
   // useEffect(() => {
   //   // Fetch random recipes by generating random recipe IDs
@@ -213,6 +303,7 @@ const HomeScreen = ({ navigation }) => {
                 </>
               )}        
             </View>
+
             <View style={styles.insertSection}>
               <View style={styles.insertImage}>
                 <TouchableOpacity style={styles.insertButton} onPress={navigateToCalculateCaloriesScreen}>
@@ -234,6 +325,7 @@ const HomeScreen = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
             </View>
+
             <View style={styles.introImages}>
               <View style={styles.introImage}>
                 <TouchableOpacity style={styles.introButton} onPress={navigateToTrackProgressScreen}>
@@ -268,6 +360,58 @@ const HomeScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
+          {/* Recommended Recipe Section */}
+          <View style={styles.recommandSection}>
+            <Text style={styles.sectionHeader}>Today's Recommandation</Text>
+            {/* Breakfast */}
+            <Text style={styles.mealText}>Breakfast</Text>
+            {recommendedRecipes.meals && recommendedRecipes.meals.length >= 0 && (
+              <TouchableOpacity
+                key={recommendedRecipes.meals[0].id}
+                style={styles.featuredCard}
+                onPress={() => navigateToOnlineRecipesInfo(recommendedRecipes.meals[0].id)}
+              >
+                <Image 
+                  source={{ uri: `https://spoonacular.com/recipeImages/${recommendedRecipes.meals[0].id}-312x231.${recommendedRecipes.meals[0].imageType}` }} 
+                  style={styles.featuredCardImage} 
+                />
+                <Text style={styles.featuredCardTitle}>{recommendedRecipes.meals[0].title}</Text>
+              </TouchableOpacity>
+            )}
+
+            {/* Lunch */}
+            <Text style={styles.mealText}>Lunch</Text>
+            {recommendedRecipes.meals && recommendedRecipes.meals.length > 0 && (
+              <TouchableOpacity
+                key={recommendedRecipes.meals[1].id}
+                style={styles.featuredCard}
+                onPress={() => navigateToOnlineRecipesInfo(recommendedRecipes.meals[1].id)}
+              >
+                <Image 
+                  source={{ uri: `https://spoonacular.com/recipeImages/${recommendedRecipes.meals[1].id}-312x231.${recommendedRecipes.meals[1].imageType}` }} 
+                  style={styles.featuredCardImage} 
+                />
+                <Text style={styles.featuredCardTitle}>{recommendedRecipes.meals[1].title}</Text>
+              </TouchableOpacity>
+            )}
+
+            <Text style={styles.mealText}>Dinner</Text>
+            {recommendedRecipes.meals && recommendedRecipes.meals.length > 0 && (
+              <TouchableOpacity
+                key={recommendedRecipes.meals[2].id}
+                style={styles.featuredCard}
+                onPress={() => navigateToOnlineRecipesInfo(recommendedRecipes.meals[2].id)}
+              >
+                <Image 
+                  source={{ uri: `https://spoonacular.com/recipeImages/${recommendedRecipes.meals[2].id}-312x231.${recommendedRecipes.meals[2].imageType}` }} 
+                  style={styles.featuredCardImage} 
+                />
+                <Text style={styles.featuredCardTitle}>{recommendedRecipes.meals[2].title}</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {/* Online Recipe Section */}
           <View style={styles.featuredSection}>
             <Text style={styles.sectionHeader}>Online Recipes</Text>
             {randomRecipes[0] && (
@@ -298,64 +442,44 @@ const HomeScreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
             )}
-            {/*
-          <TouchableOpacity style={styles.featuredCard}>
-            <Image
-              source={require("../assets/recipe1.jpg")}
-              style={styles.featuredCardImage}
-            />
-            <Text style={styles.featuredCardTitle}>Spaghetti Bolognese</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.featuredCard}>
-            <Image
-              source={require("../assets/recipe2.jpg")}
-              style={styles.featuredCardImage}
-            />
-            <Text style={styles.featuredCardTitle}>Chicken Alfredo</Text>
-          </TouchableOpacity> */}
-            {/* Add more featured recipe cards here */}
           </View>
 
           <TouchableOpacity style={styles.button} onPress={navigateToOnlineRecipes}>
             <Text style={styles.buttonText}>Explore More Online Recipes</Text>
           </TouchableOpacity>
 
+          {/* Community Recipe Section */}
           <View style={styles.communitySection}>
             <Text style={styles.sectionHeader}>Top Community Recipes</Text>
             {/* Display top community recipes */}
-            <TouchableOpacity style={styles.communityRecipe}>
-              <Image
-                source={require("../../assets/recipe3.jpg")}
-                style={styles.communityRecipeImage}
-              />
-              <Text style={styles.communityRecipeTitle}>Veggie Stir-Fry</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.communityRecipe}>
-              <Image
-                source={require("../../assets/recipe4.jpg")}
-                style={styles.communityRecipeImage}
-              />
-              <Text style={styles.communityRecipeTitle}>Homemade Pizza</Text>
-            </TouchableOpacity>
-            {/* Add more top community recipes here */}
-          </View>
-          <View style={styles.communitySection}>
-            <Text style={styles.sectionHeader}>Top Community Recipes</Text>
-            {/* Display top community recipes */}
-            <TouchableOpacity style={styles.communityRecipe}>
-              <Image
-                source={require("../../assets/recipe3.jpg")}
-                style={styles.communityRecipeImage}
-              />
-              <Text style={styles.communityRecipeTitle}>Veggie Stir-Fry</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.communityRecipe}>
-              <Image
-                source={require("../../assets/recipe4.jpg")}
-                style={styles.communityRecipeImage}
-              />
-              <Text style={styles.communityRecipeTitle}>Homemade Pizza</Text>
-            </TouchableOpacity>
+            {communityRecipes[0] && (
+              <TouchableOpacity
+                style={styles.communityRecipe}
+                onPress={() => navigateToCommunityRecipesInfo(communityRecipes[0])}
+              >
+                <Image
+                  source={{ uri: communityRecipes[0].image }}
+                  style={styles.communityRecipeImage}
+                />
+                <Text style={styles.communityRecipeTitle}>
+                  {communityRecipes[0].name}
+                </Text>
+              </TouchableOpacity>
+            )}
+            {communityRecipes[1] && (
+              <TouchableOpacity
+                style={styles.communityRecipe}
+                onPress={() => navigateToCommunityRecipesInfo(communityRecipes[1])}
+              >
+                <Image
+                  source={{ uri: communityRecipes[1].image }}
+                  style={styles.communityRecipeImage}
+                />
+                <Text style={styles.communityRecipeTitle}>
+                  {communityRecipes[1].name}
+                </Text>
+              </TouchableOpacity>
+            )}
             {/* Add more top community recipes here */}
           </View>
 
@@ -365,6 +489,49 @@ const HomeScreen = ({ navigation }) => {
           >
             <Text style={styles.buttonText}>Explore More Community Recipes</Text>
           </TouchableOpacity>
+          
+          {/* Business Recipe Section */}
+          <View style={styles.communitySection}>
+            <Text style={styles.sectionHeader}>Top Business Recipes</Text>
+            {/* Display top community recipes */}
+            {businessRecipes[0] && (
+              <TouchableOpacity
+                style={styles.communityRecipe}
+                onPress={() => navigateToBusinessRecipesInfo(businessRecipes[0])}
+              >
+                <Image
+                  source={{ uri: businessRecipes[0].image }}
+                  style={styles.communityRecipeImage}
+                />
+                <Text style={styles.communityRecipeTitle}>
+                  {businessRecipes[0].name}
+                </Text>
+              </TouchableOpacity>
+            )}
+            {businessRecipes[1] && (
+              <TouchableOpacity
+                style={styles.communityRecipe}
+                onPress={() => navigateToBusinessRecipesInfo(businessRecipes[1])}
+              >
+                <Image
+                  source={{ uri: businessRecipes[1].image }}
+                  style={styles.communityRecipeImage}
+                />
+                <Text style={styles.communityRecipeTitle}>
+                  {businessRecipes[1].name}
+                </Text>
+              </TouchableOpacity>
+            )}
+            {/* Add more top community recipes here */}
+          </View>
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={navigateToBusinessRecipes}
+          >
+            <Text style={styles.buttonText}>Explore More Business Recipes</Text>
+          </TouchableOpacity>
+
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>© FYP-23-S4-35</Text>
@@ -487,23 +654,38 @@ const HomeScreen = ({ navigation }) => {
               <Text style={styles.buttonText}>Explore More Online Recipes</Text>
             </TouchableOpacity>
 
+            {/* Community Recipe Section */}
             <View style={styles.communitySection}>
               <Text style={styles.sectionHeader}>Top Community Recipes</Text>
               {/* Display top community recipes */}
-              <TouchableOpacity style={styles.communityRecipe}>
-                <Image
-                  source={require("../../assets/recipe3.jpg")}
-                  style={styles.communityRecipeImage}
-                />
-                <Text style={styles.communityRecipeTitle}>Veggie Stir-Fry</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.communityRecipe}>
-                <Image
-                  source={require("../../assets/recipe4.jpg")}
-                  style={styles.communityRecipeImage}
-                />
-                <Text style={styles.communityRecipeTitle}>Homemade Pizza</Text>
-              </TouchableOpacity>
+              {communityRecipes[0] && (
+                <TouchableOpacity
+                  style={styles.communityRecipe}
+                  onPress={() => navigateToCommunityRecipesInfo(communityRecipes[0])}
+                >
+                  <Image
+                    source={{ uri: communityRecipes[0].image }}
+                    style={styles.communityRecipeImage}
+                  />
+                  <Text style={styles.communityRecipeTitle}>
+                    {communityRecipes[0].name}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              {communityRecipes[1] && (
+                <TouchableOpacity
+                  style={styles.communityRecipe}
+                  onPress={() => navigateToCommunityRecipesInfo(communityRecipes[1])}
+                >
+                  <Image
+                    source={{ uri: communityRecipes[1].image }}
+                    style={styles.communityRecipeImage}
+                  />
+                  <Text style={styles.communityRecipeTitle}>
+                    {communityRecipes[1].name}
+                  </Text>
+                </TouchableOpacity>
+              )}
               {/* Add more top community recipes here */}
             </View>
 
@@ -512,6 +694,48 @@ const HomeScreen = ({ navigation }) => {
               onPress={navigateToCommunityRecipes}
             >
               <Text style={styles.buttonText}>Explore More Community Recipes</Text>
+            </TouchableOpacity>
+
+            {/* Business Recipe Section */}
+            <View style={styles.communitySection}>
+              <Text style={styles.sectionHeader}>Top Business Recipes</Text>
+              {/* Display top community recipes */}
+              {businessRecipes[0] && (
+                <TouchableOpacity
+                  style={styles.communityRecipe}
+                  onPress={() => navigateToBusinessRecipesInfo(businessRecipes[0])}
+                >
+                  <Image
+                    source={{ uri: businessRecipes[0].image }}
+                    style={styles.communityRecipeImage}
+                  />
+                  <Text style={styles.communityRecipeTitle}>
+                    {businessRecipes[0].name}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              {businessRecipes[1] && (
+                <TouchableOpacity
+                  style={styles.communityRecipe}
+                  onPress={() => navigateToBusinessRecipesInfo(businessRecipes[1])}
+                >
+                  <Image
+                    source={{ uri: businessRecipes[1].image }}
+                    style={styles.communityRecipeImage}
+                  />
+                  <Text style={styles.communityRecipeTitle}>
+                    {businessRecipes[1].name}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              {/* Add more top community recipes here */}
+            </View>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={navigateToBusinessRecipes}
+            >
+              <Text style={styles.buttonText}>Explore More Business Recipes</Text>
             </TouchableOpacity>
 
             <View style={styles.footer}>
@@ -680,6 +904,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     margin: 20,
+  },
+  recommandSection: {
+    marginBottom: 20,
+  },
+  recommandText: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  mealText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
   },
   featuredSection: {
     marginBottom: 20,

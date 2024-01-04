@@ -464,3 +464,16 @@ exports.clearDoneOrRejectedOrders = asyncHandler(async (req, res) => {
     });
   }
 });
+
+//getRecipeWithTopAvgRating
+exports.getHighRatedBizRecipes = async (req, res) => {
+  try {
+    const highRatedRecipes = await BizRecipe.find({ averageRating: { $gte: 4 } })
+      .limit(2) // Limit the results to two recipes
+      .exec();
+
+    res.status(200).json(highRatedRecipes);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching high-rated biz recipes', error: error.message });
+  }
+};

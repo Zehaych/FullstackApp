@@ -276,3 +276,16 @@ exports.deleteRating = asyncHandler(async (req, res) => {
       .json({ message: "Error deleting review", error: error.message });
   }
 });
+
+//getRecipeWithTopAvgRating
+exports.getHighRatedRecipes = async (req, res) => {
+  try {
+    const highRatedRecipes = await Recipe.find({ averageRating: { $gte: 4 } })
+      .limit(2) // Limit the results to two recipes
+      .exec();
+
+    res.status(200).json(highRatedRecipes);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching high-rated recipes', error: error.message });
+  }
+};
