@@ -26,6 +26,7 @@ const HomeScreen = ({ navigation }) => {
   const [recommendedRecipes, setRecommendedRecipes] = useState([]);
   const [communityRecipes, setCommunityRecipes] = useState([]);
   const [businessRecipes, setBusinessRecipes] = useState([]);
+  const [progressCheck, setProgressCheck] = useState(0);
 
   // ==================== for navigation ====================
   const navigateToCommunityRecipes = () => {
@@ -136,6 +137,7 @@ const HomeScreen = ({ navigation }) => {
   }, [currentUser]);
   //console.log("latestUserData: " + latestUserData + latestUserData.calorie);
 
+  const targetCalories = latestUserData.calorie;
   useEffect(() => {
     if (!loading && latestUserData) {
       const CaloriesLog = latestUserData.dailyCaloriesLog;
@@ -146,11 +148,22 @@ const HomeScreen = ({ navigation }) => {
         : 0;
       setLatestTotalCalories(latestTotalCalories);
     }
+
   }, [loading, latestUserData]);
   //console.log("targetCalories: " + CaloriesLog);
   //console.log("latestTotalCalories: " + latestTotalCalories);
-  const targetCalories = latestUserData.calorie;
-  const progress = (latestTotalCalories / targetCalories) * 100;
+
+  useEffect (() => {
+    if (targetCalories === 0) {
+      setProgressCheck(0);
+    } else if (!loading && latestUserData) {
+      const progress = (latestTotalCalories / targetCalories) * 100;
+      setProgressCheck(progress);
+    }
+  }, [loading, latestUserData, targetCalories, latestTotalCalories]);
+
+  const progress = Math.min(100, Math.max(0, progressCheck));
+
   const progressBarColor = progress > 100 ? "#FF3925" : "#3EE649";
 
   //======================for recommandation========================
