@@ -214,19 +214,19 @@ export default function SignUpScreen() {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
   const handlePasswordConfirmationChange = (text) => {
-    setPasswordConfirmation(text);
+    setPasswordConfirmation(text.trim());
   };
 
   const handleUsernameChange = (text) => {
-    setUsername(text);
+    setUsername(text.trim());
   };
 
   const handlePasswordChange = (text) => {
-    setPassword(text);
+    setPassword(text.trim());
   };
 
   const handleEmailChange = (text) => {
-    setEmail(text);
+    setEmail(text.trim());
   };
 
   const handleSignUp = async () => {

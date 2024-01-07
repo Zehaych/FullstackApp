@@ -27,10 +27,10 @@ exports.getUserTypes = asyncHandler(async (req, res) => {
 //@access public
 
 exports.register = async (req, res) => {
-  const userName = req.body.userName;
-  const password = req.body.password;
-  const passwordConfirmation = req.body.password;
-  const email = req.body.email;
+  const userName = req.body.userName.trim();
+  const password = req.body.password.trim();
+  const passwordConfirmation = req.body.password.trim();
+  const email = req.body.email.trim();
 
   //   const passwordConfirmation = req.body.passwordConfirmation;
 

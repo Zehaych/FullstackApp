@@ -29,11 +29,11 @@ export default function LogInScreen() {
   const [password, setPassword] = useState("");
 
   const handleUsernameChange = (text) => {
-    setUsername(text);
+    setUsername(text.trim());
   };
 
   const handlePasswordChange = (text) => {
-    setPassword(text);
+    setPassword(text.trim());
   };
 
   const LogIn = async () => {
