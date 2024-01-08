@@ -128,9 +128,7 @@ const AdminScreen = () => {
             color="#FF6347"
             style={styles.icon}
           />
-          <Text style={styles.menuItemText}>
-            Reported Community Recipes
-          </Text>
+          <Text style={styles.menuItemText}>Reported Community Recipes</Text>
         </View>
       </TouchableRipple>
 
@@ -150,29 +148,27 @@ const AdminScreen = () => {
 
       <TouchableRipple onPress={handleFoodRequested}>
         <View style={styles.menuItem}>
-          <Icon
-            name="food"
-            size={25}
-            color="#FF6347"
-            style={styles.icon}
-          />
-          <Text style={styles.menuItemText}>
-            Food Requested
-          </Text>
+          <Icon name="food" size={25} color="#FF6347" style={styles.icon} />
+          <Text style={styles.menuItemText}>Food Requested</Text>
         </View>
       </TouchableRipple>
 
       <TouchableRipple onPress={handleNavigateFoodAndDrinks}>
         <View style={styles.menuItem}>
+          <Icon name="food" size={25} color="#FF6347" style={styles.icon} />
+          <Text style={styles.menuItemText}>Food And Drinks Database</Text>
+        </View>
+      </TouchableRipple>
+
+      <TouchableRipple onPress={handleNavigateBizPartner}>
+        <View style={styles.menuItem}>
           <Icon
-            name="food"
+            name="notebook-outline"
             size={25}
             color="#FF6347"
             style={styles.icon}
           />
-          <Text style={styles.menuItemText}>
-            Food And Drinks Database
-          </Text>
+          <Text style={styles.menuItemText}>Generate Reports</Text>
         </View>
       </TouchableRipple>
 

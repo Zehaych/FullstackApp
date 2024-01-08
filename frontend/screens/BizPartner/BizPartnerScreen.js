@@ -38,18 +38,12 @@ const BizPartnerScreen = () => {
     ]);
   };
 
-  const onEditProfilePressed = () => {
-    navigation.push("Edit Profile");
+  // const onBizReportsPressed = () => {
+  //   navigation.push("Biz Reports");
+  // };
+  const onBizReportsPressed = () => {
+    navigation.push("TabReportScreen");
   };
-
-  const onAddRecipePressed = () => {
-    navigation.push("Add Recipe");
-  };
-
-  const onTrackProgressPressed = () => {
-    navigation.push("Track Progress");
-  };
-
   const onAddBizRecipePressed = () => {
     navigation.push("Add Business Recipe");
   };
@@ -122,6 +116,13 @@ const BizPartnerScreen = () => {
           <View style={styles.menuItem}>
             <Icon name="clipboard-list-outline" color="#FF6347" size={25} />
             <Text style={styles.menuItemText}>View Completed Orders</Text>
+          </View>
+        </TouchableRipple>
+
+        <TouchableRipple onPress={onBizReportsPressed}>
+          <View style={styles.menuItem}>
+            <Icon name="notebook-outline" color="#FF6347" size={25} />
+            <Text style={styles.menuItemText}>Generate Reports</Text>
           </View>
         </TouchableRipple>
 
