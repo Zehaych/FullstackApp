@@ -6,6 +6,7 @@ import {
   View,
   Text,
   TextInput,
+  TouchableOpacity,
   Button,
   ScrollView,
   Dimensions,
@@ -84,22 +85,36 @@ const ChangeEmailScreen = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        {/* <Text>Change Username</Text> */}
-        <TextInput
-          style={styles.input}
-          placeholder="Enter new email"
-          value={newEmail}
-          onChangeText={(text) => setNewEmail(text)}
-          keyboardType="email-address"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter password to verify identity"
-          secureTextEntry
-          onChangeText={(text) => setPassword(text)}
-        />
 
-        <Button title="Update email" onPress={handleEmailChange} />
+          {/* New Email */}
+        <View>
+          <Text style={styles.title}>New Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="New Email"
+            value={newEmail}
+            onChangeText={(text) => setNewEmail(text)}
+            keyboardType="email-address"
+          />
+        </View>
+        
+        {/* Password */}
+        <View>
+          <Text style={styles.title}>Password</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Password to verify identity"
+            secureTextEntry
+            onChangeText={(text) => setPassword(text)}
+          />
+        </View>
+        
+        {/* <Button title="Update email" color="#ED6F21" onPress={handleEmailChange} /> */}
+
+        <TouchableOpacity style={styles.updatebutton} onPress={handleEmailChange}>
+          <Text style={styles.updatebuttonText}>Update email</Text>
+        </TouchableOpacity>
+
       </View>
     </ScrollView>
   );
@@ -109,8 +124,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
+    alignItems: "right",
+    padding: 16,
+    backgroundColor: "#fff",
+    marginTop: 8,
+    marginHorizontal: 16,
+    borderRadius: 20,
+    gap: 16,
+  },
+  title: {
+    fontWeight: 'bold',
   },
   input: {
     borderWidth: 1,
@@ -118,7 +141,18 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 10,
     width: "100%",
+    borderRadius: 5,
   },
+  updatebutton: {
+    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: '#ED6F21',
+    padding: 10,
+  },
+  updatebuttonText: {
+    color: "#FFF",
+    fontWeight: 'bold',
+  }
 });
 
 export default ChangeEmailScreen;

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Context } from "../../store/context";
-import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { View, TextInput, Text, TouchableOpacity, Button, ScrollView, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const DeleteAccountScreen = () => {
@@ -70,23 +70,41 @@ const DeleteAccountScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <Button title="Delete Account" onPress={handleDeleteAccount} />
-    </View>
+    <ScrollView>
+      <View style={styles.container}>
+        
+        {/* Email */}
+        <View>
+          <Text style={styles.title}>Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
+        </View>
+
+        {/* Password */}
+        <View>
+          <Text style={styles.title}>Password</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+        </View>
+        
+        {/* <Button title="Delete Account" onPress={handleDeleteAccount} /> */}
+
+        <TouchableOpacity style={styles.updatebutton} onPress={handleDeleteAccount}>
+          <Text style={styles.updatebuttonText}>Delete Account</Text>
+        </TouchableOpacity>
+
+      </View>
+    </ScrollView>
   );
 };
 
@@ -94,8 +112,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
+    alignItems: "right",
+    padding: 16,
+    backgroundColor: "#fff",
+    marginTop: 8,
+    marginHorizontal: 16,
+    borderRadius: 20,
+    gap: 16,
+  },
+  title: {
+    fontWeight: 'bold',
   },
   input: {
     borderWidth: 1,
@@ -103,7 +129,18 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 10,
     width: "100%",
+    borderRadius: 5,
   },
+  updatebutton: {
+    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: '#ED6F21',
+    padding: 10,
+  },
+  updatebuttonText: {
+    color: "#FFF",
+    fontWeight: 'bold',
+  }
 });
 
 export default DeleteAccountScreen;

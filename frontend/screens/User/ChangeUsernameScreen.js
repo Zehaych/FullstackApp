@@ -6,6 +6,7 @@ import {
   View,
   Text,
   TextInput,
+  TouchableOpacity,
   Button,
   ScrollView,
   Dimensions,
@@ -79,21 +80,35 @@ const ChangeUsernameScreen = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        {/* <Text>Change Username</Text> */}
-        <TextInput
-          style={styles.input}
-          placeholder="Enter new username"
-          value={newUsername}
-          onChangeText={(text) => setNewUsername(text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter password to verify identity"
-          secureTextEntry
-          onChangeText={(text) => setPassword(text)}
-        />
 
-        <Button title="Update Username" onPress={handleUsernameChange} />
+        {/* New UserName */}
+        <View>
+          <Text style={styles.title}>New Username</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="New username"
+            value={newUsername}
+            onChangeText={(text) => setNewUsername(text)}
+          />
+        </View>
+        
+        {/* Password */}
+        <View>
+          <Text style={styles.title}>Password</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Password to verify identity"
+            secureTextEntry
+            onChangeText={(text) => setPassword(text)}
+          />
+        </View>
+      
+        {/* <Button title="Update Username" onPress={handleUsernameChange} /> */}
+
+        <TouchableOpacity style={styles.updatebutton} onPress={handleUsernameChange}>
+          <Text style={styles.updatebuttonText}>Update Username</Text>
+        </TouchableOpacity>
+
       </View>
     </ScrollView>
   );
@@ -103,8 +118,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
+    alignItems: "right",
+    padding: 16,
+    backgroundColor: "#fff",
+    marginTop: 8,
+    marginHorizontal: 16,
+    borderRadius: 20,
+    gap: 16,
+  },
+  title: {
+    fontWeight: 'bold',
   },
   input: {
     borderWidth: 1,
@@ -112,7 +135,18 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 10,
     width: "100%",
+    borderRadius: 5,
   },
+  updatebutton: {
+    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: '#ED6F21',
+    padding: 10,
+  },
+  updatebuttonText: {
+    color: "#FFF",
+    fontWeight: 'bold',
+  }
 });
 
 export default ChangeUsernameScreen;
