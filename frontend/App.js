@@ -52,6 +52,7 @@ import ViewPastOrdersScreen from "./screens/User/ViewPastOrdersScreen";
 import ViewRecipeInfoScreen from "./screens/User/ViewRecipeInfoScreen";
 import ViewRecipeScreen from "./screens/User/ViewRecipeScreen";
 import ViewRequest from "./screens/User/ViewRequest";
+import UserInfoScreen from "./screens/User/UserInfoScreen";
 import { Context } from "./store/context";
 
 const Stack = createStackNavigator();
@@ -275,6 +276,7 @@ function App() {
 
           <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="User Profile" component={UserScreen} />
+          <Stack.Screen name="View User Profile" component={UserInfoScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Context.Provider>
