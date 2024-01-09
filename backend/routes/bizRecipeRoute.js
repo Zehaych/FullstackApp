@@ -52,4 +52,10 @@ router.delete("/deleteRating/:bizRecipeId", bizRecipeController.deleteRating);
 
 router.post("/clearOrders", bizRecipeController.clearDoneOrRejectedOrders);
 
+// get Top ratings -> GET
+router.get(
+  "/getHighRatedBizRecipes",
+  bizRecipeController.getHighRatedBizRecipes
+);
+
 module.exports = router;

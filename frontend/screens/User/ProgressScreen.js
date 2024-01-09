@@ -21,7 +21,7 @@ import {
   fetchRecipes,
   fetchRecipeDetails,
   fetchRecommendations,
-} from "../../assets/Api";
+} from "../../services/Api";
 import { useNavigation } from "@react-navigation/native";
 //import { set } from "mongoose";
 //import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -517,7 +517,7 @@ const ProgressScreen = () => {
           {/* list of recipes */}
           <View style={styles.searchList}>
             {loading ? (
-              <Text>Loading...</Text>
+              <Text style={styles.recipeTitle}>Loading...</Text>
             ) : (
               <ScrollView>
                 {onlineRecipes.map((item) => (
@@ -525,7 +525,7 @@ const ProgressScreen = () => {
                     key={item.id.toString()}
                     onPress={() => handleItemClick(item.id)}
                   >
-                    <Text>{item.title}</Text>
+                    <Text style={styles.recipeTitle}>{item.title}</Text>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -727,6 +727,9 @@ const styles = StyleSheet.create({
     backgroundColor: "lightblue",
     margin: 5,
     borderRadius: 10,
+  },
+  recipeTitle: {
+    marginLeft: 20,
   },
 });
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   SafeAreaView,
@@ -17,7 +17,6 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useContext } from "react";
 import { Context } from "../../store/context";
 import { useState, useEffect } from "react";
 
@@ -41,6 +40,10 @@ const UserScreen = () => {
         },
       },
     ]);
+  };
+
+  const handleViewUserProfile = () => {
+    navigation.navigate("View User Profile");
   };
 
   const handleNavigateToViewRequest = () => {
@@ -103,23 +106,13 @@ const UserScreen = () => {
 
           <View style={styles.userDetails}>
             <View style={styles.userDetail}>
-              <Text style={styles.detailText}>Sex: {currentUser.gender}</Text>
-              <Text style={styles.detailText}>Age: {currentUser.age}</Text>
-
-              <Text style={styles.detailText}>
-                Weight: {currentUser.weight}
-              </Text>
-
-              <Text style={styles.detailText}>
-                Height: {currentUser.height}
-              </Text>
-              <Text style={styles.detailText}>
-                Calorie goal: {currentUser.calorie}
-              </Text>
+              <Text
+                onPress={() => handleViewUserProfile()}
+                style={styles.detailText}
+              >User Profile</Text>
             </View>
           </View>
         </View>
-        <Divider />
 
         <View style={styles.menuWrapper}>
           {/* <TouchableRipple onPress={onEditProfilePressed}>
@@ -129,12 +122,13 @@ const UserScreen = () => {
           </View>
         </TouchableRipple> */}
 
+          <Text style={styles.subTitle}>Account</Text>
           <TouchableRipple onPress={onCalculateCaloriePressed}>
             <View style={styles.menuItem}>
               <Icon
                 name="calculator"
                 size={25}
-                color="#FF6347"
+                color="#ED6F21"
                 style={styles.icon}
               />
               <Text style={styles.menuItemText}>Calculate Calorie</Text>
@@ -145,7 +139,7 @@ const UserScreen = () => {
               <Icon
                 name="clipboard-account"
                 size={25}
-                color="#FF6347"
+                color="#ED6F21"
                 style={styles.icon}
               />
               <Text style={styles.menuItemText}>Insert Medical History</Text>
@@ -154,28 +148,32 @@ const UserScreen = () => {
 
           <TouchableRipple onPress={onTrackProgressPressed}>
             <View style={styles.menuItem}>
-              <Icon name="chart-bar" color="#FF6347" size={25} />
+              <Icon name="chart-bar" color="#ED6F21" size={25} />
               <Text style={styles.menuItemText}>Track Progress</Text>
             </View>
           </TouchableRipple>
 
+          <View style={styles.divider} />
+          <Text style={styles.subTitle}>Recipe</Text>
           <TouchableRipple onPress={onAddRecipePressed}>
             <View style={styles.menuItem}>
-              <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
+              <Icon name="silverware-fork-knife" color="#ED6F21" size={25} />
               <Text style={styles.menuItemText}>Add Recipe</Text>
             </View>
           </TouchableRipple>
 
           <TouchableRipple onPress={onViewRecipePressed}>
             <View style={styles.menuItem}>
-              <Icon name="silverware-fork-knife" color="#FF6347" size={25} />
+              <Icon name="silverware-fork-knife" color="#ED6F21" size={25} />
               <Text style={styles.menuItemText}>View Added Recipe</Text>
             </View>
           </TouchableRipple>
 
+          <View style={styles.divider} />
+          <Text style={styles.subTitle}>Favourite Recipe</Text>
           <TouchableRipple onPress={onViewFavouritesPressed}>
             <View style={styles.menuItem}>
-              <Icon name="heart" color="#FF6347" size={25} />
+              <Icon name="heart" color="#ED6F21" size={25} />
               <Text style={styles.menuItemText}>
                 Favourite Community Recipe
               </Text>
@@ -184,35 +182,37 @@ const UserScreen = () => {
 
           <TouchableRipple onPress={onViewBizFavouritesPressed}>
             <View style={styles.menuItem}>
-              <Icon name="hand-heart-outline" color="#FF6347" size={25} />
+              <Icon name="hand-heart-outline" color="#ED6F21" size={25} />
               <Text style={styles.menuItemText}>Favourite Business Recipe</Text>
             </View>
           </TouchableRipple>
 
+          <View style={styles.divider} />
+          <Text style={styles.subTitle}>Request</Text>
           <TouchableRipple onPress={handleSubmitFoodRequest}>
             <View style={styles.menuItem}>
-              <Icon name="silverware-variant" color="#FF6347" size={25} />
+              <Icon name="silverware-variant" color="#ED6F21" size={25} />
               <Text style={styles.menuItemText}>Add Food & Drinks Request</Text>
             </View>
           </TouchableRipple>
 
           <TouchableRipple onPress={handleNavigateToViewRequest}>
             <View style={styles.menuItem}>
-              <Icon name="silverware-variant" color="#FF6347" size={25} />
+              <Icon name="silverware-variant" color="#ED6F21" size={25} />
               <Text style={styles.menuItemText}>View Request Status</Text>
             </View>
           </TouchableRipple>
 
           <TouchableRipple onPress={onPastOrderspressed}>
             <View style={styles.menuItem}>
-              <Icon name="clipboard-list-outline" color="#FF6347" size={25} />
+              <Icon name="clipboard-list-outline" color="#ED6F21" size={25} />
               <Text style={styles.menuItemText}>View Completed Orders</Text>
             </View>
           </TouchableRipple>
 
           <TouchableRipple onPress={onSettingsPressed}>
             <View style={styles.menuItem}>
-              <Icon name="cog" color="#FF6347" size={25} />
+              <Icon name="cog" color="#ED6F21" size={25} />
               <Text style={styles.menuItemText}>Settings</Text>
             </View>
           </TouchableRipple>
@@ -233,7 +233,7 @@ const UserScreen = () => {
 
           <TouchableRipple onPress={onLogOutPressed}>
             <View style={styles.menuItem}>
-              <Icon name="exit-to-app" color="#FF6347" size={25} />
+              <Icon name="exit-to-app" color="#ED6F21" size={25} />
               <Text style={styles.menuItemText}>Log Out</Text>
             </View>
           </TouchableRipple>
@@ -246,6 +246,7 @@ const UserScreen = () => {
 export default UserScreen;
 
 const styles = StyleSheet.create({
+  //#FF6347
   container: {
     flex: 1,
     backgroundColor: "#fff",
@@ -253,10 +254,8 @@ const styles = StyleSheet.create({
   userInfoSection: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#dddddd",
-  },
 
+  },
   userInfo: {
     alignItems: "center",
   },
@@ -279,7 +278,14 @@ const styles = StyleSheet.create({
   },
   detailText: {
     fontSize: 16,
-    fontWeight: "bold",
+    color: "grey",
+  },
+  divider: {
+    borderBottomColor: "#C6C6CD",
+    borderBottomWidth: 1,
+    alignSelf: "center",
+    width: "90%",
+    marginTop: 10,
   },
   menuWrapper: {
     marginTop: 10,
@@ -289,8 +295,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 30,
     alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#dddddd",
+    //borderBottomWidth: 1,
+    //borderBottomColor: "#dddddd",
   },
   menuItemText: {
     color: "#777777",
@@ -298,5 +304,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 16,
     lineHeight: 26,
+  },
+  subTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 20,
+    color: "grey",
   },
 });

@@ -1,57 +1,63 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import LogInScreen from "./screens/General/LogInScreen";
-import TabScreen from "./screens/General/TabScreen";
-import SignUpScreen from "./screens/General/SignUpScreen";
-import MembersRecipeScreen from "./screens/General/MembersRecipeScreen";
-import MembersRecipeInfoScreen from "./screens/General/MembersRecipeInfoScreen";
-import OnlineRecipeScreen from "./screens/General/OnlineRecipeScreen";
-import OnlineRecipeInfoScreen from "./screens/General/OnlineRecipeInfoScreen";
-import TDEEScreen from "./screens/User/TDEEScreen";
-import MedicalHistoryScreen from "./screens/User/MedicalHistoryScreen";
-import SettingsScreen from "./screens/User/SettingsScreen";
-import AddRecipeScreen from "./screens/User/AddRecipeScreen";
-import UserScreen from "./screens/User/UserScreen";
-import { Context } from "./store/context";
 import { useState } from "react";
-import ProgressScreen from "./screens/User/ProgressScreen";
 import AddBizRecipeScreen from "./screens/BizPartner/AddBizRecipeScreen";
-import BusinessRecipeScreen from "./screens/General/BusinessRecipeScreen";
-import BusinessRecipeInfoScreen from "./screens/General/BusinessRecipeInfoScreen";
-import ChangeEmailScreen from "./screens/User/ChangeEmailScreen";
-import ChangeUsernameScreen from "./screens/User/ChangeUsernameScreen";
-import ChangePasswordScreen from "./screens/User/ChangePasswordScreen";
-import BizPartnerSignUp from "./screens/SystemAdmin/BizPartnerSignUp";
-import AdminScreen from "./screens/SystemAdmin/AdminScreen";
-import DeleteAcountScreen from "./screens/User/DeleteAcountScreen";
-import ViewRecipeScreen from "./screens/User/ViewRecipeScreen";
-import RetrieveUserAccount from "./screens/SystemAdmin/RetrieveUserAccount";
-import RetrieveBizPartners from "./screens/SystemAdmin/RetrieveBizPartners";
-import TabDWMScreen from "./screens/User/TabDWMScreen";
-import BizPartnerInfo from "./screens/SystemAdmin/BizPartnerInfo";
-import UserInfo from "./screens/SystemAdmin/UserInfo";
-import PaymentScreen from "./screens/User/PaymentScreen";
-import ViewRecipeInfoScreen from "./screens/User/ViewRecipeInfoScreen";
-import EditRecipeScreen from "./screens/User/EditRecipeScreen";
-import ViewBizRecipeScreen from "./screens/BizPartner/ViewBizRecipeScreen";
+import CompletedOrdersScreen from "./screens/BizPartner/CompletedOrdersScreen";
 import EditBizRecipeScreen from "./screens/BizPartner/EditBizRecipeScreen";
 import ViewBizRecipeInfoScreen from "./screens/BizPartner/ViewBizRecipeInfoScreen";
-import ReportedRecipe from "./screens/SystemAdmin/ReportedRecipe";
-import ReportedRecipeDetails from "./screens/SystemAdmin/ReportedRecipeDetails";
+import ViewBizRecipeScreen from "./screens/BizPartner/ViewBizRecipeScreen";
+import ViewOrdersScreen from "./screens/BizPartner/ViewOrdersScreen";
+import BusinessRecipeInfoScreen from "./screens/General/BusinessRecipeInfoScreen";
+import BusinessRecipeScreen from "./screens/General/BusinessRecipeScreen";
+import FoodRecognitionScreen from "./screens/General/FoodRecognitionScreen";
+import LogInScreen from "./screens/General/LogInScreen";
+import MembersRecipeInfoScreen from "./screens/General/MembersRecipeInfoScreen";
+import MembersRecipeScreen from "./screens/General/MembersRecipeScreen";
+import OnlineRecipeInfoScreen from "./screens/General/OnlineRecipeInfoScreen";
+import OnlineRecipeScreen from "./screens/General/OnlineRecipeScreen";
+import SignUpScreen from "./screens/General/SignUpScreen";
+import TabScreen from "./screens/General/TabScreen";
+import AdminScreen from "./screens/SystemAdmin/AdminScreen";
+import BizPartnerInfo from "./screens/SystemAdmin/BizPartnerInfo";
+import BizPartnerSignUp from "./screens/SystemAdmin/BizPartnerSignUp";
+import FoodAndDrinksInfo from "./screens/SystemAdmin/FoodAndDrinksInfo";
+import FoodRequested from "./screens/SystemAdmin/FoodRequested";
 import ReportedBizRecipe from "./screens/SystemAdmin/ReportedBizRecipe";
 import ReportedBizRecipeDetails from "./screens/SystemAdmin/ReportedBizRecipeDetail";
+import ReportedRecipe from "./screens/SystemAdmin/ReportedRecipe";
+import ReportedRecipeDetails from "./screens/SystemAdmin/ReportedRecipeDetails";
+import RetrieveBizPartners from "./screens/SystemAdmin/RetrieveBizPartners";
+import RetrieveUserAccount from "./screens/SystemAdmin/RetrieveUserAccount";
+import UserInfo from "./screens/SystemAdmin/UserInfo";
+import AddRecipeScreen from "./screens/User/AddRecipeScreen";
+import ChangeEmailScreen from "./screens/User/ChangeEmailScreen";
+import ChangePasswordScreen from "./screens/User/ChangePasswordScreen";
+import ChangeUsernameScreen from "./screens/User/ChangeUsernameScreen";
+import DeleteAcountScreen from "./screens/User/DeleteAcountScreen";
+import EditRecipeScreen from "./screens/User/EditRecipeScreen";
 import SubmitFoodRequest from "./screens/User/FoodRequestScreen";
-import FoodRequested from "./screens/SystemAdmin/FoodRequested";
-import FoodAndDrinksInfo from "./screens/SystemAdmin/FoodAndDrinksInfo";
-import ViewRequest from "./screens/User/ViewRequest";
-import ViewOrdersScreen from "./screens/BizPartner/ViewOrdersScreen";
-import CompletedOrdersScreen from "./screens/BizPartner/CompletedOrdersScreen";
-import ViewPastOrdersScreen from "./screens/User/ViewPastOrdersScreen";
+import MedicalHistoryScreen from "./screens/User/MedicalHistoryScreen";
 import OrderStatusScreen from "./screens/User/OrderStatusScreen";
-import ViewFavouritesScreen from "./screens/User/ViewFavouritesScreen";
-import ViewFavouriteRecipeInfo from "./screens/User/ViewFavouriteRecipeInfo";
-import ViewBizFavouritesScreen from "./screens/User/ViewBizFavouritesScreen";
+import PaymentScreen from "./screens/User/PaymentScreen";
+import ProgressScreen from "./screens/User/ProgressScreen";
+import SettingsScreen from "./screens/User/SettingsScreen";
+import TDEEScreen from "./screens/User/TDEEScreen";
+import TabDWMScreen from "./screens/User/TabDWMScreen";
+import UserScreen from "./screens/User/UserScreen";
 import ViewBizFavouriteRecipeInfo from "./screens/User/ViewBizFavouriteRecipeInfo";
+import ViewBizFavouritesScreen from "./screens/User/ViewBizFavouritesScreen";
+import ViewFavouriteRecipeInfo from "./screens/User/ViewFavouriteRecipeInfo";
+import ViewFavouritesScreen from "./screens/User/ViewFavouritesScreen";
+import ViewPastOrdersScreen from "./screens/User/ViewPastOrdersScreen";
+import ViewRecipeInfoScreen from "./screens/User/ViewRecipeInfoScreen";
+import ViewRecipeScreen from "./screens/User/ViewRecipeScreen";
+import ViewRequest from "./screens/User/ViewRequest";
+import TabReportScreen from "./screens/BizPartner/TabReportScreen";
+import TabFullReportScreen from "./screens/SystemAdmin/TabFullReportScreen";
+import RetrieveBizReports from "./screens/SystemAdmin/RetrieveBizReports";
+// import FullReportMonthly from "./screens/SystemAdmin/FullReportMonthly";
+import UserInfoScreen from "./screens/User/UserInfoScreen";
+import { Context } from "./store/context";
 
 const Stack = createStackNavigator();
 
@@ -117,11 +123,23 @@ function App() {
             component={RetrieveBizPartners}
             options={{ headerShown: false }}
           />
+
+          <Stack.Screen
+            name="RetrieveBizReports"
+            component={RetrieveBizReports}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="RetrieveUserAccount"
             component={RetrieveUserAccount}
             options={{ headerShown: false }}
           />
+
+          {/* <Stack.Screen
+            name="FullReportMonthly"
+            component={FullReportMonthly}
+            options={{ headerShown: false }}
+          /> */}
           <Stack.Screen
             name="AdminScreen"
             component={AdminScreen}
@@ -130,6 +148,11 @@ function App() {
           <Stack.Screen
             name="LogInScreen"
             component={LogInScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="FoodRecognitionScreen"
+            component={FoodRecognitionScreen}
             options={{ headerShown: false }}
           />
           <Stack.Screen
@@ -259,6 +282,18 @@ function App() {
             options={{ headerTitle: "" }}
           />
 
+          <Stack.Screen
+            name="TabReportScreen"
+            component={TabReportScreen}
+            options={{ headerTitle: "" }}
+          />
+
+          <Stack.Screen
+            name="TabFullReportScreen"
+            component={TabFullReportScreen}
+            options={{ headerTitle: "" }}
+          />
+
           <Stack.Screen name="Past Orders" component={ViewPastOrdersScreen} />
           {/* <Stack.Screen
             name="Payment"
@@ -269,6 +304,7 @@ function App() {
 
           <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="User Profile" component={UserScreen} />
+          <Stack.Screen name="View User Profile" component={UserInfoScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Context.Provider>

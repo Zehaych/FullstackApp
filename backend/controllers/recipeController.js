@@ -55,6 +55,17 @@ exports.postRecipe = asyncHandler(async (req, res) => {
 });
 
 exports.updateRecipe = asyncHandler(async (req, res) => {
+  if (
+    !req.body.name ||
+    !req.body.ingredients ||
+    !req.body.instructions ||
+    !req.body.calories ||
+    !req.body.image
+  ) {
+    res.status(400);
+    throw new Error("Please add a value for the recipe");
+  }
+
   const recipeId = req.params.recipeId;
 
   const recipe = await Recipe.findById(recipeId);
@@ -265,3 +276,16 @@ exports.deleteRating = asyncHandler(async (req, res) => {
       .json({ message: "Error deleting review", error: error.message });
   }
 });
+
+//getRecipeWithTopAvgRating
+exports.getHighRatedRecipes = async (req, res) => {
+  try {
+    const highRatedRecipes = await Recipe.find({ averageRating: { $gte: 4 } })
+      .limit(2) // Limit the results to two recipes
+      .exec();
+
+    res.status(200).json(highRatedRecipes);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching high-rated recipes', error: error.message });
+  }
+};

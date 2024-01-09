@@ -89,6 +89,17 @@ exports.postBizRecipe = asyncHandler(async (req, res) => {
 });
 
 exports.updateBizRecipe = asyncHandler(async (req, res) => {
+  if (
+    !req.body.name ||
+    !req.body.ingredients ||
+    !req.body.instructions ||
+    !req.body.calories ||
+    !req.body.image
+  ) {
+    res.status(400);
+    throw new Error("Please add a value for the recipe");
+  }
+
   const recipeId = req.params.recipeId;
 
   const recipe = await BizRecipe.findById(recipeId);
@@ -230,6 +241,7 @@ exports.getOrders = asyncHandler(async (req, res) => {
             ...order.toObject(), // Convert mongoose document to plain object
             recipeName: recipe.name, // Add the recipe name to each order
             userName: order.name ? order.name.username : undefined, // Add username from populated field
+            submittedById: recipe.submitted_by,
           };
         });
         return acc.concat(orders); // Accumulate all orders
@@ -303,6 +315,7 @@ exports.getOrderHistory = asyncHandler(async (req, res) => {
             ...history.toObject(), // Convert mongoose document to plain object
             recipeName: recipe.name, // Add the recipe name to each history item
             userName: history.name ? history.name.username : undefined, // Add username from populated field
+            submittedById: recipe.submitted_by,
           };
         });
         return acc.concat(histories); // Accumulate all history items
@@ -446,12 +459,28 @@ exports.clearDoneOrRejectedOrders = asyncHandler(async (req, res) => {
     );
     res.json({ success: true, message: "Orders cleared successfully" });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error clearing orders",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error clearing orders",
+      error: error.message,
+    });
   }
 });
+
+//getRecipeWithTopAvgRating
+exports.getHighRatedBizRecipes = async (req, res) => {
+  try {
+    const highRatedRecipes = await BizRecipe.find({
+      averageRating: { $gte: 4 },
+    })
+      .limit(2) // Limit the results to two recipes
+      .exec();
+
+    res.status(200).json(highRatedRecipes);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching high-rated biz recipes",
+      error: error.message,
+    });
+  }
+};

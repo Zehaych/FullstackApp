@@ -29,4 +29,7 @@ router.patch("/editRating/:recipeId", recipeController.editRating);
 // delete ratings -> DELETE
 router.delete("/deleteRating/:recipeId", recipeController.deleteRating);
 
+// get Top ratings -> GET
+router.get('/getHighRatedRecipes', recipeController.getHighRatedRecipes);
+
 module.exports = router;

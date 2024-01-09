@@ -21,6 +21,13 @@ import AddRatingsScreen from "../User/AddRatingsScreen";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import MaskedView from "@react-native-masked-view/masked-view";
 import Swiper from "react-native-swiper";
+import {
+  ref,
+  deleteObject,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { storage } from "../../services/firebase";
 
 const { width, height } = Dimensions.get("window");
 
@@ -552,8 +559,28 @@ export default function ViewRecipeInfoScreen({ route }) {
     );
   };
 
+  const deleteRecipeImageFromStorage = async (imageUrl) => {
+    if (!imageUrl) return;
+
+    try {
+      // Extract the file path from the image URL
+      const imagePath = imageUrl.split("/o/")[1].split("?")[0];
+      const decodedPath = decodeURIComponent(imagePath);
+      const imageRef = ref(storage, decodedPath);
+
+      // Delete the image
+      await deleteObject(imageRef);
+      console.log("Image deleted successfully from Firebase Storage.");
+    } catch (error) {
+      console.error("Error deleting image from Firebase Storage:", error);
+    }
+  };
+
   const deleteRecipe = async () => {
     try {
+      // Delete the image from Firebase Storage first
+      await deleteRecipeImageFromStorage(recipeData.image);
+
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_IP}/recipe/deleteRecipe/${recipeData._id}`,
         {

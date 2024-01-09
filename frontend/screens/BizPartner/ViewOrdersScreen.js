@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
+import { Context } from "../../store/context";
 
 const ViewOrdersScreen = () => {
   const [orders, setOrders] = useState([]);
@@ -18,6 +19,7 @@ const ViewOrdersScreen = () => {
   const [showPicker, setShowPicker] = useState({});
 
   const [disabledOrders, setDisabledOrders] = useState({});
+  const [currentUser] = useContext(Context);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -27,6 +29,11 @@ const ViewOrdersScreen = () => {
         );
         const data = await response.json();
 
+        // Filter orders to show only those submitted by the current user
+        const filteredData = data.filter(
+          (order) => order.submittedById === currentUser._id
+        );
+
         // Function to parse date strings into Date objects
         const parseDate = (dateStr, timeStr) => {
           const [day, month, year] = dateStr.split("/");
@@ -35,7 +42,7 @@ const ViewOrdersScreen = () => {
         };
 
         // Sort the orders
-        const sortedData = data.sort((a, b) => {
+        const sortedData = filteredData.sort((a, b) => {
           // Prioritize 'Rejected' and 'Done' statuses
           if (a.status === "Rejected" && b.status !== "Rejected") return 1;
           if (b.status === "Rejected" && a.status !== "Rejected") return -1;
@@ -58,7 +65,7 @@ const ViewOrdersScreen = () => {
         });
 
         // Initialize the disabledOrders state
-        const initialDisabledState = data.reduce((acc, order) => {
+        const initialDisabledState = filteredData.reduce((acc, order) => {
           acc[order._id] =
             order.status === "Rejected" || order.status === "Done";
           return acc;
@@ -72,7 +79,7 @@ const ViewOrdersScreen = () => {
     };
 
     fetchOrders();
-  }, []);
+  }, [currentUser._id]);
 
   const onStatusChange = (item, value) => {
     setSelectedStatus({ ...selectedStatus, [item._id]: value });

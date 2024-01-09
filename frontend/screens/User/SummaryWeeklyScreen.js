@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { View, Dimensions, StyleSheet, Text, ScrollView } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import * as Progress from "react-native-progress";
 import { Context } from "../../store/context";
 import { useFocusEffect } from '@react-navigation/native';
 //import { calculateWeeklyDataUtil } from './utils';
@@ -131,27 +132,27 @@ const SummaryWeeklyScreen = ({ route }) => {
             <ScrollView style={styles.chartContainer}>
                 {weeklyDataSorted.map((week) => (
                     <View key={week.week}>
-                        <Text style={styles.chartTextBold}>Weekly Intake - Week {week.week}</Text>
-                        <View style={styles.chartContainerToo}>
-                            <AnimatedCircularProgress
-                            size={200}
-                            width={15}
-                            fill={week.totalCalories / (roundTargetCalories) * 100} // Fill percentage based on the ratio
-                            tintColor="#00e0ff"
-                            backgroundColor="#3d5875"
-                            >
-                                {(fill) => (
-                                    <View>
-                                        <Text style={styles.chartTextBold}>
-                                        {Math.round(week.totalCalories)} / {roundTargetCalories} Cal consumed
-                                        </Text>
-                                        <Text style={styles.chartText}>
-                                            {week.totalCalories > roundTargetCalories ? `${Math.round(week.totalCalories - roundTargetCalories)} Cal more` : `${Math.round(roundTargetCalories - week.totalCalories)} Cal less`}
-                                        </Text>
-                                    </View>
-                                )}
-                            </AnimatedCircularProgress>
+                    <Text style={styles.chartTextBold}>Weekly Intake - Week {week.week}</Text>
+                    <View style={styles.chartContainerToo}>
+                        <Progress.Bar
+                        progress={week.totalCalories / roundTargetCalories} // Progress based on the ratio
+                        width={200}
+                        height={15}
+                        color="#00e0ff"
+                        unfilledColor="#3d5875"
+                        borderWidth={0}
+                        />
+                        <View>
+                        <Text style={styles.chartTextBold}>
+                            {Math.round(week.totalCalories)} / {roundTargetCalories} Cal consumed
+                        </Text>
+                        <Text style={styles.chartText}>
+                            {week.totalCalories > roundTargetCalories
+                            ? `${Math.round(week.totalCalories - roundTargetCalories)} Cal more`
+                            : `${Math.round(roundTargetCalories - week.totalCalories)} Cal less`}
+                        </Text>
                         </View>
+                    </View>
                     </View>
                 ))}
             </ScrollView>
@@ -173,9 +174,12 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     chartContainer: {
-        marginTop: 25,
-        marginBottom: 25,
+        marginTop: 15,
+        marginBottom: 15,
         margin: 5,
+        width: "98%",
+        borderWidth:2,
+        borderColor: "#CCCCCC",
     },
     chartContainerToo: {
         flex: 1,
@@ -230,6 +234,37 @@ const styles = StyleSheet.create({
 });
 
 /*
+// ======================================================================================================================================================
+
+<ScrollView style={styles.chartContainer}>
+                {weeklyDataSorted.map((week) => (
+                    <View key={week.week}>
+                        <Text style={styles.chartTextBold}>Weekly Intake - Week {week.week}</Text>
+                        <View style={styles.chartContainerToo}>
+                            <AnimatedCircularProgress
+                            size={200}
+                            width={15}
+                            fill={week.totalCalories / (roundTargetCalories) * 100} // Fill percentage based on the ratio
+                            tintColor="#00e0ff"
+                            backgroundColor="#3d5875"
+                            >
+                                {(fill) => (
+                                    <View>
+                                        <Text style={styles.chartTextBold}>
+                                        {Math.round(week.totalCalories)} / {roundTargetCalories} Cal consumed
+                                        </Text>
+                                        <Text style={styles.chartText}>
+                                            {week.totalCalories > roundTargetCalories ? `${Math.round(week.totalCalories - roundTargetCalories)} Cal more` : `${Math.round(roundTargetCalories - week.totalCalories)} Cal less`}
+                                        </Text>
+                                    </View>
+                                )}
+                            </AnimatedCircularProgress>
+                        </View>
+                    </View>
+                ))}
+            </ScrollView>
+
+=====================================================================
 
 const getWeekNumber = (date) => {
         const d = new Date(date);

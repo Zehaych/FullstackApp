@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
+import { Context } from "../../store/context";
 
 const CompletedOrdersScreen = () => {
   const [pastOrders, setPastOrders] = useState([]);
+
+  const [currentUser] = useContext(Context);
 
   useEffect(() => {
     const fetchPastOrders = async () => {
@@ -12,8 +15,13 @@ const CompletedOrdersScreen = () => {
         );
         const data = await response.json();
 
+        // Filter orders to show only those submitted by the current user
+        const filteredData = data.filter(
+          (order) => order.submittedById === currentUser._id
+        );
+
         // Sort the past orders by date and time
-        const sortedData = data.sort((a, b) => {
+        const sortedData = filteredData.sort((a, b) => {
           // Convert dateToDeliver to MM/DD/YYYY format for sorting
           const [dayA, monthA, yearA] = a.dateToDeliver.split("/");
           const [dayB, monthB, yearB] = b.dateToDeliver.split("/");
@@ -64,6 +72,13 @@ const CompletedOrdersScreen = () => {
       data={pastOrders}
       renderItem={renderItem}
       keyExtractor={(item) => item._id.toString()}
+      ListEmptyComponent={
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>
+            There are no orders at the moment.
+          </Text>
+        </View>
+      }
     />
   );
 };
@@ -93,6 +108,14 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     marginBottom: 5,
+  },
+  emptyContainer: {
+    marginTop: 50,
+    alignItems: "center",
+  },
+  emptyText: {
+    fontSize: 18,
+    color: "#555",
   },
 });
 

@@ -11,7 +11,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { fetchWeeklyRecommendations, fetchRecipes } from "../../assets/Api";
+import { fetchWeeklyRecommendations, fetchRecipes } from "../../services/Api";
 
 import { Context } from "../../store/context";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -97,14 +97,14 @@ const OnlineRecipeScreen = () => {
         {/* list of recipes */}
         <View style={styles.listFlat}>
           {loading ? (
-            <Text>Loading...</Text>
+            <Text style={styles.recipeTitle}>Loading...</Text>
           ) : (
             <FlatList
               data={recipes}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => handleItemClick(item.id)}>
-                  <Text>{item.title}</Text>
+                  <Text style={styles.recipeTitle}>{item.title}</Text>
                 </TouchableOpacity>
               )}
             />
@@ -204,5 +204,8 @@ const styles = StyleSheet.create({
     color: "white",
     padding: 5,
     borderRadius: 5,
+  },
+  recipeTitle: {
+    marginLeft: 20,
   },
 });

@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Context } from "../../store/context";
 
-export default function RetrieveUsers() {
+export default function RetrieveBizReports() {
   const navigation = useNavigation();
   const [currentUser, setCurrentUser] = useContext(Context);
   const [users, setUsers] = useState([]); // State to store the list of users
@@ -45,7 +45,7 @@ export default function RetrieveUsers() {
           <TouchableOpacity
             style={styles.item}
             onPress={() =>
-              navigation.navigate("BizPartnerInfo", { user: item })
+              navigation.navigate("TabFullReportScreen", { user: item })
             }
           >
             <Text>{item.username}</Text>

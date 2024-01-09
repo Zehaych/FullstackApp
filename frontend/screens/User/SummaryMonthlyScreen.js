@@ -3,6 +3,7 @@ import { View, ScrollView, StyleSheet, Text, Dimensions } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import { Context } from "../../store/context";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import * as Progress from 'react-native-progress';
 
 const SummaryMonthlyScreen = ({route}) => {
     const { user } = route.params; // Retrieve the user data passed from the previous screen
@@ -150,29 +151,29 @@ const SummaryMonthlyScreen = ({route}) => {
             <ScrollView style={styles.chartContainer}>
                 {monthlyDataSorted.map((month) => (
                     <View key={month.month}>
+                    <Text style={styles.chartTextBold}>
+                        Monthly Intake - {month.month}
+                    </Text>
+                    <View style={styles.chartContainerToo}>
+                        <Progress.Bar
+                        progress={month.progress / 100} // Progress based on the ratio
+                        width={200}
+                        height={15}
+                        color="#00e0ff"
+                        unfilledColor="#3d5875"
+                        borderColor="#fff" // Add border color if needed
+                        />
+                        <View>
                         <Text style={styles.chartTextBold}>
-                            Monthly Intake - {month.month}
+                            {Math.round(month.consumed)} / {Math.round(month.target)} Cal consumed
                         </Text>
-                        <View style={styles.chartContainerToo}>
-                            <AnimatedCircularProgress
-                            size={200}
-                            width={15}
-                            fill={month.progress}
-                            tintColor="#00e0ff"
-                            backgroundColor="#3d5875"
-                            >
-                            {(fill) => (
-                                <View>
-                                <Text style={styles.chartTextBold}>
-                                    {Math.round(month.consumed)} / {Math.round(month.target)} Cal consumed
-                                </Text>
-                                <Text style={styles.chartText}>
-                                    {month.consumed > month.target ? `${Math.round(month.consumed - month.target)} Cal more`  : `${Math.round(month.target - month.consumed)} Cal less` }
-                                </Text>
-                                </View>
-                            )}
-                            </AnimatedCircularProgress>
+                        <Text style={styles.chartText}>
+                            {month.consumed > month.target
+                            ? `${Math.round(month.consumed - month.target)} Cal more`
+                            : `${Math.round(month.target - month.consumed)} Cal less`}
+                        </Text>
                         </View>
+                    </View>
                     </View>
                 ))}
             </ScrollView>
@@ -195,9 +196,12 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     chartContainer: {
-        marginTop: 25,
-        marginBottom: 25,
+        marginTop: 15,
+        marginBottom: 15,
         margin: 5,
+        width: "98%",
+        borderWidth:2,
+        borderColor: "#CCCCCC",
     },
     chartContainerToo: {
         flex: 1,
@@ -253,6 +257,38 @@ const styles = StyleSheet.create({
 
 
 /*
+===================================================================================
+<ScrollView style={styles.chartContainer}>
+                {monthlyDataSorted.map((month) => (
+                    <View key={month.month}>
+                        <Text style={styles.chartTextBold}>
+                            Monthly Intake - {month.month}
+                        </Text>
+                        <View style={styles.chartContainerToo}>
+                            <AnimatedCircularProgress
+                            size={200}
+                            width={15}
+                            fill={month.progress}
+                            tintColor="#00e0ff"
+                            backgroundColor="#3d5875"
+                            >
+                            {(fill) => (
+                                <View>
+                                <Text style={styles.chartTextBold}>
+                                    {Math.round(month.consumed)} / {Math.round(month.target)} Cal consumed
+                                </Text>
+                                <Text style={styles.chartText}>
+                                    {month.consumed > month.target ? `${Math.round(month.consumed - month.target)} Cal more`  : `${Math.round(month.target - month.consumed)} Cal less` }
+                                </Text>
+                                </View>
+                            )}
+                            </AnimatedCircularProgress>
+                        </View>
+                    </View>
+                ))}
+            </ScrollView>
+
+===================================================================================
 useEffect(() => {
         // Calculate total calories for each day in the past month
         const today = new Date();

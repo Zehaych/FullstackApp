@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Modal, StyleSheet, Button, TouchableOpacity, TextInput, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Modal,
+  StyleSheet,
+  Button,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+} from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Context } from "../../store/context";
 
@@ -10,16 +19,15 @@ const BizPartnerInfo = ({ route, navigation }) => {
   const [userData, setUserData] = useState(user); // State to hold the user data
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [adminPassword, setAdminPassword] = useState('');
-  const [newUsername, setNewUsername] = useState('');
+  const [adminPassword, setAdminPassword] = useState("");
+  const [newUsername, setNewUsername] = useState("");
   const [usernameModalVisible, setUsernameModalVisible] = useState(false);
-
 
   useFocusEffect(
     React.useCallback(() => {
       const fetchUserData = async () => {
         try {
-          const userId = userData._id; 
+          const userId = userData._id;
           const response = await fetch(
             `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${userId}`,
             {
@@ -59,8 +67,8 @@ const BizPartnerInfo = ({ route, navigation }) => {
       const data = await response.json();
       if (response.ok) {
         alert("User suspended successfully");
-        const updatedUser = { ...userData, isActive: false }; 
-        setUserData(updatedUser); 
+        const updatedUser = { ...userData, isActive: false };
+        setUserData(updatedUser);
       } else {
         alert(data.message || "Error suspending user");
       }
@@ -97,65 +105,73 @@ const BizPartnerInfo = ({ route, navigation }) => {
 
   const validateAndDeletePartner = async () => {
     try {
-        const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/validateAdminPassword/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ password: adminPassword }),
-        });
-        const data = await response.json();
-
-        if (data.isValid) {
-            deleteBusinessPartner(userData._id);
-        } else {
-            Alert.alert('Invalid Password', 'The entered password is incorrect.');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        Alert.alert('Error', 'An error occurred during validation.');
-    }
-};
-
-const deleteBusinessPartner = async (userId) => {
-  try {
-      const deleteResponse = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/deleteBusinessPartner/${userId}`, {
-          method: 'DELETE',
-      });
-
-      if (deleteResponse.ok) {
-          Alert.alert('Success', 'Business partner successfully deleted.');
-      } else {
-          Alert.alert('Error', 'Failed to delete the business partner.');
-      }
-  } catch (error) {
-      console.error('Delete error:', error);
-      Alert.alert('Error', 'Failed to delete the business partner.');
-  }
-};
-
-const updateUsername = async () => {
-  try {
-      const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/updateUsername/${userData._id}`, {
-          method: 'PUT',
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/user/validateAdminPassword/`,
+        {
+          method: "POST",
           headers: {
-              'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ username: newUsername }),
-      });
+          body: JSON.stringify({ password: adminPassword }),
+        }
+      );
+      const data = await response.json();
 
-      if (response.ok) {
-          Alert.alert('Success', 'Username updated successfully.');
-          setUserData({ ...userData, username: newUsername }); 
+      if (data.isValid) {
+        deleteBusinessPartner(userData._id);
       } else {
-          Alert.alert('Error', 'Failed to update username.');
+        Alert.alert("Invalid Password", "The entered password is incorrect.");
       }
-  } catch (error) {
-      console.error('Error updating username:', error);
-      Alert.alert('Error', 'Failed to update username.');
-  }
+    } catch (error) {
+      console.error("Error:", error);
+      Alert.alert("Error", "An error occurred during validation.");
+    }
   };
 
+  const deleteBusinessPartner = async (userId) => {
+    try {
+      const deleteResponse = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/user/deleteBusinessPartner/${userId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (deleteResponse.ok) {
+        Alert.alert("Success", "Business partner successfully deleted.");
+      } else {
+        Alert.alert("Error", "Failed to delete the business partner.");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      Alert.alert("Error", "Failed to delete the business partner.");
+    }
+  };
+
+  const updateUsername = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/user/updateUsername/${userData._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username: newUsername }),
+        }
+      );
+
+      if (response.ok) {
+        Alert.alert("Success", "Username updated successfully.");
+        setUserData({ ...userData, username: newUsername });
+      } else {
+        Alert.alert("Error", "Failed to update username.");
+      }
+    } catch (error) {
+      console.error("Error updating username:", error);
+      Alert.alert("Error", "Failed to update username.");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -168,12 +184,11 @@ const updateUsername = async () => {
       </Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-            style={[styles.button, styles.fourthButton]}
-            onPress={() => setUsernameModalVisible(true)}
+          style={[styles.button, styles.fourthButton]}
+          onPress={() => setUsernameModalVisible(true)}
         >
-            <Text style={styles.buttonText}>Change Username</Text>
+          <Text style={styles.buttonText}>Change Username</Text>
         </TouchableOpacity>
-
 
         <TouchableOpacity
           style={[styles.button]}
@@ -189,65 +204,67 @@ const updateUsername = async () => {
           <Text style={styles.buttonText}>Reactivate User</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.button, styles.thirdButton]} onPress={() => setModalVisible(true)}>
+        <TouchableOpacity
+          style={[styles.button, styles.thirdButton]}
+          onPress={() => setModalVisible(true)}
+        >
           <Text style={styles.buttonText}>Delete Business Partner</Text>
         </TouchableOpacity>
       </View>
 
-      
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
-        >
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <TextInput
-                        secureTextEntry
-                        style={styles.input}
-                        placeholder="Enter Admin Password"
-                        value={adminPassword}
-                        onChangeText={setAdminPassword}
-                    />
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => {
-                            setModalVisible(false);
-                            validateAndDeletePartner();
-                        }}
-                    >
-                        <Text style={styles.buttonText}>Confirm</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </Modal>
-
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={usernameModalVisible}
-          onRequestClose={() => setUsernameModalVisible(false)}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
       >
-          <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                  <TextInput
-                      style={styles.input}
-                      placeholder="Enter new username"
-                      value={newUsername}
-                      onChangeText={setNewUsername}
-                  />
-                  <TouchableOpacity
-                      style={styles.button}
-                      onPress={() => {
-                          setUsernameModalVisible(false);
-                          updateUsername();
-                      }}
-                  >
-                      <Text style={styles.buttonText}>Confirm</Text>
-                  </TouchableOpacity>
-              </View>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TextInput
+              secureTextEntry
+              style={styles.input}
+              placeholder="Enter Admin Password"
+              value={adminPassword}
+              onChangeText={setAdminPassword}
+            />
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setModalVisible(false);
+                validateAndDeletePartner();
+              }}
+            >
+              <Text style={styles.buttonText}>Confirm</Text>
+            </TouchableOpacity>
           </View>
+        </View>
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={usernameModalVisible}
+        onRequestClose={() => setUsernameModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter new username"
+              value={newUsername}
+              onChangeText={setNewUsername}
+            />
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setUsernameModalVisible(false);
+                updateUsername();
+              }}
+            >
+              <Text style={styles.buttonText}>Confirm</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </Modal>
     </View>
   );
@@ -256,30 +273,30 @@ const updateUsername = async () => {
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalView: {
-      width: '80%', 
-      backgroundColor: 'white',
-      borderRadius: 20,
-      padding: 20,
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: {
-          width: 0,
-          height: 2
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5
+    width: "80%",
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   input: {
-      marginBottom: 10,
+    marginBottom: 10,
   },
   button: {
-      marginTop: 10, 
+    marginTop: 10,
   },
   buttonContainer: {
     margin: 10,
@@ -320,15 +337,15 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     fontSize: 20,
-    color: "#444", 
+    color: "#444",
     marginBottom: 10,
     padding: 10,
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 5,
-    width: "80%", 
-    textAlign: "center", 
-    backgroundColor: "white", 
+    width: "80%",
+    textAlign: "center",
+    backgroundColor: "white",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,

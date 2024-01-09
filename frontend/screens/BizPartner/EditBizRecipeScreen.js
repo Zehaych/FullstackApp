@@ -13,6 +13,13 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
+import { storage } from "../../services/firebase";
+import {
+  ref,
+  deleteObject,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 
 const EditBizRecipeScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -56,7 +63,19 @@ const EditBizRecipeScreen = ({ route }) => {
     newIngredients.splice(index, 1);
     setIngredients(newIngredients);
   };
-  const handleSubmit = () => {
+
+  const deleteImage = async (imagePath) => {
+    const imageRef = ref(storage, imagePath);
+    try {
+      await deleteObject(imageRef);
+      console.log("Old image deleted successfully");
+    } catch (error) {
+      console.error("Error deleting old image: ", error);
+      throw error;
+    }
+  };
+
+  const handleSubmit = async () => {
     // Check for empty steps
     if (
       instructions === "" ||
@@ -90,32 +109,61 @@ const EditBizRecipeScreen = ({ route }) => {
     console.log("Price:", price);
 
     // PUT request to update the recipe
-    fetch(
-      `${process.env.EXPO_PUBLIC_IP}/bizRecipe/updateBizRecipe/${recipeData._id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          ingredients,
-          instructions,
-          calories,
-          image,
-          price,
-        }),
+    try {
+      let imageUrl = recipeData.image; // Use the existing image URL by default
+
+      // Check if a new image was picked
+      if (image !== recipeData.image) {
+        // Delete the old image first if it exists
+        if (recipeData.image) {
+          // Manually parse the URL to get the image path
+          const oldImageRefPath = recipeData.image
+            .split("/o/")[1]
+            .split("?")[0];
+          // Decode the path
+          const decodedPath = decodeURIComponent(oldImageRefPath);
+
+          // Delete the old image
+          await deleteImage(decodedPath);
+        }
+
+        // Upload the new image and get the URL
+        imageUrl = await uploadImage(image);
       }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        Alert.alert("Success", "Recipe updated successfully");
-        navigation.goBack();
-      })
-      .catch((error) => {
-        console.error("Error updating recipe:", error);
-        Alert.alert("Error", "Failed to update recipe");
-      });
+
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/bizRecipe/updateBizRecipe/${recipeData._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            ingredients,
+            instructions,
+            calories,
+            image: imageUrl,
+            price,
+          }),
+        }
+      );
+
+      // Check the response status
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Server responded with ${response.status}: ${errorText}`
+        );
+      }
+
+      const data = await response.json();
+      Alert.alert("Success", "Recipe updated successfully");
+      navigation.goBack();
+    } catch (error) {
+      // console.error("Error updating recipe:", error);
+      Alert.alert("Error", "Failed to update recipe");
+    }
   };
 
   const selectImage = async () => {
@@ -130,6 +178,39 @@ const EditBizRecipeScreen = ({ route }) => {
     } else if (result.assets && result.assets.length > 0) {
       // Access the selected image using the assets array
       setImage(result.assets[0].uri);
+    }
+  };
+
+  const uploadImage = async (uri) => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      const filename = uri.substring(uri.lastIndexOf("/") + 1);
+      const storageRef = ref(storage, `images/${filename}`);
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+
+      return new Promise((resolve, reject) => {
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            reject(error);
+          },
+          () => {
+            // Handle successful uploads on complete
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+            });
+          }
+        );
+      });
+    } catch (error) {
+      console.error("Error uploading image: ", error);
+      throw error;
     }
   };
 
