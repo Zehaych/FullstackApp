@@ -17,6 +17,8 @@ const TabFullReportScreen = ({ route }) => {
   //   const currentUserData = user.find((user) => user._id === currentUser._id);
   //   console.log("user: " + currentUserData.username);
 
+  const { user } = route.params;
+
   return (
     <Tab.Navigator
       initialRouteName="Daily"
@@ -24,12 +26,11 @@ const TabFullReportScreen = ({ route }) => {
         tabBarIcon: ({ focused, size }) => {
           let iconName;
           let iconColor = focused ? "goldenrod" : "black"; // Set the color to golden for focused icons
-
           if (route.name === "Daily") {
             iconName = focused ? "pie-chart" : "pie-chart";
-          } else if (route.name === "Weekly") {
-            iconName = focused ? "bar-chart" : "bar-chart-o";
           } else if (route.name === "Monthly") {
+            iconName = focused ? "bar-chart" : "bar-chart-o";
+          } else if (route.name === "Yearly") {
             iconName = focused ? "bar-chart" : "bar-chart-o";
           }
           return <Icon name={iconName} size={size} color={iconColor} />;
@@ -43,19 +44,19 @@ const TabFullReportScreen = ({ route }) => {
       <Tab.Screen
         name="Daily"
         component={FullReportDaily}
-        // initialParams={{ user }}
+        initialParams={{ user }}
         options={{ tabBarLabel: "Daily" }}
       />
       <Tab.Screen
         name="Monthly"
         component={FullReportMonthly}
-        // initialParams={{ user }}
+        initialParams={{ user }}
         options={{ tabBarLabel: "Monthly" }}
       />
       <Tab.Screen
         name="Yearly"
         component={FullReportYearly}
-        // initialParams={{ user }}
+        initialParams={{ user }}
         options={{ tabBarLabel: "Yearly" }}
       />
     </Tab.Navigator>

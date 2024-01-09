@@ -60,7 +60,7 @@ const AdminScreen = () => {
 
   //Function to navigate to retrieve all business partners
   const handleNavigateBizPartner = () => {
-    navigation.navigate("RetrieveBizPartners");
+    navigation.navigate("RetrieveBizReports");
   };
 
   const handleNavigateReportedRecipe = () => {

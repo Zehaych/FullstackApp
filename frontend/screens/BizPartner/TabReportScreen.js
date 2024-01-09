@@ -27,9 +27,9 @@ const TabReportScreen = ({ route }) => {
 
           if (route.name === "Daily") {
             iconName = focused ? "pie-chart" : "pie-chart";
-          } else if (route.name === "Weekly") {
-            iconName = focused ? "bar-chart" : "bar-chart-o";
           } else if (route.name === "Monthly") {
+            iconName = focused ? "bar-chart" : "bar-chart-o";
+          } else if (route.name === "Yearly") {
             iconName = focused ? "bar-chart" : "bar-chart-o";
           }
           return <Icon name={iconName} size={size} color={iconColor} />;

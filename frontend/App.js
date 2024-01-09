@@ -54,6 +54,8 @@ import ViewRecipeScreen from "./screens/User/ViewRecipeScreen";
 import ViewRequest from "./screens/User/ViewRequest";
 import TabReportScreen from "./screens/BizPartner/TabReportScreen";
 import TabFullReportScreen from "./screens/SystemAdmin/TabFullReportScreen";
+import RetrieveBizReports from "./screens/SystemAdmin/RetrieveBizReports";
+// import FullReportMonthly from "./screens/SystemAdmin/FullReportMonthly";
 import { Context } from "./store/context";
 
 const Stack = createStackNavigator();
@@ -120,11 +122,23 @@ function App() {
             component={RetrieveBizPartners}
             options={{ headerShown: false }}
           />
+
+          <Stack.Screen
+            name="RetrieveBizReports"
+            component={RetrieveBizReports}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="RetrieveUserAccount"
             component={RetrieveUserAccount}
             options={{ headerShown: false }}
           />
+
+          {/* <Stack.Screen
+            name="FullReportMonthly"
+            component={FullReportMonthly}
+            options={{ headerShown: false }}
+          /> */}
           <Stack.Screen
             name="AdminScreen"
             component={AdminScreen}
