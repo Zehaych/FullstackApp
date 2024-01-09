@@ -101,12 +101,6 @@ const styles = StyleSheet.create({
         elevation: 5,
         backgroundColor: 'white',
     },
-    userDetails: {
-        margin: 10,
-        borderWidth: 1,
-        borderColor: "#dddddd",
-        borderRadius: 15,
-    },
     userDetail: {
         margin: 10,
         alignItems: "center",
@@ -117,6 +111,21 @@ const styles = StyleSheet.create({
     },
     userInfo: {
         alignItems: "center",
+    },
+    userDetails: {
+        margin: 10,
+        borderWidth: 1,
+        borderColor: "#dddddd",
+        borderRadius: 15,
+        backgroundColor: "#fff",
+        shadowColor: "#000",
+        shadowOffset: {
+        width: 0,
+        height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     componentContainer: {
         flexDirection: "row", // Arrange components horizontally from left to right
@@ -138,11 +147,14 @@ const styles = StyleSheet.create({
     },
     detailText1: {
         fontSize: 16,
-        fontWeight: "bold",
         textAlign: "left",
+        paddingLeft: 10,
+        color: "#7F7F7F",
     },
     detailText2: {
         fontSize: 16,
         textAlign: "right",
+        paddingRight: 10,
+        color: "#000000",
     },
 });
