@@ -241,6 +241,7 @@ exports.getOrders = asyncHandler(async (req, res) => {
             ...order.toObject(), // Convert mongoose document to plain object
             recipeName: recipe.name, // Add the recipe name to each order
             userName: order.name ? order.name.username : undefined, // Add username from populated field
+            submittedById: recipe.submitted_by,
           };
         });
         return acc.concat(orders); // Accumulate all orders
@@ -314,6 +315,7 @@ exports.getOrderHistory = asyncHandler(async (req, res) => {
             ...history.toObject(), // Convert mongoose document to plain object
             recipeName: recipe.name, // Add the recipe name to each history item
             userName: history.name ? history.name.username : undefined, // Add username from populated field
+            submittedById: recipe.submitted_by,
           };
         });
         return acc.concat(histories); // Accumulate all history items
@@ -468,12 +470,17 @@ exports.clearDoneOrRejectedOrders = asyncHandler(async (req, res) => {
 //getRecipeWithTopAvgRating
 exports.getHighRatedBizRecipes = async (req, res) => {
   try {
-    const highRatedRecipes = await BizRecipe.find({ averageRating: { $gte: 4 } })
+    const highRatedRecipes = await BizRecipe.find({
+      averageRating: { $gte: 4 },
+    })
       .limit(2) // Limit the results to two recipes
       .exec();
 
     res.status(200).json(highRatedRecipes);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching high-rated biz recipes', error: error.message });
+    res.status(500).json({
+      message: "Error fetching high-rated biz recipes",
+      error: error.message,
+    });
   }
 };

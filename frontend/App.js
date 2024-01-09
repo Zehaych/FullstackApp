@@ -9,7 +9,7 @@ import ViewBizRecipeScreen from "./screens/BizPartner/ViewBizRecipeScreen";
 import ViewOrdersScreen from "./screens/BizPartner/ViewOrdersScreen";
 import BusinessRecipeInfoScreen from "./screens/General/BusinessRecipeInfoScreen";
 import BusinessRecipeScreen from "./screens/General/BusinessRecipeScreen";
-import FoodRecognitionScreen from './screens/General/FoodRecognitionScreen';
+import FoodRecognitionScreen from "./screens/General/FoodRecognitionScreen";
 import LogInScreen from "./screens/General/LogInScreen";
 import MembersRecipeInfoScreen from "./screens/General/MembersRecipeInfoScreen";
 import MembersRecipeScreen from "./screens/General/MembersRecipeScreen";
@@ -52,6 +52,10 @@ import ViewPastOrdersScreen from "./screens/User/ViewPastOrdersScreen";
 import ViewRecipeInfoScreen from "./screens/User/ViewRecipeInfoScreen";
 import ViewRecipeScreen from "./screens/User/ViewRecipeScreen";
 import ViewRequest from "./screens/User/ViewRequest";
+import TabReportScreen from "./screens/BizPartner/TabReportScreen";
+import TabFullReportScreen from "./screens/SystemAdmin/TabFullReportScreen";
+import RetrieveBizReports from "./screens/SystemAdmin/RetrieveBizReports";
+// import FullReportMonthly from "./screens/SystemAdmin/FullReportMonthly";
 import UserInfoScreen from "./screens/User/UserInfoScreen";
 import { Context } from "./store/context";
 
@@ -119,11 +123,23 @@ function App() {
             component={RetrieveBizPartners}
             options={{ headerShown: false }}
           />
+
+          <Stack.Screen
+            name="RetrieveBizReports"
+            component={RetrieveBizReports}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="RetrieveUserAccount"
             component={RetrieveUserAccount}
             options={{ headerShown: false }}
           />
+
+          {/* <Stack.Screen
+            name="FullReportMonthly"
+            component={FullReportMonthly}
+            options={{ headerShown: false }}
+          /> */}
           <Stack.Screen
             name="AdminScreen"
             component={AdminScreen}
@@ -263,6 +279,18 @@ function App() {
           <Stack.Screen
             name="TabDWMScreen"
             component={TabDWMScreen}
+            options={{ headerTitle: "" }}
+          />
+
+          <Stack.Screen
+            name="TabReportScreen"
+            component={TabReportScreen}
+            options={{ headerTitle: "" }}
+          />
+
+          <Stack.Screen
+            name="TabFullReportScreen"
+            component={TabFullReportScreen}
             options={{ headerTitle: "" }}
           />
 

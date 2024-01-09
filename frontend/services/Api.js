@@ -11,6 +11,7 @@
 // const API_KEY = "58a60f0d87ed4b93910367fe8a51d35d";
 //const API_KEY = "2bae20929e0a41c5ad10d0da59c10e61";
 const API_KEY = "72cf1577b57441a7abf14ae4fbc0b3a6";
+// const API_KEY= "b8a19ffde58741f8b27669f52c542bb0";
 
 //search recipes by query
 // export async function fetchRecipes(query) {
