@@ -78,45 +78,43 @@ const ChangeUsernameScreen = () => {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <View style={styles.container}>
 
-        {/* New UserName */}
-        <View>
-          <Text style={styles.title}>New Username</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="New username"
-            value={newUsername}
-            onChangeText={(text) => setNewUsername(text)}
-          />
-        </View>
-        
-        {/* Password */}
-        <View>
-          <Text style={styles.title}>Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Password to verify identity"
-            secureTextEntry
-            onChangeText={(text) => setPassword(text)}
-          />
-        </View>
-      
-        {/* <Button title="Update Username" onPress={handleUsernameChange} /> */}
-
-        <TouchableOpacity style={styles.updatebutton} onPress={handleUsernameChange}>
-          <Text style={styles.updatebuttonText}>Update Username</Text>
-        </TouchableOpacity>
-
+      {/* New UserName */}
+      <View>
+        <Text style={styles.title}>New Username</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="New username"
+          value={newUsername}
+          onChangeText={(text) => setNewUsername(text)}
+        />
       </View>
-    </ScrollView>
+        
+      {/* Password */}
+      <View>
+        <Text style={styles.title}>Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Password to verify identity"
+          secureTextEntry
+          onChangeText={(text) => setPassword(text)}
+        />
+      </View>
+    
+      {/* <Button title="Update Username" onPress={handleUsernameChange} /> */}
+
+      <TouchableOpacity style={styles.updatebutton} onPress={handleUsernameChange}>
+        <Text style={styles.updatebuttonText}>Update Username</Text>
+      </TouchableOpacity>
+
+    </View>
+
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "right",
     padding: 16,
@@ -125,6 +123,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     borderRadius: 20,
     gap: 16,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
   title: {
     fontWeight: 'bold',

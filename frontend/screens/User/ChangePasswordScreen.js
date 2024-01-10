@@ -67,60 +67,57 @@ const ChangePasswordScreen = () => {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-            
-        {/* Current Password */}
-        <View>
-          <Text style={styles.title}>Current Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Current Password"
-            secureTextEntry
-            value={currentPassword}
-            onChangeText={setCurrentPassword}
-          />
-        </View>
-        
-        {/* New Password */}
-        <View>
-          <Text style={styles.title}>New Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="New Password"
-            secureTextEntry
-            value={newPassword}
-            onChangeText={setNewPassword}
-          />
-        </View>
-
-        {/* Confirm New Password */}
-        <View>
-          <Text style={styles.title}>Confirm New Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Confirm New Password"
-            secureTextEntry
-            value={confirmNewPassword}
-            onChangeText={setConfirmNewPassword}
-          />
-        </View>
-        
-        {/* <Button title="Update Password" onPress={handlePasswordChange} /> */}
-
-        <TouchableOpacity style={styles.updatebutton} onPress={handlePasswordChange}>
-          <Text style={styles.updatebuttonText}>Update Password</Text>
-        </TouchableOpacity>
-
+    <View style={styles.container}>
+          
+      {/* Current Password */}
+      <View>
+        <Text style={styles.title}>Current Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Current Password"
+          secureTextEntry
+          value={currentPassword}
+          onChangeText={setCurrentPassword}
+        />
       </View>
-    </ScrollView>
+      
+      {/* New Password */}
+      <View>
+        <Text style={styles.title}>New Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="New Password"
+          secureTextEntry
+          value={newPassword}
+          onChangeText={setNewPassword}
+        />
+      </View>
+
+      {/* Confirm New Password */}
+      <View>
+        <Text style={styles.title}>Confirm New Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm New Password"
+          secureTextEntry
+          value={confirmNewPassword}
+          onChangeText={setConfirmNewPassword}
+        />
+      </View>
+      
+      {/* <Button title="Update Password" onPress={handlePasswordChange} /> */}
+
+      <TouchableOpacity style={styles.updatebutton} onPress={handlePasswordChange}>
+        <Text style={styles.updatebuttonText}>Update Password</Text>
+      </TouchableOpacity>
+
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    // justifyContent: "center",
+    justifyContent: "center",
     alignItems: "right",
     padding: 16,
     backgroundColor: "#fff",
@@ -128,6 +125,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     borderRadius: 20,
     gap: 16,
+    shadowColor: "#000",
+    shadowOffset: {
+    width: 0,
+    height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
   title: {
     fontWeight: 'bold',
