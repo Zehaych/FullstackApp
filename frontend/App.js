@@ -81,7 +81,7 @@ function App() {
           <Stack.Screen
             name="FoodRequested"
             component={FoodRequested}
-            options={{ headerShown: false }}
+            options={{ headerTitle: "Food Requested" }}
           />
           <Stack.Screen
             name="SubmitFoodRequest"
