@@ -62,13 +62,13 @@ const EditProfileScreen = () => {
         </View>
       </TouchableRipple> */}
 
+      <Text style={styles.subTitle}>Account</Text>
       <TouchableRipple onPress={onChangeEmailPressed}>
         <View style={styles.menuItem}>
           <Icon
             name="account-edit"
             size={25}
-            color="#FF6347"
-            style={styles.icon}
+            color="#ED6F21"
           />
           <Text style={styles.menuItemText}>Change Email</Text>
         </View>
@@ -79,8 +79,7 @@ const EditProfileScreen = () => {
           <Icon
             name="account-edit"
             size={25}
-            color="#FF6347"
-            style={styles.icon}
+            color="#ED6F21"
           />
           <Text style={styles.menuItemText}>Change Username</Text>
         </View>
@@ -91,8 +90,7 @@ const EditProfileScreen = () => {
           <Icon
             name="account-edit"
             size={25}
-            color="#FF6347"
-            style={styles.icon}
+            color="#ED6F21"
           />
           <Text style={styles.menuItemText}>Change Password</Text>
         </View>
@@ -103,8 +101,7 @@ const EditProfileScreen = () => {
           <Icon
             name="account-edit"
             size={25}
-            color="#FF6347"
-            style={styles.icon}
+            color="#ED6F21"
           />
           <Text style={styles.menuItemText}>Delete Account</Text>
         </View>
@@ -129,22 +126,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    padding: 20,
+    // padding: 20,
+    // gap: 16,
   },
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#dddddd",
-  },
-  icon: {
-    marginRight: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 30,
+    // borderBottomWidth: 1,
+    // borderBottomColor: "#dddddd",
   },
   menuItemText: {
-    color: "#333",
+    color: "#000000",
+    marginLeft: 20,
     fontWeight: "600",
     fontSize: 16,
+    lineHeight: 26,
+  },
+  subTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 20,
+    color: "grey",
   },
 });
 

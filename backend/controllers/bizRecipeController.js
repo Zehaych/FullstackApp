@@ -303,7 +303,7 @@ exports.getOrderHistory = asyncHandler(async (req, res) => {
     // Fetch all BizRecipe documents and populate user details in the orderHistory
     const recipes = await BizRecipe.find().populate(
       "orderHistory.name",
-      "username"
+      "username age gender height weight calorie"
     );
 
     // Extract orderHistory from each BizRecipe and add the recipe name
@@ -315,6 +315,11 @@ exports.getOrderHistory = asyncHandler(async (req, res) => {
             ...history.toObject(), // Convert mongoose document to plain object
             recipeName: recipe.name, // Add the recipe name to each history item
             userName: history.name ? history.name.username : undefined, // Add username from populated field
+            userGender: history.name ? history.name.gender : undefined,
+            userAge: history.name ? history.name.age : undefined,
+            userHeight: history.name ? history.name.height : undefined,
+            userWeight: history.name ? history.name.weight : undefined,
+            userCalorie: history.name ? history.name.calorie : undefined,
             submittedById: recipe.submitted_by,
           };
         });
