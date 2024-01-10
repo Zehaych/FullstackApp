@@ -59,26 +59,27 @@ const SubmitFoodRequest = () => {
     //     navigation.navigate("User Profile");
     // };
 
-    const handleGoBack = () => {
-        navigation.goBack();
-    };
+    // const handleGoBack = () => {
+    //     navigation.goBack();
+    // };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{currentUser.username}</Text>
-            <Text style={styles.title}>Submit a Food Request</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Enter food name"
-                value={foodName}
-                onChangeText={setFoodName}
-            />
-            <TouchableOpacity style={styles.button} onPress={handleFormSubmit}>
-                <Text style={styles.buttonText}>Submit Request</Text>
-            </TouchableOpacity>
+            <View style={styles.foodrequestcontainer}>
+                <Text style={styles.title}>
+                    Welcome <Text style={styles.user}>{currentUser.username}</Text>, please fill in the food you would like to request.
+                </Text>
+                
+                <TextInput
+                    style={styles.input}
+                    placeholder="Food Name"
+                    value={foodName}
+                    onChangeText={setFoodName}
+                />
+            </View>
 
-            <TouchableOpacity style={styles.button} onPress={handleGoBack}>
-                <Text style={styles.buttonText}>Go Back</Text>
+            <TouchableOpacity style={styles.button} onPress={handleFormSubmit}>
+                <Text style={styles.buttonText}>Submit</Text>
             </TouchableOpacity>
         </View>
     );
@@ -86,13 +87,28 @@ const SubmitFoodRequest = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
+        display: "flex",
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 20,
+        padding: 16,
+        backgroundColor: "#fff",
+        marginTop: 8,
+        marginHorizontal: 16,
+        borderRadius: 20,
+        gap: 16,
+    },
+    foodrequestcontainer: {
+        gap: 8,
+        alignSelf: "stretch",
     },
     title: {
-        fontSize: 20,
+        fontSize: 16,
+        textAlign: 'center',
+        marginBottom: 15,
+    },
+    user: {
+        fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 15,
     },
@@ -105,14 +121,15 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     button: {
-        backgroundColor: '#007bff',
+        borderRadius: 10,
+        alignItems: 'center',
+        backgroundColor: '#ED6F21',
         padding: 10,
-        borderRadius: 5,
-        marginBottom: 10,
+        width: "100%",
     },
     buttonText: {
         color: '#ffffff',
-        textAlign: 'center',
+        fontWeight: 'bold',
     },
 
 });
