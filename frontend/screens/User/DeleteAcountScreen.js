@@ -70,48 +70,45 @@ const DeleteAccountScreen = () => {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        
-        {/* Email */}
-        <View>
-          <Text style={styles.title}>Email</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-          />
-        </View>
-
-        {/* Password */}
-        <View>
-          <Text style={styles.title}>Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-        </View>
-        
-        {/* <Button title="Delete Account" onPress={handleDeleteAccount} /> */}
-
-        <TouchableOpacity style={styles.updatebutton} onPress={handleDeleteAccount}>
-          <Text style={styles.updatebuttonText}>Delete Account</Text>
-        </TouchableOpacity>
-
+    <View style={styles.container}>
+      
+      {/* Email */}
+      <View>
+        <Text style={styles.title}>Email</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+        />
       </View>
-    </ScrollView>
+
+      {/* Password */}
+      <View>
+        <Text style={styles.title}>Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+      </View>
+      
+      {/* <Button title="Delete Account" onPress={handleDeleteAccount} /> */}
+
+      <TouchableOpacity style={styles.updatebutton} onPress={handleDeleteAccount}>
+        <Text style={styles.updatebuttonText}>Delete Account</Text>
+      </TouchableOpacity>
+
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    // justifyContent: "center",
+    justifyContent: "center",
     alignItems: "right",
     padding: 16,
     backgroundColor: "#fff",
@@ -119,6 +116,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     borderRadius: 20,
     gap: 16,
+    shadowColor: "#000",
+    shadowOffset: {
+    width: 0,
+    height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
   title: {
     fontWeight: 'bold',

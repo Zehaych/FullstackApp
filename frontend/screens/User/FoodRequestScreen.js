@@ -97,6 +97,14 @@ const styles = StyleSheet.create({
         marginHorizontal: 16,
         borderRadius: 20,
         gap: 16,
+        shadowColor: "#000",
+        shadowOffset: {
+        width: 0,
+        height: 2,
+        },
+        shadowOpacity: 0.23,
+        shadowRadius: 2.62,
+        elevation: 4,
     },
     foodrequestcontainer: {
         gap: 8,

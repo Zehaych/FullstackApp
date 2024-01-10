@@ -83,46 +83,43 @@ const ChangeEmailScreen = () => {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <View style={styles.container}>
 
-          {/* New Email */}
-        <View>
-          <Text style={styles.title}>New Email</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="New Email"
-            value={newEmail}
-            onChangeText={(text) => setNewEmail(text)}
-            keyboardType="email-address"
-          />
-        </View>
-        
-        {/* Password */}
-        <View>
-          <Text style={styles.title}>Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Password to verify identity"
-            secureTextEntry
-            onChangeText={(text) => setPassword(text)}
-          />
-        </View>
-        
-        {/* <Button title="Update email" color="#ED6F21" onPress={handleEmailChange} /> */}
-
-        <TouchableOpacity style={styles.updatebutton} onPress={handleEmailChange}>
-          <Text style={styles.updatebuttonText}>Update email</Text>
-        </TouchableOpacity>
-
+        {/* New Email */}
+      <View>
+        <Text style={styles.title}>New Email</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="New Email"
+          value={newEmail}
+          onChangeText={(text) => setNewEmail(text)}
+          keyboardType="email-address"
+        />
       </View>
-    </ScrollView>
+      
+      {/* Password */}
+      <View>
+        <Text style={styles.title}>Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Password to verify identity"
+          secureTextEntry
+          onChangeText={(text) => setPassword(text)}
+        />
+      </View>
+      
+      {/* <Button title="Update email" color="#ED6F21" onPress={handleEmailChange} /> */}
+
+      <TouchableOpacity style={styles.updatebutton} onPress={handleEmailChange}>
+        <Text style={styles.updatebuttonText}>Update email</Text>
+      </TouchableOpacity>
+
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "right",
     padding: 16,
@@ -131,6 +128,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     borderRadius: 20,
     gap: 16,
+    shadowColor: "#000",
+    shadowOffset: {
+    width: 0,
+    height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
   title: {
     fontWeight: 'bold',
