@@ -59,6 +59,12 @@ const FullReportMonthly = ({ route }) => {
           totalPrice: 0,
           quantity: 0,
           timeToDeliverCount: {},
+          maleCount: 0,
+          femaleCount: 0,
+          totalAge: 0,
+          totalHeight: 0,
+          totalWeight: 0,
+          totalCalorie: 0,
         };
       }
       const recipeGroup = orderMap[order.recipeName];
@@ -66,6 +72,13 @@ const FullReportMonthly = ({ route }) => {
       recipeGroup.quantity += order.quantity;
       recipeGroup.timeToDeliverCount[order.timeToDeliver] =
         (recipeGroup.timeToDeliverCount[order.timeToDeliver] || 0) + 1;
+
+      if (order.userGender === "Male") recipeGroup.maleCount++;
+      if (order.userGender === "Female") recipeGroup.femaleCount++;
+      recipeGroup.totalAge += order.userAge;
+      recipeGroup.totalHeight += order.userHeight;
+      recipeGroup.totalWeight += order.userWeight;
+      recipeGroup.totalCalorie += order.userCalorie;
 
       totalSales += order.totalPrice;
 
@@ -106,10 +119,44 @@ const FullReportMonthly = ({ route }) => {
     const mostOrderedRecipes = Object.keys(recipesWithHighestQuantity);
     if (mostOrderedRecipes.length === 0) mostOrderedRecipes.push("-");
 
+    // Calculate specific metrics for each recipe group
+    Object.values(orderMap).forEach((recipeGroup) => {
+      const totalOrders = recipeGroup.maleCount + recipeGroup.femaleCount;
+      recipeGroup.maleOrderRate = totalOrders
+        ? (recipeGroup.maleCount / totalOrders) * 100
+        : 0;
+      recipeGroup.femaleOrderRate = totalOrders
+        ? (recipeGroup.femaleCount / totalOrders) * 100
+        : 0;
+      recipeGroup.averageAge = totalOrders
+        ? recipeGroup.totalAge / totalOrders
+        : 0;
+      recipeGroup.averageHeight = totalOrders
+        ? recipeGroup.totalHeight / totalOrders
+        : 0;
+      recipeGroup.averageWeight = totalOrders
+        ? recipeGroup.totalWeight / totalOrders
+        : 0;
+      recipeGroup.averageCalorieGoal = totalOrders
+        ? recipeGroup.totalCalorie / totalOrders
+        : 0;
+
+      let mostOrderedTime = "-";
+      let maxCount = 0;
+      for (const [time, count] of Object.entries(
+        recipeGroup.timeToDeliverCount
+      )) {
+        if (count > maxCount) {
+          mostOrderedTime = time;
+          maxCount = count;
+        }
+      }
+      recipeGroup.mostOrderedTime = mostOrderedTime;
+    });
     return {
       groupedOrders: Object.values(orderMap),
       totalSales,
-      mostOrderedRecipes,
+      mostOrderedRecipes: Object.keys(recipesWithHighestQuantity),
     };
   };
 
@@ -127,6 +174,24 @@ const FullReportMonthly = ({ route }) => {
       <Text style={styles.subtitle}>Total Quantity Sold: {item.quantity}</Text>
       <Text style={styles.subtitle}>
         Most Ordered Time: {item.mostOrderedTime}
+      </Text>
+      <Text style={styles.subtitle}>
+        Male Order Rate: {item.maleOrderRate.toFixed(2)}%
+      </Text>
+      <Text style={styles.subtitle}>
+        Female Order Rate: {item.femaleOrderRate.toFixed(2)}%
+      </Text>
+      <Text style={styles.subtitle}>
+        Average Age: {item.averageAge.toFixed(0)}
+      </Text>
+      <Text style={styles.subtitle}>
+        Average Height: {item.averageHeight.toFixed(0)}cm
+      </Text>
+      <Text style={styles.subtitle}>
+        Average Weight: {item.averageWeight.toFixed(2)}kg
+      </Text>
+      <Text style={styles.subtitle}>
+        Average Calorie Goal: {item.averageCalorieGoal.toFixed(0)}kcal
       </Text>
     </View>
   );
