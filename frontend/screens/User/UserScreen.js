@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     //borderBottomColor: "#dddddd",
   },
   menuItemText: {
-    color: "#777777",
+    color: "#000000",
     marginLeft: 20,
     fontWeight: "600",
     fontSize: 16,
