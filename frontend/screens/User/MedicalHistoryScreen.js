@@ -8,8 +8,11 @@ import {
   Button,
   ScrollView,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { CheckBox } from 'react-native-elements';
+import { TouchableRipple } from "react-native-paper";
 
 const window = Dimensions.get("window");
 
@@ -126,94 +129,140 @@ const MedicalHistoryScreen = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={style.container}>
-      <Text style={style.label}>Food Allergens (skip if inapplicable):</Text>
-      <View style={style.checkboxGroup}>
-        {[
-          "Dairy",
-          "Egg",
-          "Gluten",
-          "Grain",
-          "Peanut",
-          "Seafood",
-          "Sesame",
-          "Shellfish",
-          "Soy",
-          "Sulfite",
-          "Tree Nut",
-          "Wheat",
-        ].map((option, index) => (
-          <CheckboxOption
-            key={index}
-            label={option}
-            selected={foodAllergens.includes(option)}
-            onSelect={() => toggleFoodAllergen(option)}
-          />
-        ))}
-      </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.borderContainer}>
+        <Text style={styles.label}>Food Allergens (skip if inapplicable):</Text>
+        <View style={styles.checkboxGroup}>
+          {[
+            "Dairy",
+            "Egg",
+            "Gluten",
+            "Grain",
+            "Peanut",
+            "Seafood",
+            "Sesame",
+            "Shellfish",
+            "Soy",
+            "Sulfite",
+            "Tree Nut",
+            "Wheat",
+          ].map((option, index) => (
+            <CheckboxOption
+              key={index}
+              label={option}
+              selected={foodAllergens.includes(option)}
+              onSelect={() => toggleFoodAllergen(option)}
+            />
+          ))}
+        </View>
 
-      <Text style={style.label}>
-        Medical Conditions (skip if inapplicable):
-      </Text>
-      <View style={style.checkboxGroup}>
-        {[
-          "High Blood Pressure",
-          "High Cholesterol Level",
-          "Digestive Problems",
-          "Heart Disease",
-          "Kidney Damage",
-          "Liver Damage",
-          "Diabetes",
-          "Stroke",
-        ].map((option, index) => (
-          <CheckboxOption
-            key={index}
-            label={option}
-            selected={medicalConditions.includes(option)}
-            onSelect={() => toggleMedicalCondition(option)}
-          />
-        ))}
-      </View>
+        <Text style={styles.label}>
+          Medical Conditions (skip if inapplicable):
+        </Text>
+        <View style={styles.checkboxGroup}>
+          {[
+            "High Blood Pressure",
+            "High Cholesterol Level",
+            "Digestive Problems",
+            "Heart Disease",
+            "Kidney Damage",
+            "Liver Damage",
+            "Diabetes",
+            "Stroke",
+          ].map((option, index) => (
+            <CheckboxOption
+              key={index}
+              label={option}
+              selected={medicalConditions.includes(option)}
+              onSelect={() => toggleMedicalCondition(option)}
+            />
+          ))}
+        </View>
 
-      <Button title="Submit" onPress={handleSubmit} />
+        <TouchableRipple onPress={handleSubmit} style={styles.submitButton}>
+          <Text style={styles.submitButtonText}>Submit</Text>
+        </TouchableRipple>
+      </View>
     </ScrollView>
   );
 };
 
 const CheckboxOption = ({ label, selected, onSelect }) => (
-  <View style={style.checkboxOption}>
-    <Text style={style.checkboxLabel}>{label}</Text>
-    <Button
-      title={selected ? "Selected" : "Select"}
+
+  //<View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+  <View style={styles.checkboxOption}>  
+    <CheckBox
+      checked={selected}
       onPress={onSelect}
-      color={selected ? "orange" : "#0066cc"}
+      checkedColor='#ED6F21'
+      //containerStyle={{ backgroundColor: 'transparent', borderWidth: 0 }}
     />
+    <Text style={{ marginLeft: 5}}>{label}</Text>
   </View>
+  // <View style={style.checkboxOption}>
+  //   <Text style={style.checkboxLabel}>{label}</Text>
+  //   <Button
+  //     title={selected ? "Selected" : "Select"}
+  //     onPress={onSelect}
+  //     color={selected ? "orange" : "#0066cc"}
+  //   />
+  // </View>
 );
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: "#f5f5f5",
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
+  borderContainer: {
+    borderWidth: 1,
+    borderColor: "#dddddd",
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    backgroundColor: 'white',
+  },
   label: {
+    padding: 5,
     fontSize: window.width > 360 ? 18 : 16,
     fontWeight: "bold",
   },
   checkboxGroup: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
-    marginBottom: 10,
+    //justifyContent: "space-between",
+    //marginBottom: 10,
   },
   checkboxOption: {
+    flexDirection: "row",
+    marginRight: 60,
     alignItems: "center",
     width: window.width > 360 ? "30%" : "45%",
   },
   checkboxLabel: {
     fontSize: window.width > 360 ? 16 : 14,
+  },
+  submitButton: {
+    backgroundColor: '#ED6F21', // Set your desired background color
+    padding: 10,
+    borderRadius: 10,
+    margin: 10,
+  },
+  submitButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 export default MedicalHistoryScreen;
