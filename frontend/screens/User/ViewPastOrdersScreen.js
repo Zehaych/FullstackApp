@@ -51,19 +51,73 @@ const ViewPastOrdersScreen = () => {
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
-      <Text style={styles.title}>{item.recipeName}</Text>
 
-      <Text style={styles.subtitle}>Total Price: ${item.totalPrice}</Text>
-      <Text style={styles.subtitle}>Quantity: {item.quantity}</Text>
-      <Text style={styles.subtitle}>Preferences: {item.preferences}</Text>
-      <Text style={styles.subtitle}>
-        Delivery Address: {item.deliveryAddress}
-      </Text>
-      <Text style={styles.subtitle}>Delivery Date: {item.dateToDeliver}</Text>
+      <View style={styles.orderContainer}>
+        {/* title */}
+        <Text style={styles.title}>{item.recipeName}</Text>
 
-      <Text style={styles.subtitle}>
-        Food Arrival Time: {item.estimatedArrivalTime}
-      </Text>
+        {/* cost & quantity */}
+        <View style={styles.amountContainer}>
+          <View style={styles.amount}>
+            <Text style={styles.amountText}>${item.totalPrice}</Text>
+          </View>
+
+          <View style={styles.quantity}>
+            <Text style={styles.amountText}>x {item.quantity}</Text>
+          </View>      
+        </View>
+        
+        <View style={styles.divider} />    
+
+        {/* preferences */}
+        <View style={styles.itemDetailContainer}>
+          <View style={styles.itemDetailLeft}>
+            <Text style={styles.itemDetailLeftText}>Preferences</Text>
+          </View>
+
+          <View style={styles.itemDetailRight}>
+            <Text style={styles.itemDetailRightText}>{item.preferences}</Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.divider} />
+
+      <View style={styles.orderDetailContainer}>
+        
+        {/* Date of Delivery */}
+        <View style={styles.itemDetailContainer}>        
+          <View style={styles.itemDetailLeft}>
+            <Text style={styles.itemDetailLeftText}>Date of Delivery</Text>
+          </View>
+
+          <View style={styles.itemDetailRight}>
+            <Text style={styles.itemDetailRightText}>{item.dateToDeliver}</Text>
+          </View>
+        </View>
+
+        {/* Estimated Arrival Time */}
+        <View style={styles.itemDetailContainer}>
+          <View style={styles.itemDetailLeft}>
+            <Text style={styles.itemDetailLeftText}>Estimated Arrival Time</Text>
+          </View>
+
+          <View style={styles.itemDetailRight}>
+            <Text style={styles.itemDetailRightText}>{item.estimatedArrivalTime}</Text>
+          </View>
+        </View>
+
+        {/* Delivery Address */}
+        <View style={styles.itemDetailContainer}>
+          <View style={styles.itemDetailLeft}>
+            <Text style={styles.itemDetailLeftText}>Delivery Address</Text>
+          </View>
+
+          <View style={styles.itemDetailRight}>
+            <Text style={styles.itemDetailRightText}>{item.deliveryAddress}</Text>
+          </View>
+        </View>
+      </View>
     </View>
   );
 
@@ -79,9 +133,9 @@ const ViewPastOrdersScreen = () => {
 const styles = StyleSheet.create({
   itemContainer: {
     backgroundColor: "white",
-    padding: 20,
+    padding: 16,
     marginVertical: 8,
-    marginHorizontal: 10,
+    marginHorizontal: 16,
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: {
@@ -95,12 +149,45 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 10,
-    textAlign: "center",
   },
-  subtitle: {
+  orderContainer: {
+    gap: 4,
+    paddingBottom: 4,
+    paddingTop: 8,
+  },
+  orderDetailContainer: {
+    gap: 6,
+    paddingBottom: 4,
+    paddingTop: 4,
+  },
+  amountContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  itemDetailContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  itemDetailRight: {
+    width: "50%",
+  },
+  amountText: {
     fontSize: 16,
-    marginBottom: 5,
+    color: "#676767",
+  },
+  itemDetailLeftText: {
+    fontSize: 14,
+  },
+  itemDetailRightText: {
+    fontSize: 14,
+    color: "#F97316",
+    textAlign: "right",
+  },
+  divider: {
+    borderBottomColor: "#C6C6CD",
+    borderBottomWidth: 1,
+    alignSelf: "center",
+    width: "100%",
   },
 });
 
