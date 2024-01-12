@@ -70,8 +70,8 @@ const ViewPastOrdersScreen = () => {
         <View style={styles.divider} />    
 
         {/* preferences */}
-        <View style={styles.itemDetailContainer}>
-          <View style={styles.itemDetailLeft}>
+        <View style={styles.preferencesContainer}>
+          <View>
             <Text style={styles.itemDetailLeftText}>Preferences</Text>
           </View>
 
@@ -87,7 +87,7 @@ const ViewPastOrdersScreen = () => {
         
         {/* Date of Delivery */}
         <View style={styles.itemDetailContainer}>        
-          <View style={styles.itemDetailLeft}>
+          <View>
             <Text style={styles.itemDetailLeftText}>Date of Delivery</Text>
           </View>
 
@@ -98,7 +98,7 @@ const ViewPastOrdersScreen = () => {
 
         {/* Estimated Arrival Time */}
         <View style={styles.itemDetailContainer}>
-          <View style={styles.itemDetailLeft}>
+          <View>
             <Text style={styles.itemDetailLeftText}>Estimated Arrival Time</Text>
           </View>
 
@@ -109,7 +109,7 @@ const ViewPastOrdersScreen = () => {
 
         {/* Delivery Address */}
         <View style={styles.itemDetailContainer}>
-          <View style={styles.itemDetailLeft}>
+          <View>
             <Text style={styles.itemDetailLeftText}>Delivery Address</Text>
           </View>
 
@@ -167,6 +167,11 @@ const styles = StyleSheet.create({
   itemDetailContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  preferencesContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 8,
   },
   itemDetailRight: {
     width: "50%",

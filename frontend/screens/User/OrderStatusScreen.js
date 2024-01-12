@@ -135,7 +135,7 @@ const OrderStatusScreen = () => {
         <View style={styles.divider} />    
 
         {/* preferences */}
-        <View style={styles.itemDetailContainer}>
+        <View style={styles.preferencesContainer}>
           <View>
             <Text style={styles.itemDetailLeftText}>Preferences</Text>
           </View>
@@ -278,6 +278,11 @@ const styles = StyleSheet.create({
   itemDetailContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  preferencesContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 8,
   },
   itemDetailRight: {
     width: "50%",
