@@ -23,6 +23,8 @@ const AddRecipeScreen = () => {
   const [ingredients, setIngredients] = useState([""]);
   const [instructions, setInstructions] = useState([""]);
   const [calories, setCalories] = useState("");
+  const [servings, setServings] = useState("");
+  const [timeTaken, setTimeTaken] = useState("");
   const [image, setImage] = useState(""); // Assuming image is a URL or path
 
   const [currentUser, setCurrentUser] = useContext(Context);
@@ -69,6 +71,8 @@ const AddRecipeScreen = () => {
       name === "" ||
       ingredients === "" ||
       calories === "" ||
+      servings === "" ||
+      timeTaken === "" ||
       image === ""
     ) {
       alert("Please fill in all fields.");
@@ -91,6 +95,8 @@ const AddRecipeScreen = () => {
     console.log("Ingredients:", ingredients);
     console.log("Instructions:", instructions);
     console.log("Calories:", calories);
+    console.log("Servings:", servings);
+    console.log("Time Taken:", timeTaken);
     console.log("Image:", image);
 
     try {
@@ -108,6 +114,7 @@ const AddRecipeScreen = () => {
           ingredients: ingredients,
           instructions: instructions,
           calories: calories,
+          servings: servings,
           image: imageUrl, // Use imageUrl here instead of local URI
           submitted_by: currentUser._id,
         }),
@@ -233,6 +240,24 @@ const AddRecipeScreen = () => {
           placeholder="Add Calories"
           value={calories}
           onChangeText={(text) => setCalories(text)}
+          keyboardType="numeric" // This ensures the keyboard displays numbers
+        />
+
+        <Text style={styles.label}>Servings</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Add Servings"
+          value={servings}
+          onChangeText={(text) => setServings(text)}
+          keyboardType="numeric" // This ensures the keyboard displays numbers
+        />
+
+        <Text style={styles.label}>Time Taken</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Add Time Taken (in minutes)"
+          value={timeTaken}
+          onChangeText={(text) => setTimeTaken(text)}
           keyboardType="numeric" // This ensures the keyboard displays numbers
         />
 
