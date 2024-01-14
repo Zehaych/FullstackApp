@@ -264,6 +264,9 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     fontSize: 16, // Adjust font size
   },
+  picker: {
+
+  },
   dropdown: {
     borderColor: "#ccc",
     borderRadius: 5,
@@ -272,14 +275,14 @@ const styles = StyleSheet.create({
   },
   radioLabel: {
     fontWeight: "bold",
-    fontSize: window.width > 360 ? 18 : 16, // Adjust font size
+    fontSize: 16, // Adjust font size
     marginBottom: 5,
   },
   radioInput: {
-    fontSize: window.width > 360 ? 18 : 16, // Adjust font size
+    fontSize: 16, // Adjust font size
   },
   result: {
-    fontSize: window.width > 360 ? 18 : 16, // Adjust font size
+    fontSize: 16, // Adjust font size
     fontWeight: "bold",
     marginTop: 15,
   },
@@ -288,13 +291,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   result1: {
-    fontSize: window.width > 360 ? 18 : 16, // Adjust font size
+    fontSize: 16, // Adjust font size
     fontWeight: "bold",
     marginTop: 15,
     marginBottom: 15,
   },
   result2: {
-    fontSize: window.width > 360 ? 18 : 16, // Adjust font size
+    //fontSize: window.width > 360 ? 18 : 16, // Adjust font size
+    fontSize: 16,
     fontWeight: "bold",
     marginTop: 15,
     marginBottom: 15,
