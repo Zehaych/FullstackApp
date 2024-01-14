@@ -29,6 +29,8 @@ exports.postRecipe = asyncHandler(async (req, res) => {
     !req.body.ingredients ||
     !req.body.instructions ||
     !req.body.calories ||
+    !req.body.servings ||
+    !req.body.timeTaken ||
     !req.body.image
   ) {
     res.status(400);
@@ -60,6 +62,8 @@ exports.updateRecipe = asyncHandler(async (req, res) => {
     !req.body.ingredients ||
     !req.body.instructions ||
     !req.body.calories ||
+    !req.body.servings ||
+    !req.body.timeTaken ||
     !req.body.image
   ) {
     res.status(400);

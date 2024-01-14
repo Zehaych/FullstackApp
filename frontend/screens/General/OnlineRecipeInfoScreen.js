@@ -128,7 +128,7 @@ const OnlineRecipeInfoScreen = ({ route }) => {
                   (ingredient, index) => (
                     <View key={index} style={styles.ingredientStyles}>
                       <Text style={styles.customText}>
-                        {ingredient.name} - {ingredient.amount}{" "}
+                        • {ingredient.name} - {ingredient.amount}{" "}
                         {ingredient.unit}
                       </Text>
                     </View>
