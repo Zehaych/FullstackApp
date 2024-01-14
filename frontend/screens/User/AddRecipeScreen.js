@@ -115,6 +115,7 @@ const AddRecipeScreen = () => {
           instructions: instructions,
           calories: calories,
           servings: servings,
+          timeTaken: timeTaken,
           image: imageUrl, // Use imageUrl here instead of local URI
           submitted_by: currentUser._id,
         }),
