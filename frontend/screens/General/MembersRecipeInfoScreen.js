@@ -560,18 +560,20 @@ export default function MembersRecipeInfoScreen({ route }) {
               <Image source={{ uri: recipeData.image }} style={styles.image} />
             </View>
             <Text style={styles.title}>{recipeData.name}</Text>
-
-            <View style={styles.ratingContainer}>
-              <Rating rating={recipeData.averageRating} />
-              <Text style={styles.ratingText}>
-                {recipeData.averageRating.toFixed(1)}
-              </Text>
-            </View>
-            <View style={styles.ratingContainer}>
-              <Icon name="person" size={24} color="#333333" />
-              <Text style={{ marginLeft: 8 }}>
-                {recipeData.totalRatings} people rated
-              </Text>
+            <View style={styles.horizontalContainer}>
+              <View style={styles.ratingContainer}>
+                <Icon name="star" size={24} color="#ED6F21" />
+                <Text style={styles.ratingText}>
+                  {recipeData.averageRating.toFixed(1)}
+                </Text>
+              </View>
+              <View style={styles.divider} />
+              <View style={styles.ratingContainer}>
+                <Icon name="person" size={24} color="#ED6F21" />
+                <Text style={styles.ratingText}>
+                  {recipeData.totalRatings} reviews
+                </Text>
+              </View>
             </View>
             <View style={styles.componentContainer}>
               <View style={styles.leftComponent}>
@@ -664,19 +666,16 @@ export default function MembersRecipeInfoScreen({ route }) {
           {/* "Your Review" section */}
 
           {isCreator ? (
-            <View>
-              <Text style={styles.title}>Your Review</Text>
-
-              <View style={styles.mainBox}>
-                <Text style={styles.noReviewsText}>
-                  Recipe creator cannot add their own review.
-                </Text>
-              </View>
+            <View style={styles.detailBox}>
+              <Text style={styles.subTitle}>Your Review</Text>
+              <Text style={styles.reviewText}>
+                Recipe creator cannot add their own review.
+              </Text>
             </View>
           ) : (
             currentUserReviews.length > 0 && (
-              <View>
-                <Text style={styles.title}>
+              <View style={styles.detailBox}>
+                <Text style={styles.subTitle}>
                   Your Review{" "}
                   <TouchableOpacity
                     onPress={() =>
@@ -698,21 +697,18 @@ export default function MembersRecipeInfoScreen({ route }) {
                   </TouchableOpacity>
                 </Text>
                 {currentUserReviews.map((review, index) => (
-                  <View key={index} style={styles.mainBox}>
-                    <View style={styles.section}>
-                      <Text style={styles.reviewLabel}>Name:</Text>
-                      <Text style={styles.reviewContent}>
+                  <View key={index}>
+                    <View style={styles.ratingContainer}>
+                      <Image source={require("../../assets/person-placeholder.jpg")} style={styles.userImage} />
+                      <Text style={styles.reviewContent1}>
                         {review.username || "Deleted User"}
                       </Text>
+                      <View style={styles.starsAndRating}>
+                        <Rating rating={review.ratings}/>
+                        <Text style={styles.ratingNum}>{review.ratings}</Text>
+                      </View>
                     </View>
-
-                    <View style={styles.section}>
-                      <Text style={styles.reviewLabel}>Review:</Text>
-                      <Text style={styles.reviewContent}>{review.reviews}</Text>
-                    </View>
-
-                    <Text style={styles.reviewLabel}>Rating:</Text>
-                    <Rating rating={review.ratings} />
+                    <Text style={styles.reviewContent2}>{review.reviews}</Text>          
                   </View>
                 ))}
               </View>
@@ -720,45 +716,33 @@ export default function MembersRecipeInfoScreen({ route }) {
           )}
 
           {/* "Community Reviews" section */}
-          <Text style={styles.title}>Community Reviews</Text>
-          {submittedReviews.length > 0 ? (
-            <View>
-              <Swiper
-                ref={(swiper) => {
-                  swiperRef = swiper;
-                }}
-                style={styles.swiperContainer}
-                showsButtons={false}
-                loop={false}
-                autoplay={true}
-                autoplayTimeout={5} // Set autoplay timeout to 5 seconds
-                // onIndexChanged={onIndexChanged}
-              >
-                {submittedReviews.map((review, index) => (
-                  <View key={index} style={styles.mainBox}>
-                    <View style={styles.section}>
-                      <Text style={styles.reviewLabel}>Name:</Text>
-                      <Text style={styles.reviewContent}>
-                        {review.username || "Deleted User"}
-                      </Text>
+          <View style={styles.detailBox}>
+            <Text style={styles.subTitle}>Reviews</Text>
+            {submittedReviews.length > 0 ? (
+              <View>
+                  {submittedReviews.map((review, index) => (
+                    <View key={index}>
+                      <View style={styles.ratingContainer}>
+                        <Image source={require("../../assets/person-placeholder.jpg")} style={styles.userImage} />
+                        <Text style={styles.reviewContent1}>
+                          {review.username || "Deleted User"}
+                        </Text>
+                        <View style={styles.starsAndRating}>
+                          <Rating rating={review.ratings} />
+                          <Text style={styles.ratingNum}>{review.ratings}</Text>
+                        </View>
+                      </View>
+                      <Text style={styles.reviewContent2}>{review.reviews}</Text>
+                      <View style={styles.divider}></View>
                     </View>
-
-                    <View style={styles.section}>
-                      <Text style={styles.reviewLabel}>Review:</Text>
-                      <Text style={styles.reviewContent}>{review.reviews}</Text>
-                    </View>
-
-                    <Text style={styles.reviewLabel}>Rating:</Text>
-                    <Rating rating={review.ratings} />
-                  </View>
-                ))}
-              </Swiper>
-            </View>
-          ) : (
-            <View style={styles.mainBox}>
-              <Text style={styles.noReviewsText}>No reviews yet</Text>
-            </View>
-          )}
+                  ))}
+              </View>
+            ) : (
+              <View style={styles.mainBox}>
+                <Text style={styles.noReviewsText}>No reviews yet</Text>
+              </View>
+            )}
+          </View>
 
           <StatusBar style="auto" />
         </View>
@@ -1001,18 +985,15 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
+    marginRight: 10,
+    marginLeft: 10,
   },
   subTitle: {
     fontWeight: "bold",
     fontSize: 20,
     margin: 10,
   },
-  section: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#CCCCCC",
-    paddingBottom: 10,
-    marginBottom: 10,
-  },
+  
   sectionTitle: {
     fontSize: 20,
     fontWeight: "bold",
@@ -1034,10 +1015,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
     marginTop: 5,
+    marginRight: 10,
+    marginLeft: 80,
   },
   reviewContent: {
     color: "#333",
-    marginBottom: 5,
   },
   reviewText: {
     fontSize: 14,
@@ -1052,10 +1034,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 5,
   },
   ratingText: {
     marginLeft: 8,
+    color: "#ED6F21",
   },
   swiperContainer: {
     height: height < 700 ? height * 0.4 : height * 0.36,
@@ -1171,5 +1153,55 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  horizontalContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 5,
+  },
+  divider: {
+    marginHorizontal: 10,
+    height: 20,
+    width: 1,
+    backgroundColor: "#000000",
+  },
+  ratingContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 5,
+    marginRight: 10,
+    marginLeft: 10,
+    //backgroundColor: "grey",
+  },
+  starsAndRating: {
+    justifyContent: "flex-end",
+    //marginLeft: 78,
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  starsAndRating1: {
+    justifyContent: "flex-end",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  reviewContent1: {
+    color: "#000000",
+    marginLeft: 10,
+    marginRight: 10, 
+  },
+  reviewContent2:{
+    color: "#000000",
+    marginLeft: 80,
+    marginRight: 10,
+  },
+  ratingNum: {
+    marginLeft: 5,
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  divider: {
+    marginBottom: 50,
   },
 });
