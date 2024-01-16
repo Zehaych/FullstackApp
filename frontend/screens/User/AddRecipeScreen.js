@@ -14,6 +14,8 @@ import { useContext } from "react";
 import { Context } from "../../store/context";
 import * as ImagePicker from "expo-image-picker";
 import { storage } from "../../services/firebase";
+import { TouchableRipple } from "react-native-paper";
+import Icon from 'react-native-vector-icons/Feather';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const AddRecipeScreen = () => {
@@ -192,93 +194,114 @@ const AddRecipeScreen = () => {
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
-        <Text style={styles.label}>Add Recipe Name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Add Name"
-          value={name}
-          onChangeText={(text) => setName(text)}
-        />
-        <Text style={styles.label}>Ingredients</Text>
-        {ingredients.map((ingredient, index) => (
-          <View key={index} style={styles.ingredientContainer}>
-            <TextInput
-              style={styles.ingredientInput}
-              placeholder={`Ingredient ${index + 1}`}
-              onChangeText={(text) => handleIngredientChange(text, index)}
-              value={ingredient}
-            />
-            <Button
-              title="Remove"
-              onPress={() => removeIngredient(index)}
-              color="red"
-            />
-          </View>
-        ))}
-        <Button title="Add Ingredient" onPress={addNewIngredient} />
+        <View style={styles.detailBox}>
+          <Text style={styles.label}>Recipe Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Add Name"
+            value={name}
+            onChangeText={(text) => setName(text)}
+            placeholderTextColor="#808080"
+          />
 
-        <Text style={styles.label}>Instructions</Text>
-        {instructions.map((instruction, index) => (
-          <View key={index} style={styles.instructionContainer}>
-            <TextInput
-              style={styles.instructionInput}
-              placeholder={`Step ${index + 1}`}
-              onChangeText={(text) => handleInstructionChange(text, index)}
-              value={instruction}
-            />
-            <Button
-              title="Remove"
-              onPress={() => removeInstruction(index)}
-              color="red"
-            />
-          </View>
-        ))}
-        <Button title="Add Step" onPress={addNewInstruction} />
+          <Text style={styles.label}>Servings</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Add Servings"
+            value={servings}
+            onChangeText={(text) => setServings(text)}
+            keyboardType="numeric" // This ensures the keyboard displays numbers
+            placeholderTextColor="#808080"
+          />
 
-        <Text style={styles.label}>Calories</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Add Calories"
-          value={calories}
-          onChangeText={(text) => setCalories(text)}
-          keyboardType="numeric" // This ensures the keyboard displays numbers
-        />
+          <Text style={styles.label}>Calories</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Add Calories"
+            value={calories}
+            onChangeText={(text) => setCalories(text)}
+            keyboardType="numeric" // This ensures the keyboard displays numbers
+            placeholderTextColor="#808080"
+          />        
 
-        <Text style={styles.label}>Servings</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Add Servings"
-          value={servings}
-          onChangeText={(text) => setServings(text)}
-          keyboardType="numeric" // This ensures the keyboard displays numbers
-        />
+          <Text style={styles.label}>Time Taken</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Add Time Taken (in minutes)"
+            value={timeTaken}
+            onChangeText={(text) => setTimeTaken(text)}
+            keyboardType="numeric" // This ensures the keyboard displays numbers
+            placeholderTextColor="#808080"
+          />
 
-        <Text style={styles.label}>Time Taken</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Add Time Taken (in minutes)"
-          value={timeTaken}
-          onChangeText={(text) => setTimeTaken(text)}
-          keyboardType="numeric" // This ensures the keyboard displays numbers
-        />
+          {/* Attach Image Section */}
+          <Text style={styles.label}>Attach Image</Text>
+          <TouchableOpacity
+            style={styles.attachImageContainer}
+            onPress={selectImage}
+          >
+            {image ? (
+              <Image source={{ uri: image }} style={styles.imagePreview} />
+            ) : (
+              <Text style={styles.attachImageText}> + Tap to select an image </Text>
+            )}
+          </TouchableOpacity>
+        </View>
 
-        {/* Attach Image Section */}
-        <Text style={styles.label}>Attach Image</Text>
-        <TouchableOpacity
-          style={styles.attachImageContainer}
-          onPress={selectImage}
-        >
-          {image ? (
-            <Image source={{ uri: image }} style={styles.imagePreview} />
-          ) : (
-            <Text style={styles.attachImageText}>Tap to select an image</Text>
-          )}
-        </TouchableOpacity>
+        <View style={styles.detailBox} >
+          <Text style={styles.label}>Ingredients</Text>
+          {ingredients.map((ingredient, index) => (
+            <View key={index}>
+              <View style={styles.ingredientContainer}>
+                <TextInput
+                  style={styles.ingredientInput}
+                  placeholder={`Ingredient ${index + 1}`}
+                  onChangeText={(text) => handleIngredientChange(text, index)}
+                  value={ingredient}
+                  placeholderTextColor="#808080"
+                />
+                <TouchableOpacity onPress={() => removeIngredient(index)} style={styles.deleteIcon}>
+                  <Icon name="x" size={20} color="red" />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.divider} />
+            </View>
+          ))}
+          <TouchableRipple onPress={addNewIngredient} style={styles.addButton}>
+            <Text style={styles.buttonText}>+ Add Ingredient</Text>
+          </TouchableRipple>
+        </View>
+        
+        <View style={styles.detailBox}>
+          <Text style={styles.label}>Instructions</Text>
+          {instructions.map((instruction, index) => (
+            <View key={index}>
+              <View style={styles.instructionContainer}>
+                <TextInput
+                  style={styles.instructionInput}
+                  placeholder={`Step ${index + 1}`}
+                  onChangeText={(text) => handleInstructionChange(text, index)}
+                  value={instruction}
+                  placeholderTextColor="#808080"
+                />
+                <TouchableOpacity onPress={() => removeInstruction(index)} style={styles.deleteIcon}>
+                  <Icon name="x" size={20} color="red" />
+                </TouchableOpacity>
+                
+              </View>
+              <View style={styles.divider} />
+            </View>
+          ))}
+          <TouchableRipple onPress={addNewInstruction} style={styles.addButton}>
+            <Text style={styles.buttonText}>+ Add Step</Text>
+          </TouchableRipple>
+        </View>
 
         {/* Space between Attach Image and Submit Button */}
-        <View style={styles.space} />
-
-        <Button title="Submit" onPress={handleSubmit} />
+        
+        <TouchableRipple onPress={handleSubmit} style={styles.submitButton}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableRipple>
       </View>
     </KeyboardAwareScrollView>
   );
@@ -294,6 +317,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginTop: 10,
+    marginBottom: 5,
   },
   input: {
     height: 40,
@@ -301,29 +325,32 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 15,
     paddingHorizontal: 10,
+    borderRadius: 5,
   },
   ingredientContainer: {
     flexDirection: "row",
     alignItems: "center",
+    //justifyContent: "center",
   },
   ingredientInput: {
     flex: 1,
     height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 10,
+    //borderColor: "gray",
+    //borderRadius: 5,
+    //borderWidth: 1,
     paddingHorizontal: 10,
   },
   instructionContainer: {
     flexDirection: "row",
     alignItems: "center",
+    //justifyContent: "center",
   },
   instructionInput: {
     flex: 1,
     height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 10,
+    //borderColor: "gray",
+    //borderRadius: 5,
+    //borderWidth: 1,
     paddingHorizontal: 10,
   },
   attachImageContainer: {
@@ -333,7 +360,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 5,
     paddingVertical: 20,
-    marginTop: 10,
+    borderStyle: "dashed",
   },
   attachImageText: {
     fontSize: 16,
@@ -345,8 +372,61 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     marginVertical: 10,
   },
-  space: {
-    marginVertical: 10,
+  detailBox: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
+  },
+  addButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    paddingVertical: 10,
+    marginTop: 10,
+    backgroundColor: "#ED6F21",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  submitButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    paddingVertical: 10,
+    backgroundColor: "#ED6F21",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  deleteIcon: {
+    marginLeft: 10,
+    marginRight: 5,
+  },
+  divider: {
+    borderBottomColor: "#ccc",
+    borderBottomWidth: 1,
+    marginBottom: 10,
   },
 });
 
