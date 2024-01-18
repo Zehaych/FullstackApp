@@ -1,10 +1,12 @@
 const express = require("express");
-const dotenv = require("dotenv").config();
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 const connectDB = require("./config/db");
 const cors = require("cors");
 const { errorHandler } = require("./middleware/errorMiddleware");
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;// Elastic Beanstalk sets process.env.PORT
 
 // Connect to the MongoDB database
 connectDB();

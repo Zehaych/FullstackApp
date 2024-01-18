@@ -1,0 +1,22 @@
+branch-defaults:
+  release/2.0.0:
+    environment: FypApp-dev
+    group_suffix: null
+environment-defaults:
+  FypApp-dev:
+    branch: release/2.0.0
+    repository: DietApp
+global:
+  application_name: FypApp
+  branch: release/2.0.0
+  default_ec2_keyname: APKAVRUVU2UZDTMAI2P6
+  default_platform: Node.js 18 running on 64bit Amazon Linux 2023
+  default_region: ap-southeast-1
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: eb-cli
+  repository: DietApp
+  sc: git
+  workspace_type: Application
