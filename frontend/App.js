@@ -121,18 +121,18 @@ function App() {
           <Stack.Screen
             name="RetrieveBizPartners"
             component={RetrieveBizPartners}
-            options={{ headerShown: false }}
+            options={{ headerTitle: "Retrieve Business User Accounts" }}
           />
 
           <Stack.Screen
             name="RetrieveBizReports"
             component={RetrieveBizReports}
-            options={{ headerShown: false }}
+            options={{ headerTitle: "Retrieve Business Reports" }}
           />
           <Stack.Screen
             name="RetrieveUserAccount"
             component={RetrieveUserAccount}
-            options={{ headerShown: false }}
+            options={{ headerTitle: "Retrieve User Accounts" }}
           />
 
           {/* <Stack.Screen

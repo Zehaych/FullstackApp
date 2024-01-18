@@ -35,22 +35,36 @@ export default function RetrieveUsers() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{currentUser.username}</Text>
-      <Text style={styles.subtitle}>User Accounts</Text>
-      <FlatList
-        data={users}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.item}
-            onPress={() =>
-              navigation.navigate("UserInfo", { user: item })
-            }
-          >
-            <Text>{item.username}</Text>
-          </TouchableOpacity>
-        )}
-      />
+      <View style={styles.detailBox}>
+        <View style={styles.componentContainer}>
+          <View style={styles.leftComponent1}>
+            <Text style={styles.title}>No. </Text>
+          </View>
+          <View style={styles.rightComponent1}>
+            <Text style={styles.title}>User Account</Text>
+          </View>
+        </View>
+        <FlatList
+          data={users}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("UserInfo", { user: item })
+              }
+            >
+              <View style={styles.componentContainer}>
+                <View style={styles.leftComponent}>
+                  <Text style={styles.numbering}>{index + 1}</Text>
+                </View>
+                <View style={styles.rightComponent}>
+                  <Text style={styles.subTitle}>{item.username}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
     </View>
   );
 }
@@ -61,29 +75,70 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#f5f5f5",
   },
+  componentContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+    paddingHorizontal: 20,
+  },
+  leftComponent: {
+    flex: 0.5,
+    paddingLeft: 10,
+    marginBottom:10,
+  },
+  rightComponent: {
+    flex: 1,
+    marginBottom:10,
+  },
+  leftComponent1: {
+    flex: 0.5,
+  },
+  rightComponent1: {
+    flex: 1,
+  },
+  // titleRow: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   marginBottom: 10,
+  //   paddingHorizontal: 20,
+  // },
   title: {
-    marginTop: 30,
+    marginTop: 10,
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
   },
-  subtitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: "#333", 
-    textAlign: "center",
+  subTitle: {
+    fontSize: 16,
+    //textAlign: "center",
   },
-  item: {
-    backgroundColor: "white",
-    padding: 10,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    borderRadius: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
+  // row: {
+  //   flexDirection: "row",
+  //   justifyContent: "space-between",
+  //   alignItems: "center",
+  //   paddingVertical: 10,
+  //   paddingHorizontal: 25,
+  // },
+  detailBox: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 20,
+    margin: 10,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
     shadowRadius: 3.84,
+    shadowOpacity: 0.25,
     elevation: 5,
   },
+  numbering: {
+    fontWeight: "bold",
+    fontSize: 16,
+    marginRight: 10,
+  },
+
 });

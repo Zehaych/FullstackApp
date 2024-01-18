@@ -60,6 +60,10 @@ const AdminScreen = () => {
     navigation.navigate("RetrieveUserAccount");
   };
 
+  const handleRetrieveBizPartner = () => {
+    navigation.navigate("RetrieveBizPartners");
+  };
+
   //Function to navigate to retrieve all business partners
   const handleNavigateBizPartner = () => {
     navigation.navigate("RetrieveBizReports");
@@ -125,7 +129,7 @@ const AdminScreen = () => {
             </View>
           </TouchableRipple>
 
-          <TouchableRipple onPress={handleNavigateBizPartner}>
+          <TouchableRipple onPress={handleRetrieveBizPartner}>
             <View style={styles.menuItem}>
               <Icon
                 name="account-search"
