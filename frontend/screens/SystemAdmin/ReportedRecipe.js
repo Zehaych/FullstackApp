@@ -57,7 +57,6 @@ const ReportedRecipe = () => {
                     keyExtractor={item => item._id}
                     renderItem={({ item, index }) => (
                         <TouchableOpacity 
-                            style={styles.recipeItem} 
                             onPress={() => handleRecipePress(item)}
                         >
                             <View style={styles.componentContainer}>
