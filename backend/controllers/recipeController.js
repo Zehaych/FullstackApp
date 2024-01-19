@@ -49,6 +49,8 @@ exports.postRecipe = asyncHandler(async (req, res) => {
     ingredients: req.body.ingredients,
     instructions: req.body.instructions,
     calories: req.body.calories,
+    servings: req.body.servings,
+    timeTaken: req.body.timeTaken,
     image: req.body.image,
     submitted_by: req.body.submitted_by,
   });
