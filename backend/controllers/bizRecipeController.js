@@ -61,6 +61,8 @@ exports.postBizRecipe = asyncHandler(async (req, res) => {
     !req.body.ingredients ||
     !req.body.instructions ||
     !req.body.calories ||
+    !req.body.servings ||
+    !req.body.timeTaken ||
     !req.body.image ||
     !req.body.price
   ) {
@@ -80,6 +82,8 @@ exports.postBizRecipe = asyncHandler(async (req, res) => {
     ingredients: req.body.ingredients,
     instructions: req.body.instructions,
     calories: req.body.calories,
+    servings: req.body.servings,
+    timeTaken: req.body.timeTaken,
     image: req.body.image,
     price: req.body.price,
     submitted_by: req.body.submitted_by,
@@ -94,7 +98,10 @@ exports.updateBizRecipe = asyncHandler(async (req, res) => {
     !req.body.ingredients ||
     !req.body.instructions ||
     !req.body.calories ||
-    !req.body.image
+    !req.body.servings ||
+    !req.body.timeTaken ||
+    !req.body.image ||
+    !req.body.price
   ) {
     res.status(400);
     throw new Error("Please add a value for the recipe");
