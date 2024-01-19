@@ -287,7 +287,7 @@ const AddRecipeScreen = () => {
                 <TouchableOpacity onPress={() => removeInstruction(index)} style={styles.deleteIcon}>
                   <Icon name="x" size={20} color="red" />
                 </TouchableOpacity>
-                
+
               </View>
               <View style={styles.divider} />
             </View>
@@ -297,8 +297,6 @@ const AddRecipeScreen = () => {
           </TouchableRipple>
         </View>
 
-        {/* Space between Attach Image and Submit Button */}
-        
         <TouchableRipple onPress={handleSubmit} style={styles.submitButton}>
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableRipple>
@@ -359,12 +357,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
-    paddingVertical: 20,
+    // paddingVertical: 20,
     borderStyle: "dashed",
   },
   attachImageText: {
     fontSize: 16,
     color: "#777",
+    paddingVertical: 20,
   },
   imagePreview: {
     width: 100,

@@ -262,8 +262,6 @@ const AddBizRecipeScreen = () => {
         </View>
 
         <View style={styles.detailBox} >
-
-
           <Text style={styles.label}>Ingredients</Text>
           {ingredients.map((ingredient, index) => (
             <View key={index}>
@@ -276,11 +274,7 @@ const AddBizRecipeScreen = () => {
                   value={ingredient}
                   placeholderTextColor="#808080"
                 />
-                {/* <Button
-                  title="Remove"
-                  onPress={() => removeIngredient(index)}
-                  color="red"
-                /> */}
+
                 <TouchableOpacity onPress={() => removeIngredient(index)} style={styles.deleteIcon}>
                   <Icon name="x" size={20} color="red" />
                 </TouchableOpacity>
@@ -288,14 +282,12 @@ const AddBizRecipeScreen = () => {
               <View style={styles.divider} />
             </View>
           ))}
-          {/* <Button title="Add Ingredient" onPress={addNewIngredient} /> */}
           <TouchableRipple onPress={addNewIngredient} style={styles.addButton}>
             <Text style={styles.buttonText}>+ Add Ingredient</Text>
           </TouchableRipple>
         </View>
 
         <View style={styles.detailBox}>
-          
           <Text style={styles.label}>Instructions</Text>
           {instructions.map((instruction, index) => (
             <View key={index}>
@@ -308,37 +300,22 @@ const AddBizRecipeScreen = () => {
                   value={instruction}
                   placeholderTextColor="#808080"
                 />
-                {/* <Button
-                  title="Remove"
-                  onPress={() => removeInstruction(index)}
-                  color="red"
-                /> */}
+
                 <TouchableOpacity onPress={() => removeInstruction(index)} style={styles.deleteIcon}>
                   <Icon name="x" size={20} color="red" />
                 </TouchableOpacity>
               </View>
               <View style={styles.divider} />
-
             </View>
           ))}
-          {/* <Button title="Add Step" onPress={addNewInstruction} /> */}
           <TouchableRipple onPress={addNewInstruction} style={styles.addButton}>
             <Text style={styles.buttonText}>+ Add Step</Text>
           </TouchableRipple>
-
         </View>
         
-
-
-        {/* Space between Attach Image and Submit Button */}
-        {/* <View style={styles.space} /> */}
-
-        {/* <Button title="Submit" onPress={handleSubmit} /> */}
-
         <TouchableRipple onPress={handleSubmit} style={styles.submitButton}>
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableRipple>
-
       </View>
     </KeyboardAwareScrollView>
   );
@@ -394,12 +371,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
-    paddingVertical: 20,
+    // paddingVertical: 20,
     borderStyle: "dashed",
   },
   attachImageText: {
     fontSize: 16,
     color: "#777",
+    paddingVertical: 20,
   },
   imagePreview: {
     width: 100,
@@ -407,9 +385,6 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     marginVertical: 10,
   },
-  // space: {
-  //   marginVertical: 10,
-  // },
   detailBox: {
     flex: 1,
     backgroundColor: "#FFFFFF",
