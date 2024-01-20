@@ -53,7 +53,7 @@ const AdminScreen = () => {
   };
 
   const handleFoodRequested = () => {
-    navigation.navigate("FoodRequested");
+    navigation.navigate("FoodRequestedTabs");
   };
 
   const handleRetrieveUserAccount = () => {

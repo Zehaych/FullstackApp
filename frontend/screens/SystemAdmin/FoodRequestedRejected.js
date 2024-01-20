@@ -3,8 +3,9 @@ import React, { useState, useContext, useEffect} from "react";
 import { Context } from "../../store/context";
 import { useFocusEffect } from "@react-navigation/native";
 
-const FoodRequested = () => {
+const FoodRequestedRejected = () => {
     const [foodRequests, setFoodRequests] = useState([]);
+    const [rejectRequests, setRejectRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentUser, setCurrentUser] = useContext(Context);
     const [modalVisible, setModalVisible] = useState(false);
@@ -33,6 +34,9 @@ const FoodRequested = () => {
             if (response.ok) {
                 const data = await response.json();
                 setFoodRequests(data);
+
+                const rejectRequests = data.filter(item => item.status === 'rejected');
+                setRejectRequests(rejectRequests);
             } else {
                 console.error('Failed to fetch food requests');
             }
@@ -140,12 +144,12 @@ const FoodRequested = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{currentUser.username}</Text>
+
             {loading ? (
                 <Text>Loading...</Text>
             ) : (
                 <FlatList
-                    data={foodRequests}
+                    data={rejectRequests}
                     keyExtractor={(item) => item._id}
                     renderItem={({ item }) => (
                         <View style={styles.item}>
@@ -332,4 +336,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default FoodRequested;
+export default FoodRequestedRejected;

@@ -21,7 +21,7 @@ import AdminScreen from "./screens/SystemAdmin/AdminScreen";
 import BizPartnerInfo from "./screens/SystemAdmin/BizPartnerInfo";
 import BizPartnerSignUp from "./screens/SystemAdmin/BizPartnerSignUp";
 import FoodAndDrinksInfo from "./screens/SystemAdmin/FoodAndDrinksInfo";
-import FoodRequested from "./screens/SystemAdmin/FoodRequested";
+import FoodRequestedTabs from "./screens/SystemAdmin/FoodRequestedTabs";
 import ReportedBizRecipe from "./screens/SystemAdmin/ReportedBizRecipe";
 import ReportedBizRecipeDetails from "./screens/SystemAdmin/ReportedBizRecipeDetail";
 import ReportedRecipe from "./screens/SystemAdmin/ReportedRecipe";
@@ -79,8 +79,8 @@ function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="FoodRequested"
-            component={FoodRequested}
+            name="FoodRequestedTabs"
+            component={FoodRequestedTabs}
             options={{ headerTitle: "Food Requested" }}
           />
           <Stack.Screen
