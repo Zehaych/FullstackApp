@@ -122,14 +122,17 @@ const OnlineRecipeInfoScreen = ({ route }) => {
             {/* ingredients */}
           <View style={styles.ingredientBox}>
             <Text style={styles.customHeadings}>Ingredients:</Text>
+
             {recipeDetails.extendedIngredients ? ( //recipeDetails.extendedIngredients !== null
               <View style={styles.inAlign}>
                 {recipeDetails.extendedIngredients.map(
                   (ingredient, index) => (
-                    <View key={index} style={styles.ingredientStyles}>
+                    <View key={index} style={styles.ingredientContainer}>
+                      
+                      <Text style={styles.ingredientText}>•</Text>
+                      
                       <Text style={styles.customText}>
-                        • {ingredient.name} - {ingredient.amount}{" "}
-                        {ingredient.unit}
+                        {ingredient.name} - {ingredient.amount}{" "}{ingredient.unit}
                       </Text>
                     </View>
                   )
@@ -142,9 +145,11 @@ const OnlineRecipeInfoScreen = ({ route }) => {
             {/* instructions */}
           <View style={styles.instructionsBox}>
             <Text style={styles.customHeadings}>Instructions:</Text>
+            
             {recipeDetails.instructions ? (
               <View style={styles.inAlign}>
-                <Text style={styles.customText}>
+                
+                <Text style={styles.customTextInstructions}>
                   {recipeDetails.instructions}
                 </Text>
               </View>
@@ -270,6 +275,11 @@ const styles = StyleSheet.create({
     textAlign: "left",
     margin: 10,
   },
+  customTextInstructions: {
+    fontSize: 16,
+    textAlign: "left",
+    marginVertical: 10,
+  },
   smallText: {
     fontSize: 16,
     fontWeight: "bold",
@@ -283,10 +293,10 @@ const styles = StyleSheet.create({
   //ingredient
   ingredientContainer: {
     flexDirection: "row", // Arrange components horizontally from left to right
-    justifyContent: "space-between", // Space them evenly
-    alignItems: "center", // Center them vertically
-    paddingTop: 10,
-    paddingBottom: 10,
+    // justifyContent: "space-between", // Space them evenly
+    // alignItems: "center", // Center them vertically
+    // paddingTop: 10,
+    // paddingBottom: 10,
   },
   ingredientImage: {
     width: 50,
@@ -348,6 +358,10 @@ const styles = StyleSheet.create({
   inAlign: {
     marginLeft: 10,
     marginRight: 10,
+  },
+  ingredientText: {
+    fontSize: 30,
+    color: "#FF9130",
   },
 });
 

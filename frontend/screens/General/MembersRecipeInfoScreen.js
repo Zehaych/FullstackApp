@@ -89,27 +89,27 @@ export default function MembersRecipeInfoScreen({ route }) {
     }
   }, [recipeData, currentUser._id]);
 
-  // Function to handle Swiper's index change
-  const onIndexChanged = (index) => {
-    setActiveSlide(index);
-  };
+  // // Function to handle Swiper's index change
+  // const onIndexChanged = (index) => {
+  //   setActiveSlide(index);
+  // };
 
-  // Function to move to the next slide
-  const moveToNextSlide = () => {
-    if (activeSlide < submittedReviews.length - 1) {
-      swiperRef.scrollBy(1);
-    }
-  };
+  // // Function to move to the next slide
+  // const moveToNextSlide = () => {
+  //   if (activeSlide < submittedReviews.length - 1) {
+  //     swiperRef.scrollBy(1);
+  //   }
+  // };
 
-  // Function to move to the previous slide
-  const moveToPrevSlide = () => {
-    if (activeSlide > 0) {
-      swiperRef.scrollBy(-1);
-    }
-  };
+  // // Function to move to the previous slide
+  // const moveToPrevSlide = () => {
+  //   if (activeSlide > 0) {
+  //     swiperRef.scrollBy(-1);
+  //   }
+  // };
 
-  // Reference to the Swiper component
-  let swiperRef;
+  // // Reference to the Swiper component
+  // let swiperRef;
 
   const reportRecipe = async () => {
     try {
@@ -554,6 +554,7 @@ export default function MembersRecipeInfoScreen({ route }) {
           </TouchableOpacity>
         )}
       </View>
+
       <ScrollView>
         <View style={styles.container}>
           <View>
@@ -572,7 +573,7 @@ export default function MembersRecipeInfoScreen({ route }) {
                   </Text>
                 </View>
                 
-                <View style={styles.verticleLine}></View>                
+                <View style={styles.verticleLine}></View>
                 
                 <View style={styles.starContainer}>
                   <Icon name="person" size={24} color="#ED6F21" />
