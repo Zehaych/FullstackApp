@@ -91,7 +91,7 @@ function App() {
           <Stack.Screen
             name="ReportedBizRecipeDetails"
             component={ReportedBizRecipeDetails}
-            options={{ headerShown: false }}
+            options={{ headerTitle: "Reported Business Recipe" }}
           />
           <Stack.Screen
             name="ReportedBizRecipe"
@@ -101,7 +101,7 @@ function App() {
           <Stack.Screen
             name="ReportedRecipeDetails"
             component={ReportedRecipeDetails}
-            options={{ headerShown: false }}
+            options={{ headerTitle: "Reported Community Recipe" }}
           />
           <Stack.Screen
             name="ReportedRecipe"
