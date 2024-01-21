@@ -199,18 +199,6 @@ const OrderStatusScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Conditionally render the button */}
-      {hasDoneOrRejectedOrders && (
-        <TouchableOpacity
-          onPress={confirmOrderClear}
-          style={styles.deleteButton}
-        >
-          <Text style={styles.deleteButtonText}>
-            Clear Done/Rejected Orders
-          </Text>
-        </TouchableOpacity>
-      )}
-
       <FlatList
         data={userOrders}
         renderItem={renderOrderItem}
@@ -219,6 +207,20 @@ const OrderStatusScreen = () => {
           <Text style={styles.emptyText}>No ongoing orders.</Text>
         }
       />
+      <View style={styles.deleteButtonContainer}>
+        {/* Conditionally render the button */}
+        {hasDoneOrRejectedOrders && (
+          <TouchableOpacity
+            onPress={confirmOrderClear}
+            style={styles.deleteButton}
+          >
+            <Text style={styles.deleteButtonText}>
+              Clear Done/Rejected Orders
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
+
     </View>
   );
 };
@@ -234,7 +236,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginVertical: 8,
     marginHorizontal: 16,
-    borderRadius: 10,
+    borderRadius: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.23,
@@ -242,7 +244,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   deleteButton: {
-    backgroundColor: "#FF6347",
+    backgroundColor: "#ED6F21",
     padding: 10,
     borderRadius: 10,
     margin: 16,
@@ -252,10 +254,12 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     color: "white",
     fontWeight: "bold",
+    fontSize: 16,
   },
   titleContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
   },
   title: {
     fontSize: 20,
@@ -309,5 +313,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     marginTop: 50,
+  },
+  deleteButtonContainer: {
+    backgroundColor: "white"
   },
 });
