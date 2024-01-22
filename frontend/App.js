@@ -55,6 +55,7 @@ import ViewRequest from "./screens/User/ViewRequest";
 import TabReportScreen from "./screens/BizPartner/TabReportScreen";
 import TabFullReportScreen from "./screens/SystemAdmin/TabFullReportScreen";
 import RetrieveBizReports from "./screens/SystemAdmin/RetrieveBizReports";
+import CartScreen from "./screens/User/CartScreen";
 // import FullReportMonthly from "./screens/SystemAdmin/FullReportMonthly";
 import UserInfoScreen from "./screens/User/UserInfoScreen";
 import { Context } from "./store/context";
@@ -306,6 +307,12 @@ function App() {
           <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="User Profile" component={UserScreen} />
           <Stack.Screen name="View User Profile" component={UserInfoScreen} />
+
+          <Stack.Screen 
+            name="Cart" 
+            component={CartScreen}
+            options={{ headerTitle: "Your Cart" }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </Context.Provider>
