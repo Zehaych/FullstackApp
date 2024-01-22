@@ -153,18 +153,16 @@ const FoodRequestedRejected = () => {
                     keyExtractor={(item) => item._id}
                     renderItem={({ item }) => (
                         <View style={styles.item}>
-                            <Text style={styles.title}>{item.name}</Text>
-                            <Text style={styles.subtitle}>Status: {item.status}</Text>
-
-                            <View style={styles.buttonContainer}>
-
-                            <TouchableOpacity style={[styles.button, styles.secondButton]} onPress={() => openModal(item)}>
-                                <Text style={styles.buttonText}>Approve Request</Text>
+                            <TouchableOpacity 
+                                style={styles.touchableContainer}
+                                onPress={() => openModal(item)}
+                            >
+                                <Text style={styles.title}>{item.name}</Text>
+                                <View style={styles.statusContainer}>
+                                    <Text style={styles.status1}>Status </Text>
+                                    <Text style={styles.status2}>{item.status}</Text>
+                                </View>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.button, styles.thirdButton]} onPress={() => rejectFoodRequest(item._id)}>
-                                <Text style={styles.buttonText}>Reject Request</Text>
-                            </TouchableOpacity>
-                            </View>
                         </View>
                     )}
                 />
@@ -214,7 +212,13 @@ const FoodRequestedRejected = () => {
                         style={styles.confirmButton} 
                         onPress={handleConfirm}
                     >
-                        <Text style={styles.confirmButtonText}>Confirm</Text>
+                        <Text style={styles.confirmButtonText}>Approve Request</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                        style={styles.confirmButton} 
+                        onPress={() => rejectFoodRequest(item._id)}
+                    >
+                        <Text style={styles.confirmButtonText}>Reject Request</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.confirmButton}
@@ -238,7 +242,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 22,
+        marginTop: 20,
     },
     modalView: {
         margin: 20,
@@ -262,29 +266,30 @@ const styles = StyleSheet.create({
     },
     input: {
         height: 40,
-        margin: 12,
+        margin: 10,
         borderWidth: 1,
         padding: 10,
         width: '100%', // Adjust as needed
+        borderRadius: 5,
+        borderColor: '#ccc',
     },
     confirmButton: {
-        backgroundColor: '#2196F3',
+        backgroundColor: '#ED6F21',
         borderRadius: 10,
         padding: 10,
         elevation: 2,
-        marginTop: 20,
+        marginTop: 10,
+        width: '100%', // Adjust as needed
     },
     confirmButtonText: {
         color: 'white',
+        textAlign: 'center',
+        fontSize: 16,
     },
     buttonText: {
         textAlign: "center",
         color: "white",
         fontSize: 16,
-      },
-    buttonContainer: {
-        marginVertical: 8,
-        borderRadius: 5,
     },
     button: {
         backgroundColor: "#007bff", // Blue color for the primary button
@@ -300,13 +305,14 @@ const styles = StyleSheet.create({
         backgroundColor: "#FF0000",
       },
     container: {
-        marginTop: 30,
+        marginTop: 10,
         backgroundColor: '#f5f5f5',
         padding: 10,
+        marginBottom: 10,
     },
     item: {
         backgroundColor: 'white', 
-        padding: 20,
+        padding: 10,
         marginVertical: 8,
         marginHorizontal: 10,
         borderRadius: 10,
@@ -328,10 +334,32 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginBottom: 5,
     },  
-    status: {
+    status1: {
+        fontSize: 16,
+        //fontStyle: 'italic',
+        color: '#000000',
+    },
+    status2: {
         fontSize: 16,
         fontStyle: 'italic',
-        color: '#2e2e2e',
+        color: '#ED6F21',
+    },
+    statusContainer: {
+        marginTop: 5,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 10,
+    },
+    touchableContainer: {
+        paddingHorizontal: 10,
+        width: '100%', // Adjust as needed
+        //backgroundColor: "green",
+    },
+    buttonContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 10,
+        width: '100%', // Adjust as needed
     },
 });
 

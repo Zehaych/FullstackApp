@@ -159,39 +159,91 @@ const FullReportYearly = ({ route }) => {
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <Text style={styles.title}>{item.recipeName}</Text>
-      <Text style={styles.subtitle}>Total Sales: ${item.totalPrice}</Text>
-      <Text style={styles.subtitle}>Total Quantity Sold: {item.quantity}</Text>
-      <Text style={styles.subtitle}>
-        Most Ordered Time: {item.mostOrderedTime}
-      </Text>
-      <Text style={styles.subtitle}>
-        Male Order Rate: {item.maleOrderRate.toFixed(2)}%
-      </Text>
-      <Text style={styles.subtitle}>
-        Female Order Rate: {item.femaleOrderRate.toFixed(2)}%
-      </Text>
-      <Text style={styles.subtitle}>
-        Average Age: {item.averageAge.toFixed(0)}
-      </Text>
-      <Text style={styles.subtitle}>
-        Average Height: {item.averageHeight.toFixed(0)}cm
-      </Text>
-      <Text style={styles.subtitle}>
-        Average Weight: {item.averageWeight.toFixed(2)}kg
-      </Text>
-      <Text style={styles.subtitle}>
-        Average Calorie Goal: {item.averageCalorieGoal.toFixed(0)}kcal
-      </Text>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>Total Sales</Text>
+        <Text style={styles.subtitle}>${item.totalPrice}</Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>Total Quantity Sold</Text>
+        <Text style={styles.subtitle}>{item.quantity}</Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>
+          Most Ordered Time
+        </Text>
+        <Text style={styles.subtitle}>
+          {item.mostOrderedTime}
+        </Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>
+          Male Order Rate
+        </Text>
+        <Text style={styles.subtitle}>
+          {item.maleOrderRate.toFixed(2)}%
+        </Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>
+          Female Order Rate
+        </Text>
+        <Text style={styles.subtitle}>
+          {item.femaleOrderRate.toFixed(2)}%
+        </Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>
+          Average Age
+        </Text>
+        <Text style={styles.subtitle}>
+          {item.averageAge.toFixed(0)}
+        </Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>
+          Average Height
+        </Text>
+        <Text style={styles.subtitle}>
+          {item.averageHeight.toFixed(0)} cm
+        </Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>
+          Average Weight
+        </Text>
+        <Text style={styles.subtitle}>
+          {item.averageWeight.toFixed(2)} kg
+        </Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>
+          Average Calorie Goal
+        </Text>
+        <Text style={styles.subtitle}>
+          {item.averageCalorieGoal.toFixed(0)} kcal
+        </Text>
+      </View>
     </View>
   );
 
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
       <View style={styles.container}>
-        <Text style={styles.header}>Total Sales: ${totalSales}</Text>
-        <Text style={styles.header}>
-          Most Ordered: {mostOrderedRecipes.join(", ")}
-        </Text>
+        <View style={styles.detailBox}>
+          <Text style={styles.title2}>Yearly Sales</Text>
+          <View style={styles.componentContainer}>
+            <Text style={styles.subtitle1}>Total Sales</Text>
+            <Text style={styles.subtitle}>${totalSales}</Text>
+          </View>
+          <View style={styles.componentContainer}>
+            <Text style={styles.subtitle1}>
+              Most Ordered
+            </Text>
+            <Text style={styles.subtitle}>
+              {mostOrderedRecipes.join(", ")}
+            </Text>
+          </View>
+        </View>
         <FlatList
           data={groupedOrders}
           renderItem={renderItem}
@@ -204,9 +256,17 @@ const FullReportYearly = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-  safeAreaContainer: { flex: 1 },
-  container: { flex: 1, backgroundColor: "#FCFCD3", padding: 10 },
-  listContentContainer: { flexGrow: 1 },
+  safeAreaContainer: { 
+    flex: 1 
+  },
+  container: { 
+    flex: 1, 
+    backgroundColor: "#f5f5f5", 
+    padding: 10 
+  },
+  listContentContainer: { 
+    flexGrow: 1 
+  },
   header: {
     fontSize: 18,
     fontWeight: "bold",
@@ -218,20 +278,127 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 10,
-    borderRadius: 10,
+    borderRadius: 20,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
+    shadowOffset: { 
+      width: 0, 
+      height: 2 
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
+    //textAlign: "center",
+  },
+  title2: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#ED6F21",
+    marginBottom: 10,
     textAlign: "center",
   },
-  subtitle: { fontSize: 16, marginBottom: 5 },
+  subtitle: { 
+    fontSize: 16, 
+    marginBottom: 5 
+  },
+  subtitle1: {
+    fontSize: 16,
+    color: "grey",
+    marginBottom: 5,
+  },
+  detailBox: {
+    //flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 20,
+    margin: 10,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
+  },
+  componentContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
 });
 
 export default FullReportYearly;
+
+/*<View style={styles.itemContainer}>
+<Text style={styles.title}>{item.recipeName}</Text>
+<View style={styles.componentContainer}>
+  <Text style={styles.subtitle1}>Total Sales</Text>
+  <Text style={styles.subtitle}>${item.totalPrice}</Text>
+</View>
+<View style={styles.componentContainer}>
+  <Text style={styles.subtitle1}>Total Quantity Sold</Text>
+  <Text style={styles.subtitle}>{item.quantity}</Text>
+</View>
+<View style={styles.componentContainer}>
+  <Text style={styles.subtitle1}>
+    Most Ordered Time
+  </Text>
+  <Text style={styles.subtitle}>
+    {item.mostOrderedTime}
+  </Text>
+</View>
+<View style={styles.componentContainer}>
+  <Text style={styles.subtitle1}>
+    Male Order Rate
+  </Text>
+  <Text style={styles.subtitle}>
+    {item.maleOrderRate.toFixed(2)}%
+  </Text>
+</View>
+<View style={styles.componentContainer}>
+  <Text style={styles.subtitle1}>
+    Female Order Rate
+  </Text>
+  <Text style={styles.subtitle}>
+    {item.femaleOrderRate.toFixed(2)}%
+  </Text>
+</View>
+<View style={styles.componentContainer}>
+  <Text style={styles.subtitle1}>
+    Average Age
+  </Text>
+  <Text style={styles.subtitle}>
+    {item.averageAge.toFixed(0)}
+  </Text>
+</View>
+<View style={styles.componentContainer}>
+  <Text style={styles.subtitle1}>
+    Average Height
+  </Text>
+  <Text style={styles.subtitle}>
+    {item.averageHeight.toFixed(0)} cm
+  </Text>
+</View>
+<View style={styles.componentContainer}>
+  <Text style={styles.subtitle1}>
+    Average Weight
+  </Text>
+  <Text style={styles.subtitle}>
+    {item.averageWeight.toFixed(2)} kg
+  </Text>
+</View>
+<View style={styles.componentContainer}>
+  <Text style={styles.subtitle1}>
+    Average Calorie Goal
+  </Text>
+  <Text style={styles.subtitle}>
+    {item.averageCalorieGoal.toFixed(0)} kcal
+  </Text>
+</View>
+*/

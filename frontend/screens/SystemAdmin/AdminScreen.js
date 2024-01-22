@@ -92,13 +92,13 @@ const AdminScreen = () => {
             <Icon
               name="crown"
               size={25}
-              color="#FF6347"
+              color="#ED6F21"
             />
             <Text style={styles.detailText}> Admin Access Granted </Text>
             <Icon
               name="crown"
               size={25}
-              color="#FF6347"
+              color="#ED6F21"
             />
           </View>
         </View>
@@ -110,7 +110,7 @@ const AdminScreen = () => {
               <Icon
                 name="account-plus"
                 size={25}
-                color="#FF6347"
+                color="#ED6F21"
               />
               <Text style={styles.menuItemText}>
                 Create Business Partner Account
@@ -123,7 +123,7 @@ const AdminScreen = () => {
               <Icon
                 name="account-search"
                 size={25}
-                color="#FF6347"
+                color="#ED6F21"
               />
               <Text style={styles.menuItemText}>Retrieve User accounts</Text>
             </View>
@@ -134,7 +134,7 @@ const AdminScreen = () => {
               <Icon
                 name="account-search"
                 size={25}
-                color="#FF6347"
+                color="#ED6F21"
               />
               <Text style={styles.menuItemText}>
                 Retrieve Business Partner accounts
@@ -149,7 +149,7 @@ const AdminScreen = () => {
               <Icon
                 name="book-alert"
                 size={25}
-                color="#FF6347"
+                color="#ED6F21"
               />
               <Text style={styles.menuItemText}>Reported Community Recipes</Text>
             </View>
@@ -160,7 +160,7 @@ const AdminScreen = () => {
               <Icon
                 name="book-alert"
                 size={25}
-                color="#FF6347"
+                color="#ED6F21"
               />
               <Text style={styles.menuItemText}>
                 Reported Business Partner Recipes
@@ -172,7 +172,7 @@ const AdminScreen = () => {
           <Text style={styles.subTitle}>Request</Text>
           <TouchableRipple onPress={handleFoodRequested}>
             <View style={styles.menuItem}>
-              <Icon name="food" size={25} color="#FF6347" />
+              <Icon name="food" size={25} color="#ED6F21" />
               <Text style={styles.menuItemText}>Food Requested</Text>
             </View>
           </TouchableRipple>
@@ -181,7 +181,7 @@ const AdminScreen = () => {
           <Text style={styles.subTitle}>Database</Text>
           <TouchableRipple onPress={handleNavigateFoodAndDrinks}>
             <View style={styles.menuItem}>
-              <Icon name="food" size={25} color="#FF6347" />
+              <Icon name="food" size={25} color="#ED6F21" />
               <Text style={styles.menuItemText}>Food And Drinks Database</Text>
             </View>
           </TouchableRipple>
@@ -191,7 +191,7 @@ const AdminScreen = () => {
               <Icon
                 name="notebook-outline"
                 size={25}
-                color="#FF6347"
+                color="#ED6F21"
               />
               <Text style={styles.menuItemText}>Generate Reports</Text>
             </View>
@@ -201,7 +201,7 @@ const AdminScreen = () => {
             <View style={styles.menuItem}>
               <Icon
                 name="exit-to-app"
-                color="#FF6347"
+                color="#ED6F21"
                 size={25}
               />
               <Text style={styles.menuItemText}>Log Out</Text>
