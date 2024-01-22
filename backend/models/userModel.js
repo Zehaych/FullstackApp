@@ -90,6 +90,30 @@ const userSchema = new Schema({
       ref: "BizRecipe",
     },
   ],
+  cart: [
+    {
+      recipeId: {
+        type: mongoose.Types.ObjectId,
+        ref: "BizRecipe",
+      },
+      recipeName: {
+        type: String,
+        required: true,
+      },
+      recipePrice: {
+        type: Number,
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        default: 1,
+      },
+      preferences: {
+        type: String,
+        default: "",
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);
