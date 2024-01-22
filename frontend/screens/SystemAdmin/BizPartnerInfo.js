@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
+  Image,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Context } from "../../store/context";
@@ -175,41 +176,59 @@ const BizPartnerInfo = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{currentUser.username}</Text>
-      <Text style={styles.infoTitle}>Business Partner Information</Text>
-      <Text style={styles.userInfo}>Business Partner: {userData.username}</Text>
-      <Text style={styles.userInfo}>Email: {userData.email}</Text>
-      <Text style={styles.userInfo}>
-        Status: {userData.isActive ? "Active" : "Suspended"}
-      </Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, styles.fourthButton]}
-          onPress={() => setUsernameModalVisible(true)}
-        >
-          <Text style={styles.buttonText}>Change Username</Text>
-        </TouchableOpacity>
+      <View style={styles.userInfoSection}>
+        <Image 
+          source={require("../../assets/person-placeholder.jpg")} 
+          style={styles.userImage} 
+        />
+        <Text style={styles.infoTitle}>{userData.username}</Text>
+      </View>
+      <View style={styles.divider} />
+      <View style={styles.detailBox}>
+        <View style={styles.componentContainer}>
+          <Text style={styles.userInfo}>Username </Text>
+          <Text style={styles.userInfo1}>{userData.username}</Text>
+        </View>
+        <View style={styles.componentContainer}>
+          <Text style={styles.userInfo}>Email</Text>
+          <Text style={styles.userInfo1}>{userData.email}</Text>
+        </View>
+        <View style={styles.componentContainer}>
+          <Text style={styles.userInfo}>Status</Text>
+          <Text style={styles.userInfo1}>
+            {userData.isActive ? "Active" : "Suspended"} 
+          </Text>
+        </View>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => setUsernameModalVisible(true)}
+            >
+              <Text style={styles.buttonText}>Change Username</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.button]}
-          onPress={() => suspendUser(userData._id)}
-        >
-          <Text style={styles.buttonText}>Suspend User</Text>
-        </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => suspendUser(userData._id)}
+            >
+              <Text style={styles.buttonText}>Suspend User</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.button, styles.secondaryButton]}
-          onPress={() => unsuspendUser(userData._id)}
-        >
-          <Text style={styles.buttonText}>Reactivate User</Text>
-        </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => unsuspendUser(userData._id)}
+            >
+              <Text style={styles.buttonText}>Reactivate User</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.button, styles.thirdButton]}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.buttonText}>Delete Business Partner</Text>
-        </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => setModalVisible(true)}
+            >
+              <Text style={styles.buttonText}>Delete Business Partner</Text>
+            </TouchableOpacity>
+          </View>
+        
       </View>
 
       <Modal
@@ -228,7 +247,7 @@ const BizPartnerInfo = ({ route, navigation }) => {
               onChangeText={setAdminPassword}
             />
             <TouchableOpacity
-              style={styles.button}
+              style={styles.confirmButton}
               onPress={() => {
                 setModalVisible(false);
                 validateAndDeletePartner();
@@ -255,7 +274,7 @@ const BizPartnerInfo = ({ route, navigation }) => {
               onChangeText={setNewUsername}
             />
             <TouchableOpacity
-              style={styles.button}
+              style={styles.confirmButton}
               onPress={() => {
                 setUsernameModalVisible(false);
                 updateUsername();
@@ -277,6 +296,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
+  userInfoSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    alignItems: "center",
+  },
   modalView: {
     width: "80%",
     backgroundColor: "white",
@@ -293,17 +317,29 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   input: {
-    marginBottom: 10,
+    height: 40,
+    margin: 10,
+    borderWidth: 1,
+    padding: 10,
+    width: '100%', // Adjust as needed
+    borderRadius: 5,
+    borderColor: '#ccc',
   },
-  button: {
+  confirmButton: {
+    //backgroundColor: '#2196F3',
+    backgroundColor: '#ED6F21',
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
     marginTop: 10,
+    width: '100%', // Adjust as needed
   },
   buttonContainer: {
     margin: 10,
     overflow: "hidden",
   },
   button: {
-    backgroundColor: "#007bff", // Blue color for the primary button
+    backgroundColor: "#ED6F21", // Blue color for the primary button
     padding: 10,
     borderRadius: 10,
     marginBottom: 10,
@@ -321,12 +357,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontSize: 16,
+    textAlign: "center",
   },
   container: {
     flex: 1,
-    marginTop: 40,
-    alignItems: "center", // Center content horizontally
-    padding: 10,
+    //marginTop: 40,
+    //alignItems: "center", // Center content horizontally
+    //padding: 10,
     backgroundColor: "#f5f5f5",
   },
   infoTitle: {
@@ -336,21 +373,57 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   userInfo: {
-    fontSize: 20,
-    color: "#444",
+    fontSize: 16,
+    color: "grey",
+    marginBottom: 5, 
+  },
+  userInfo1: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  detailBox: {
+    //flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 20,
+    margin: 10,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
+  },
+  userImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    margin: 10,
+
+  },
+  componentContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 10,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 5,
-    width: "80%",
-    textAlign: "center",
-    backgroundColor: "white",
+    paddingHorizontal: 20,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#dddddd",
+    borderBottomWidth: 1,
+    borderBottomColor: "#dddddd",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    backgroundColor: 'white',
   },
 });
 

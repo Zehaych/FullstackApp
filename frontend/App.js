@@ -111,12 +111,12 @@ function App() {
           <Stack.Screen
             name="UserInfo"
             component={UserInfo}
-            options={{ headerShown: false }}
+            options={{ headerTitle: "User Account Information" }}
           />
           <Stack.Screen
             name="BizPartnerInfo"
             component={BizPartnerInfo}
-            options={{ headerShown: false }}
+            options={{ headerTitle: "Business Account Information" }}
           />
           <Stack.Screen
             name="RetrieveBizPartners"
