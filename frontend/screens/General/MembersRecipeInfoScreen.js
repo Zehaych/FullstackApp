@@ -954,7 +954,8 @@ const styles = StyleSheet.create({
   menuContainer: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    height: "10%"
+    height: "11%",
+    backgroundColor: "white",
   },
   menuItem: {
     marginTop: 15,

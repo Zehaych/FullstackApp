@@ -225,7 +225,7 @@ function App() {
           <Stack.Screen
             name="View Recipe Info"
             component={ViewRecipeInfoScreen}
-            options={{ headerTransparent: true, headerTitle: "" }}
+            options={{ headerTitle: "" }}
           />
 
           <Stack.Screen

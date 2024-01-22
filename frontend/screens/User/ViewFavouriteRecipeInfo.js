@@ -7,7 +7,6 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  TouchableRipple,
   Button,
   Modal,
   Alert,
@@ -15,12 +14,15 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import IconToo from "react-native-vector-icons/FontAwesome";
+import Icon2 from "react-native-vector-icons/FontAwesome5";
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../../store/context";
 import AddRatingsScreen from "../User/AddRatingsScreen";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import MaskedView from "@react-native-masked-view/masked-view";
 import Swiper from "react-native-swiper";
+import { TouchableRipple } from "react-native-paper";
+
 
 const { width, height } = Dimensions.get("window");
 
@@ -87,27 +89,27 @@ export default function ViewFavouriteRecipeInfo({ route }) {
     }
   }, [recipeData, currentUser._id]);
 
-  // Function to handle Swiper's index change
-  const onIndexChanged = (index) => {
-    setActiveSlide(index);
-  };
+  // // Function to handle Swiper's index change
+  // const onIndexChanged = (index) => {
+  //   setActiveSlide(index);
+  // };
 
-  // Function to move to the next slide
-  const moveToNextSlide = () => {
-    if (activeSlide < submittedReviews.length - 1) {
-      swiperRef.scrollBy(1);
-    }
-  };
+  // // Function to move to the next slide
+  // const moveToNextSlide = () => {
+  //   if (activeSlide < submittedReviews.length - 1) {
+  //     swiperRef.scrollBy(1);
+  //   }
+  // };
 
-  // Function to move to the previous slide
-  const moveToPrevSlide = () => {
-    if (activeSlide > 0) {
-      swiperRef.scrollBy(-1);
-    }
-  };
+  // // Function to move to the previous slide
+  // const moveToPrevSlide = () => {
+  //   if (activeSlide > 0) {
+  //     swiperRef.scrollBy(-1);
+  //   }
+  // };
 
-  // Reference to the Swiper component
-  let swiperRef;
+  // // Reference to the Swiper component
+  // let swiperRef;
 
   const reportRecipe = async () => {
     try {
@@ -523,8 +525,9 @@ export default function ViewFavouriteRecipeInfo({ route }) {
       };
     }, [currentUser, recipeData])
   );
+
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.viewcontainer}>
       <View style={styles.menuContainer}>
         <TouchableOpacity
           style={styles.menuItem}
@@ -534,6 +537,7 @@ export default function ViewFavouriteRecipeInfo({ route }) {
             <Icon name="report" color="#FF6347" size={25} style={styles.icon} />
           </View>
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.menuItem} onPress={handleFavoriteIcon}>
           <View>
             <IconToo
@@ -545,76 +549,132 @@ export default function ViewFavouriteRecipeInfo({ route }) {
           </View>
         </TouchableOpacity>
       </View>
-      <View>
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: recipeData.image }} style={styles.image} />
-        </View>
-        <Text style={styles.title}>{recipeData.name}</Text>
 
-        <View style={styles.ratingContainer}>
-          <Rating rating={recipeData.averageRating} />
-          <Text style={styles.ratingText}>
-            {recipeData.averageRating.toFixed(1)}
-          </Text>
-        </View>
-        <View style={styles.ratingContainer}>
-          <Icon name="person" size={24} color="#333333" />
-          <Text style={{ marginLeft: 8 }}>
-            {recipeData.totalRatings} people rated
-          </Text>
-        </View>
-        <View style={styles.mainBox}>
-          <View style={styles.section}>
-            <Text style={styles.subTitle}>Created by: </Text>
-            <Text>{username}</Text>
-          </View>
-
-          {currentUser.foodRestrictions.length > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.subTitle}>Disclaimer: </Text>
-              <Text>
-                Based on your medical history, it is recommended to minimize or
-                abstain from using{" "}
-                <Text style={{ color: "red", fontWeight: "bold" }}>
-                  {currentUser.foodRestrictions.join(", ")}
-                </Text>{" "}
-                when preparing the recipe. {"\n"}
-              </Text>
-            </View>
-          )}
-
-          <View style={styles.section}>
-            <Text style={styles.subTitle}>Ingredients: </Text>
-            {recipeData.ingredients.map((ingredient, index) => (
-              <Text key={index}>• {ingredient} </Text>
-            ))}
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.subTitle}>Instructions: </Text>
-            {recipeData.instructions.map((instruction, index) => (
-              <Text key={index}>
-                <Text style={styles.boldText}>Step {index + 1}:</Text>{" "}
-                {instruction} {"\n"}
-              </Text>
-            ))}
-          </View>
-
-          <Text style={styles.subTitle}>Calories: </Text>
-          <Text>{recipeData.calories}</Text>
-        </View>
-        {/* <AddRatingsScreen /> */}
-        {currentUserReviews.length === 0 ||
-          (isCreator && <Text style={styles.title}>Recipe Review </Text>)}
-
-        {/* Only show review submission form if the user hasn't submitted a review yet and is not the creator */}
-
-        {currentUserReviews.length === 0 && !isCreator && (
+      <ScrollView>
+        <View style={styles.container}>
           <View>
-            <Text style={styles.title}>Your Review</Text>
+            <View style={styles.infoContainer}>
+              <View style={styles.imageContainer}>
+                <Image source={{ uri: recipeData.image }} style={styles.image} />
+              </View>
 
-            <View style={styles.mainBox}>
-              <View style={styles.section}>
+              <Text style={styles.title}>{recipeData.name}</Text>
+              
+              <View style={styles.horizontalContainer}>
+                <View style={styles.starContainer}>
+                  <Icon name="star" size={24} color="#ED6F21" />
+                  <Text style={styles.ratingText}>
+                    {recipeData.averageRating.toFixed(1)}
+                  </Text>
+                </View>
+
+                <View style={styles.verticleLine}></View>
+
+                <View style={styles.starContainer}>
+                  <Icon name="person" size={24} color="#ED6F21" />
+                  <Text style={styles.ratingText}>
+                    {recipeData.totalRatings} reviews
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.componentContainer}>
+                  
+                <View style={styles.leftComponent}>
+                  <IconToo name="users" size={20} color="#ED6F21" style={styles.icons}/>
+                  <Text style={styles.smallText}>{recipeData.servings}</Text>
+                  <Text style={styles.smallHeadings}>Servings</Text>
+                </View>
+
+                <View style={styles.middleComponent}>
+                  <IconToo name="clock-o" size={20} color="#ED6F21" style={styles.icons}/>
+                  <Text style={styles.smallText}>
+                    {recipeData.timeTaken}
+                  </Text>
+                  <Text style={styles.smallHeadings}>Time Taken</Text>
+                </View>
+
+                <View style={styles.rightComponent}>
+                  <Icon2 name="fire-alt" size={20} color="#ED6F21" style={styles.icons}/>
+                  <Text style={styles.smallText}>
+                    {recipeData.calories}
+                  </Text>
+                  <Text style={styles.smallHeadings}>Calories</Text>
+                </View>
+              
+              </View>
+            </View>
+
+            <View style={styles.infoContainer}>
+              <View style={styles.detailContainer}>
+                <Image source={require("../../assets/person-placeholder.jpg")} style={styles.userImage} />
+                <Text>By {username}</Text>
+              </View>
+            </View>
+
+            {currentUser.foodRestrictions.length > 0 && (
+              <View style={styles.detailBox}>
+                <Text style={styles.subTitle}>Disclaimer: </Text>
+                <Text style={styles.subText}>
+                  Based on your medical history, it is recommended to minimize or
+                  abstain from using{" "}
+                  <Text style={{ color: "#ED6F21", fontWeight: "bold" }}>
+                    {currentUser.foodRestrictions.join(", ")}
+                  </Text>{" "}
+                  when preparing the recipe.
+                </Text>
+              </View>
+            )}
+
+            <View style={styles.detailBox}>
+              <Text style={styles.subTitle}>Ingredients: </Text>
+              
+              <View style={styles.inAlign}>
+                {recipeData.ingredients.map((ingredient, index) => (
+                  <View key={index} style={styles.ingredientContainer}>
+                    <Text style={styles.ingredientText}>•</Text>
+                    <Text style={styles.subText}>{ingredient} </Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+
+            <View style={styles.detailBox}>
+              <Text style={styles.subTitle}>Instructions: </Text>
+              
+              <View style={styles.inAlign}>
+                {recipeData.instructions.map((instruction, index) => (
+                  <View key={index}>
+                    <View style={styles.ingredientContainer}>
+                      <Text style={styles.ingredientText}>•</Text>      
+                      <Text style={styles.subText}>Step {index + 1}:</Text>      
+                    </View>
+
+                    <View style={styles.ingredientContainer}>
+                      <Text style={styles.ingredientText}> </Text>      
+                      <Text style={styles.subText}>{instruction}</Text>      
+                    </View>
+                  </View>
+                ))}            
+              </View>
+            </View>
+
+            {/* <AddRatingsScreen /> */}
+            {currentUserReviews.length === 0 ||
+              (isCreator && <Text style={styles.title}>Recipe Review </Text>)}
+
+            {/* Only show review submission form if the user hasn't submitted a review yet and is not the creator */}
+
+            {currentUserReviews.length === 0 && !isCreator && (
+              <View style={styles.detailBox}>
+                <Text style={styles.title}>Your Review</Text>
+                <Text style={styles.reviewText}>How was the food?</Text>
+
+                <StarRatingInput
+                  rating={userRating}
+                  onRatingChange={handleRatingChange}
+                />
+
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your review"
@@ -622,216 +682,240 @@ export default function ViewFavouriteRecipeInfo({ route }) {
                   onChangeText={setUserReview}
                   multiline
                 />
+
+                <TouchableRipple onPress={submitReviewAndRating} style={styles.submitReviewButton}>
+                  <Text style={styles.submitReviewButtonText}>Submit Review</Text>
+                </TouchableRipple>
+              </View>
+            )}
+
+            {/* "Your Review" section */}
+            {isCreator ? (
+              <View style={styles.detailBox}>
+
+                <Text style={styles.subTitle}>Your Review</Text>
+
+                <Text style={styles.reviewText}>
+                  Recipe creator cannot add their own review.
+                </Text>
+              </View>
+            ) : (
+              currentUserReviews.length > 0 && (
+                <View style={styles.detailBox}>
+                  <Text style={styles.subTitle}>
+                    Your Review{" "}
+
+                    <TouchableOpacity
+                      onPress={() =>
+                        handleEditClick(
+                          currentUserReviews[0]._id,
+                          currentUserReviews[0].reviews,
+                          currentUserReviews[0].ratings
+                        )
+                      }
+                      style={styles.editIcon}
+                    >
+                      <Icon name="edit" size={24} color="#007BFF" />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={() => confirmDeleteReview(currentUserReviews[0]._id)}
+                      style={styles.deleteIcon}
+                    >
+                      <Icon name="delete" size={24} color="#FF6347" />
+                    </TouchableOpacity>
+                  </Text>
+
+                  {currentUserReviews.map((review, index) => (
+                    <View key={index} style={styles.ratingContainer}>
+
+                      <View style={styles.imageContainer}>
+                        <Image source={require("../../assets/person-placeholder.jpg")} style={styles.userImage} />
+                      </View>
+
+                      <View style={styles.UserRatingReviewContainer}>
+                        <View style={styles.UserRatingContainer}>
+                          <Text style={styles.reviewContent1}>
+                            {review.username || "Deleted User"}
+                          </Text>
+                        
+                          <View style={styles.starsAndRating}>
+                            <Rating rating={review.ratings}/>
+                            <Text style={styles.ratingNum}>{review.ratings}</Text>
+                          </View>
+                        </View>
+                        
+                        <Text style={styles.reviewContent2}>{review.reviews}</Text>          
+                      
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              )
+            )}
+
+            {/* "Community Reviews" section */}
+            <View style={styles.detailBox}>
+              <Text style={styles.subTitle}>Reviews</Text>
+              
+              {submittedReviews.length > 0 ? (
+                <View>
+                    {submittedReviews.map((review, index) => (
+                      <View key={index}>
+                        <View style={styles.ratingContainer}>
+
+                          <View style={styles.imageContainer}>
+                            <Image source={require("../../assets/person-placeholder.jpg")} style={styles.userImage} />
+                          </View>
+
+                          <View style={styles.UserRatingReviewContainer}>
+                            <View style={styles.UserRatingContainer}>
+                              <Text style={styles.reviewContent1}>
+                                {review.username || "Deleted User"}
+                              </Text>
+                              
+                              <View style={styles.starsAndRating}>
+                                <Rating rating={review.ratings} />
+                                <Text style={styles.ratingNum}>{review.ratings}</Text>
+                              </View>
+                            </View>
+
+                            <Text style={styles.reviewContent2}>{review.reviews}</Text>
+                          </View>
+                        </View>
+                      
+                        <View style={styles.divider}></View>
+                      </View>
+                    ))}
+                </View>
+              ) : (
+                <View style={styles.mainBox}>
+                  <Text style={styles.noReviewsText}>No reviews yet</Text>
+                </View>
+              )}
+            </View>
+
+            <StatusBar style="auto" />
+          </View>
+
+          {/* Edit Review Modal */}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={editModalVisible}
+            onRequestClose={() => setEditModalVisible(false)}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <View style={styles.subTitleContainer}>
+                  <Text style={styles.subTitle}>Your Review</Text>
+
+                  {/* Close Button */}
+                  <TouchableOpacity
+                    // style={styles.secondButton}
+                    onPress={() => setEditModalVisible(false)}
+                  >
+                    {/* <Text style={styles.submitButtonText}>Close</Text> */}
+                    <Icon name="close" color="#4D4D4D" size={24} />
+
+                  </TouchableOpacity>
+                </View>
+
+                <Text style={styles.reviewText}>How was the food?</Text>
+
+                {/* Star rating input for editing rating */}
                 <StarRatingInput
-                  rating={userRating}
-                  onRatingChange={handleRatingChange}
+                  rating={editRating}
+                  onRatingChange={(newRating) => setEditRating(newRating)}
                 />
-                <Button title="Submit Review" onPress={submitReviewAndRating} />
+
+                <TextInput
+                  style={styles.input}
+                  placeholder="Edit your review"
+                  value={editReview}
+                  onChangeText={setEditReview}
+                  multiline
+                />
+
+                {/* Save Changes Button */}
+                <TouchableOpacity
+                  style={styles.submitButton}
+                  onPress={submitEditedReview}
+                >
+                  <Text style={styles.submitButtonText}>Save Changes</Text>
+                </TouchableOpacity>
               </View>
             </View>
-          </View>
-        )}
+          </Modal>
 
-        {/* "Your Review" section */}
-
-        {isCreator ? (
-          <View>
-            <Text style={styles.title}>Your Review</Text>
-
-            <View style={styles.mainBox}>
-              <Text style={styles.noReviewsText}>
-                Recipe creator cannot add their own review.
-              </Text>
-            </View>
-          </View>
-        ) : (
-          currentUserReviews.length > 0 && (
-            <View>
-              <Text style={styles.title}>
-                Your Review{" "}
-                <TouchableOpacity
-                  onPress={() =>
-                    handleEditClick(
-                      currentUserReviews[0]._id,
-                      currentUserReviews[0].reviews,
-                      currentUserReviews[0].ratings
-                    )
-                  }
-                  style={styles.editIcon}
-                >
-                  <Icon name="edit" size={24} color="#007BFF" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => confirmDeleteReview(currentUserReviews[0]._id)}
-                  style={styles.deleteIcon}
-                >
-                  <Icon name="delete" size={24} color="#FF6347" />
-                </TouchableOpacity>
-              </Text>
-              {currentUserReviews.map((review, index) => (
-                <View key={index} style={styles.mainBox}>
-                  <View style={styles.section}>
-                    <Text style={styles.reviewLabel}>Name:</Text>
-                    <Text style={styles.reviewContent}>
-                      {review.username || "Deleted User"}
-                    </Text>
-                  </View>
-
-                  <View style={styles.section}>
-                    <Text style={styles.reviewLabel}>Review:</Text>
-                    <Text style={styles.reviewContent}>{review.reviews}</Text>
-                  </View>
-
-                  <Text style={styles.reviewLabel}>Rating:</Text>
-                  <Rating rating={review.ratings} />
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={reportModalVisible}
+            onRequestClose={() => setReportModalVisible(false)}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <View style={styles.reportContainer}>
+                  <Text style={styles.subTitle}>Report</Text>
                 </View>
-              ))}
-            </View>
-          )
-        )}
 
-        {/* "Community Reviews" section */}
-        <Text style={styles.title}>Community Reviews</Text>
-        {submittedReviews.length > 0 ? (
-          <View>
-            <Swiper
-              ref={(swiper) => {
-                swiperRef = swiper;
-              }}
-              style={styles.swiperContainer}
-              showsButtons={false}
-              loop={false}
-              autoplay={true}
-              autoplayTimeout={5} // Set autoplay timeout to 5 seconds
-              // onIndexChanged={onIndexChanged}
-            >
-              {submittedReviews.map((review, index) => (
-                <View key={index} style={styles.mainBox}>
-                  <View style={styles.section}>
-                    <Text style={styles.reviewLabel}>Name:</Text>
-                    <Text style={styles.reviewContent}>
-                      {review.username || "Deleted User"}
-                    </Text>
-                  </View>
-
-                  <View style={styles.section}>
-                    <Text style={styles.reviewLabel}>Review:</Text>
-                    <Text style={styles.reviewContent}>{review.reviews}</Text>
-                  </View>
-
-                  <Text style={styles.reviewLabel}>Rating:</Text>
-                  <Rating rating={review.ratings} />
+                <View style={styles.reasonsContainer}>
+                  {reportReasons.map((reason, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={[
+                        styles.reasonButton,
+                        activeReason === reason ? styles.activeReasonButton : null,
+                      ]}
+                      onPress={() => handleReasonPress(reason)}
+                    >
+                      <Text
+                        style={[
+                          styles.reasonButtonText,
+                          activeReason === reason
+                            ? styles.activeReasonButtonText
+                            : null,
+                        ]}
+                      >
+                        {reason}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
                 </View>
-              ))}
-            </Swiper>
-          </View>
-        ) : (
-          <View style={styles.mainBox}>
-            <Text style={styles.noReviewsText}>No reviews yet</Text>
-          </View>
-        )}
 
-        <StatusBar style="auto" />
-      </View>
-      {/* Edit Review Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={editModalVisible}
-        onRequestClose={() => setEditModalVisible(false)}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <TextInput
-              style={styles.input}
-              placeholder="Edit your review"
-              value={editReview}
-              onChangeText={setEditReview}
-              multiline
-            />
-            {/* Star rating input for editing rating */}
-            <StarRatingInput
-              rating={editRating}
-              onRatingChange={(newRating) => setEditRating(newRating)}
-            />
-            {/* Save Changes Button */}
-            <TouchableOpacity
-              style={styles.secondButton}
-              onPress={submitEditedReview}
-            >
-              <Text style={styles.submitButtonText}>Save Changes</Text>
-            </TouchableOpacity>
-            {/* Close Button */}
-            <TouchableOpacity
-              style={styles.submitButton}
-              onPress={() => setEditModalVisible(false)}
-            >
-              <Text style={styles.submitButtonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Additional details (optional)"
+                  value={additionalDetails}
+                  onChangeText={setAdditionalDetails}
+                  multiline
+                />
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={reportModalVisible}
-        onRequestClose={() => setReportModalVisible(false)}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.reasonsContainer}>
-              {reportReasons.map((reason, index) => (
                 <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.reasonButton,
-                    activeReason === reason ? styles.activeReasonButton : null,
-                  ]}
-                  onPress={() => handleReasonPress(reason)}
+                  style={styles.submitButton}
+                  onPress={() => {
+                    setReportModalVisible(false);
+                    reportRecipe();
+                  }}
                 >
-                  <Text
-                    style={[
-                      styles.reasonButtonText,
-                      activeReason === reason
-                        ? styles.activeReasonButtonText
-                        : null,
-                    ]}
-                  >
-                    {reason}
-                  </Text>
+                  <Text style={styles.submitButtonText}>Submit Report</Text>
                 </TouchableOpacity>
-              ))}
-            </View>
-            <TextInput
-              style={styles.input}
-              placeholder="Additional details (optional)"
-              value={additionalDetails}
-              onChangeText={setAdditionalDetails}
-              multiline
-            />
-            <TouchableOpacity
-              style={styles.submitButton}
-              onPress={() => {
-                setReportModalVisible(false);
-                reportRecipe();
-              }}
-            >
-              <Text style={styles.submitButtonText}>Submit Report</Text>
-            </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.secondButton}
-              onPress={() => {
-                setReportModalVisible(false);
-              }}
-            >
-              <Text style={styles.submitButtonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
+                <TouchableOpacity
+                  style={styles.secondButton}
+                  onPress={() => {
+                    setReportModalVisible(false);
+                  }}
+                >
+                  <Text style={styles.submitButtonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
-      </Modal>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -850,9 +934,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#e0e0e0", // Example background color for active button
   },
   reasonButtonText: {
-    color: "black",
+    color: "#676767",
     fontSize: 16,
-    // Other text styling as needed
+    fontWeight: "bold",
+    textAlign: "center"
   },
   activeReasonButtonText: {
     fontWeight: "bold", // Bold text for active button
@@ -863,6 +948,8 @@ const styles = StyleSheet.create({
   menuContainer: {
     flexDirection: "row",
     justifyContent: "flex-end",
+    height: "11%",
+    backgroundColor: "white",
   },
   menuItem: {
     marginTop: 15,
@@ -873,11 +960,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#dddddd",
   },
-  menuItemText: {
-    color: "#333",
-    fontWeight: "600",
-    fontSize: 16,
-  },
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -885,11 +967,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalView: {
-    width: "80%",
+    width: "90%",
     backgroundColor: "white",
     borderRadius: 20,
-    padding: 20,
-    alignItems: "center",
+    padding: 16,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -899,69 +980,44 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     alignSelf: "center", // Center the modal horizontally
-    marginTop: "50%", // Adjust as needed to center the modal vertically
   },
-
   submitButton: {
-    backgroundColor: "red",
+    backgroundColor: "#ED6F21",
     padding: 8,
-    borderRadius: 5,
+    borderRadius: 10,
     alignItems: "center",
-    justifyContent: "center",
-    width: "80%",
     marginBottom: 10,
   },
   secondButton: {
-    backgroundColor: "blue",
-    padding: 8,
-    borderRadius: 5,
+    backgroundColor: "#A9A9A9",
     alignItems: "center",
-    justifyContent: "center",
-    width: "80%",
+    padding: 8,
+    borderRadius: 10,
+    alignItems: "center",
     marginBottom: 10,
   },
   submitButtonText: {
     color: "white",
+    fontWeight: "bold",
     fontSize: 16,
   },
   input: {
     borderWidth: 1,
     borderColor: "#ddd",
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 10,
     width: "100%",
+    marginTop: 10,
     marginBottom: 10,
-  },
-  reportButton: {
-    backgroundColor: "red",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    width: "80%",
-    marginBottom: 20,
-  },
-  reportButtonText: {
-    color: "white",
   },
   container: {
     flex: 1,
-    backgroundColor: "#FCFCD3",
     padding: 20,
-
-    //alignItems: "center",
-  },
-  //style for the image
-  imageContainer: {
-    flex: 1,
-    justifyContent: "center", // Center the image vertically
-    alignItems: "center", // Center the image horizontally
-    padding: 10,
+    backgroundColor: "#F2F2F2",
   },
   image: {
-    flex: 1,
-    width: 310,
-    height: 310,
-    resizeMode: "contain",
+    width: "100%", // Occupy the entire width
+    height: 300, // Fixed height
     borderRadius: 20,
   },
   title: {
@@ -969,54 +1025,18 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
+    marginRight: 10,
+    marginLeft: 10,
   },
   subTitle: {
-    color: "black",
+    fontWeight: "bold",
     fontSize: 20,
-    fontWeight: "bold",
+    margin: 10,
   },
-  mainBox: {
-    borderWidth: 2,
-    borderColor: "#CCCCCC",
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 30,
-  },
-  section: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#CCCCCC",
-    paddingBottom: 10,
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "black",
-    paddingBottom: 10,
-  },
-  boldText: {
-    fontWeight: "bold",
-  },
-  // submittedReviewsContainer: {
-  //   marginTop: 20,
-  // },
-  reviewItem: {
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  reviewLabel: {
-    fontWeight: "bold",
-    color: "#333",
-    marginTop: 5,
-  },
-  reviewContent: {
-    color: "#333",
-    marginBottom: 5,
-  },
-  reviewText: {
-    fontSize: 14,
-  },
+
+
+
+
   noReviewsText: {
     color: "#333",
     textAlign: "center",
@@ -1025,14 +1045,180 @@ const styles = StyleSheet.create({
   },
   ratingContainer: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 5,
+    margin: 10,
   },
   ratingText: {
     marginLeft: 8,
+    color: "#ED6F21",
   },
-  swiperContainer: {
-    height: height < 700 ? height * 0.4 : height * 0.36,
+  icons: {
+    textAlign: "center",
+    marginBottom:5
+  },
+  componentContainer: {
+    flexDirection: "row", // Arrange components horizontally from left to right
+    justifyContent: "space-between", // Space them evenly
+    alignItems: "center", // Center them vertically
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  leftComponent: {
+    flex: 1, // Takes up 1/3 of the available space
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  middleComponent: {
+    flex: 1, // Takes up 1/3 of the available space
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  rightComponent: {
+    flex: 1, // Takes up 1/3 of the available space
+    paddingTop: 10,
+    paddingBottom: 10,
+    alignContent: "center",
+  },
+  smallHeadings: {
+    fontSize: 12,
+    textAlign: "center",
+  },
+  smallText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 5,
+  },
+  infoContainer: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    marginBottom: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
+  },
+  userImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    marginRight: 10,
+  },  
+  detailContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    margin: 10,
+    padding: 16,
+  },
+  detailBox: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
+  },
+  subText: {
+    fontSize: 16,
+    textAlign: "left",
+    margin: 10,
+  },
+  inAlign: {
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  reviewText: {
+    fontSize: 16,
+    textAlign: "center",
+    margin: 10,
+  },
+  submitReviewButton: {
+    backgroundColor: "#ED6F21",
+    padding: 14,
+    borderRadius: 10,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  submitReviewButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  horizontalContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  divider: {
+    marginBottom: 8,
+  },
+  starContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 5,
+    marginRight: 10,
+    marginLeft: 10,
+    alignItems: "center",
+  },
+  starsAndRating: {
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  reviewContent1: {
+    color: "#000000",
+    fontSize: 16,
+    fontWeight: "bold"
+  },
+  reviewContent2:{
+    color: "#000000",
+  },
+  ratingNum: {
+    marginLeft: 5,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  verticleLine: {
+    height: 24,
+    width: 1,
+    backgroundColor: '#797979',
+  },
+  ingredientContainer: {
+    flexDirection: "row",
+  },
+  ingredientText: {
+    fontSize: 30,
+    color: "#FF9130",
+  },
+  UserRatingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  UserRatingReviewContainer: {
+    gap: 16,
+    flex: 1,
+    marginLeft: 10,
+  },
+  viewcontainer: {
+    flex: 1,
+  },
+  subTitleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  reportContainer: {
+    alignItems: "center"
   },
 });
