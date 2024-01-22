@@ -240,13 +240,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 20,
+        // marginTop: 20,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
     modalView: {
-        margin: 20,
+        // margin: 20,
         backgroundColor: 'white',
         borderRadius: 20,
-        padding: 35,
+        padding: 20,
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
@@ -256,7 +257,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        width: '80%', // Adjust as needed
+        width: '90%', // Adjust as needed     
     },
     modalText: {
         marginBottom: 15,
@@ -363,7 +364,7 @@ const styles = StyleSheet.create({
     componentContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 10,
+        marginVertical: 10,
         width: '100%', // Adjust as needed
     },
     title2: {
