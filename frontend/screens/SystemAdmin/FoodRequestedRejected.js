@@ -2,6 +2,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, TextInput, A
 import React, { useState, useContext, useEffect} from "react";
 import { Context } from "../../store/context";
 import { useFocusEffect } from "@react-navigation/native";
+import IconToo from "react-native-vector-icons/MaterialIcons";
 
 const FoodRequestedRejected = () => {
     const [foodRequests, setFoodRequests] = useState([]);
@@ -179,6 +180,15 @@ const FoodRequestedRejected = () => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
+                    <View style={styles.componentContainer}>
+                        <Text style={styles.title2}>Food Requested</Text>
+                        <TouchableOpacity
+                            style={styles.iconX}
+                            onPress={closeModal}
+                        >
+                            <IconToo name="close" color="#000000" size={25} />
+                        </TouchableOpacity>
+                    </View>
                     <TextInput
                         style={styles.input}
                         placeholder="Calories"
@@ -213,18 +223,6 @@ const FoodRequestedRejected = () => {
                         onPress={handleConfirm}
                     >
                         <Text style={styles.confirmButtonText}>Approve Request</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity 
-                        style={styles.confirmButton} 
-                        onPress={() => rejectFoodRequest(item._id)}
-                    >
-                        <Text style={styles.confirmButtonText}>Reject Request</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.confirmButton}
-                        onPress={closeModal}
-                    >
-                        <Text style={styles.confirmButtonText}>Close</Text>
                     </TouchableOpacity>
                     </View>
                 </View>
@@ -274,6 +272,7 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
     },
     confirmButton: {
+        //backgroundColor: '#2196F3',
         backgroundColor: '#ED6F21',
         borderRadius: 10,
         padding: 10,
@@ -290,6 +289,11 @@ const styles = StyleSheet.create({
         textAlign: "center",
         color: "white",
         fontSize: 16,
+    },
+    touchableContainer: {
+        paddingHorizontal: 10,
+        width: '100%', // Adjust as needed
+        //backgroundColor: "green",
     },
     button: {
         backgroundColor: "#007bff", // Blue color for the primary button
@@ -350,14 +354,28 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 10,
     },
-    touchableContainer: {
-        paddingHorizontal: 10,
-        width: '100%', // Adjust as needed
-        //backgroundColor: "green",
-    },
     buttonContainer: {
         justifyContent: 'center',
         alignItems: 'center',
+        marginTop: 10,
+        width: '100%', // Adjust as needed
+    },
+    componentContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 10,
+        width: '100%', // Adjust as needed
+    },
+    title2: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    confirmButton2: {
+        //backgroundColor: '#2196F3',
+        backgroundColor: '#A9A9A9',
+        borderRadius: 10,
+        padding: 10,
+        elevation: 2,
         marginTop: 10,
         width: '100%', // Adjust as needed
     },
