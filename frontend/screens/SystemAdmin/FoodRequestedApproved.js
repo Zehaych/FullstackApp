@@ -154,83 +154,16 @@ const FoodRequestedApproved = () => {
                     keyExtractor={(item) => item._id}
                     renderItem={({ item }) => (
                         <View style={styles.item}>
-                            <TouchableOpacity 
-                                style={styles.touchableContainer}
-                                onPress={() => openModal(item)}
-                            >
-                                <Text style={styles.title}>{item.name}</Text>
-                                <View style={styles.statusContainer}>
-                                    <Text style={styles.status1}>Status</Text>
-                                    <Text style={styles.status2}>{item.status}</Text>
-                                </View> 
-                            </TouchableOpacity>                          
+                            <Text style={styles.title}>{item.name}</Text>
+                            <View style={styles.statusContainer}>
+                                <Text style={styles.status1}>Status</Text>
+                                <Text style={styles.status2}>{item.status}</Text>
+                            </View> 
+                       
                         </View>
                     )}
                 />
             )}
-
-{
-    modalVisible && (
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
-        >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <View style={styles.componentContainer}>
-                        <Text style={styles.title2}>Food Requested</Text>
-                        <TouchableOpacity
-                            style={styles.iconX}
-                            onPress={closeModal}
-                        >
-                            <IconToo name="close" color="#000000" size={25} />
-                        </TouchableOpacity>
-                    </View>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Calories"
-                        value={nutritionInfo.calories}
-                        onChangeText={(text) => setNutritionInfo({...nutritionInfo, calories: text})}
-                        keyboardType="numeric"
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Protein"
-                        value={nutritionInfo.protein}
-                        onChangeText={(text) => setNutritionInfo({...nutritionInfo, protein: text})}
-                        keyboardType="numeric"
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Fats"
-                        value={nutritionInfo.fats}
-                        onChangeText={(text) => setNutritionInfo({...nutritionInfo, fats: text})}
-                        keyboardType="numeric"
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Carbs"
-                        value={nutritionInfo.carbs}
-                        onChangeText={(text) => setNutritionInfo({...nutritionInfo, carbs: text})}
-                        keyboardType="numeric"
-                    />
-                    <View style={styles.buttonContainer}>
-                    <TouchableOpacity 
-                        style={styles.confirmButton} 
-                        onPress={() => rejectFoodRequest(item._id)}
-                    >
-                        <Text style={styles.confirmButtonText}>Reject Request</Text>
-                    </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-            </TouchableWithoutFeedback>
-        </Modal>
-    )
-}
         </View>
     );
 };
@@ -317,7 +250,8 @@ const styles = StyleSheet.create({
     },
     item: {
         backgroundColor: 'white', 
-        padding: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
         marginVertical: 8,
         marginHorizontal: 10,
         borderRadius: 10,
