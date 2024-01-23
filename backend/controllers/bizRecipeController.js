@@ -181,54 +181,43 @@ exports.dismissReport = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Report dismissed successfully" });
 });
 
-// @desc Submit an order for a business recipe
-// @route POST
-const SERVICE_FEE = 4.0; // fixed service fee
-
 exports.submitOrder = asyncHandler(async (req, res) => {
-  const { bizRecipeId } = req.params;
-  const {
-    userId,
-    quantity,
-    preferences,
-    timeToDeliver,
-    dateToDeliver,
-    deliveryAddress,
-  } = req.body;
+  const { userId, cartItems, deliveryAddress, deliveryDate, deliveryTime } =
+    req.body;
 
-  // Find the recipe by ID
-  const bizRecipe = await BizRecipe.findById(bizRecipeId);
+  try {
+    await Promise.all(
+      cartItems.map(async (item) => {
+        const bizRecipe = await BizRecipe.findOne({ name: item.recipeName });
 
-  if (!bizRecipe) {
-    res.status(404);
-    throw new Error("Recipe not found");
+        if (!bizRecipe) {
+          throw new Error(`Recipe ${item.recipeName} not found`);
+        }
+
+        const orderInfo = {
+          name: userId,
+          quantity: item.quantity,
+          totalPrice: item.quantity * bizRecipe.price,
+          preferences: item.preferences || "",
+          timeToDeliver: deliveryTime,
+          dateToDeliver: deliveryDate,
+          deliveryAddress: deliveryAddress,
+          estimatedArrivalTime: "-",
+          status: "Pending",
+        };
+
+        bizRecipe.orderInfo.push(orderInfo);
+        await bizRecipe.save();
+      })
+    );
+
+    res.json({ message: "Order submitted successfully" });
+  } catch (error) {
+    console.error("Order submission failed:", error);
+    res
+      .status(500)
+      .json({ message: "Order submission failed", error: error.message });
   }
-
-  // Calculate total price including the service fee
-  const totalPrice = bizRecipe.price * quantity + SERVICE_FEE;
-
-  // Create order object
-  const order = {
-    name: userId,
-    quantity: quantity,
-    totalPrice: totalPrice,
-    preferences: preferences,
-    timeToDeliver: timeToDeliver,
-    dateToDeliver: dateToDeliver,
-    deliveryAddress: deliveryAddress,
-    estimatedArrivalTime: req.body.estimatedArrivalTime,
-    status: req.body.status,
-  };
-
-  // Add order to the recipe
-  bizRecipe.orderInfo.push(order);
-
-  // Save the updated recipe
-  await bizRecipe.save();
-
-  res
-    .status(200)
-    .json({ message: "Order submitted successfully", order: order });
 });
 
 exports.getOrders = asyncHandler(async (req, res) => {

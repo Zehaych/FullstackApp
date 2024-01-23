@@ -22,7 +22,6 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
 import { TouchableRipple } from "react-native-paper";
 
-
 const { width, height } = Dimensions.get("window");
 
 export default function BusinessRecipeInfoScreen({ route, navigation }) {
@@ -56,7 +55,6 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
   const [addToCartModalVisible, setaddToCartModalVisible] = useState(false);
   // const [cart, setCart] = useState("");
 
-
   const [additionalDetails, setAdditionalDetails] = useState("");
 
   const [currentUser, setCurrentUser] = useContext(Context);
@@ -64,14 +62,13 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
   const [activeReason, setActiveReason] = useState(null);
 
   const [isFavorite, setIsFavorite] = useState(false);
-  
+
   const [isCart, setIsCart] = useState(false);
 
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(recipeData.price);
 
   const [preferences, setPreferences] = useState("");
-
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -581,7 +578,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
     }, [currentUser, recipeData])
   );
 
-  const handleCart = async (action) => {  
+  const handleCart = async (action) => {
     try {
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_IP}/user/updateBizCart/${currentUser._id}`,
@@ -600,15 +597,15 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
           }),
         }
       );
-  
+
       if (response.ok) {
         // Handle success as needed
-        const updatedCart = (await response.json()).cart
+        const updatedCart = (await response.json()).cart;
         setCurrentUser({
           ...currentUser,
           cart: updatedCart,
         });
-  
+
         // Notify the user
         if (action === "add") {
           Alert.alert(
@@ -628,11 +625,11 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
           );
         }
       } else {
-        Alert.alert("Error", "Failed to update the cart.")
+        Alert.alert("Error", "Failed to update the cart.");
       }
     } catch (error) {
       console.error("Error updating the cart:", error);
-      Alert.alert("Error", "An error occurred while updating the cart.")
+      Alert.alert("Error", "An error occurred while updating the cart.");
     }
   };
 
@@ -676,9 +673,12 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
           <View>
             <View style={styles.infoContainer}>
               <View style={styles.imageContainer}>
-                <Image source={{ uri: recipeData.image }} style={styles.image} />
+                <Image
+                  source={{ uri: recipeData.image }}
+                  style={styles.image}
+                />
               </View>
-              
+
               <Text style={styles.title}>{recipeData.name}</Text>
 
               <View style={styles.horizontalContainer}>
@@ -703,33 +703,46 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
 
               <View style={styles.componentContainer}>
                 <View style={styles.leftComponent}>
-                  <IconToo name="users" size={20} color="#ED6F21" style={styles.icons}/>
+                  <IconToo
+                    name="users"
+                    size={20}
+                    color="#ED6F21"
+                    style={styles.icons}
+                  />
                   <Text style={styles.smallText}>{recipeData.servings}</Text>
                   <Text style={styles.smallHeadings}>Servings</Text>
                 </View>
 
                 <View style={styles.middleComponent}>
-                  <IconToo name="clock-o" size={20} color="#ED6F21" style={styles.icons}/>
-                  <Text style={styles.smallText}>
-                    {recipeData.timeTaken}
-                  </Text>
+                  <IconToo
+                    name="clock-o"
+                    size={20}
+                    color="#ED6F21"
+                    style={styles.icons}
+                  />
+                  <Text style={styles.smallText}>{recipeData.timeTaken}</Text>
                   <Text style={styles.smallHeadings}>Time Taken</Text>
                 </View>
 
                 <View style={styles.rightComponent}>
-                  <Icon2 name="fire-alt" size={20} color="#ED6F21" style={styles.icons}/>
-                  <Text style={styles.smallText}>
-                    {recipeData.calories}
-                  </Text>
+                  <Icon2
+                    name="fire-alt"
+                    size={20}
+                    color="#ED6F21"
+                    style={styles.icons}
+                  />
+                  <Text style={styles.smallText}>{recipeData.calories}</Text>
                   <Text style={styles.smallHeadings}>Calories</Text>
                 </View>
-
               </View>
             </View>
-            
+
             <View style={styles.infoContainer}>
               <View style={styles.detailContainer}>
-                <Image source={require("../../assets/person-placeholder.jpg")} style={styles.userImage} />
+                <Image
+                  source={require("../../assets/person-placeholder.jpg")}
+                  style={styles.userImage}
+                />
                 <Text>By {username}</Text>
               </View>
             </View>
@@ -738,8 +751,8 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
               <View style={styles.detailBox}>
                 <Text style={styles.subTitle}>Disclaimer: </Text>
                 <Text style={styles.subText}>
-                  Based on your medical history, it is recommended to minimize or
-                  abstain from using{" "}
+                  Based on your medical history, it is recommended to minimize
+                  or abstain from using{" "}
                   <Text style={{ color: "#ED6F21", fontWeight: "bold" }}>
                     {currentUser.foodRestrictions.join(", ")}
                   </Text>{" "}
@@ -750,7 +763,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
 
             <View style={styles.detailBox}>
               <Text style={styles.subTitle}>Ingredients: </Text>
-              
+
               <View style={styles.inAlign}>
                 {recipeData.ingredients.map((ingredient, index) => (
                   <View key={index} style={styles.ingredientContainer}>
@@ -768,26 +781,31 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
                 {recipeData.instructions.map((instruction, index) => (
                   <View key={index}>
                     <View style={styles.ingredientContainer}>
-                      <Text style={styles.ingredientText}>•</Text>      
-                      <Text style={styles.subText}>Step {index + 1}:</Text>      
+                      <Text style={styles.ingredientText}>•</Text>
+                      <Text style={styles.subText}>Step {index + 1}:</Text>
                     </View>
 
                     <View style={styles.ingredientContainer}>
-                      <Text style={styles.ingredientText}> </Text>      
-                      <Text style={styles.subText}>{instruction}</Text>      
+                      <Text style={styles.ingredientText}> </Text>
+                      <Text style={styles.subText}>{instruction}</Text>
                     </View>
                   </View>
-                ))}            
+                ))}
               </View>
             </View>
 
-            <View style={styles.mainBox}>
-              <Text style={styles.message}>Do you want us to prepare for you?</Text>
+            {/* <View style={styles.mainBox}>
+              <Text style={styles.message}>
+                Do you want us to prepare for you?
+              </Text>
 
-              <TouchableOpacity style={styles.button} onPress={navigateToPayment}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={navigateToPayment}
+              >
                 <Text style={styles.buttonText}>Prepare this meal for me</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
 
             {/* <AddRatingsScreen /> */}
             {currentUserReviews.length === 0 ||
@@ -806,25 +824,28 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
                 />
 
                 <TextInput
-                    style={styles.input}
-                    placeholder="Enter your review"
-                    value={userReview}
-                    onChangeText={setUserReview}
-                    multiline
-                  />
+                  style={styles.input}
+                  placeholder="Enter your review"
+                  value={userReview}
+                  onChangeText={setUserReview}
+                  multiline
+                />
 
-                  <TouchableRipple onPress={submitReviewAndRating} style={styles.submitReviewButton}>
-                    <Text style={styles.submitReviewButtonText}>Submit Review</Text>
-                  </TouchableRipple>
+                <TouchableRipple
+                  onPress={submitReviewAndRating}
+                  style={styles.submitReviewButton}
+                >
+                  <Text style={styles.submitReviewButtonText}>
+                    Submit Review
+                  </Text>
+                </TouchableRipple>
               </View>
             )}
 
             {/* "Your Review" section */}
             {isCreator ? (
               <View style={styles.detailBox}>
-                
                 <Text style={styles.subTitle}>Your Review</Text>
-                
 
                 <Text style={styles.reviewText}>
                   Recipe creator cannot add their own review.
@@ -835,7 +856,6 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
                 <View style={styles.detailBox}>
                   <Text style={styles.subTitle}>
                     Your Review{" "}
-                    
                     <TouchableOpacity
                       onPress={() =>
                         handleEditClick(
@@ -848,9 +868,10 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
                     >
                       <Icon name="edit" size={24} color="#007BFF" />
                     </TouchableOpacity>
-
                     <TouchableOpacity
-                      onPress={() => confirmDeleteReview(currentUserReviews[0]._id)}
+                      onPress={() =>
+                        confirmDeleteReview(currentUserReviews[0]._id)
+                      }
                       style={styles.deleteIcon}
                     >
                       <Icon name="delete" size={24} color="#FF6347" />
@@ -859,9 +880,11 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
 
                   {currentUserReviews.map((review, index) => (
                     <View key={index} style={styles.ratingContainer}>
-                      
                       <View style={styles.imageContainer}>
-                        <Image source={require("../../assets/person-placeholder.jpg")} style={styles.userImage} />
+                        <Image
+                          source={require("../../assets/person-placeholder.jpg")}
+                          style={styles.userImage}
+                        />
                       </View>
 
                       <View style={styles.UserRatingReviewContainer}>
@@ -869,15 +892,18 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
                           <Text style={styles.reviewContent1}>
                             {review.username || "Deleted User"}
                           </Text>
-                        
+
                           <View style={styles.starsAndRating}>
-                            <Rating rating={review.ratings}/>
-                            <Text style={styles.ratingNum}>{review.ratings}</Text>
+                            <Rating rating={review.ratings} />
+                            <Text style={styles.ratingNum}>
+                              {review.ratings}
+                            </Text>
                           </View>
                         </View>
-                        
-                        <Text style={styles.reviewContent2}>{review.reviews}</Text>          
-                      
+
+                        <Text style={styles.reviewContent2}>
+                          {review.reviews}
+                        </Text>
                       </View>
                     </View>
                   ))}
@@ -888,15 +914,17 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
             {/* "Community Reviews" section */}
             <View style={styles.detailBox}>
               <Text style={styles.subTitle}>Reviews</Text>
-              
+
               {submittedReviews.length > 0 ? (
                 <View>
                   {submittedReviews.map((review, index) => (
                     <View key={index}>
                       <View style={styles.ratingContainer}>
-                          
                         <View style={styles.imageContainer}>
-                          <Image source={require("../../assets/person-placeholder.jpg")} style={styles.userImage} />
+                          <Image
+                            source={require("../../assets/person-placeholder.jpg")}
+                            style={styles.userImage}
+                          />
                         </View>
 
                         <View style={styles.UserRatingReviewContainer}>
@@ -904,14 +932,18 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
                             <Text style={styles.reviewContent1}>
                               {review.username || "Deleted User"}
                             </Text>
-                            
+
                             <View style={styles.starsAndRating}>
                               <Rating rating={review.ratings} />
-                              <Text style={styles.ratingNum}>{review.ratings}</Text>
+                              <Text style={styles.ratingNum}>
+                                {review.ratings}
+                              </Text>
                             </View>
                           </View>
 
-                          <Text style={styles.reviewContent2}>{review.reviews}</Text>
+                          <Text style={styles.reviewContent2}>
+                            {review.reviews}
+                          </Text>
                         </View>
                       </View>
 
@@ -928,7 +960,6 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
 
             <StatusBar style="auto" />
           </View>
-
 
           {/* Edit Review Modal */}
           <Modal
@@ -949,12 +980,11 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
                   >
                     {/* <Text style={styles.submitButtonText}>Close</Text> */}
                     <Icon name="close" color="#4D4D4D" size={24} />
-
                   </TouchableOpacity>
                 </View>
-                
+
                 <Text style={styles.reviewText}>How was the food?</Text>
-                
+
                 {/* Star rating input for editing rating */}
                 <StarRatingInput
                   rating={editRating}
@@ -968,7 +998,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
                   onChangeText={setEditReview}
                   multiline
                 />
-                
+
                 {/* Save Changes Button */}
                 <TouchableOpacity
                   style={styles.submitButton}
@@ -998,7 +1028,9 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
                       key={index}
                       style={[
                         styles.reasonButton,
-                        activeReason === reason ? styles.activeReasonButton : null,
+                        activeReason === reason
+                          ? styles.activeReasonButton
+                          : null,
                       ]}
                       onPress={() => handleReasonPress(reason)}
                     >
@@ -1046,7 +1078,6 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
             </View>
           </Modal>
 
-
           <Modal
             animationType="slide"
             transparent={true}
@@ -1057,22 +1088,28 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
               <View style={styles.bottomModalView}>
                 <View style={styles.ModaltitleContainer}>
                   <Text style={styles.titleModal}>{recipeData.name}</Text>
-                  <Text style={styles.recipePriceText}>{formatPrice(recipeData.price)}</Text>
+                  <Text style={styles.recipePriceText}>
+                    {formatPrice(recipeData.price)}
+                  </Text>
                 </View>
 
                 <View style={styles.quantityContainer}>
                   <Text style={styles.quantityLabel}>Quantity:</Text>
-                  
+
                   <View style={styles.quantityButtonContainer}>
                     <TouchableOpacity
                       style={styles.quantityButton}
                       onPress={decrementQuantity}
                     >
-                      <IconToo name="minus" size={16} color={quantity == 1 ? '#A9A9A9' : 'black'} />
+                      <IconToo
+                        name="minus"
+                        size={16}
+                        color={quantity == 1 ? "#A9A9A9" : "black"}
+                      />
                     </TouchableOpacity>
-                    
+
                     <Text style={styles.quantity}>{quantity}</Text>
-                    
+
                     <TouchableOpacity
                       style={styles.quantityButton}
                       onPress={incrementQuantity}
@@ -1084,7 +1121,7 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
 
                 <View style={styles.preferencesContainer}>
                   <Text style={styles.subTitleModal}>Preferences:</Text>
-                  
+
                   <TextInput
                     style={styles.input}
                     placeholder="Specify preferences for your orders..."
@@ -1093,9 +1130,12 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
                     multiline
                   />
                 </View>
-                
+
                 <View style={styles.cartButtonContainer}>
-                  <TouchableOpacity style={styles.cartButton} onPress={() => handleCart("add")}>
+                  <TouchableOpacity
+                    style={styles.cartButton}
+                    onPress={() => handleCart("add")}
+                  >
                     <Text style={styles.cartButtonText}>Add to Cart</Text>
                   </TouchableOpacity>
 
@@ -1114,16 +1154,17 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
 
       <View style={styles.priceContainer}>
         <View style={styles.totalPriceContainer}>
-          <Text style={styles.totalPriceText}>
-              Total Price
-          </Text>
-          
+          <Text style={styles.totalPriceText}>Total Price</Text>
+
           <Text style={styles.recipePriceText}>
             {formatPrice(recipeData.price)}
           </Text>
         </View>
-        
-        <TouchableOpacity style={styles.addToCartbutton} onPress={() => setaddToCartModalVisible(true)}>
+
+        <TouchableOpacity
+          style={styles.addToCartbutton}
+          onPress={() => setaddToCartModalVisible(true)}
+        >
           <Text style={styles.submitButtonText}>Add to Cart</Text>
         </TouchableOpacity>
       </View>
@@ -1149,7 +1190,7 @@ const styles = StyleSheet.create({
     color: "#676767",
     fontSize: 16,
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
   },
   activeReasonButtonText: {
     fontWeight: "bold", // Bold text for active button
@@ -1272,12 +1313,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  
 
-
-
-  
-  
   button: {
     backgroundColor: "#0066cc",
     padding: 10,
@@ -1303,10 +1339,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#333",
   },
-
-
-
-
 
   quantityLabel: {
     fontSize: 16,
@@ -1335,7 +1367,7 @@ const styles = StyleSheet.create({
   },
   icons: {
     textAlign: "center",
-    marginBottom:5
+    marginBottom: 5,
   },
   componentContainer: {
     flexDirection: "row", // Arrange components horizontally from left to right
@@ -1389,7 +1421,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 50,
     marginRight: 10,
-  },  
+  },
   detailContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -1460,9 +1492,9 @@ const styles = StyleSheet.create({
   reviewContent1: {
     color: "#000000",
     fontSize: 16,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
-  reviewContent2:{
+  reviewContent2: {
     color: "#000000",
   },
   ratingNum: {
@@ -1473,7 +1505,7 @@ const styles = StyleSheet.create({
   verticleLine: {
     height: 24,
     width: 1,
-    backgroundColor: '#797979',
+    backgroundColor: "#797979",
   },
   ingredientContainer: {
     flexDirection: "row",
@@ -1501,7 +1533,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   reportContainer: {
-    alignItems: "center"
+    alignItems: "center",
   },
   priceContainer: {
     flexDirection: "row",
@@ -1519,7 +1551,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 10,
     alignItems: "center",
-    flex: 1.
+    flex: 1,
   },
   totalPriceText: {
     fontSize: 10,
@@ -1568,7 +1600,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    flex: 1
+    flex: 1,
   },
   cartButtonText: {
     color: "white",
@@ -1581,7 +1613,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    flex: 1
+    flex: 1,
   },
   closeButtonText: {
     color: "white",

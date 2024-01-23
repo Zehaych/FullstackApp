@@ -33,7 +33,7 @@ router.delete(
   bizRecipeController.deleteBizRecipe
 );
 
-router.post("/submitOrder/:bizRecipeId", bizRecipeController.submitOrder);
+router.post("/submitOrder", bizRecipeController.submitOrder);
 
 router.get("/getOrders", bizRecipeController.getOrders);
 

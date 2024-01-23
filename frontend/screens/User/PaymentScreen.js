@@ -18,15 +18,14 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 
 export default function PaymentScreen({ route, navigation }) {
-  const { recipeData } = route.params;
+  const { cartData } = route.params;
   const [username, setUsername] = useState("");
 
   const [currentUser, setCurrentUser] = useContext(Context);
   const [userCart, setUserCart] = useState(currentUser.cart);
 
-
   const [quantity, setQuantity] = useState(1);
-  const [totalPrice, setTotalPrice] = useState(recipeData.price);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const [cardNumber, setCardNumber] = useState("");
   const [cardholderName, setCardholderName] = useState("");
@@ -41,10 +40,21 @@ export default function PaymentScreen({ route, navigation }) {
 
   const [serviceFee, setServiceFee] = useState(4.0);
 
+  // Calculate total price from cartData
+  useEffect(() => {
+    const cartTotal = cartData.reduce(
+      (total, item) => total + item.quantity * item.recipePrice,
+      0
+    );
+    setTotalPrice(cartTotal);
+  }, [cartData]);
+
   const getTotalPayment = () => {
-    const subtotal = totalPrice;
-    const total = subtotal + serviceFee;
-    return total.toFixed(2);
+    if (typeof totalPrice === "number" && typeof serviceFee === "number") {
+      const total = totalPrice + serviceFee;
+      return total.toFixed(2);
+    }
+    return "0.00";
   };
 
   const onChangeDate = (event, selectedDate) => {
@@ -64,86 +74,42 @@ export default function PaymentScreen({ route, navigation }) {
   };
 
   const handleSubmitPayment = async () => {
-    if (
-      cardNumber &&
-      cardholderName &&
-      expiryDate &&
-      cvv &&
-      address &&
-      date &&
-      selectedTime
-    ) {
-      try {
-        // Fetch recipe details including orderInfo
-        const recipeResponse = await fetch(
-          `${process.env.EXPO_PUBLIC_IP}/bizRecipe/getBizRecipeIdByUserId/${recipeData._id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+    const orderDetails = {
+      userId: currentUser._id,
+      cartItems: userCart,
+      deliveryAddress: address,
+      deliveryDate: formatDate(date),
+      deliveryTime: selectedTime,
+    };
 
-        if (!recipeResponse.ok) {
-          throw new Error("Unable to fetch recipe details.");
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/bizRecipe/submitOrder`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(orderDetails),
         }
+      );
 
-        const recipeInfo = await recipeResponse.json();
-
-        // Check for ongoing order
-        const hasOngoingOrder =
-          recipeInfo.orderInfo &&
-          recipeInfo.orderInfo.some(
-            (order) =>
-              order.name &&
-              order.name._id.toString() === currentUser._id.toString()
-          );
-
-        if (hasOngoingOrder) {
-          alert(
-            "You have an ongoing order for this recipe, please complete your order before ordering again."
-          );
-          return;
-        }
-
-        // No ongoing order, proceed to submit new order
-        const orderData = {
-          userId: currentUser._id, // Replace with the actual user ID from context or state
-          quantity: quantity,
-          preferences: currentOrder.preferences,
-          timeToDeliver: selectedTime,
-          dateToDeliver: formatDate(date),
-          deliveryAddress: address,
-          totalPrice: getTotalPayment(), // This should include the service fee
-          estimatedArrivalTime: "-",
-          status: "Pending",
-        };
-
-        const orderResponse = await fetch(
-          `${process.env.EXPO_PUBLIC_IP}/bizRecipe/submitOrder/${recipeData._id}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(orderData),
-          }
-        );
-
-        if (!orderResponse.ok) {
-          throw new Error("Something went wrong!");
-        }
-
-        alert(
-          "Payment successful! Track your order status from Business Recipes."
-        );
-        navigation.navigate("TabScreen");
-      } catch (error) {
-        alert("Payment failed: " + error.message);
+      if (!response.ok) {
+        throw new Error("Something went wrong with the order submission");
       }
-    } else {
-      alert("Please fill in all payment details.");
+
+      const data = await response.json();
+      console.log("Order submitted successfully:", data);
+
+      // clear cart if order submission is successful
+      await clearCart();
+
+      alert(
+        "Payment successful! Track your order status from Business Recipes."
+      );
+      navigation.navigate("TabScreen");
+    } catch (error) {
+      console.error("Order submission failed:", error);
     }
   };
 
@@ -162,14 +128,14 @@ export default function PaymentScreen({ route, navigation }) {
   const incrementQuantity = () => {
     const newQuantity = quantity + 1;
     setQuantity(newQuantity);
-    setTotalPrice(newQuantity * recipeData.price);
+    setTotalPrice(newQuantity * cartData.price);
   };
 
   const decrementQuantity = () => {
     if (quantity > 1) {
       const newQuantity = quantity - 1;
       setQuantity(newQuantity);
-      setTotalPrice(newQuantity * recipeData.price);
+      setTotalPrice(newQuantity * cartData.price);
     }
   };
 
@@ -178,7 +144,10 @@ export default function PaymentScreen({ route, navigation }) {
   };
 
   const getTotalPrice = () => {
-    return formatPrice(totalPrice);
+    if (typeof totalPrice === "number") {
+      return `$${totalPrice.toFixed(2)}`;
+    }
+    return "$0.00";
   };
 
   const [orderPreferences, setOrderPreferences] = useState([]);
@@ -188,12 +157,40 @@ export default function PaymentScreen({ route, navigation }) {
   });
 
   const addOrderToCart = () => {
-    const order = { ...currentOrder, recipeData };
+    const order = { ...currentOrder, cartData };
     setOrderPreferences([...orderPreferences, order]);
     setCurrentOrder({ quantity: 1, preferences: "" });
   };
 
+  const clearCart = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_IP}/user/clearBizCart/${currentUser._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId: currentUser._id }),
+        }
+      );
 
+      if (response.ok) {
+        const result = await response.json();
+        setCurrentUser({
+          ...currentUser,
+          cart: result.cart,
+        });
+        setUserCart(result.cart);
+        // Alert.alert("Success", "Cart cleared successfully");
+      } else {
+        Alert.alert("Error", "Failed to clear cart");
+      }
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+      Alert.alert("Error", "An error occurred while clearing the cart.");
+    }
+  };
 
   // const renderCartItem = ({ item }) => (
   //   <View style={styles.itemContainer}>
@@ -214,12 +211,11 @@ export default function PaymentScreen({ route, navigation }) {
   //         <View style={styles.amount}>
   //           <Text style={styles.amountText}>${item.recipePrice}</Text>
   //         </View>
-    
+
   //         <View style={styles.quantity}>
   //           <Text style={styles.amountText}>x {item.quantity}</Text>
-  //         </View>      
+  //         </View>
   //       </View>
-      
 
   //       {/* preferences */}
   //       <View style={styles.preferencesContainer}>
@@ -237,7 +233,7 @@ export default function PaymentScreen({ route, navigation }) {
 
   return (
     <View style={styles.viewcontainer}>
-      <ScrollView >
+      <ScrollView>
         <View style={styles.container}>
           {/* <FlatList
             data={userCart}
@@ -251,41 +247,42 @@ export default function PaymentScreen({ route, navigation }) {
 
           <View style={styles.detailBox}>
             <Text style={styles.title}>Order Details </Text>
-            
+
             {userCart.length > 0 ? (
               <View>
                 {userCart.map((cart, index) => (
                   <View key={index} style={styles.orderContainer}>
-                    
-                    
-                    
                     <Text style={styles.subTitle}>{cart.recipeName} </Text>
 
                     {/* cost & quantity */}
                     <View style={styles.amountContainer}>
                       <View style={styles.amount}>
-                        <Text style={styles.amountText}>${cart.recipePrice}</Text>
+                        <Text style={styles.amountText}>
+                          ${cart.recipePrice}
+                        </Text>
                       </View>
 
                       <View style={styles.quantity}>
                         <Text style={styles.amountText}>x {cart.quantity}</Text>
-                      </View>      
+                      </View>
                     </View>
 
                     {/* preferences */}
                     <View style={styles.preferencesContainer}>
                       <View>
-                        <Text style={styles.itemDetailLeftText}>Preferences</Text>
+                        <Text style={styles.itemDetailLeftText}>
+                          Preferences
+                        </Text>
                       </View>
 
                       <View style={styles.itemDetailRight}>
-                        <Text style={styles.itemDetailRightText}>{cart.preferences}</Text>
+                        <Text style={styles.itemDetailRightText}>
+                          {cart.preferences}
+                        </Text>
                       </View>
                     </View>
-                  
+
                     <View style={styles.divider}></View>
-                  
-                  
                   </View>
                 ))}
                 <View style={styles.amountContainer}>
@@ -295,9 +292,8 @@ export default function PaymentScreen({ route, navigation }) {
 
                   <View style={styles.quantity}>
                     <Text style={styles.amountText}>{userCart.length}</Text>
-                  </View>      
+                  </View>
                 </View>
-
               </View>
             ) : (
               <View style={styles.mainBox}>
@@ -306,19 +302,14 @@ export default function PaymentScreen({ route, navigation }) {
             )}
           </View>
 
-
-
-
-
-          
           <View>
             {/* <View style={styles.imageContainer}>
-              <Image source={{ uri: recipeData.image }} style={styles.image} />
+              <Image source={{ uri: cartData.image }} style={styles.image} />
             </View>
-            <Text style={styles.title}>{recipeData.name}</Text> */}
+            <Text style={styles.title}>{cartData.name}</Text> */}
 
-            <View style={styles.mainBox}>
-              {/* {currentUser.foodRestrictions.length > 0 && (
+            {/* <View style={styles.mainBox}> */}
+            {/* {currentUser.foodRestrictions.length > 0 && (
                 <View>
                   <View style={styles.section}>
                     <Text style={styles.subTitle}>Disclaimer: </Text>
@@ -334,7 +325,7 @@ export default function PaymentScreen({ route, navigation }) {
                 </View>
               )} */}
 
-              {/* <View style={styles.preferencesContainer}>
+            {/* <View style={styles.preferencesContainer}>
                 <Text style={styles.subTitle}>Preferences:</Text>
                 <TextInput
                   style={styles.preferencesInput}
@@ -348,7 +339,7 @@ export default function PaymentScreen({ route, navigation }) {
                 />
               </View> */}
 
-              <View style={styles.mainBox}>
+            {/* <View style={styles.mainBox}>
                 <View style={styles.quantityContainer}>
                   <Text style={styles.quantityLabel}>Quantity:</Text>
                   <TouchableOpacity
@@ -369,7 +360,7 @@ export default function PaymentScreen({ route, navigation }) {
                   Total Price: {getTotalPrice()}
                 </Text>
               </View>
-            </View>
+            </View> */}
             {/* 
             <View style={styles.mainBox}>
               <View style={styles.quantityContainer}>
@@ -393,7 +384,6 @@ export default function PaymentScreen({ route, navigation }) {
 
             {/* </View> */}
             <View style={styles.detailBox}>
-
               {/* <PaymentScreen /> */}
               <Text style={styles.title}>Delivery Information</Text>
 
@@ -405,7 +395,6 @@ export default function PaymentScreen({ route, navigation }) {
                 onChangeText={(text) => setAddress(text)}
               />
 
-
               <Text style={styles.label}>Delivery Date</Text>
 
               {/* <Button title="Submit Payment" onPress={handlePayment} /> */}
@@ -415,7 +404,6 @@ export default function PaymentScreen({ route, navigation }) {
               >
                 <Text style={styles.dateText}>Select Date</Text>
                 <Text style={styles.dateText}>{formatDate(date)}</Text>
-
               </TouchableOpacity>
 
               {show && (
@@ -433,10 +421,6 @@ export default function PaymentScreen({ route, navigation }) {
               {/* <Text style={styles.selectedDateText}>
                 Selected Date: {formatDate(date)}
               </Text> */}
-
-
-
-
 
               <Text style={styles.label}>Delivery Time</Text>
               <View style={styles.pickerContainer}>
@@ -480,54 +464,42 @@ export default function PaymentScreen({ route, navigation }) {
                   {/* Add more time slots as needed */}
                 </Picker>
               </View>
-              
-
             </View>
-
-
 
             <View style={styles.detailBox}>
               {/* <PaymentScreen /> */}
               <Text style={styles.title}>Payment Details</Text>
               <Text style={styles.label}>Card Number</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Card Number"
-                  value={cardNumber}
-                  onChangeText={(text) => setCardNumber(text)}
-                />
-                <Text style={styles.label}>Cardholder Name</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Cardholder Name"
-                  value={cardholderName}
-                  onChangeText={(text) => setCardholderName(text)}
-                />
-                <Text style={styles.label}>Expiration Date</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Expiration Date (MM/YY)"
-                  value={expiryDate}
-                  onChangeText={(text) => setExpiryDate(text)}
-                />
-                <Text style={styles.label}>CVV</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="CVV"
-                  value={cvv}
-                  onChangeText={(text) => setCvv(text)}
-                />
-
+              <TextInput
+                style={styles.input}
+                placeholder="Card Number"
+                value={cardNumber}
+                onChangeText={(text) => setCardNumber(text)}
+              />
+              <Text style={styles.label}>Cardholder Name</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Cardholder Name"
+                value={cardholderName}
+                onChangeText={(text) => setCardholderName(text)}
+              />
+              <Text style={styles.label}>Expiration Date</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Expiration Date (MM/YY)"
+                value={expiryDate}
+                onChangeText={(text) => setExpiryDate(text)}
+              />
+              <Text style={styles.label}>CVV</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="CVV"
+                value={cvv}
+                onChangeText={(text) => setCvv(text)}
+              />
             </View>
 
-
-
-
-
-
-
-
-{/* 
+            {/* 
             <View style={styles.mainBox}>
               <View style={styles.paymentContainer}>
                 
@@ -551,55 +523,38 @@ export default function PaymentScreen({ route, navigation }) {
               </View>
             </View> */}
 
-
-
             <StatusBar style="auto" />
           </View>
         </View>
-          
       </ScrollView>
 
-
-
       <View style={styles.priceContainer}>
+        <View style={styles.totalPriceContainer}>
+          <Text style={styles.amountText}>Subtotal</Text>
 
-        <View style={styles.totalPriceContainer}>
-          <Text style={styles.amountText}>
-              Subtotal
-          </Text>
-          
-          <Text style={styles.amountText}>
-            {getTotalPrice()}
-          </Text>
-        </View>
-        
-        <View style={styles.totalPriceContainer}>
-          <Text style={styles.amountText}>
-              Service fees
-          </Text>
-          
-          <Text style={styles.amountText}>
-            {formatPrice(serviceFee)}
-          </Text>
+          <Text style={styles.amountText}>{getTotalPrice()}</Text>
         </View>
 
         <View style={styles.totalPriceContainer}>
-          <Text style={styles.totalPrice}>
-              Total Payment
-          </Text>
-          
-          <Text style={styles.totalPrice}>
-            ${getTotalPayment()}
-          </Text>
+          <Text style={styles.amountText}>Service fees</Text>
+
+          <Text style={styles.amountText}>{formatPrice(serviceFee)}</Text>
         </View>
 
+        <View style={styles.totalPriceContainer}>
+          <Text style={styles.totalPrice}>Total Payment</Text>
 
-        <TouchableOpacity style={styles.addToCartbutton} onPress={confirmAndSubmitPayment}>
+          <Text style={styles.totalPrice}>${getTotalPayment()}</Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.addToCartbutton}
+          onPress={confirmAndSubmitPayment}
+        >
           <Text style={styles.submitButtonText}>Checkout</Text>
         </TouchableOpacity>
       </View>
     </View>
-    
   );
 }
 
@@ -608,7 +563,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F2F2F2",
     padding: 20,
-    height: "50%"
+    height: "50%",
   },
   imageContainer: {
     flex: 1,
@@ -737,7 +692,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     marginBottom: 10,
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   label: {
     fontSize: 16,
@@ -766,15 +721,13 @@ const styles = StyleSheet.create({
     // // borderColor: "#ccc",
     // borderRadius: 5,
     margin: 1,
-    backgroundColor: "white"
-
+    backgroundColor: "white",
   },
   pickerContainer: {
     backgroundColor: "#ccc",
     borderColor: "#ccc",
     // borderRadius: 5,
     marginBottom: 10,
-    
   },
   selectedDateText: {
     // fontSize: 18,
@@ -797,7 +750,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
-  viewcontainer:{
+  viewcontainer: {
     flex: 1,
   },
   detailBox: {
@@ -856,8 +809,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   submitButtonText: {
-      color: "#fff",
-      fontSize: 16,
-      fontWeight: "bold",
-    },
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
 });
