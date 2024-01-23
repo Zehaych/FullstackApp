@@ -169,7 +169,7 @@ function App() {
           <Stack.Screen
             name="BizPartnerSignUp"
             component={BizPartnerSignUp}
-            options={{ headerShown: false }}
+            options={{ headerTitle: "Create Business Partner Account" }}
           />
           {/* <Stack.Screen name="Edit Profile" component={EditProfileScreen} /> */}
           <Stack.Screen name="Settings" component={SettingsScreen} />
