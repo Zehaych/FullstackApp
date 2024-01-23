@@ -77,7 +77,7 @@ function App() {
           <Stack.Screen
             name="FoodAndDrinksInfo"
             component={FoodAndDrinksInfo}
-            options={{ headerShown: false }}
+            options={{ headerTitle: "Food & Drinks Database"}}
           />
           <Stack.Screen
             name="FoodRequestedTabs"
