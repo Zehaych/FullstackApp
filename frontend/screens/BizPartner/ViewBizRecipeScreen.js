@@ -116,19 +116,12 @@ export default function ViewBizRecipeScreen({ navigation }) {
               }
             >
               <Image source={{ uri: item.image }} style={styles.image} />
-              <Text style={styles.recipeTitle}>{item.name}</Text>
-              <Rating rating={item.averageRating} />
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Icon name="person" size={24} color="#333333" />
-                <Text style={{ marginLeft: 8 }}>
-                  {item.totalRatings} people rated
-                </Text>
+              <View style={styles.componentContainer}>
+                <Text style={styles.recipeTitle}>{item.name}</Text>
+                <View style={styles.iconContainer}>
+                  <Icon name="star" size={14} color="#ED6F21" style={styles.icon}/>
+                  <Text style={styles.ratingText}>{item.averageRating}</Text>
+                </View>
               </View>
             </TouchableOpacity>
           )}
@@ -141,28 +134,72 @@ export default function ViewBizRecipeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FCFCD3",
-    padding: 10,
+    backgroundColor: "#f5f5f5",
+    padding: 5,
+    marginHorizontal: 5,
   },
   recipeMember: {
-    flex: 1,
+    //flex: 1,
     alignItems: "center",
-    margin: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    padding: 10,
+    //justifyContent: "center",
+    marginVertical: 5,
+    //borderWidth: 1,
+    //borderColor: "#ccc",
+    //borderRadius: 10,
+    //overflow: 'hidden',
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    width: "50%",
   },
   image: {
-    width: 135,
-    height: 135,
+    width: 160,
+    height: 175,
     resizeMode: "cover",
     borderRadius: 10,
   },
   recipeTitle: {
     textAlign: "center",
     marginTop: 10,
+    width: "80%",
     fontSize: 16,
     fontWeight: "bold",
   },
+  componentContainer: {
+    flexDirection: "row",
+    //alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    marginRight: 5,
+    marginLeft: 5,
+    paddingHorizontal: 10,
+  },
+  icon: {
+    marginTop: 10,
+  },
+  ratingText: {
+    textAlign: "center",
+    marginTop: 10,
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  iconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
+
+
+/*              <Rating rating={item.averageRating} />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Icon name="person" size={24} color="#333333" />
+                <Text style={{ marginLeft: 8 }}>
+                  {item.totalRatings} people rated
+                </Text>
+              </View> */
