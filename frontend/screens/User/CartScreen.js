@@ -20,44 +20,6 @@ const CartScreen = () => {
     navigation.navigate("Payment", { cartData: userCart });
   };
 
-  const clearCart = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/user/clearBizCart/${currentUser._id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userId: currentUser._id }),
-        }
-      );
-
-      if (response.ok) {
-        const result = await response.json();
-        setCurrentUser({
-          ...currentUser,
-          cart: result.cart,
-        });
-        setUserCart(result.cart);
-        Alert.alert("Success", "Cart cleared successfully");
-      } else {
-        Alert.alert("Error", "Failed to clear cart");
-      }
-    } catch (error) {
-      console.error("Error clearing cart:", error);
-      Alert.alert("Error", "An error occurred while clearing the cart.");
-    }
-  };
-
-  // const navigation = useNavigation();
-
-  // const navigateToPayment = () => {
-  //     navigation.navigate("Payment", {
-  //         recipeData: recipeData,
-  //     });
-  // };
-
   const removeItem = async (item) => {
     try {
       const response = await fetch(
@@ -139,20 +101,6 @@ const CartScreen = () => {
     fetchUserCart();
   }, [currentUser]); // Dependency array ensures useEffect runs when currentUser changes
 
-  // useEffect(() => {
-  //   const fetchUserCart = async () => {
-  //     try {
-  //       // Assuming currentUser._id contains the user ID
-  //       const cart = await getUserCart(currentUser._id);
-  //       setUserCart(cart);
-  //     } catch (error) {
-  //       console.error('Error fetching user cart:', error.message);
-  //     }
-  //   };
-
-  //   // Fetch user cart when the component mounts or when currentUser changes
-  //   fetchUserCart();
-  // }, [currentUser]);
 
   const renderCartItem = ({ item }) => (
     <View style={styles.itemContainer}>
@@ -207,25 +155,19 @@ const CartScreen = () => {
         }
       />
 
-      <TouchableOpacity onPress={clearCart} style={styles.cleartbutton}>
-        <Text style={styles.buttonText}>Clear Cart</Text>
-      </TouchableOpacity>
-
       <View style={styles.priceContainer}>
         <View style={styles.totalPriceContainer}>
           <Text style={styles.totalPriceText}>Total Price</Text>
 
           <Text style={styles.recipePriceText}>{getTotalPrice()}</Text>
         </View>
+
         <TouchableOpacity
           onPress={navigateToPayment}
           style={styles.addToCartbutton}
         >
           <Text style={styles.buttonText}>Proceed to Payment</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity style={styles.addToCartbutton}>
-          <Text style={styles.buttonText}>Proceed to payment</Text>
-        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -265,8 +207,6 @@ const styles = StyleSheet.create({
   },
   orderContainer: {
     gap: 4,
-    // paddingBottom: 4,
-    // paddingTop: 8,
   },
   amountContainer: {
     flexDirection: "row",

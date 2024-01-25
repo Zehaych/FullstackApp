@@ -125,19 +125,19 @@ export default function PaymentScreen({ route, navigation }) {
     );
   };
 
-  const incrementQuantity = () => {
-    const newQuantity = quantity + 1;
-    setQuantity(newQuantity);
-    setTotalPrice(newQuantity * cartData.price);
-  };
+  // const incrementQuantity = () => {
+  //   const newQuantity = quantity + 1;
+  //   setQuantity(newQuantity);
+  //   setTotalPrice(newQuantity * cartData.price);
+  // };
 
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      const newQuantity = quantity - 1;
-      setQuantity(newQuantity);
-      setTotalPrice(newQuantity * cartData.price);
-    }
-  };
+  // const decrementQuantity = () => {
+  //   if (quantity > 1) {
+  //     const newQuantity = quantity - 1;
+  //     setQuantity(newQuantity);
+  //     setTotalPrice(newQuantity * cartData.price);
+  //   }
+  // };
 
   const formatPrice = (price) => {
     return `$${price.toFixed(2)}`;
@@ -150,17 +150,17 @@ export default function PaymentScreen({ route, navigation }) {
     return "$0.00";
   };
 
-  const [orderPreferences, setOrderPreferences] = useState([]);
-  const [currentOrder, setCurrentOrder] = useState({
-    quantity: 1,
-    preferences: "",
-  });
+  // const [orderPreferences, setOrderPreferences] = useState([]);
+  // const [currentOrder, setCurrentOrder] = useState({
+  //   quantity: 1,
+  //   preferences: "",
+  // });
 
-  const addOrderToCart = () => {
-    const order = { ...currentOrder, cartData };
-    setOrderPreferences([...orderPreferences, order]);
-    setCurrentOrder({ quantity: 1, preferences: "" });
-  };
+  // const addOrderToCart = () => {
+  //   const order = { ...currentOrder, cartData };
+  //   setOrderPreferences([...orderPreferences, order]);
+  //   setCurrentOrder({ quantity: 1, preferences: "" });
+  // };
 
   const clearCart = async () => {
     try {
@@ -192,59 +192,10 @@ export default function PaymentScreen({ route, navigation }) {
     }
   };
 
-  // const renderCartItem = ({ item }) => (
-  //   <View style={styles.itemContainer}>
-  //     <View style={styles.orderContainer}>
-  //       {/* title & status */}
-  //       <View style={styles.titleContainer}>
-  //         <View>
-  //           <Text style={styles.title}>{item.recipeName}</Text>
-  //         </View>
-
-  //         <TouchableOpacity style={styles.removebutton} onPress={() => removeItem(item)}>
-  //           <Text style={styles.removebuttonText}>Remove</Text>
-  //         </TouchableOpacity>
-  //       </View>
-
-  //       {/* cost & quantity */}
-  //       <View style={styles.amountContainer}>
-  //         <View style={styles.amount}>
-  //           <Text style={styles.amountText}>${item.recipePrice}</Text>
-  //         </View>
-
-  //         <View style={styles.quantity}>
-  //           <Text style={styles.amountText}>x {item.quantity}</Text>
-  //         </View>
-  //       </View>
-
-  //       {/* preferences */}
-  //       <View style={styles.preferencesContainer}>
-  //         <View>
-  //           <Text style={styles.itemDetailLeftText}>Preferences</Text>
-  //         </View>
-
-  //         <View style={styles.itemDetailRight}>
-  //           <Text style={styles.itemDetailRightText}>{item.preferences}</Text>
-  //         </View>
-  //       </View>
-  //     </View>
-  //   </View>
-  // );
-
   return (
     <View style={styles.viewcontainer}>
       <ScrollView>
         <View style={styles.container}>
-          {/* <FlatList
-            data={userCart}
-            renderItem={renderCartItem}
-            keyExtractor={(item) => item._id.toString()}
-            ListEmptyComponent={
-              <Text style={styles.emptyText}>No ongoing orders.</Text>
-            }
-            style={styles.container}
-          /> */}
-
           <View style={styles.detailBox}>
             <Text style={styles.title}>Order Details </Text>
 
@@ -303,85 +254,6 @@ export default function PaymentScreen({ route, navigation }) {
           </View>
 
           <View>
-            {/* <View style={styles.imageContainer}>
-              <Image source={{ uri: cartData.image }} style={styles.image} />
-            </View>
-            <Text style={styles.title}>{cartData.name}</Text> */}
-
-            {/* <View style={styles.mainBox}> */}
-            {/* {currentUser.foodRestrictions.length > 0 && (
-                <View>
-                  <View style={styles.section}>
-                    <Text style={styles.subTitle}>Disclaimer: </Text>
-                    <Text>
-                      Based on your medical history, it is recommended to minimize
-                      or abstain from using{" "}
-                      <Text style={{ color: "red", fontWeight: "bold" }}>
-                        {currentUser.foodRestrictions.join(", ")}
-                      </Text>{" "}
-                      when ordering the recipe. {"\n"}
-                    </Text>
-                  </View>
-                </View>
-              )} */}
-
-            {/* <View style={styles.preferencesContainer}>
-                <Text style={styles.subTitle}>Preferences:</Text>
-                <TextInput
-                  style={styles.preferencesInput}
-                  placeholder="Specify preferences for your orders..."
-                  value={currentOrder.preferences}
-                  onChangeText={(text) =>
-                    setCurrentOrder({ ...currentOrder, preferences: text })
-                  }
-                  multiline={true}
-                  numberOfLines={4}
-                />
-              </View> */}
-
-            {/* <View style={styles.mainBox}>
-                <View style={styles.quantityContainer}>
-                  <Text style={styles.quantityLabel}>Quantity:</Text>
-                  <TouchableOpacity
-                    style={styles.quantityButton}
-                    onPress={decrementQuantity}
-                  >
-                    <Icon name="minus" size={20} color="white" />
-                  </TouchableOpacity>
-                  <Text style={styles.quantity}>{quantity}</Text>
-                  <TouchableOpacity
-                    style={styles.quantityButton}
-                    onPress={incrementQuantity}
-                  >
-                    <Icon name="plus" size={20} color="white" />
-                  </TouchableOpacity>
-                </View>
-                <Text style={styles.totalPrice}>
-                  Total Price: {getTotalPrice()}
-                </Text>
-              </View>
-            </View> */}
-            {/* 
-            <View style={styles.mainBox}>
-              <View style={styles.quantityContainer}>
-                <Text style={styles.quantityLabel}>Quantity:</Text>
-                <TouchableOpacity
-                  style={styles.quantityButton}
-                  onPress={decrementQuantity}
-                >
-                  <Icon name="minus" size={20} color="#0066cc" />
-                </TouchableOpacity>
-                <Text style={styles.quantity}>{quantity}</Text>
-                <TouchableOpacity
-                  style={styles.quantityButton}
-                  onPress={incrementQuantity}
-                >
-                  <Icon name="plus" size={20} color="#0066cc" />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.totalPrice}>Total Price: {getTotalPrice()}</Text>
-            </View> */}
-
             {/* </View> */}
             <View style={styles.detailBox}>
               {/* <PaymentScreen /> */}
@@ -499,30 +371,6 @@ export default function PaymentScreen({ route, navigation }) {
               />
             </View>
 
-            {/* 
-            <View style={styles.mainBox}>
-              <View style={styles.paymentContainer}>
-                
-
-
-
- 
-                <Text style={styles.priceTag}>Subtotal: {getTotalPrice()}</Text>
-                <Text style={styles.priceTag}>
-                  Service fees: ${serviceFee.toFixed(2)}
-                </Text>
-                <Text style={styles.totalPrice}>
-                  Total payment: ${getTotalPayment()}
-                </Text>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={confirmAndSubmitPayment}
-                >
-                  <Text style={styles.buttonText}>Submit payment</Text>
-                </TouchableOpacity>
-              </View>
-            </View> */}
-
             <StatusBar style="auto" />
           </View>
         </View>
@@ -636,7 +484,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: "#333",
   },
-  // totalPrice: {
   //   fontSize: 18,
   //   fontWeight: "bold",
   //   textAlign: "center",
@@ -715,19 +562,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   picker: {
-    // height: 50,
-    // width: "100%",
-    // borderWidth: 1,
-    // // borderColor: "#ccc",
-    // borderRadius: 5,
-    margin: 1,
-    backgroundColor: "white",
+    height: 50,
+    width: "100%",
   },
   pickerContainer: {
-    backgroundColor: "#ccc",
+    borderWidth: 1,
     borderColor: "#ccc",
-    // borderRadius: 5,
+    borderRadius: 5,
     marginBottom: 10,
+    justifyContent: "center",
   },
   selectedDateText: {
     // fontSize: 18,
@@ -742,7 +585,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 8,
-    gap: 2,
+    gap: 4,
     backgroundColor: "white",
   },
   totalPriceContainer: {
