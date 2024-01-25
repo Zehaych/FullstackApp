@@ -10,6 +10,7 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 import { Context } from "../../store/context";
+import RNPickerSelect from 'react-native-picker-select';
 
 const ViewOrdersScreen = () => {
   const [currentUser] = useContext(Context);
@@ -322,21 +323,29 @@ const ViewOrdersScreen = () => {
         <Text style={styles.boldLabel}>Select status</Text>
 
         <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={selectedStatus[item._id] || ""}
-            style={{ height: 40, width: "100%" }}
-            onValueChange={(itemValue) => onStatusChange(item, itemValue)}
-            enabled={!isDisabled} // Disable the picker if the order is marked as disabled
-          >
-            <Picker.Item label="Select status" value="" color="#676767"/>
-            <Picker.Item label="Rejected" value="Rejected" />
-            <Picker.Item label="Pending" value="Pending" />
-            <Picker.Item label="Preparing" value="Preparing" />
-            <Picker.Item label="On the way" value="On the way" />
-            <Picker.Item label="Arriving" value="Arriving" />
-            <Picker.Item label="Done" value="Done" />
-          </Picker>
-        </View>
+          <RNPickerSelect
+              onValueChange={(itemValue) => onStatusChange(item, itemValue)}
+              items={[
+                  { label: "Select status", value: "", color: "#676767" },
+                  { label: "Rejected", value: "Rejected" },
+                  { label: "Pending", value: "Pending" },
+                  { label: "Preparing", value: "Preparing" },
+                  { label: "On the way", value: "On the way" },
+                  { label: "Arriving", value: "Arriving" },
+                  { label: "Done", value: "Done" },
+              ]}
+              style={{
+                  inputIOS: { height: 40, width: "100%", marginTop: 5 , textAlign: "center"},
+                  inputAndroid: { height: 40, width: "100%", marginTop: 5, textAlign: "center"},
+                  placeholder: { color: '#676767' },
+              }}
+              value={selectedStatus[item._id] || ""}
+              disabled={isDisabled}
+              placeholder={{ label: "Select status", value: null, color: '#676767' }}
+              useNativeAndroidPickerStyle={false}
+          />
+      </View>
+
         
         {showPicker[item._id] && (
           <DateTimePicker
