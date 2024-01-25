@@ -12,14 +12,15 @@ import { Picker } from "@react-native-picker/picker";
 import { Context } from "../../store/context";
 
 const ViewOrdersScreen = () => {
+  const [currentUser] = useContext(Context);
   const [orders, setOrders] = useState([]);
+  const [BizRecipePrice, setBizRecipePrice] = useState([]);
 
   const [selectedStatus, setSelectedStatus] = useState({});
   const [selectedDate, setSelectedDate] = useState({});
   const [showPicker, setShowPicker] = useState({});
 
   const [disabledOrders, setDisabledOrders] = useState({});
-  const [currentUser] = useContext(Context);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -80,6 +81,44 @@ const ViewOrdersScreen = () => {
 
     fetchOrders();
   }, [currentUser._id]);
+
+  useEffect(() => {
+    const fetchCurrentUserRecipe= async () => {
+      try {
+        const response = await fetch(
+          `${process.env.EXPO_PUBLIC_IP}/bizRecipe/getBizRecipeByUserId`
+        );
+  
+        if (response.ok) {
+          const data = await response.json();
+          //console.log("Data:", data.recipe[1].price);
+          
+          const recipeData = data.map(recipe => ({ name: recipe.name, price: recipe.price }));
+
+          console.log("Recipe Data:", recipeData);
+
+          const ordersData = orders.map(order => ({ name: order.recipeName }));
+
+          console.log("Orders Data:", ordersData);
+
+          const ordersWithPrices = ordersData.map(order => {
+            const matchingRecipe = recipeData.find(recipe => recipe.name === order.name);
+            return { ...order, recipePrice: matchingRecipe ? matchingRecipe.price : 0 };
+          });
+  
+          console.log("Orders with Prices:", ordersWithPrices);
+
+          setBizRecipePrice(ordersWithPrices);
+        } else {
+          console.error('Failed to fetch recipes');
+        }
+      } catch (error) {
+        console.error('Error fetching recipes:', error);
+      }
+    };
+  
+    fetchCurrentUserRecipe();
+  }, [orders]);
 
   const onStatusChange = (item, value) => {
     setSelectedStatus({ ...selectedStatus, [item._id]: value });
@@ -163,7 +202,6 @@ const ViewOrdersScreen = () => {
         }
         return order;
       });
-
       setOrders(updatedOrders);
       alert("Order status updated successfully.");
     } catch (error) {
@@ -209,45 +247,63 @@ const ViewOrdersScreen = () => {
 
   //   fetchOrders();
   // }, []);
+      
 
   const renderItem = ({ item }) => {
     const isDisabled = disabledOrders[item._id];
 
+    const currentRecipePrices = BizRecipePrice.filter(
+      (recipe) => recipe.name === item.recipeName
+    );
+
     return (
       <View style={styles.itemContainer}>
-        <Text style={styles.title}>{item.recipeName}</Text>
-        <Text style={styles.subtitle}>
-          <Text style={styles.boldLabel}>Name:</Text>{" "}
-          {item.userName ? item.userName : "N/A"}
-        </Text>
-        <Text style={styles.subtitle}>
-          <Text style={styles.boldLabel}>Total Price:</Text> ${item.totalPrice}
-        </Text>
-        <Text style={styles.subtitle}>
-          <Text style={styles.boldLabel}>Quantity:</Text> {item.quantity}
-        </Text>
-        <Text style={styles.subtitle}>
-          <Text style={styles.boldLabel}>Preferences:</Text> {item.preferences}
-        </Text>
-        <Text style={styles.subtitle}>
-          <Text style={styles.boldLabel}>Date to Deliver:</Text>{" "}
-          {item.dateToDeliver}
-        </Text>
-        <Text style={styles.subtitle}>
-          <Text style={styles.boldLabel}>Time to Deliver:</Text>{" "}
-          {item.timeToDeliver}
-        </Text>
-        <Text style={styles.subtitle}>
-          <Text style={styles.boldLabel}>Delivery Address:</Text>{" "}
-          {item.deliveryAddress}
-        </Text>
-        <Text style={styles.subtitle}>
-          <Text style={styles.boldLabel}>Status:</Text> {item.status}
-        </Text>
-        <Text style={styles.subtitle}>
-          <Text style={styles.boldLabel}>Estimated Arrival Time:</Text>{" "}
-          {item.estimatedArrivalTime}
-        </Text>
+        <View style={styles.componentContainer}>
+          <Text style={styles.titleName}>Customer Name</Text>  
+          <Text style={styles.titleNameOrange}>{item.userName ? item.userName : "N/A"} </Text>       
+        </View>
+        <Text style={styles.subtitle}>Delivery Address:</Text>
+        <Text style={styles.subtitleOrange}>{item.deliveryAddress}</Text>
+        <View style={styles.divider} />
+
+        <Text style={styles.boldLabel}>Orders</Text>
+        <Text style={styles.subtitle}>{item.recipeName}</Text>
+        <View style={styles.componentContainer}>
+          {currentRecipePrices.map((recipe, index)=> (
+            <View key={index}>
+              <Text style={styles.priceLabel}>     ${recipe.recipePrice}</Text>
+            </View>
+          ))}
+          <Text style={styles.priceLabel}>x{item.quantity}</Text>
+        </View>
+        <View style={styles.componentContainer}>
+          <Text style={styles.subtitle}>     Preferences</Text>
+          <Text style={styles.subtitleOrange}>{item.preferences ? item.preferences : "N/A"}</Text>
+        </View>
+        <View style={styles.componentContainer}>
+          <Text style={styles.subtitle}>Total Price</Text>
+          <Text style={styles.subtitleOrange}>${item.totalPrice}</Text>
+        </View>
+        <View style={styles.divider} />
+
+        <Text style={styles.boldLabel}>Order Details</Text>
+        <View style={styles.componentContainer}>
+          <Text style={styles.subtitle}>Date of Delivery</Text>
+          <Text style={styles.subtitleOrange}>{item.dateToDeliver}</Text> 
+        </View>
+        <View style={styles.componentContainer}>
+          <Text style={styles.subtitle}>Time of Delivery</Text>
+          <Text style={styles.subtitleOrange}>{item.timeToDeliver}</Text>
+        </View>
+        <View style={styles.componentContainer}>
+          <Text style={styles.subtitle}>Estimated Arrival Time</Text>
+          <Text style={styles.subtitleOrange}>{item.estimatedArrivalTime}</Text>
+        </View>
+        <View style={styles.componentContainer}>
+          <Text style={styles.subtitle}>Status</Text>
+          <Text style={styles.subtitleOrange}>{item.status}</Text>
+        </View>
+        <View style={styles.divider} />
         {/* <Text style={styles.subtitle}>
         Name: {item.userName ? item.userName : "N/A"}
       </Text>
@@ -263,20 +319,25 @@ const ViewOrdersScreen = () => {
       <Text style={styles.subtitle}>
         Estimated Arrival Time: {item.estimatedArrivalTime}
       </Text> */}
-        <Picker
-          selectedValue={selectedStatus[item._id] || ""}
-          style={{ height: 50, width: "100%" }}
-          onValueChange={(itemValue) => onStatusChange(item, itemValue)}
-          enabled={!isDisabled} // Disable the picker if the order is marked as disabled
-        >
-          <Picker.Item label="Select status:" value="" />
-          <Picker.Item label="Rejected" value="Rejected" />
-          <Picker.Item label="Pending" value="Pending" />
-          <Picker.Item label="Preparing" value="Preparing" />
-          <Picker.Item label="On the way" value="On the way" />
-          <Picker.Item label="Arriving" value="Arriving" />
-          <Picker.Item label="Done" value="Done" />
-        </Picker>
+        <Text style={styles.boldLabel}>Select status</Text>
+
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={selectedStatus[item._id] || ""}
+            style={{ height: 40, width: "100%" }}
+            onValueChange={(itemValue) => onStatusChange(item, itemValue)}
+            enabled={!isDisabled} // Disable the picker if the order is marked as disabled
+          >
+            <Picker.Item label="Select status" value="" color="#676767"/>
+            <Picker.Item label="Rejected" value="Rejected" />
+            <Picker.Item label="Pending" value="Pending" />
+            <Picker.Item label="Preparing" value="Preparing" />
+            <Picker.Item label="On the way" value="On the way" />
+            <Picker.Item label="Arriving" value="Arriving" />
+            <Picker.Item label="Done" value="Done" />
+          </Picker>
+        </View>
+        
         {showPicker[item._id] && (
           <DateTimePicker
             value={selectedDate[item._id] || new Date()}
@@ -286,24 +347,32 @@ const ViewOrdersScreen = () => {
             onChange={(event, date) => onDateChange(event, date, item)}
           />
         )}
-        <Button
-          title="Select Arrival Time"
-          onPress={() => showTimepicker(item)}
-          color="#28a745"
-          disabled={isDisabled} // Disable the button if the order is marked as disabled
-        />
-        <Text style={styles.timeText}>
-          {selectedDate[item._id]
-            ? `Time selected: ${formatTime(selectedDate[item._id])}`
-            : "Time not selected"}
-        </Text>
-        <View style={styles.separator} />
-        <Button
-          title="Update Order Status"
-          onPress={() => updateOrder(item)}
-          color="#007bff"
-          disabled={isDisabled} // Disable the button if the order is marked as disabled
-        />
+        <View style={styles.componentContainer}>
+          <Text style={styles.priceLabel}>Estimated Arrival Time</Text>
+          <Text style={styles.priceLabel}>
+            {selectedDate[item._id]
+              ? `${formatTime(selectedDate[item._id])}`
+              : "N/A"}
+          </Text>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            onPress={() => showTimepicker(item)}
+            style={styles.button}
+            disabled={isDisabled} // Disable the button if the order is marked as disabled
+          >
+            <Text style={styles.buttonText}>Select Arrival Time</Text>
+          </TouchableOpacity>
+          
+          <View style={styles.separator} />
+          <TouchableOpacity
+            onPress={() => updateOrder(item)}
+            style={styles.button}
+            disabled={isDisabled} // Disable the button if the order is marked as disabled
+          >
+            <Text style={styles.buttonText}>Update Order Status</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -341,7 +410,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 10,
-    borderRadius: 10,
+    borderRadius: 20,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -358,28 +427,27 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   subtitle: {
+    fontSize: 14,
+    marginBottom: 5,
+  },
+  subtitleOrange: {
     // fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 14,
+    color: "#ED6F21",
     marginBottom: 5,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 10,
+    marginVertical: 10,
   },
   button: {
-    backgroundColor: "#007bff",
-    borderRadius: 5,
+    backgroundColor: "#ED6F21",
+    borderRadius: 10,
     padding: 10,
   },
   buttonText: {
     color: "white",
-    textAlign: "center",
-  },
-  timeText: {
-    marginTop: 5,
     fontSize: 16,
-    color: "#555",
+    fontWeight: "bold",
     textAlign: "center",
   },
   separator: {
@@ -394,6 +462,42 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   boldLabel: {
+    fontSize: 16,
     fontWeight: "bold",
+    marginBottom: 5,
+  },
+  componentContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 5,
+    //paddingHorizontal: 20,
+  },
+  titleName:{
+    fontSize: 18,
+    fontWeight: "bold",
+    //textAlign: "center",
+  },
+  titleNameOrange:{
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#ED6F21",
+  },
+  divider: {
+    borderBottomColor: "#ccc",
+    borderBottomWidth: 1,
+    marginBottom: 5,
+  },
+  priceLabel: {
+    fontSize: 14,
+    color: "#676767",
+    marginBottom: 5,
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    marginBottom: 10,
+    justifyContent: "center",
   },
 });
