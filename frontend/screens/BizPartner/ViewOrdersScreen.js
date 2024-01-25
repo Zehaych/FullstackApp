@@ -11,6 +11,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 import { Context } from "../../store/context";
 import RNPickerSelect from 'react-native-picker-select';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ViewOrdersScreen = () => {
   const [currentUser] = useContext(Context);
@@ -92,7 +93,6 @@ const ViewOrdersScreen = () => {
   
         if (response.ok) {
           const data = await response.json();
-          //console.log("Data:", data.recipe[1].price);
           
           const recipeData = data.map(recipe => ({ name: recipe.name, price: recipe.price }));
 
@@ -106,10 +106,17 @@ const ViewOrdersScreen = () => {
             const matchingRecipe = recipeData.find(recipe => recipe.name === order.name);
             return { ...order, recipePrice: matchingRecipe ? matchingRecipe.price : 0 };
           });
-  
+
           console.log("Orders with Prices:", ordersWithPrices);
 
-          setBizRecipePrice(ordersWithPrices);
+          const uniqueOrdersWithPrices = ordersWithPrices.filter(
+            (order, index, self) =>
+              index === self.findIndex((o) => o.name === order.name)
+          );
+  
+          console.log("Orders with Prices(new):", uniqueOrdersWithPrices);
+
+          setBizRecipePrice(uniqueOrdersWithPrices);
         } else {
           console.error('Failed to fetch recipes');
         }
@@ -326,7 +333,6 @@ const ViewOrdersScreen = () => {
           <RNPickerSelect
               onValueChange={(itemValue) => onStatusChange(item, itemValue)}
               items={[
-                  { label: "Select status", value: "", color: "#676767" },
                   { label: "Rejected", value: "Rejected" },
                   { label: "Pending", value: "Pending" },
                   { label: "Preparing", value: "Preparing" },
@@ -335,14 +341,20 @@ const ViewOrdersScreen = () => {
                   { label: "Done", value: "Done" },
               ]}
               style={{
-                  inputIOS: { height: 40, width: "100%", marginTop: 5 , textAlign: "center"},
-                  inputAndroid: { height: 40, width: "100%", marginTop: 5, textAlign: "center"},
+                  inputIOS: { height: 40, width: "100%", paddingHorizontal: 10 },
+                  inputAndroid: { height: 40, width: "100%", paddingHorizontal: 10 },
                   placeholder: { color: '#676767' },
+                  iconContainer: { 
+                    top: 10, right: 12
+                  },
               }}
               value={selectedStatus[item._id] || ""}
               disabled={isDisabled}
               placeholder={{ label: "Select status", value: null, color: '#676767' }}
               useNativeAndroidPickerStyle={false}
+              Icon={() => {
+                return <Icon name="chevron-down" size={16} color="#676767" />;
+              }}
           />
       </View>
 
