@@ -63,8 +63,6 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
 
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const [isCart, setIsCart] = useState(false);
-
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(recipeData.price);
 
@@ -110,18 +108,10 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
     }
   };
 
-  const navigateToPayment = () => {
-    navigation.navigate("Payment", {
-      recipeData: recipeData,
-    });
-  };
   const formatPrice = (price) => {
     return `$${price.toFixed(2)}`;
   };
 
-  const getTotalPrice = () => {
-    return formatPrice(totalPrice);
-  };
 
   //   const url = `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${recipeData.submitted_by}`;
 
@@ -794,19 +784,6 @@ export default function BusinessRecipeInfoScreen({ route, navigation }) {
               </View>
             </View>
 
-            {/* <View style={styles.mainBox}>
-              <Text style={styles.message}>
-                Do you want us to prepare for you?
-              </Text>
-
-              <TouchableOpacity
-                style={styles.button}
-                onPress={navigateToPayment}
-              >
-                <Text style={styles.buttonText}>Prepare this meal for me</Text>
-              </TouchableOpacity>
-            </View> */}
-
             {/* <AddRatingsScreen /> */}
             {currentUserReviews.length === 0 ||
               (isCreator && <Text style={styles.title}>Recipe Review </Text>)}
@@ -1313,33 +1290,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-
-  button: {
-    backgroundColor: "#0066cc",
-    padding: 10,
-    borderRadius: 10,
-    margin: 20,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  mainBox: {
-    borderWidth: 2,
-    borderColor: "#CCCCCC",
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 30,
-  },
-  message: {
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#333",
-  },
-
   quantityLabel: {
     fontSize: 16,
     fontWeight: "bold",
