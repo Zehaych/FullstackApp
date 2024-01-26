@@ -232,15 +232,15 @@ const FullReportDaily = ({ route }) => {
         <View style={styles.detailBox}>
           <Text style={styles.title2}>Daily Sales</Text>
           <View style={styles.componentContainer}>
-            <Text style={styles.subtitle1}>Total Sales: </Text>
+            <Text style={styles.subtitle1}>Total Sales </Text>
             <Text style={styles.subtitle}>${totalSales}</Text>
           </View>
           <View style={styles.componentContainer}>
             <Text style={styles.subtitle1}>
-              Most Ordered: 
+              Most Ordered 
             </Text>
             <Text style={styles.subtitle}>
-              {mostOrderedRecipes.join(", ")}
+              {mostOrderedRecipes.join("\n")}
             </Text>
           </View>
         </View>

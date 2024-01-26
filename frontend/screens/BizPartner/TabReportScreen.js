@@ -23,7 +23,7 @@ const TabReportScreen = ({ route }) => {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, size }) => {
           let iconName;
-          let iconColor = focused ? "goldenrod" : "black"; // Set the color to golden for focused icons
+          let iconColor = focused ? "#ED6F21" : "black"; // Set the color to golden for focused icons
 
           if (route.name === "Daily") {
             iconName = focused ? "pie-chart" : "pie-chart";

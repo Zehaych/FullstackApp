@@ -251,7 +251,7 @@ const FullReportMonthly = ({ route }) => {
               Most Ordered
             </Text>
             <Text style={styles.subtitle}>
-              {mostOrderedRecipes.join(", ")}
+              {mostOrderedRecipes.join("\n")}
             </Text>
           </View>
         </View>
