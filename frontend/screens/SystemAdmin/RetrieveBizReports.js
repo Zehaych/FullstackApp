@@ -74,7 +74,7 @@ export default function RetrieveBizReports() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    // padding: 10,
     backgroundColor: "#f5f5f5",
   },
   componentContainer: {
@@ -114,8 +114,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
     borderRadius: 20,
-    padding: 20,
-    margin: 10,
+    padding: 16,
+    margin: 20,
     shadowColor: "#000000",
     shadowOffset: {
       width: 0,

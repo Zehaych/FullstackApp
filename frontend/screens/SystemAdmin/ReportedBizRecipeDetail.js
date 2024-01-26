@@ -78,15 +78,37 @@ const ReportedBizRecipeDetails = ({ route }) => {
                     <View style={styles.reportsContainer}>                        
                         {recipe.reportedBy.map((report, index) => (
                             <View key={index} style={styles.detailBox}>
-                                <Text style={styles.reportText}>User ID: {report.user.username}</Text>
+                                {/* <Text style={styles.reportText}>User ID: {report.user.username}</Text>
                                 <Text style={styles.reportText}>Feedback: {report.feedback}</Text>
                                 <Text style={styles.reportText}>Additional Comment: {report.additionalComment}</Text>
-                                <Text style={styles.reportText}>Reported At: {new Date(report.reportedAt).toLocaleString()}</Text>
+                                <Text style={styles.reportText}>Reported At: {new Date(report.reportedAt).toLocaleString()}</Text> */}
+                            
+                                <View style={styles.itemDetailContainer}>
+                                    <Text style={styles.usernameLeftText}>Username</Text>
+                                    <Text style={styles.usernameRightText}>{report.user.username}</Text>
+                                </View>
+
+                                <View style={styles.itemDetailContainer}>
+                                    <Text style={styles.reportLeftText}>Feedback</Text>
+                                    <Text style={styles.reportRightText}>{report.feedback}</Text>
+                                </View>
+
+                                <View style={styles.itemDetailContainer}>
+                                    <Text style={styles.reportLeftText}>Additional Comment</Text>
+                                    <Text style={styles.reportRightText}>{report.additionalComment}</Text>
+                                </View>
+
+                                <View style={styles.itemDetailContainer}>
+                                    <Text style={styles.reportLeftText}>Reported At</Text>
+                                    <Text style={styles.reportRightText}>{new Date(report.reportedAt).toLocaleString()}</Text>
+                                </View>
+                            
                             </View>
                         ))}
                     </View>
 
                     <Modal
+                        transparent={true}
                         visible={isModalVisible}
                         onRequestClose={() => setIsModalVisible(false)}
                     >
@@ -113,14 +135,13 @@ const ReportedBizRecipeDetails = ({ route }) => {
                                     onPress={() => {
                                         setIsModalVisible(false);
                                     }}
-                                    style={styles.modalButton}
+                                    style={styles.cancelButton}
                                 >
                                     <Text style={styles.buttonText}>Cancel</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
                     </Modal>
-
                 </View>
             </ScrollView>
             <View style={styles.buttonContainer}>
@@ -157,7 +178,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         borderRadius: 20,
         padding: 20,
-        margin: 10,
+        marginHorizontal: 16,
+        marginVertical: 10,
         shadowColor: "#000000",
         shadowOffset: {
             width: 0,
@@ -168,7 +190,7 @@ const styles = StyleSheet.create({
         elevation: 5,
     }, 
     modalView: {
-        width: '80%', 
+        width: '90%', 
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 20,
@@ -183,7 +205,7 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     dismissButton: {
-        backgroundColor: '#ED6F21', 
+        backgroundColor: '#A9A9A9', 
         padding: 10,
         alignItems: 'center',
         marginLeft: 20,
@@ -203,6 +225,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: 'white',
         fontSize: 16,
+        fontWeight: "bold"
     },
     container:{
         flex: 1,
@@ -229,6 +252,29 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         color: '#555',
     },
+    reportLeftText: {
+        fontSize: 16,
+        color: "grey",
+        width: "40%",
+
+    },
+    reportRightText: {
+        fontSize: 16, 
+        width: "60%",
+        textAlign: "right",
+    },
+    usernameLeftText: {
+        fontSize: 20,
+        marginBottom: 5,
+        color: '#7F7F7F',
+        fontWeight: "bold",
+    },
+    usernameRightText: {
+        fontSize: 20,
+        marginBottom: 5,
+        color: '#000',
+        fontWeight: "bold",
+    },
     recipeItem: {
         padding: 10,
         marginVertical: 8,
@@ -251,7 +297,7 @@ const styles = StyleSheet.create({
         borderColor: '#C6C6CD',
         borderWidth: 1,
         borderRadius: 5,
-        marginBottom: 10,
+        marginVertical: 10,
         paddingLeft: 10,
         paddingRight: 10,
     },
@@ -262,6 +308,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 10,
         borderRadius: 10,
+    },
+    cancelButton: {
+        width: '100%',
+        backgroundColor: '#A9A9A9', 
+        padding: 10,
+        alignItems: 'center',
+        marginTop: 10,
+        borderRadius: 10,
+    },
+    itemDetailContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 10,
     },
 });
 

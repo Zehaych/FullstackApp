@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Context } from "../../store/context";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const BizPartnerInfo = ({ route, navigation }) => {
   const { user } = route.params; // Retrieve the user data passed from the previous screen
@@ -199,7 +200,10 @@ const BizPartnerInfo = ({ route, navigation }) => {
             {userData.isActive ? "Active" : "Suspended"} 
           </Text>
         </View>
-          <View style={styles.buttonContainer}>
+
+
+
+          {/* <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={[styles.button]}
               onPress={() => setUsernameModalVisible(true)}
@@ -228,6 +232,40 @@ const BizPartnerInfo = ({ route, navigation }) => {
               <Text style={styles.buttonText}>Delete Business Partner</Text>
             </TouchableOpacity>
           </View>
+ */}
+
+
+          
+        <View style={styles.buttonContainer}>
+
+        <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => setUsernameModalVisible(true)}
+            >
+              <Text style={styles.buttonText}>Change Username</Text>
+            </TouchableOpacity>
+
+
+          {userData.isActive ? (
+            <TouchableOpacity
+              style={[styles.suspendButton]}
+              onPress={() => suspendUser(userData._id)}
+            >
+              <Text style={styles.buttonText}>Suspend User</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.suspendButton}
+              onPress={() => unsuspendUser(userData._id)}
+            >
+              <Text style={styles.buttonText}>Reactivate User</Text>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity style={styles.deleteButton} onPress={() => setModalVisible(true)}>
+            <Text style={styles.buttonText}>Delete User</Text>
+          </TouchableOpacity>
+        </View>
         
       </View>
 
@@ -239,6 +277,17 @@ const BizPartnerInfo = ({ route, navigation }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            <View style={styles.closeContainer}>
+              <Text></Text>
+              {/* Close Button */}
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                {/* <Text style={styles.submitButtonText}>Close</Text> */}
+                <Icon name="close" color="#4D4D4D" size={24} />
+              </TouchableOpacity>
+            </View>
             <TextInput
               secureTextEntry
               style={styles.input}
@@ -267,6 +316,19 @@ const BizPartnerInfo = ({ route, navigation }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            <View style={styles.closeContainer}>
+              <Text></Text>
+              {/* Close Button */}
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setUsernameModalVisible(false)}
+              >
+                {/* <Text style={styles.submitButtonText}>Close</Text> */}
+                <Icon name="close" color="#4D4D4D" size={24} />
+              </TouchableOpacity>
+            </View>
+
+
             <TextInput
               style={styles.input}
               placeholder="Enter new username"
@@ -302,7 +364,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalView: {
-    width: "80%",
+    width: "90%",
     backgroundColor: "white",
     borderRadius: 20,
     padding: 20,
@@ -345,19 +407,25 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: "center",
   },
-  secondaryButton: {
-    backgroundColor: "#28a745", // Green color for the secondary button
+  suspendButton: {
+    backgroundColor: "#A54900", // Blue color for the primary button
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+    alignItems: "center",
   },
-  thirdButton: {
-    backgroundColor: "#FF0000",
-  },
-  fourthButton: {
-    backgroundColor: "#FFA500",
+  deleteButton: {
+    backgroundColor: "#A9A9A9", // Blue color for the primary button
+    padding: 10,
+    borderRadius: 10,
+    // marginBottom: 10,
+    alignItems: "center",
   },
   buttonText: {
     color: "white",
     fontSize: 16,
     textAlign: "center",
+    fontWeight: "bold",
   },
   container: {
     flex: 1,
@@ -380,13 +448,16 @@ const styles = StyleSheet.create({
   userInfo1: {
     fontSize: 16,
     marginBottom: 5,
+    width: "70%",
+    textAlign: "right",
   },
   detailBox: {
     //flex: 1,
     backgroundColor: "#FFFFFF",
     borderRadius: 20,
     padding: 20,
-    margin: 10,
+    marginVertical: 10,
+    marginHorizontal: 20,
     shadowColor: "#000000",
     shadowOffset: {
       width: 0,
@@ -408,7 +479,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   divider: {
     height: 1,
@@ -424,6 +495,11 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     backgroundColor: 'white',
+  },
+  closeContainer: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-between",
   },
 });
 
