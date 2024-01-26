@@ -1,28 +1,27 @@
+import { Picker } from "@react-native-picker/picker";
+import React, { useContext, useEffect, useState } from "react";
 import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-  ScrollView,
   Alert,
-  TouchableWithoutFeedback,
   Keyboard,
   SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View
 } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
-import { Picker } from "@react-native-picker/picker";
-import Icon from "react-native-vector-icons/FontAwesome";
 import { Button } from "react-native-paper";
+import Icon from "react-native-vector-icons/FontAwesome";
 import { Context } from "../../store/context";
 //import { ScrollView } from 'react-native-virtualized-view';
+import { useNavigation } from "@react-navigation/native";
 import {
-  fetchRecipes,
   fetchRecipeDetails,
+  fetchRecipes,
   fetchRecommendations,
 } from "../../services/Api";
-import { useNavigation } from "@react-navigation/native";
 //import { set } from "mongoose";
 //import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 //import MealScreen from "./MealScreen";

@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Image,
+  ImageBackground,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -8,13 +9,12 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ImageBackground,
 } from "react-native";
 import { TouchableRipple } from "react-native-paper";
+import * as Progress from "react-native-progress";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { fetchRandomRecipes, fetchRecommendations } from "../../services/Api";
 import { Context } from "../../store/context";
-import * as Progress from "react-native-progress";
 
 const HomeScreen = ({ navigation }) => {
   const [randomRecipes, setRandomRecipes] = useState([]);
@@ -50,7 +50,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const navigateToTrackProgressScreen = () => {
-    navigation.navigate("Track Progress");
+    navigation.navigate("Track Progressv2");
   };
 
   const navigateToAddRecipeScreen = () => {
@@ -271,7 +271,7 @@ const HomeScreen = ({ navigation }) => {
         <ScrollView style={styles.container}>
           <StatusBar backgroundColor="white" barStyle="dark-content" />
           <View style={styles.header}>
-            <Text style={styles.headerText}>NutriRizz Recipe App</Text>
+            <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
             <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
               <View style={styles.menuItem}>
                 <Icon name="scan-helper" color="#FF6347" size={25} />
@@ -279,20 +279,9 @@ const HomeScreen = ({ navigation }) => {
             </TouchableRipple>
           </View>
           <ImageBackground
-            source={require("../../assets/gradientHue.jpg")}
-            style={styles.backgroundImage}
+            backgroundColor="#F2F2F2"
           >
-            <ImageBackground
-              source={require("../../assets/recipe_image.png")}
-              style={styles.bannerImage}
-            >
-              <View style={styles.overlay}>
-                <Text style={styles.heyText}>Hello {currentUser.username}</Text>
-              </View>
-            </ImageBackground>
-
             <View style={styles.introSection}>
-              <Text style={styles.introHeader}>Welcome to NutriRizz</Text>
               <View style={styles.chartContainer}>
                 {loading ? (
                   <Text>Loading...</Text>
@@ -301,36 +290,38 @@ const HomeScreen = ({ navigation }) => {
                     <View
                       style={{ flexDirection: "row", alignItems: "center" }}
                     >
-                      <Icon name="target" size={20} color="green" />
-                      <Text style={[styles.progressText, { color: "black" }]}>
-                        Today's Calories Intake
-                      </Text>
+                      <TouchableOpacity
+                        onPress={navigateToSummaryScreen}
+                      >
+                        <Text style={[styles.progressText, { color: "#FF9130" }]}>
+                          Daily Intake
+                        </Text>
+                        <Progress.Bar
+                          progress={progress / 100}
+                          width={320}
+                          height={15}
+                          color={progressBarColor}
+                          borderColor="#black"
+                        />
+                        <Text
+                          style={[styles.progressText, { color: progressBarColor }]}
+                        >
+                          {Math.round(latestTotalCalories)} /{" "}
+                          {Math.round(latestUserData.calorie)} Cal consumed
+                        </Text>
+                      </TouchableOpacity>
                     </View>
-                    <Progress.Bar
-                      progress={progress / 100}
-                      width={320}
-                      height={15}
-                      color={progressBarColor}
-                      borderColor="#black"
-                    />
-                    <Text
-                      style={[styles.progressText, { color: progressBarColor }]}
-                    >
-                      {Math.round(latestTotalCalories)} /{" "}
-                      {Math.round(latestUserData.calorie)} Cal consumed
-                    </Text>
                   </>
                 )}
               </View>
-
               <View style={styles.insertSection}>
                 <View style={styles.insertImage}>
                   <TouchableOpacity
-                    style={styles.insertButton}
+                    style={styles.introButton}
                     onPress={navigateToCalculateCaloriesScreen}
                   >
                     <Image
-                      source={require("../../assets/calories_calculator.jpg")}
+                      source={require("../../assets/calories_calculator2.png")}
                       style={styles.introImageImage}
                     />
                     <Text style={styles.introImageText}>
@@ -339,9 +330,27 @@ const HomeScreen = ({ navigation }) => {
                   </TouchableOpacity>
                 </View>
                 <View style={styles.space} />
+
                 <View style={styles.insertImage}>
                   <TouchableOpacity
-                    style={styles.insertButton}
+                    style={styles.introButton}
+                    onPress={navigateToAddRecipeScreen}
+                  >
+                    <Image
+                      source={require("../../assets/share_recipe.png")}
+                      style={styles.introImageImage}
+                    />
+                    <Text style={styles.introImageText}>
+                      Share Your Recipes
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={styles.introImages}>
+                <View style={styles.introImage}>
+                  <TouchableOpacity
+                    style={styles.introButton}
                     onPress={navigateToInsertMedicalHistoryScreen}
                   >
                     <Image
@@ -353,9 +362,6 @@ const HomeScreen = ({ navigation }) => {
                     </Text>
                   </TouchableOpacity>
                 </View>
-              </View>
-
-              <View style={styles.introImages}>
                 <View style={styles.introImage}>
                   <TouchableOpacity
                     style={styles.introButton}
@@ -367,32 +373,6 @@ const HomeScreen = ({ navigation }) => {
                     />
                     <Text style={styles.introImageText}>
                       Track Your Progress
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.introImage}>
-                  <TouchableOpacity
-                    style={styles.introButton}
-                    onPress={navigateToSummaryScreen}
-                  >
-                    <Image
-                      source={require("../../assets/image1.png")}
-                      style={styles.introImageImage}
-                    />
-                    <Text style={styles.introImageText}>View Your Intakes</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.introImage}>
-                  <TouchableOpacity
-                    style={styles.introButton}
-                    onPress={navigateToAddRecipeScreen}
-                  >
-                    <Image
-                      source={require("../../assets/image2.png")}
-                      style={styles.introImageImage}
-                    />
-                    <Text style={styles.introImageText}>
-                      Share Your Recipes
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -636,7 +616,7 @@ const HomeScreen = ({ navigation }) => {
         <ScrollView style={styles.container}>
           <StatusBar backgroundColor="white" barStyle="dark-content" />
           <View style={styles.header}>
-            <Text style={styles.headerText}>NutriRizz Recipe App</Text>
+            <Text style={styles.headerText}>Hello, {currentUser.username}!</Text>
             <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
               <View style={styles.menuItem}>
                 <Icon name="scan-helper" color="#FF6347" size={25} />
@@ -868,11 +848,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
-  backgroundImage: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "center",
-  },
   header: {
     padding: 20,
     borderBottomWidth: 1,
@@ -893,8 +868,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderWidth: 1,
     padding: 10,
-    backgroundColor: "#FCFCD3",
-    borderRadius: 10,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
     borderColor: "#ccc",
   },
   progressText: {
@@ -927,24 +902,18 @@ const styles = StyleSheet.create({
   insertImage: {
     flex: 1,
     aspectRatio: 1,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  insertButton: {
-    backgroundColor: "#FCFCD3",
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    // borderWidth: 1,
+    // borderColor: "#ccc",
+    // borderRadius: 8,
+    // overflow: "hidden",
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 3.84,
+    // elevation: 5,
   },
   space: {
     width: 16,
@@ -971,7 +940,6 @@ const styles = StyleSheet.create({
   introImageImage: {
     width: 100,
     height: 100,
-    borderRadius: 50,
   },
   introImageText: {
     fontSize: 16,
@@ -981,9 +949,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   introButton: {
-    backgroundColor: "#FCFCD3",
+    backgroundColor: "#FFFFFF",
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 20,
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#ccc",
@@ -999,7 +967,7 @@ const styles = StyleSheet.create({
   startButton: {
     backgroundColor: "#0066cc",
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 20,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -1072,10 +1040,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 10,
+    borderRadius: 20,
     margin: 10,
     padding: 10,
-    backgroundColor: "#FCFCD3",
+    backgroundColor: "#FFFFFF",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -1088,7 +1056,7 @@ const styles = StyleSheet.create({
   communityRecipeImage: {
     width: 150,
     height: 150,
-    borderRadius: 10,
+    borderRadius: 20,
   },
   communityRecipeTitle: {
     marginTop: 10,
@@ -1127,160 +1095,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-
-// import React from "react";
-// import {
-//   View,
-//   Text,
-//   StyleSheet,
-//   Image,
-//   TouchableOpacity,
-//   ScrollView,
-// } from "react-native";
-
-// const HomeScreen = ({ navigation }) => {
-//   const navigateToCommunityRecipes = () => {
-//     // Navigate to the Community Recipes screen
-//     navigation.navigate("CommunityRecipes");
-//   };
-
-//   return (
-//     <ScrollView style={styles.container}>
-//       <View style={styles.header}>
-//         <Text style={styles.headerText}>My Recipe App</Text>
-//       </View>
-//       {/* <Image source={require('./assets/recipe_image.jpg')} style={styles.bannerImage} /> */}
-
-//       <View style={styles.featuredSection}>
-//         <Text style={styles.sectionHeader}>Featured Recipes</Text>
-//         {/* Display featured recipe cards */}
-//         <TouchableOpacity style={styles.featuredCard}>
-//           {/* <Image source={require('./assets/recipe1.jpg')} style={styles.featuredCardImage} /> */}
-//           <Text style={styles.featuredCardTitle}>Spaghetti Bolognese</Text>
-//         </TouchableOpacity>
-//         <TouchableOpacity style={styles.featuredCard}>
-//           {/* <Image source={require('./assets/recipe2.jpg')} style={styles.featuredCardImage} /> */}
-//           <Text style={styles.featuredCardTitle}>Chicken Alfredo</Text>
-//         </TouchableOpacity>
-//         {/* Add more featured recipe cards here */}
-//       </View>
-
-//       <View style={styles.communitySection}>
-//         <Text style={styles.sectionHeader}>Top Community Recipes</Text>
-//         {/* Display top community recipes */}
-//         <TouchableOpacity style={styles.communityRecipe}>
-//           {/* <Image source={require('./assets/recipe3.jpg')} style={styles.communityRecipeImage} /> */}
-//           <Text style={styles.communityRecipeTitle}>Veggie Stir-Fry</Text>
-//         </TouchableOpacity>
-//         <TouchableOpacity style={styles.communityRecipe}>
-//           {/* <Image source={require('./assets/recipe4.jpg')} style={styles.communityRecipeImage} /> */}
-//           <Text style={styles.communityRecipeTitle}>Homemade Pizza</Text>
-//         </TouchableOpacity>
-//         {/* Add more top community recipes here */}
-//       </View>
-
-//       {/* Button to navigate to Community Recipes */}
-//       <TouchableOpacity
-//         style={styles.button}
-//         onPress={navigateToCommunityRecipes}
-//       >
-//         <Text style={styles.buttonText}>Explore More Community Recipes</Text>
-//       </TouchableOpacity>
-
-//       <View style={styles.footer}>
-//         <Text style={styles.footerText}>© 2023 My Recipe App</Text>
-//       </View>
-//     </ScrollView>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: "#fff",
-//   },
-//   header: {
-//     padding: 20,
-//     borderBottomWidth: 1,
-//     borderBottomColor: "#ccc",
-//   },
-//   headerText: {
-//     fontSize: 24,
-//     fontWeight: "bold",
-//   },
-//   bannerImage: {
-//     width: "100%",
-//     height: 200,
-//   },
-//   sectionHeader: {
-//     fontSize: 20,
-//     fontWeight: "bold",
-//     margin: 20,
-//   },
-//   featuredSection: {
-//     marginBottom: 20,
-//   },
-//   featuredCard: {
-//     flexDirection: "column",
-//     alignItems: "center",
-//     borderWidth: 1,
-//     borderColor: "#ccc",
-//     borderRadius: 10,
-//     margin: 10,
-//     padding: 10,
-//   },
-//   featuredCardImage: {
-//     width: 150,
-//     height: 150,
-//     borderRadius: 10,
-//   },
-//   featuredCardTitle: {
-//     marginTop: 10,
-//     fontSize: 16,
-//     fontWeight: "bold",
-//   },
-//   communitySection: {
-//     marginBottom: 20,
-//   },
-//   communityRecipe: {
-//     flexDirection: "column",
-//     alignItems: "center",
-//     borderWidth: 1,
-//     borderColor: "#ccc",
-//     borderRadius: 10,
-//     margin: 10,
-//     padding: 10,
-//   },
-//   communityRecipeImage: {
-//     width: 150,
-//     height: 150,
-//     borderRadius: 10,
-//   },
-//   communityRecipeTitle: {
-//     marginTop: 10,
-//     fontSize: 16,
-//     fontWeight: "bold",
-//   },
-//   button: {
-//     backgroundColor: "#0066cc",
-//     padding: 10,
-//     borderRadius: 10,
-//     margin: 20,
-//     alignItems: "center",
-//   },
-//   buttonText: {
-//     color: "#fff",
-//     fontSize: 16,
-//     fontWeight: "bold",
-//   },
-//   footer: {
-//     padding: 10,
-//     backgroundColor: "#333",
-//     alignItems: "center",
-//   },
-//   footerText: {
-//     color: "#fff",
-//   },
-// });
-
-// export default HomeScreen;
