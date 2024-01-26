@@ -662,13 +662,6 @@ export default function ViewRecipeInfoScreen({ route }) {
                 </View>
             </View>
 
-            <View style={styles.infoContainer}>
-              <View style={styles.detailContainer}>
-                <Image source={require("../../assets/person-placeholder.jpg")} style={styles.userImage} />
-                <Text>By {username}</Text>
-              </View>
-            </View>
-
             {currentUser.foodRestrictions.length > 0 && (
               <View style={styles.detailBox}>
                 <Text style={styles.subTitle}>Disclaimer: </Text>
@@ -781,9 +774,6 @@ export default function ViewRecipeInfoScreen({ route }) {
 }
 
 const styles = StyleSheet.create({
-  reasonsContainer: {
-    justifyContent: "flex-start",
-  },
   container: {
     flex: 1,
     padding: 20,
@@ -878,12 +868,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginRight: 10,
   },  
-  detailContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    margin: 10,
-    padding: 16,
-  },
   detailBox: {
     flex: 1,
     backgroundColor: "#FFFFFF",
