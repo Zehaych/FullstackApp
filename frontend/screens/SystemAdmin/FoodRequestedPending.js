@@ -267,10 +267,6 @@ const styles = StyleSheet.create({
         elevation: 5,
         width: '90%', // Adjust as needed
     },
-    modalText: {
-        marginBottom: 15,
-        textAlign: 'center',
-    },
     input: {
         height: 40,
         margin: 10,
@@ -293,30 +289,13 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
         fontSize: 16,
-    },
-    buttonText: {
-        textAlign: "center",
-        color: "white",
-        fontSize: 16,
+        fontWeight: "bold"
     },
     touchableContainer: {
         paddingHorizontal: 10,
         width: '100%', // Adjust as needed
         //backgroundColor: "green",
     },
-    button: {
-        backgroundColor: "#007bff", // Blue color for the primary button
-        padding: 10,
-        borderRadius: 5,
-        marginBottom: 10,
-        alignItems: "center",
-      },
-    secondButton: {
-        backgroundColor: "green",
-    },
-    thirdButton: {
-        backgroundColor: "#FF0000",
-      },
     container: {
         marginTop: 10,
         backgroundColor: '#f5f5f5',
@@ -343,10 +322,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 5,
     },
-    subtitle: {
-        fontSize: 20,
-        marginBottom: 5,
-    },  
     status1: {
         fontSize: 16,
         //fontStyle: 'italic',

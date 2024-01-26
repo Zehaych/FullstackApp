@@ -163,14 +163,14 @@ export default function BizPartnerSignUp() {
 const styles = StyleSheet.create({
   container:{
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f5f5f5",
   },
   detailBox: {
     //flex: 1,
     backgroundColor: "#FFFFFF",
     borderRadius: 20,
-    padding: 20,
-    margin: 10,
+    padding: 16,
+    margin: 20,
     shadowColor: "#000000",
     shadowOffset: {
       width: 0,
@@ -194,12 +194,13 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "#ED6F21",
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 10,
   },
   text: {
     fontSize: 16,
     color: "#fff",
     textAlign: "center",
+    fontWeight: "bold",
   },
   subtitle: {
     fontSize:18,

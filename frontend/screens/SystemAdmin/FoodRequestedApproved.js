@@ -8,15 +8,15 @@ const FoodRequestedApproved = () => {
     const [foodRequests, setFoodRequests] = useState([]);
     const [approveRequests, setApproveRequests] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [currentUser, setCurrentUser] = useContext(Context);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [currentRequest, setCurrentRequest] = useState(null);
-    const [nutritionInfo, setNutritionInfo] = useState({
-        calories: '',
-        protein: '',
-        fats: '',
-        carbs: ''
-    });
+    // const [currentUser, setCurrentUser] = useContext(Context);
+    // const [modalVisible, setModalVisible] = useState(false);
+    // const [currentRequest, setCurrentRequest] = useState(null);
+    // const [nutritionInfo, setNutritionInfo] = useState({
+    //     calories: '',
+    //     protein: '',
+    //     fats: '',
+    //     carbs: ''
+    // });
 
 
     useEffect(() => {
@@ -49,98 +49,98 @@ const FoodRequestedApproved = () => {
     };
 
 
-    const rejectFoodRequest = async (requestId) => {
-        try {
-            const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/foodrequest/rejectFoodRequest/${requestId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
+    // const rejectFoodRequest = async (requestId) => {
+    //     try {
+    //         const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/foodrequest/rejectFoodRequest/${requestId}`, {
+    //             method: 'PUT',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             }
+    //         });
     
-            if (response.ok) {
-                alert('Food request rejected successfully');
-                fetchFoodRequests();
-            } else {
-                alert('Failed to reject food request');
-            }
-        } catch (error) {
-            console.error('Error rejecting food request:', error);
-            alert('Error occurred while rejecting food request');
-        }
-    };
+    //         if (response.ok) {
+    //             alert('Food request rejected successfully');
+    //             fetchFoodRequests();
+    //         } else {
+    //             alert('Failed to reject food request');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error rejecting food request:', error);
+    //         alert('Error occurred while rejecting food request');
+    //     }
+    // };
 
-    const approveFoodRequest = async (requestId) => {
-        try {
-            const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/foodrequest/approveFoodRequest/${requestId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
+    // const approveFoodRequest = async (requestId) => {
+    //     try {
+    //         const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/foodrequest/approveFoodRequest/${requestId}`, {
+    //             method: 'PUT',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             }
+    //         });
     
-            if (!response.ok) {
-                throw new Error('Failed to approve food request');
-            }
+    //         if (!response.ok) {
+    //             throw new Error('Failed to approve food request');
+    //         }
     
-            const result = await response.json();
-            console.log('Food request approved:', result);
-        } catch (error) {
-            console.error('Error approving food request:', error);
-        }
-    };
+    //         const result = await response.json();
+    //         console.log('Food request approved:', result);
+    //     } catch (error) {
+    //         console.error('Error approving food request:', error);
+    //     }
+    // };
 
 
-    const postToFoodAndDrinks = async (nutritionInfo) => {
-        try {
-            const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/foodanddrinks/addFoodAndDrink`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(nutritionInfo)
-            });
+    // const postToFoodAndDrinks = async (nutritionInfo) => {
+    //     try {
+    //         const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/foodanddrinks/addFoodAndDrink`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(nutritionInfo)
+    //         });
     
-            const result = await response.json();
-            if (response.ok) {
-                console.log('Added to foodanddrinks:', result);
-                return true;
-            } else if (response.status === 400 && result.message.includes("already exists")) {
-                throw new Error(result.message);
-            } else {
-                throw new Error('Failed to add food to foodanddrinks collection');
-            }
-        } catch (error) {
-            console.error('Error posting to foodanddrinks:', error);
-            alert(error.message);
-        }
-    };
+    //         const result = await response.json();
+    //         if (response.ok) {
+    //             console.log('Added to foodanddrinks:', result);
+    //             return true;
+    //         } else if (response.status === 400 && result.message.includes("already exists")) {
+    //             throw new Error(result.message);
+    //         } else {
+    //             throw new Error('Failed to add food to foodanddrinks collection');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error posting to foodanddrinks:', error);
+    //         alert(error.message);
+    //     }
+    // };
         
     
-    const openModal = (request) => {
-        setCurrentRequest(request);
-        setModalVisible(true);
-    };
+    // const openModal = (request) => {
+    //     setCurrentRequest(request);
+    //     setModalVisible(true);
+    // };
 
-    const handleConfirm = async () => {
-        const foodData = {
-            name: currentRequest.name, 
-            ...nutritionInfo
-        };
+    // const handleConfirm = async () => {
+    //     const foodData = {
+    //         name: currentRequest.name, 
+    //         ...nutritionInfo
+    //     };
         
-        const success = await postToFoodAndDrinks(foodData);
-        if (success) {
-        await approveFoodRequest(currentRequest._id);
-        setModalVisible(false);
-        fetchFoodRequests();
-        } else {
-        setModalVisible(false);
-        fetchFoodRequests(); // Refresh the list
-        }
-    };
-    const closeModal = () => {
-        setModalVisible(false);
-    };
+    //     const success = await postToFoodAndDrinks(foodData);
+    //     if (success) {
+    //     await approveFoodRequest(currentRequest._id);
+    //     setModalVisible(false);
+    //     fetchFoodRequests();
+    //     } else {
+    //     setModalVisible(false);
+    //     fetchFoodRequests(); // Refresh the list
+    //     }
+    // };
+    // const closeModal = () => {
+    //     setModalVisible(false);
+    // };
     
 
     return (
@@ -169,79 +169,6 @@ const FoodRequestedApproved = () => {
 };
 
 const styles = StyleSheet.create({
-    centeredView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        // marginTop: 20,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-    },
-    modalView: {
-        // margin: 20,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 20,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-        width: '90%', // Adjust as needed
-    },
-    modalText: {
-        marginBottom: 15,
-        textAlign: 'center',
-    },
-    input: {
-        height: 40,
-        margin: 10,
-        borderWidth: 1,
-        padding: 10,
-        width: '100%', // Adjust as needed
-        borderRadius: 5,
-        borderColor: '#ccc',
-    },
-    confirmButton: {
-        //backgroundColor: '#2196F3',
-        backgroundColor: '#ED6F21',
-        borderRadius: 10,
-        padding: 10,
-        elevation: 2,
-        marginTop: 10,
-        width: '100%', // Adjust as needed
-    },
-    confirmButtonText: {
-        color: 'white',
-        textAlign: 'center',
-        fontSize: 16,
-    },
-    buttonText: {
-        textAlign: "center",
-        color: "white",
-        fontSize: 16,
-    },
-    touchableContainer: {
-        paddingHorizontal: 10,
-        width: '100%', // Adjust as needed
-        //backgroundColor: "green",
-    },
-    button: {
-        backgroundColor: "#007bff", // Blue color for the primary button
-        padding: 10,
-        borderRadius: 5,
-        marginBottom: 10,
-        alignItems: "center",
-      },
-    secondButton: {
-        backgroundColor: "green",
-    },
-    thirdButton: {
-        backgroundColor: "#FF0000",
-      },
     container: {
         marginTop: 10,
         backgroundColor: '#f5f5f5',
@@ -269,10 +196,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 5,
     },
-    subtitle: {
-        fontSize: 20,
-        marginBottom: 5,
-    },  
     status1: {
         fontSize: 16,
         //fontStyle: 'italic',
@@ -288,31 +211,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 10,
-    },
-    buttonContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 10,
-        width: '100%', // Adjust as needed
-    },
-    componentContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginVertical: 10,
-        width: '100%', // Adjust as needed
-    },
-    title2: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    confirmButton2: {
-        //backgroundColor: '#2196F3',
-        backgroundColor: '#A9A9A9',
-        borderRadius: 10,
-        padding: 10,
-        elevation: 2,
-        marginTop: 10,
-        width: '100%', // Adjust as needed
     },
 });
 

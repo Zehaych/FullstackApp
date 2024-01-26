@@ -173,30 +173,36 @@ const FoodAndDrinksInfo = () => {
     const renderItem = ({ item }) => (
         <View style={styles.detailBox}>
             <Text style={styles.title}>{item.name}</Text>
+
             <View style={styles.componentContainer}>
                 <Text style={styles.subtitle1}>Calories</Text>
                 <Text style={styles.subtitle}>{item.calories} kcal</Text>
             </View>
+
             <View style={styles.componentContainer}>
                 <Text style={styles.subtitle1}>Protein</Text>
                 <Text style={styles.subtitle}>{item.protein} g</Text>
             </View>
+
             <View style={styles.componentContainer}>
                 <Text style={styles.subtitle1}>Fats</Text>
                 <Text style={styles.subtitle}>{item.fats} g</Text>
             </View>
+
             <View style={styles.componentContainer}>
                 <Text style={styles.subtitle1}>Carbs</Text>
                 <Text style={styles.subtitle}>{item.carbs} g</Text>
             </View>
 
-            <TouchableOpacity style={styles.button} onPress={() => openUpdateModal(item)}>
-                <Text style={styles.buttonText}>Update</Text>
-            </TouchableOpacity>
-    
-            <TouchableOpacity style={styles.deleteButton} onPress={() => openDeleteModal(item._id)}>
-                <Text style={styles.buttonText}>Delete</Text>
-            </TouchableOpacity>
+            <View style={styles.updateContainer}>
+                <TouchableOpacity style={styles.button} onPress={() => openUpdateModal(item)}>
+                    <Text style={styles.buttonText}>Update</Text>
+                </TouchableOpacity>
+        
+                <TouchableOpacity style={styles.deleteButton} onPress={() => openDeleteModal(item._id)}>
+                    <Text style={styles.buttonText}>Delete</Text>
+                </TouchableOpacity>
+            </View>
 
 
             <Modal
@@ -204,131 +210,134 @@ const FoodAndDrinksInfo = () => {
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => setModalVisible(false)}
-        >
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <TextInput
-                        secureTextEntry
-                        style={styles.input}
-                        placeholder="Enter Admin Password"
-                        value={adminPassword}
-                        onChangeText={setAdminPassword}
-                    />
-                    <View style = {styles.buttonContainer}>
-                    <TouchableOpacity
-                        style={styles.modalButtonSubmit}
-                        onPress={() => {
-                            setModalVisible(false);
-                            validateAndDeleteFoodAndDrinks();
-                        }}
-                    >
-                    <Text style={styles.buttonText}>Confirm</Text>
-                    </TouchableOpacity>
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <TextInput
+                            secureTextEntry
+                            style={styles.input}
+                            placeholder="Enter Admin Password"
+                            value={adminPassword}
+                            onChangeText={setAdminPassword}
+                        />
+                        
+                        <View style = {styles.buttonContainer}>
+                            <TouchableOpacity
+                                style={styles.modalButtonSubmit}
+                                onPress={() => {
+                                    setModalVisible(false);
+                                    validateAndDeleteFoodAndDrinks();
+                                }}
+                            >
+                                <Text style={styles.buttonText}>Confirm</Text>
+                            </TouchableOpacity>
 
-                    <TouchableOpacity
-                        style={styles.modalButtonDelete}
-                        onPress={() => {
-                            setModalVisible(false);
-                        }}
-                    >
-                        <Text style={styles.buttonText}>Close</Text>
-                    </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.modalButtonDelete}
+                                onPress={() => {
+                                    setModalVisible(false);
+                                }}
+                            >
+                                <Text style={styles.buttonText}>Close</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-            </View>
-        </Modal>
+            </Modal>
 
-        {updateModalVisible && (
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={updateModalVisible}
-            onRequestClose={() => setUpdateModalVisible(false)}
-        >
-        <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-                {/* TextInput for Name */}
-                <Text style={styles.subtitle}>Name</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Name"
-                    value={updateData.name}
-                    onChangeText={(text) => setUpdateData({...updateData, name: text})}
-                />
+            {updateModalVisible && (
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={updateModalVisible}
+                onRequestClose={() => setUpdateModalVisible(false)}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        {/* TextInput for Name */}
+                        <Text style={styles.subtitle}>Name</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Name"
+                            value={updateData.name}
+                            onChangeText={(text) => setUpdateData({...updateData, name: text})}
+                        />
 
-                {/* TextInput for Calories */}
-                <Text style={styles.subtitle}>Calories</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Calories"
-                    value={updateData.calories ? updateData.calories.toString() : ''}
-                    onChangeText={(text) => setUpdateData({...updateData, calories: text})}
-                    keyboardType="numeric"
-                />
+                        {/* TextInput for Calories */}
+                        <Text style={styles.subtitle}>Calories</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Calories"
+                            value={updateData.calories ? updateData.calories.toString() : ''}
+                            onChangeText={(text) => setUpdateData({...updateData, calories: text})}
+                            keyboardType="numeric"
+                        />
 
-                {/* TextInput for Protein */}
-                <Text style={styles.subtitle}>Protein</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Protein"
-                    value={updateData.protein ? updateData.protein.toString() : ''}
-                    onChangeText={(text) => setUpdateData({...updateData, protein: text})}
-                    keyboardType="numeric"
-                />
+                        {/* TextInput for Protein */}
+                        <Text style={styles.subtitle}>Protein</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Protein"
+                            value={updateData.protein ? updateData.protein.toString() : ''}
+                            onChangeText={(text) => setUpdateData({...updateData, protein: text})}
+                            keyboardType="numeric"
+                        />
 
-                {/* TextInput for Fats */}
-                <Text style={styles.subtitle}>Fats</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Fats"
-                    value={updateData.fats ? updateData.fats.toString() : ''}
-                    onChangeText={(text) => setUpdateData({...updateData, fats: text})}
-                    keyboardType="numeric"
-                />
+                        {/* TextInput for Fats */}
+                        <Text style={styles.subtitle}>Fats</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Fats"
+                            value={updateData.fats ? updateData.fats.toString() : ''}
+                            onChangeText={(text) => setUpdateData({...updateData, fats: text})}
+                            keyboardType="numeric"
+                        />
 
-                {/* TextInput for Carbs */}
-                <Text style={styles.subtitle}>Carbs</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Carbs"
-                    value={updateData.carbs ? updateData.carbs.toString() : ''}
-                    onChangeText={(text) => setUpdateData({...updateData, carbs: text})}
-                    keyboardType="numeric"
-                />
+                        {/* TextInput for Carbs */}
+                        <Text style={styles.subtitle}>Carbs</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Carbs"
+                            value={updateData.carbs ? updateData.carbs.toString() : ''}
+                            onChangeText={(text) => setUpdateData({...updateData, carbs: text})}
+                            keyboardType="numeric"
+                        />
 
-                <View style = {styles.buttonContainer}>
-                <TouchableOpacity 
-                    style={styles.modalButtonSubmit} 
-                    onPress={handleUpdateConfirm}
-                >
-                    <Text style={styles.buttonText}>Confirm</Text>
-                </TouchableOpacity>
+                        <View style = {styles.buttonContainer}>
+                            <TouchableOpacity 
+                                style={styles.modalButtonSubmit} 
+                                onPress={handleUpdateConfirm}
+                            >
+                                <Text style={styles.buttonText}>Confirm</Text>
+                            </TouchableOpacity>
 
-                <TouchableOpacity 
-                    style={styles.modalButtonDelete} 
-                    onPress={handleCloseModalUpdate}
-                >
-                    <Text style={styles.buttonText}>Close</Text>
-                </TouchableOpacity>
+                            <TouchableOpacity 
+                                style={styles.modalButtonDelete} 
+                                onPress={handleCloseModalUpdate}
+                            >
+                                <Text style={styles.buttonText}>Close</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
-            </View>
+            </Modal>
+            )}
         </View>
-        </Modal>
-        )}
-    </View>
     );
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.addbutton} onPress={() => setAddFoodModalVisible(true)}>
-                <Text style={styles.buttonText}> + Add New Food and Drink </Text>
-            </TouchableOpacity>
-
             <FlatList
                 data={foodAndDrinks}
                 keyExtractor={item => item._id}
                 renderItem={renderItem}
             />
+
+            <View style={styles.addButtonContainer}>
+                <TouchableOpacity style={styles.addbutton} onPress={() => setAddFoodModalVisible(true)}>
+                    <Text style={styles.buttonText}> + Add New Food and Drink </Text>
+                </TouchableOpacity> 
+            </View>
 
             <Modal
                 animationType="slide"
@@ -345,6 +354,7 @@ const FoodAndDrinksInfo = () => {
                             value={name} 
                             onChangeText={setName} 
                         />
+                        
                         <Text style={styles.subtitle}>Calories</Text>
                         <TextInput 
                             style={styles.input} 
@@ -353,6 +363,7 @@ const FoodAndDrinksInfo = () => {
                             onChangeText={setCalories} 
                             keyboardType="numeric" 
                         />
+                        
                         <Text style={styles.subtitle}>Protein</Text>
                         <TextInput style={styles.input} 
                             placeholder="Protein" 
@@ -360,6 +371,7 @@ const FoodAndDrinksInfo = () => {
                             onChangeText={setProtein} 
                             keyboardType="numeric" 
                         />
+                        
                         <Text style={styles.subtitle}>Fats</Text>
                         <TextInput 
                             style={styles.input} 
@@ -368,6 +380,7 @@ const FoodAndDrinksInfo = () => {
                             onChangeText={setFats} 
                             keyboardType="numeric" 
                         />
+                        
                         <Text style={styles.subtitle}>Carbs</Text>
                         <TextInput 
                             style={styles.input} 
@@ -381,6 +394,7 @@ const FoodAndDrinksInfo = () => {
                             <TouchableOpacity style={styles.modalButtonSubmit} onPress={addFoodAndDrink}>
                                 <Text style={styles.buttonText}>Submit</Text>
                             </TouchableOpacity>
+                            
                             <TouchableOpacity style={styles.modalButtonDelete} onPress={() => setAddFoodModalVisible(false)}>
                                 <Text style={styles.buttonText}>Close</Text>
                             </TouchableOpacity>
@@ -407,8 +421,7 @@ const styles = StyleSheet.create({
         padding: 10, // Inner padding
         fontSize: 16, // Text size
         backgroundColor: '#fff', // White background
-        marginBottom: 10, // Space between each input
-        marginTop: 10,
+        marginVertical: 10,
     },
     centeredView: {
         flex: 1,
@@ -417,7 +430,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)', 
     },
     modalView: {
-        width: '80%', 
+        width: '90%', 
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 20,
@@ -449,31 +462,45 @@ const styles = StyleSheet.create({
         marginTop: 10,
         width: '100%', // Adjust as needed
     },
+    updateContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        // padding: 16,
+        gap: 8,
+        // backgroundColor: "white",
+    },
     addbutton:{
         backgroundColor: '#ED6F21',
         padding: 10,
-        borderRadius: 5,
+        borderRadius: 10,
         marginTop: 10,
         marginBottom: 10,
         alignItems: 'center',
         marginHorizontal: 20,
     },
+    addButtonContainer: {
+        backgroundColor: "white",
+    },
     button: {
         backgroundColor: '#ED6F21',
         padding: 10,
-        borderRadius: 5,
+        borderRadius: 10,
         marginTop: 10,
         alignItems: 'center',
+        flex: 1,
     },
     deleteButton: {
         backgroundColor: '#A9A9A9',
         padding: 10,
-        borderRadius: 5,
+        borderRadius: 10,
         marginTop: 10,
         alignItems: 'center',
+        flex: 1,
     },
     buttonText: {
         color: 'white',
+        fontWeight: "bold",
     },
     detailBox: {
         //flex: 1,
@@ -500,8 +527,8 @@ const styles = StyleSheet.create({
     modalButtonSubmit: {
         backgroundColor: '#ED6F21',
         padding: 10,
-        borderRadius: 5,
-        marginTop: 10,
+        borderRadius: 10,
+        // marginTop: 10,
         alignItems: 'center',
         marginHorizontal: 10,
         width: '100%', // Adjust as needed
@@ -509,7 +536,7 @@ const styles = StyleSheet.create({
     modalButtonDelete: {
         backgroundColor: '#A9A9A9',
         padding: 10,
-        borderRadius: 5,
+        borderRadius: 10,
         marginTop: 10,
         alignItems: 'center',
         marginHorizontal: 10,

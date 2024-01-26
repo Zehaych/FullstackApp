@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { View, Text, Modal, StyleSheet, Button, TouchableOpacity, TextInput, Alert, Image } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Context } from "../../store/context";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const UserInfo = ({ route, navigation }) => {
   const { user } = route.params; // Retrieve the user data passed from the previous screen
@@ -155,13 +156,19 @@ const UserInfo = ({ route, navigation }) => {
           <Text style={styles.userInfo}>Status</Text>
           <Text style={styles.userInfo1}>{userData.isActive ? "Active" : "Suspended"}</Text>
         </View>
-        <View style={styles.buttonContainer}>
+
+
+        {/* <View style={styles.buttonContainer}>
+
           <TouchableOpacity
             style={[styles.button]}
             onPress={() => suspendUser(userData._id)}
           >
             <Text style={styles.buttonText}>Suspend User</Text>
           </TouchableOpacity>
+
+
+
           <TouchableOpacity
             style={styles.button}
             onPress={() => unsuspendUser(userData._id)}
@@ -172,36 +179,69 @@ const UserInfo = ({ route, navigation }) => {
           <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
             <Text style={styles.buttonText}>Delete User</Text>
           </TouchableOpacity>
+        </View> */}
+
+        <View style={styles.buttonContainer}>
+          {userData.isActive ? (
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => suspendUser(userData._id)}
+            >
+              <Text style={styles.buttonText}>Suspend User</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => unsuspendUser(userData._id)}
+            >
+              <Text style={styles.buttonText}>Reactivate User</Text>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity style={styles.deleteButton} onPress={() => setModalVisible(true)}>
+            <Text style={styles.buttonText}>Delete User</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
       <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
-        >
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <TextInput
-                        secureTextEntry
-                        style={styles.input}
-                        placeholder="Enter Admin Password"
-                        value={adminPassword}
-                        onChangeText={setAdminPassword}
-                    />
-                    <TouchableOpacity
-                        style={styles.confirmButton}
-                        onPress={() => {
-                            setModalVisible(false);
-                            validateAndDeleteUser();
-                        }}
-                    >
-                        <Text style={styles.buttonText}>Confirm</Text>
-                    </TouchableOpacity>
-                </View>
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View style={styles.closeContainer}>
+              <Text></Text>
+              {/* Close Button */}
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                {/* <Text style={styles.submitButtonText}>Close</Text> */}
+                <Icon name="close" color="#4D4D4D" size={24} />
+              </TouchableOpacity>
             </View>
-        </Modal>
+            <TextInput
+                secureTextEntry
+                style={styles.input}
+                placeholder="Enter Admin Password"
+                value={adminPassword}
+                onChangeText={setAdminPassword}
+            />
+            <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={() => {
+                    setModalVisible(false);
+                    validateAndDeleteUser();
+                }}
+            >
+              <Text style={styles.buttonText}>Confirm</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -219,7 +259,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalView: {
-      width: '80%', 
+      width: '90%', 
       backgroundColor: 'white',
       borderRadius: 20,
       padding: 20,
@@ -253,22 +293,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: "center",
   },
-  secondaryButton: {
-    backgroundColor: "#28a745", // Green color for the secondary button
-  },
-  thirdButton: {
-    backgroundColor: "#FF0000",
+  deleteButton: {
+    backgroundColor: "#A9A9A9", // Blue color for the primary button
+    padding: 10,
+    borderRadius: 10,
+    // marginBottom: 10,
+    alignItems: "center",
   },
   buttonText: {
     color: "white",
     fontSize: 16,
     textAlign: "center",
+    fontWeight: "bold",
   },
   container: {
     flex: 1,
-    //marginTop: 40,
-    //alignItems: "center", // Center content horizontally
-    //padding: 10,
     backgroundColor: "#f5f5f5",
   },
   infoTitle: {
@@ -285,13 +324,16 @@ const styles = StyleSheet.create({
   userInfo1: {
     fontSize: 16,
     marginBottom: 5,
+    width: "70%",
+    textAlign: "right",
   },
   detailBox: {
     //flex: 1,
     backgroundColor: "#FFFFFF",
     borderRadius: 20,
     padding: 20,
-    margin: 10,
+    marginVertical: 10,
+    marginHorizontal: 20,
     shadowColor: "#000000",
     shadowOffset: {
       width: 0,
@@ -313,7 +355,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   divider: {
     height: 1,
@@ -338,6 +380,11 @@ const styles = StyleSheet.create({
     elevation: 2,
     marginTop: 10,
     width: '100%', // Adjust as needed
+  },
+  closeContainer: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-between",
   },
 });
 

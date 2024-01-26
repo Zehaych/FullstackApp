@@ -235,7 +235,7 @@ function App() {
           <Stack.Screen
             name="Business Recipe Info"
             component={ViewBizRecipeInfoScreen}
-            options={{ headerTransparent: true, headerTitle: "" }}
+            options={{ headerTitle: "" }}
           />
 
           <Stack.Screen name="View Orders" component={ViewOrdersScreen} />
