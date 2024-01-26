@@ -14,6 +14,8 @@ import {
 import { TouchableRipple } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
+import RNPickerSelect from 'react-native-picker-select';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const window = Dimensions.get("window");
 
@@ -150,16 +152,29 @@ const TDEEScreen = () => {
         />
 
         <Text style={styles.radioLabel}>Gender</Text>
+        
         <View style={styles.dropdown}>
-          <Picker
-            style={styles.picker}
-            selectedValue={gender}
+          <RNPickerSelect
             onValueChange={(itemValue) => setGender(itemValue)}
-          >
-            <Picker.Item label="Select Gender" value="" color="#808080" />
-            <Picker.Item label="Male" value="Male" />
-            <Picker.Item label="Female" value="Female" />
-          </Picker>
+            items={[
+              { label: "Male", value: "Male" },
+              { label: "Female", value: "Female" },
+            ]}
+            style={{
+                inputIOS: { height: 50, width: "100%", paddingHorizontal: 16, fontSize:16, },
+                inputAndroid: { height: 50, width: "100%", paddingHorizontal: 16, fontSize:16, },
+                placeholder: { color: '#676767', fontSize:16, },
+                iconContainer: { 
+                  top: 15, right: 18
+                },
+            }}
+            value={gender}
+            placeholder={{ label: "Select Gender", value: null, color: '#808080' }}
+            useNativeAndroidPickerStyle={false}
+            Icon={() => {
+              return <Icon name="sort-down" size={16} color="#676767" />;
+            }}
+          />
         </View>
 
         <Text style={styles.radioLabel}>Weight</Text>
@@ -184,35 +199,59 @@ const TDEEScreen = () => {
         
         <Text style={styles.radioLabel}>Activity level</Text>
         <View style={styles.dropdown}>
-          <Picker
-            style={styles.picker}
-            selectedValue={activityLevel}
+          <RNPickerSelect
             onValueChange={(itemValue) => setActivityLevel(itemValue)}
-          >
-            <Picker.Item label="Select Activity Level" value="" color="#808080" />
-            <Picker.Item label="Sedentary" value="sedentary" />
-            <Picker.Item label="Lightly Active" value="lightly-active" />
-            <Picker.Item label="Moderately Active" value="moderately-active" />
-            <Picker.Item label="Very Active" value="very-active" />
-            <Picker.Item label="Extra Active" value="extra-active" />
-          </Picker>
+            items={[
+              { label: "Sedentary", value: "sedentary" },
+              { label: "Lightly Active", value: "lightly-active" },
+              { label: "Moderately Active", value: "moderately-active" },
+              { label: "Very Active", value: "very-active" },
+              { label: "Extra Active", value: "extra-active" },
+            ]}
+            style={{
+                inputIOS: { height: 50, width: "100%", paddingHorizontal: 16, fontSize:16, },
+                inputAndroid: { height: 50, width: "100%", paddingHorizontal: 16, fontSize:16, },
+                placeholder: { color: '#676767', fontSize:16, },
+                iconContainer: { 
+                  top: 15, right: 18
+                },
+            }}
+            value={activityLevel}
+            placeholder={{ label: "Select Activity Level", value: null, color: '#808080' }}
+            useNativeAndroidPickerStyle={false}
+            Icon={() => {
+              return <Icon name="sort-down" size={16} color="#676767" />;
+            }}
+          />
         </View>
 
         <Text style={styles.radioLabel}>Goal</Text>
         <View style={styles.dropdown}>
-          <Picker
-            style={styles.picker}
-            selectedValue={goal}
+          
+          <RNPickerSelect
             onValueChange={(itemValue) => setGoal(itemValue)}
-          >
-            <Picker.Item label="Select Goal" value="" color="#808080" />
-            <Picker.Item label="Lose Weight" value="lose" />
-            <Picker.Item label="Maintain Weight" value="maintain" />
-            <Picker.Item label="Gain Weight" value="gain" />
-          </Picker>
+            items={[
+              { label: "Lose Weight", value: "lose" },
+              { label: "Maintain Weight", value: "maintain" },
+              { label: "Gain Weight", value: "gain" },
+            ]}
+            style={{
+                inputIOS: { height: 50, width: "100%", paddingHorizontal: 16, fontSize:16, },
+                inputAndroid: { height: 50, width: "100%", paddingHorizontal: 16, fontSize:16, },
+                placeholder: { color: '#676767', fontSize:16, },
+                iconContainer: { 
+                  top: 15, right: 18
+                },
+            }}
+            value={goal}
+            placeholder={{ label: "Select Goal", value: null, color: '#808080' }}
+            useNativeAndroidPickerStyle={false}
+            Icon={() => {
+              return <Icon name="sort-down" size={16} color="#676767" />;
+            }}
+          />
         </View>
 
-        <Text style={styles.radioLabel}></Text>
         <View style={styles.dailyIntake}>
           <Text style={styles.result1}>Daily Intake: </Text>
           <Text style={styles.result2}> {tdee} kcal </Text>
@@ -263,9 +302,6 @@ const styles = StyleSheet.create({
     color: "#000000",
     borderColor: "#ccc",
     fontSize: 16, // Adjust font size
-  },
-  picker: {
-
   },
   dropdown: {
     borderColor: "#ccc",

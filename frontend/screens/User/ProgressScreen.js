@@ -447,7 +447,6 @@ const ProgressScreen = () => {
           {/* dropdown to choose meal */}
           <View style={styles.pickerContainer}>
             <Text style={styles.mealSelector}>Choose meal to add</Text>
-            <Picker
               selectedValue={selectedDropdownValue}
               onValueChange={(itemValue) => {
                 setSelectedDropdownValue(itemValue);

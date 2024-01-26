@@ -353,7 +353,7 @@ const ViewOrdersScreen = () => {
               placeholder={{ label: "Select status", value: null, color: '#676767' }}
               useNativeAndroidPickerStyle={false}
               Icon={() => {
-                return <Icon name="chevron-down" size={16} color="#676767" />;
+                return <Icon name="sort-down" size={16} color="#676767" />;
               }}
           />
       </View>
@@ -529,7 +529,7 @@ const styles = StyleSheet.create({
   pickerContainer: {
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 10,
+    borderRadius: 5,
     marginBottom: 10,
     justifyContent: "center",
   },
