@@ -145,7 +145,7 @@ const ReportDailyScreen = () => {
           </View>
           <View style={styles.componentContainer}>
             <Text style={styles.subtitle1}>Most Ordered</Text>
-            <Text style={styles.subtitle}>{mostOrderedRecipes.join(", ")}</Text>
+            <Text style={styles.subtitle}>{mostOrderedRecipes.join("\n")}</Text>
           </View>
         </View>
 
