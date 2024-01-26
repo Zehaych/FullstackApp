@@ -285,8 +285,8 @@ const ViewOrdersScreen = () => {
           <Text style={styles.priceLabel}>x{item.quantity}</Text>
         </View>
         <View style={styles.componentContainer}>
-          <Text style={styles.subtitle}>     Preferences</Text>
-          <Text style={styles.subtitleOrange}>{item.preferences ? item.preferences : "N/A"}</Text>
+          <Text style={styles.preferencesLeftText}>     Preferences</Text>
+          <Text style={styles.preferencesRightText}>{item.preferences ? item.preferences : "N/A"}</Text>
         </View>
         <View style={styles.componentContainer}>
           <Text style={styles.subtitle}>Total Price</Text>
@@ -456,6 +456,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#ED6F21",
     marginBottom: 5,
+  },
+  preferencesLeftText: {
+    fontSize: 14,
+    marginBottom: 5,
+    // width: "40%",
+  },
+  preferencesRightText: {
+    fontSize: 14,
+    color: "#ED6F21",
+    marginBottom: 5,
+    width: "70%",
+    textAlign: "right",
   },
   buttonContainer: {
     marginVertical: 10,
