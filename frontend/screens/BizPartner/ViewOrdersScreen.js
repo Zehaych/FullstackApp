@@ -96,25 +96,25 @@ const ViewOrdersScreen = () => {
           
           const recipeData = data.map(recipe => ({ name: recipe.name, price: recipe.price }));
 
-          console.log("Recipe Data:", recipeData);
+          //console.log("Recipe Data:", recipeData);
 
           const ordersData = orders.map(order => ({ name: order.recipeName }));
 
-          console.log("Orders Data:", ordersData);
+          //console.log("Orders Data:", ordersData);
 
           const ordersWithPrices = ordersData.map(order => {
             const matchingRecipe = recipeData.find(recipe => recipe.name === order.name);
             return { ...order, recipePrice: matchingRecipe ? matchingRecipe.price : 0 };
           });
 
-          console.log("Orders with Prices:", ordersWithPrices);
+          //console.log("Orders with Prices:", ordersWithPrices);
 
           const uniqueOrdersWithPrices = ordersWithPrices.filter(
             (order, index, self) =>
               index === self.findIndex((o) => o.name === order.name)
           );
   
-          console.log("Orders with Prices(new):", uniqueOrdersWithPrices);
+          //console.log("Orders with Prices(new):", uniqueOrdersWithPrices);
 
           setBizRecipePrice(uniqueOrdersWithPrices);
         } else {
