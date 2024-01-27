@@ -116,11 +116,23 @@ export default function ViewBizRecipeScreen({ navigation }) {
               }
             >
               <Image source={{ uri: item.image }} style={styles.image} />
+              
+              <Text style={styles.recipeTitle}>{item.name}</Text>
+
               <View style={styles.componentContainer}>
-                <Text style={styles.recipeTitle}>{item.name}</Text>
                 <View style={styles.iconContainer}>
-                  <Icon name="star" size={14} color="#ED6F21" style={styles.icon}/>
-                  <Text style={styles.ratingText}>{item.averageRating}</Text>
+                  <Icon name="star" size={16} color="#ED6F21" style={styles.icon}/>
+                  <Text style={styles.ratingText}>{item.averageRating.toFixed(1)}</Text>
+                </View>
+                
+                <Text style={styles.personText}> · </Text>
+
+                <View style={styles.iconContainer}>
+                  <Icon name="person" size={16} color="#797979" style={styles.icon}/>
+
+                  <Text style={styles.personText}>
+                    {item.totalRatings}
+                  </Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -139,16 +151,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   recipeMember: {
-    //flex: 1,
     alignItems: "center",
-    //justifyContent: "center",
     marginVertical: 5,
-    //borderWidth: 1,
-    //borderColor: "#ccc",
-    //borderRadius: 10,
-    //overflow: 'hidden',
     paddingVertical: 5,
-    paddingHorizontal: 5,
+    paddingHorizontal: 18,
     width: "50%",
   },
   image: {
@@ -158,20 +164,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   recipeTitle: {
-    textAlign: "center",
     marginTop: 10,
-    width: "80%",
+    width: "100%",
     fontSize: 16,
     fontWeight: "bold",
   },
   componentContainer: {
     flexDirection: "row",
-    //alignItems: "center",
-    justifyContent: "space-between",
     width: "100%",
-    marginRight: 5,
-    marginLeft: 5,
-    paddingHorizontal: 10,
   },
   icon: {
     marginTop: 10,
@@ -179,8 +179,18 @@ const styles = StyleSheet.create({
   ratingText: {
     textAlign: "center",
     marginTop: 10,
-    fontSize: 14,
-    fontWeight: "bold",
+    marginLeft: 2,
+    fontSize: 12,
+    fontWeight: "500",
+    color: "#ED6F21",
+  },
+  personText: {
+    textAlign: "center",
+    marginTop: 10,
+    marginLeft: 2,
+    fontSize: 12,
+    fontWeight: "500",
+    color: "#797979",
   },
   iconContainer: {
     flexDirection: "row",

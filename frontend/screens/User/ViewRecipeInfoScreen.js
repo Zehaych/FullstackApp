@@ -630,7 +630,7 @@ export default function ViewRecipeInfoScreen({ route }) {
                 <View style={styles.starContainer}>
                   <Icon name="person" size={24} color="#ED6F21" />
                   <Text style={styles.ratingText}>
-                    {recipeData.totalRatings} reviews
+                    {recipeData.totalRatings} {recipeData.totalRatings < 2 ? 'review': 'reviews'}
                   </Text>
                 </View>
               </View>

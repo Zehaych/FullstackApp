@@ -331,33 +331,34 @@ const ViewOrdersScreen = () => {
 
         <View style={styles.pickerContainer}>
           <RNPickerSelect
-              onValueChange={(itemValue) => onStatusChange(item, itemValue)}
-              items={[
-                  { label: "Rejected", value: "Rejected" },
-                  { label: "Pending", value: "Pending" },
-                  { label: "Preparing", value: "Preparing" },
-                  { label: "On the way", value: "On the way" },
-                  { label: "Arriving", value: "Arriving" },
-                  { label: "Done", value: "Done" },
-              ]}
-              style={{
-                  inputIOS: { height: 40, width: "100%", paddingHorizontal: 10 },
-                  inputAndroid: { height: 40, width: "100%", paddingHorizontal: 10 },
-                  placeholder: { color: '#676767' },
-                  iconContainer: { 
-                    top: 10, right: 12
-                  },
-              }}
-              value={selectedStatus[item._id] || ""}
-              disabled={isDisabled}
-              placeholder={{ label: "Select status", value: null, color: '#676767' }}
-              useNativeAndroidPickerStyle={false}
-              Icon={() => {
-                return <Icon name="sort-down" size={16} color="#676767" />;
-              }}
+            onValueChange={(itemValue) => onStatusChange(item, itemValue)}
+            items={[
+              { label: "Rejected", value: "Rejected" },
+              { label: "Pending", value: "Pending" },
+              { label: "Preparing", value: "Preparing" },
+              { label: "On the way", value: "On the way" },
+              { label: "Arriving", value: "Arriving" },
+              { label: "Done", value: "Done" },
+            ]}
+            style={{
+              inputIOS: { height: 40, width: "100%", paddingHorizontal: 10 },
+              inputAndroid: { height: 40, width: "100%", paddingHorizontal: 10 },
+              placeholder: { color: '#676767' },
+              iconContainer: { 
+                top: 10, right: 12
+              },
+            }}
+            value={selectedStatus[item._id] || ""}
+            disabled={isDisabled}
+            placeholder={{ label: "Select status", value: null, color: '#676767' }}
+            useNativeAndroidPickerStyle={false}
+            Icon={() => {
+              return <Icon name="sort-down" size={16} color="#676767" />;
+            }}
           />
-      </View>
+        </View>
 
+        <Text style={styles.boldLabel}>Select Arrival Time</Text>
         
         {showPicker[item._id] && (
           <DateTimePicker
@@ -368,24 +369,36 @@ const ViewOrdersScreen = () => {
             onChange={(event, date) => onDateChange(event, date, item)}
           />
         )}
-        <View style={styles.componentContainer}>
+
+        {/* <View style={styles.componentContainer}>
           <Text style={styles.priceLabel}>Estimated Arrival Time</Text>
           <Text style={styles.priceLabel}>
             {selectedDate[item._id]
               ? `${formatTime(selectedDate[item._id])}`
               : "N/A"}
           </Text>
-        </View>
+        </View> */}
+
+        <TouchableOpacity
+          onPress={() => showTimepicker(item)}
+          style={styles.selectTimeContainer}
+          disabled={isDisabled} // Disable the button if the order is marked as disabled
+        >
+          {/* <Text style={styles.selectTimeText}>Select Arrival Time</Text> */}
+
+          <Text style={styles.selectTimeText}>
+            {selectedDate[item._id]
+              ? formatTime(selectedDate[item._id])
+              : "Select Arrival Time"}
+          </Text>
+
+          <Icon name="sort-down" size={16} color="#676767" marginBottom={3}/>
+        </TouchableOpacity>
+
+
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            onPress={() => showTimepicker(item)}
-            style={styles.button}
-            disabled={isDisabled} // Disable the button if the order is marked as disabled
-          >
-            <Text style={styles.buttonText}>Select Arrival Time</Text>
-          </TouchableOpacity>
-          
-          <View style={styles.separator} />
+          {/* <View style={styles.separator} /> */}
+
           <TouchableOpacity
             onPress={() => updateOrder(item)}
             style={styles.button}
@@ -530,7 +543,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
-    marginBottom: 10,
+    marginBottom: 16,
     justifyContent: "center",
+  },
+  selectTimeContainer: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    marginBottom: 10,
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingRight: 12,
+  },
+  selectTimeText: {
+    padding: 10,
+    color: '#676767',
   },
 });

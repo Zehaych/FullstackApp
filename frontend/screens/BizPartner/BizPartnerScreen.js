@@ -1,5 +1,5 @@
 import React from "react";
-import { View, SafeAreaView, StyleSheet, Alert } from "react-native";
+import { View, SafeAreaView, StyleSheet, Alert, Image } from "react-native";
 import {
   Avatar,
   Title,
@@ -65,9 +65,14 @@ const BizPartnerScreen = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.userInfoSection}>
-          <View style={styles.userInfo}>
-            <Title style={styles.title}>{currentUser.username}</Title>
-          </View>
+          <Image 
+            source={require("../../assets/person-placeholder.jpg")} 
+            style={styles.userImage} 
+          />
+
+          <Title style={styles.title}>{currentUser.username}</Title>
+
+          <Text style={styles.detailText}>Business Partner Profile</Text>
 
           {/* <View style={styles.userDetails}>
             <View style={styles.userDetail}>
@@ -83,7 +88,7 @@ const BizPartnerScreen = () => {
             </View>
           </View> */}
         </View>
-        <Divider />
+        {/* <Divider /> */}
 
         <View style={styles.menuWrapper}>
           {/* <TouchableRipple onPress={onEditProfilePressed}>
@@ -154,8 +159,7 @@ const styles = StyleSheet.create({
   userInfoSection: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-    //borderBottomWidth: 1,
-    //borderBottomColor: "#dddddd",
+    alignItems: "center",
   },
 
   userInfo: {
@@ -179,7 +183,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   detailText: {
-    fontSize: 16,
+    fontSize: 14,
     color: "grey",
   },
   divider: {
@@ -203,7 +207,7 @@ const styles = StyleSheet.create({
   menuItemText: {
     color: "#000000",
     marginLeft: 20,
-    fontWeight: "600",
+    // fontWeight: "600",
     fontSize: 16,
     lineHeight: 26,
   },
@@ -214,5 +218,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 20,
     color: "grey",
+  },
+  userImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    margin: 10,
   },
 });
