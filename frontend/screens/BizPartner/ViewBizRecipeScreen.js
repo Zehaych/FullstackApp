@@ -116,12 +116,27 @@ export default function ViewBizRecipeScreen({ navigation }) {
               }
             >
               <Image source={{ uri: item.image }} style={styles.image} />
+
               <View style={styles.componentContainer}>
+                
                 <Text style={styles.recipeTitle}>{item.name}</Text>
+                
                 <View style={styles.iconContainer}>
-                  <Icon name="star" size={14} color="#ED6F21" style={styles.icon}/>
-                  <Text style={styles.ratingText}>{item.averageRating}</Text>
+                  <Icon name="star" size={16} color="#ED6F21" style={styles.icon}/>
+                  <Text style={styles.ratingText}>{item.averageRating.toFixed(1)}</Text>
                 </View>
+  
+              </View>
+
+              {/* <Text style={styles.personText}> · </Text> */}
+
+              <View style={styles.personContainer}>
+                <Icon name="person" size={16} color="#797979" style={styles.icon}/>
+
+                <Text style={styles.personText}>
+                  {item.totalRatings} {item.totalRatings < 2 ? 'review' : 'reviews'}
+                </Text>
+
               </View>
             </TouchableOpacity>
           )}
@@ -158,20 +173,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   recipeTitle: {
-    textAlign: "center",
+    // textAlign: "center",
     marginTop: 10,
     width: "80%",
     fontSize: 16,
-    fontWeight: "bold",
+    // fontWeight: "bold",
   },
   componentContainer: {
     flexDirection: "row",
     //alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
+    // justifyContent: "left",
+    // width: "100%",
     marginRight: 5,
     marginLeft: 5,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
   },
   icon: {
     marginTop: 10,
@@ -179,13 +194,31 @@ const styles = StyleSheet.create({
   ratingText: {
     textAlign: "center",
     marginTop: 10,
-    fontSize: 14,
-    fontWeight: "bold",
+    marginLeft: 2,
+    fontSize: 12,
+    fontWeight: "500",
+    color: "#ED6F21",
+  },
+  personText: {
+    textAlign: "center",
+    marginTop: 10,
+    marginLeft: 2,
+    fontSize: 12,
+    fontWeight: "500",
+    color: "#797979",
   },
   iconContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+  },
+  personContainer: {
+    flexDirection: "row",
+    // alignItems: "center",
+    // justifyContent: "center",
+    width: "100%",
+    paddingHorizontal: 15,
+
   },
 });
 
