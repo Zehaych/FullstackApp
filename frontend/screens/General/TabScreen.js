@@ -1,13 +1,18 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
 import UserScreen from "../User/UserScreen";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import HomeScreen from "./HomeScreen";
 import BizPartnerScreen from "../BizPartner/BizPartnerScreen";
 import AdminScreen from "../SystemAdmin/AdminScreen";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import TabRecipes from "./TabRecipes";
+import TabFavourites from "../User/TabFavourites";
+import ViewOrdersScreen from "../BizPartner/ViewOrdersScreen";
+import FoodRequestedTabs from "../SystemAdmin/FoodRequestedTabs";
+
+import Ionicons from "react-native-vector-icons/Ionicons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Context } from "../../store/context";
 import { useContext } from "react";
 import { useEffect } from "react";
@@ -39,6 +44,31 @@ function ConditionalUserScreen({ navigation }) {
   return null;
 }
 
+function FavouritesUserScreen({ navigation }) {
+  const [currentUser, setCurrentUser] = useContext(Context);
+
+  useEffect(() => {
+    if (currentUser.userType === "user") {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Favourites Recipes" }],
+      });
+    } else if (currentUser.userType === "bizpartner") {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Customer Orders" }],
+      });
+    } else if (currentUser.userType === "admin") {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Food Request" }],
+      });
+    }
+  }, [currentUser]);
+
+  return null;
+}
+
 export default function TabScreen() {
   const [currentUser, setCurrentUser] = useContext(Context);
 
@@ -55,21 +85,59 @@ export default function TabScreen() {
     }
   };
 
+  const getTabLabelToo = () => {
+    switch (currentUser.userType) {
+      case "user":
+        return "Favourites";
+      case "bizpartner":
+        return "Orders";
+      case "admin":
+        return "Requests";
+      default:
+        return "Favourites";
+    }
+  }
+
+  const heartIcon =(
+    <MaterialCommunityIcons
+      name={focused ? "heart" : "heart-outline"}
+      size={30}
+      color="#ED6F21"
+    />
+  )
+
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, size }) => {
           let iconName;
-          let iconColor = focused ? "goldenrod" : "black"; // Set the color to golden for focused icons
-          //let iconName1;
+          let iconColor = focused ? "#ED6F21" : "#000000"; // Set the color to golden for focused icons
 
           if (route.name === "Home") {
-            iconName = focused ? "home" : "home-outline";
+            iconName = focused ? "home" : "home-outline", size = 30;
+            return (
+              <MaterialCommunityIcons
+                name={iconName}
+                size={size}
+                color={iconColor}
+              />
+            );
           } else if (route.name === "Discover Recipes") {
-            iconName = focused ? "restaurant" : "restaurant-outline";
-          } else if (route.name === "Community Recipes") {
-            iconName = focused ? "account-group" : "account-group-outline";
+            iconName = focused ? "restaurant" : "restaurant-outline", size = 25;
+            return (
+              <Ionicons
+                name={iconName}
+                size={size}
+                color={iconColor}
+              />
+            );
+          } else if (route.name === "Recipes Stuff" && currentUser.userType === "user") {
+            iconName = heartIcon;
+            
+          } else if (route.name === "Recipes Stuff" && currentUser.userType === "bizpartner") {
+            iconName = focused ? "clipboard-list" : "clipboard-list-outline", size = 30;
             return (
               <MaterialCommunityIcons
                 name={iconName}
@@ -77,8 +145,8 @@ export default function TabScreen() {
                 color={iconColor}
               />
             );
-          } else if (route.name === "Business Recipes") {
-            iconName = focused ? "chef-hat" : "chef-hat";
+          } else if (route.name === "Recipes Stuff" && currentUser.userType === "admin") {
+            iconName = focused ? "food" : "food-outline", size = 30;
             return (
               <MaterialCommunityIcons
                 name={iconName}
@@ -86,15 +154,16 @@ export default function TabScreen() {
                 color={iconColor}
               />
             );
+          } else if (route.name === "User") {
+            iconName = focused ? "person" : "person-outline", size = 25;
+            return (
+              <Ionicons 
+                name={iconName} 
+                size={size} 
+                color={iconColor} 
+              />            
+            );
           }
-          // else if (route.name === "Track Progress") {
-          //   iconName = focused ? "bar-chart" : "bar-chart-outline";
-          // }
-          else if (route.name === "User") {
-            iconName = focused ? "person" : "person-outline";
-          }
-
-          return <Ionicons name={iconName} size={size} color={iconColor} />;
         },
         tabBarLabelStyle: {
           color: "black", // Set the text color for tab labels (names of the icons)
@@ -112,6 +181,28 @@ export default function TabScreen() {
         component={TabRecipes}
         options={{ tabBarLabel: "Recipes" }}
       />
+      <Tab.Screen
+        name="Recipes Stuff"
+        component={FavouritesUserScreen}
+        options={{ tabBarLabel: () => <Text>{getTabLabelToo()}</Text> }}
+      />
+
+      <Tab.Screen
+        name="Favourites Recipes" 
+        component={TabFavourites}
+        options={{ tabBarButton: () => null }}
+      />
+      <Tab.Screen
+        name="Customer Orders"
+        component={ViewOrdersScreen}
+        options={{ tabBarButton: () => null }}
+      />
+      <Tab.Screen
+        name="Food Request"
+        component={FoodRequestedTabs}
+        options={{ tabBarButton: () => null }}
+      />
+
       <Tab.Screen
         name="User"
         component={ConditionalUserScreen}
