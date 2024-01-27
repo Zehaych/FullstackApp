@@ -4,13 +4,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import UserScreen from "../User/UserScreen";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import HomeScreen from "./HomeScreen";
-import OnlineRecipeScreen from "./OnlineRecipeScreen";
-import MembersRecipeScreen from "./MembersRecipeScreen";
 import BizPartnerScreen from "../BizPartner/BizPartnerScreen";
 import AdminScreen from "../SystemAdmin/AdminScreen";
-import ProgressScreen from "../User/ProgressScreen";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import BusinessRecipeScreen from "./BusinessRecipeScreen";
+import TabRecipes from "./TabRecipes";
 import { Context } from "../../store/context";
 import { useContext } from "react";
 import { useEffect } from "react";
@@ -65,10 +62,11 @@ export default function TabScreen() {
         tabBarIcon: ({ focused, size }) => {
           let iconName;
           let iconColor = focused ? "goldenrod" : "black"; // Set the color to golden for focused icons
+          //let iconName1;
 
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Online Recipes") {
+          } else if (route.name === "Discover Recipes") {
             iconName = focused ? "restaurant" : "restaurant-outline";
           } else if (route.name === "Community Recipes") {
             iconName = focused ? "account-group" : "account-group-outline";
@@ -110,25 +108,10 @@ export default function TabScreen() {
         options={{ headerShown: false, tabBarLabel: "Home" }}
       />
       <Tab.Screen
-        name="Online Recipes"
-        component={OnlineRecipeScreen}
-        options={{ tabBarLabel: "Online" }}
+        name="Discover Recipes"
+        component={TabRecipes}
+        options={{ tabBarLabel: "Recipes" }}
       />
-      <Tab.Screen
-        name="Community Recipes"
-        component={MembersRecipeScreen}
-        options={{ tabBarLabel: "Community" }}
-      />
-      <Tab.Screen
-        name="Business Recipes"
-        component={BusinessRecipeScreen}
-        options={{ tabBarLabel: "Business" }}
-      />
-      {/* <Tab.Screen
-        name="Track Progress"
-        component={ProgressScreen}
-        options={{ tabBarLabel: "Progress" }}
-      /> */}
       <Tab.Screen
         name="User"
         component={ConditionalUserScreen}
@@ -153,3 +136,26 @@ export default function TabScreen() {
     </Tab.Navigator>
   );
 }
+
+/*
+     <Tab.Screen
+        name="Online Recipes"
+        component={OnlineRecipeScreen}
+        options={{ tabBarLabel: "Online" }}
+      />
+      <Tab.Screen
+        name="Community Recipes"
+        component={MembersRecipeScreen}
+        options={{ tabBarLabel: "Community" }}
+      />
+      <Tab.Screen
+        name="Business Recipes"
+        component={BusinessRecipeScreen}
+        options={{ tabBarLabel: "Business" }}
+      /> 
+      <Tab.Screen
+        name="Track Progress"
+        component={ProgressScreen}
+        options={{ tabBarLabel: "Progress" }}
+      />
+*/

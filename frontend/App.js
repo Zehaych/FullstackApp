@@ -56,9 +56,11 @@ import TabReportScreen from "./screens/BizPartner/TabReportScreen";
 import TabFullReportScreen from "./screens/SystemAdmin/TabFullReportScreen";
 import RetrieveBizReports from "./screens/SystemAdmin/RetrieveBizReports";
 import CartScreen from "./screens/User/CartScreen";
+import TabRecipes from "./screens/General/TabRecipes";
 // import FullReportMonthly from "./screens/SystemAdmin/FullReportMonthly";
 import UserInfoScreen from "./screens/User/UserInfoScreen";
 import { Context } from "./store/context";
+
 
 const Stack = createStackNavigator();
 
@@ -312,6 +314,12 @@ function App() {
             name="Cart" 
             component={CartScreen}
             options={{ headerTitle: "Your Cart" }}
+          />
+
+          <Stack.Screen
+            name="Recipes"
+            component={TabRecipes}
+            options={{ headerTitle: "" }}
           />
         </Stack.Navigator>
       </NavigationContainer>
