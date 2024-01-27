@@ -20,6 +20,7 @@ import {
   Touchable,
   SafeAreaView,
   ScrollView,
+  Image,
 } from "react-native";
 import { Context } from "../../store/context";
 import FoodAndDrinksInfo from "./FoodAndDrinksInfo";
@@ -85,19 +86,23 @@ const AdminScreen = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.userInfoSection}>
-          <View style={styles.userInfo}>
-            <Text style={styles.title}>{currentUser.username}</Text>
-          </View>
+          <Image 
+            source={require("../../assets/person-placeholder.jpg")} 
+            style={styles.userImage} 
+          />
+
+          <Text style={styles.title}>{currentUser.username}</Text>
+          
           <View style={styles.privilegeSection}>
             <Icon
               name="crown"
-              size={25}
+              size={22}
               color="#ED6F21"
             />
             <Text style={styles.detailText}> Admin Access Granted </Text>
             <Icon
               name="crown"
-              size={25}
+              size={22}
               color="#ED6F21"
             />
           </View>
@@ -221,6 +226,7 @@ const styles = StyleSheet.create({
   userInfoSection: {
     paddingHorizontal: 20,
     paddingVertical: 20,
+    alignItems: "center",
   },
   userInfo: {
     alignItems: "center",
@@ -231,7 +237,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   detailText: {
-    fontSize: 16,
+    fontSize: 14,
     color: "grey",
   },
   divider: {
@@ -244,6 +250,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
+    color: "#333", 
   },
   subTitle: {
     fontSize: 18,
@@ -267,9 +274,15 @@ const styles = StyleSheet.create({
   menuItemText: {
     color: "#000000",
     marginLeft: 20,
-    fontWeight: "600",
+    // fontWeight: "bold",
     fontSize: 16,
     lineHeight: 26,
+  },
+  userImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    margin: 10,
   },
 });
 

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Alert,
   ScrollView,
+  Image,
 } from "react-native";
 import {
   Avatar,
@@ -100,18 +101,17 @@ const UserScreen = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.userInfoSection}>
-          <View style={styles.userInfo}>
-            <Title style={styles.title}>{currentUser.username}</Title>
-          </View>
+          <Image 
+              source={require("../../assets/person-placeholder.jpg")} 
+              style={styles.userImage} 
+          />
 
-          <View style={styles.userDetails}>
-            <View style={styles.userDetail}>
-              <Text
-                onPress={() => handleViewUserProfile()}
-                style={styles.detailText}
-              >User Profile</Text>
-            </View>
-          </View>
+          <Title style={styles.title}>{currentUser.username}</Title>
+
+          <Text
+            onPress={() => handleViewUserProfile()}
+            style={styles.detailText}
+          >User Profile</Text>
         </View>
 
         <View style={styles.menuWrapper}>
@@ -246,7 +246,6 @@ const UserScreen = () => {
 export default UserScreen;
 
 const styles = StyleSheet.create({
-  //#FF6347
   container: {
     flex: 1,
     backgroundColor: "#fff",
@@ -254,30 +253,15 @@ const styles = StyleSheet.create({
   userInfoSection: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-
-  },
-  userInfo: {
     alignItems: "center",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-  },
-  caption: {
-    fontSize: 14,
-    lineHeight: 14,
-    fontWeight: "500",
-  },
-  userDetails: {
-    flexDirection: "row",
-    marginTop: 20,
-    justifyContent: "space-around",
-  },
-  userDetail: {
-    alignItems: "center",
+    color: "#333", 
   },
   detailText: {
-    fontSize: 16,
+    fontSize: 14,
     color: "grey",
   },
   divider: {
@@ -301,7 +285,7 @@ const styles = StyleSheet.create({
   menuItemText: {
     color: "#000000",
     marginLeft: 20,
-    fontWeight: "600",
+    // fontWeight: "bold",
     fontSize: 16,
     lineHeight: 26,
   },
@@ -312,5 +296,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 20,
     color: "grey",
+  },
+  userImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    margin: 10,
   },
 });
