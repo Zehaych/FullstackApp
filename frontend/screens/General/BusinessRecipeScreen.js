@@ -187,7 +187,6 @@ export default function BusinessRecipeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>All business recipes</Text>
       <FlatList
         data={data}
         numColumns={2}
@@ -200,18 +199,21 @@ export default function BusinessRecipeScreen({ navigation }) {
           >
             <Image source={{ uri: item.image }} style={styles.image} />
             <Text style={styles.recipeTitle}> {item.name}</Text>
-            <Rating rating={item.averageRating} />
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Icon name="person" size={24} color="#333333" />
-              <Text style={{ marginLeft: 8 }}>
-                {item.totalRatings} people rated
-              </Text>
+            <View style={styles.componentContainer}>
+              <View style={styles.iconContainer}>
+                <Icon name="star" size={16} color="#ED6F21" style={styles.icon}/>
+                <Text style={styles.ratingText}>{item.averageRating.toFixed(1)}</Text>
+              </View>
+
+              <Text style={styles.personText}> · </Text>
+
+              <View style={styles.iconContainer}>
+                <Icon name="person" size={16} color="#797979" style={styles.icon}/>
+
+                <Text style={styles.personText}>
+                  {item.totalRatings}
+                </Text>
+              </View>
             </View>
           </TouchableOpacity>
         )}
@@ -238,8 +240,9 @@ export default function BusinessRecipeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FCFCD3",
-    padding: 10,
+    backgroundColor: "#F5F5F5",
+    padding: 5,
+    marginHorizontal: 5,
   },
   header: {
     textAlign: "center",
@@ -255,43 +258,60 @@ const styles = StyleSheet.create({
     //width: width * data.length, // width * number of items
   },
   recipeMember: {
-    //width: 360,
-    //width: "100%",
-    flex: 1,
     alignItems: "center",
-    margin: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    padding: 10,
+    marginVertical: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 18,
+    width: "50%",
   },
   image: {
-    //flex: 1, // Fill the container's available space
-    width: 150,
-    height: 150,
-    resizeMode: "cover", // Make the image fit the container
+    width: 160,
+    height: 175,
+    resizeMode: "cover",
     borderRadius: 10,
   },
   recipeTitle: {
-    textAlign: "center",
     marginTop: 10,
+    width: "100%",
     fontSize: 16,
     fontWeight: "bold",
-    //position: "absolute",
-    //bottom: 50, // Position the title on top of the image
-    //left: 10, // Add some spacing from the left
-    //right: 10, // Add some spacing from the right
-    //backgroundColor: "rgba(0, 0, 0, 0.5)", // Add a semi-transparent background
-    //color: "white",
-    //padding: 5, // Add some padding
-    //borderRadius: 5, // Add border radius for the background
+    textAlign: "center",
+  },
+  componentContainer: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "center",
+  },
+  iconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  icon: {
+    marginTop: 10,
+  },
+  ratingText: {
+    textAlign: "center",
+    marginTop: 10,
+    marginLeft: 2,
+    fontSize: 12,
+    fontWeight: "500",
+    color: "#ED6F21",
+  },
+  personText: {
+    textAlign: "center",
+    marginTop: 10,
+    marginLeft: 2,
+    fontSize: 12,
+    fontWeight: "500",
+    color: "#797979",
   },
   orderStatusBanner: {
     position: "absolute",
     bottom: 10,
     left: 10,
     right: 10,
-    backgroundColor: "orange",
+    backgroundColor: "#ED6F21",
     padding: 10,
     borderRadius: 5,
     alignItems: "center",
