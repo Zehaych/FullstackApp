@@ -1,4 +1,3 @@
-import { Picker } from "@react-native-picker/picker";
 import React, { useContext, useEffect, useState } from "react";
 import {
   Alert,
@@ -17,11 +16,13 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { Context } from "../../store/context";
 //import { ScrollView } from 'react-native-virtualized-view';
 import { useNavigation } from "@react-navigation/native";
+import RNPickerSelect from 'react-native-picker-select';
 import {
   fetchRecipeDetails,
   fetchRecipes,
   fetchRecommendations,
 } from "../../services/Api";
+
 //import { set } from "mongoose";
 //import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 //import MealScreen from "./MealScreen";
@@ -292,7 +293,7 @@ const ProgressScreen = () => {
     }
     return (
       <Text style={styles.emptyMealRecipe}>
-        No recipe selected for this meal
+        No recipe selected
       </Text>
     );
   };
@@ -443,11 +444,53 @@ const ProgressScreen = () => {
         }}
       >
         <SafeAreaView style={styles.container}>
+          {/* Today's Meals */}
+          <View style={styles.componentContainer2}>
+            <Text style={styles.subTitle}>Today's Meal</Text>
+            <View style={styles.flexRowComponent}>
+              <Text style={[styles.smallHeadings, styles.boldText]}>Breakfast</Text>
+              {renderMealRecipe(breakfastRecipe)}
+            </View>
+            <View style={styles.flexRowComponent}>
+              <Text style={[styles.smallHeadings, styles.boldText]}>Lunch</Text>
+              {renderMealRecipe(lunchRecipe)}
+            </View>
+            <View style={styles.flexRowComponent}>
+              <Text style={[styles.smallHeadings, styles.boldText]}>Dinner</Text>
+              {renderMealRecipe(dinnerRecipe)}
+            </View>
+            {/* meal recipe recommendation*/}
+            {recommendedRecipes.meals && recommendedRecipes.meals.length > 0 && (
+              <View style={styles.flexColumnComponent}>
+                <Text style={styles.subTitle}>
+                  Recommended Recipes:
+                </Text>
+                {recommendedRecipes.meals.map((recipe, index) => (
+                  <Text
+                    key={index}
+                    onPress={() => handleRecipeDetails(recipe.id)}
+                    style={styles.recommendationsText}
+                  >
+                    {recipe.title}
+                  </Text>
+                ))}
+              </View>
+            )}
+            <View style={styles.flexRowComponent}>
+              <Button
+                onPress={handleGenerateRecommendations}
+                style={styles.submitButton}
+              >
+                <Text style={styles.buttonText}>Generate Daily Recommendation</Text>
+              </Button>
+            </View>
+          </View>
+
+
           {/* dropdown to choose meal */}
-          <View style={styles.pickerContainer}>
-            <Text style={styles.mealSelector}>Choose meal to add</Text>
-            <Picker
-              selectedValue={selectedDropdownValue}
+          <View style={styles.componentContainer2}>
+            <Text style={styles.subTitle}>Choose meal to add</Text>
+            <RNPickerSelect
               onValueChange={(itemValue) => {
                 setSelectedDropdownValue(itemValue);
                 if (itemValue === "bf") {
@@ -458,154 +501,174 @@ const ProgressScreen = () => {
                   handleDinnerSelect(null); // Reset dinner
                 }
               }}
-              style={styles.dropdown}
-            >
-              <Picker.Item label="Select a meal" value="none" />
-              <Picker.Item label="Breakfast" value="bf" />
-              <Picker.Item label="Lunch" value="lunch" />
-              <Picker.Item label="Dinner" value="din" />
-            </Picker>
-          </View>
-
-          {/* search for member recipe */}
-          <Text style={styles.subTitle}>Available member recipes</Text>
-          <Picker
-            selectedValue={setSelectedRecipeId ? setSelectedRecipeId._id : null}
-            onValueChange={(itemValue) => handleSelectMemberRecipe(itemValue)}
-            style={styles.dropdown}
-          >
-            <Picker.Item label="Select a recipe" value={null} />
-            {memberRecipes.map((recipe) => (
-              <Picker.Item
-                key={recipe._id}
-                label={recipe.name}
-                value={recipe._id}
-              />
-            ))}
-          </Picker>
-
-          {/* search for online recipe */}
-          <Text style={styles.subTitle}>Available online recipes</Text>
-          <View style={styles.searchContainer}>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search for online recipe"
-              value={search}
-              onChangeText={(text) => handleSearch(text)}
+              items={[
+                { label: "Breakfast", value: "bf" },
+                { label: "Lunch", value: "lunch" },
+                { label: "Dinner", value: "din" },
+              ]}
+              style={{
+                inputIOS: { height: 50, width: "100%", paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: "#C6C6CD", borderRadius: 4 },
+                inputAndroid: { height: 50, width: "100%", paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: "#C6C6CD", borderRadius: 4 },
+                placeholder: { color: '#676767', fontSize: 16, },
+                iconContainer: {
+                  top: 15, right: 18
+                },
+              }}
+              value={selectedDropdownValue}
+              placeholder={{ label: "Select a meal", value: null, color: '#808080' }}
+              useNativeAndroidPickerStyle={false}
+              Icon={() => {
+                return <Icon name="sort-down" size={16} color="#676767" />;
+              }}
             />
           </View>
 
-          <Text style={styles.subTitle}>Available food and drinks</Text>
-          <Picker
-            selectedValue={
-              setSelectedFoodAndDrink ? setSelectedFoodAndDrink._id : null
-            }
-            onValueChange={(itemValue) => handleFoodAndDrinks(itemValue)}
-            style={styles.dropdown}
-          >
-            <Picker.Item label="Select food and drinks" value={null} />
-            {foodAndDrinks.map((recipe) => (
-              <Picker.Item
-                key={recipe._id}
-                label={recipe.name}
-                value={recipe._id}
-              />
-            ))}
-          </Picker>
 
-          {/* list of recipes */}
-          <View style={styles.searchList}>
-            {loading ? (
-              <Text style={styles.recipeTitle}>Loading...</Text>
-            ) : (
-              <ScrollView>
-                {onlineRecipes.map((item) => (
-                  <TouchableOpacity
-                    key={item.id.toString()}
-                    onPress={() => handleItemClick(item.id)}
-                  >
-                    <Text style={styles.recipeTitle}>{item.title}</Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            )}
+          {/* search for member recipe */}
+          <View style={styles.componentContainer2}>
+            <Text style={styles.subTitle}>Member Recipes</Text>
+            <RNPickerSelect
+              onValueChange={(itemValue) => handleSelectMemberRecipe(itemValue)}
+              items={[
+                ...memberRecipes.map((recipe) => ({
+                  label: recipe.name,
+                  value: recipe._id,
+                })),
+              ]}
+              style={{
+                inputIOS: { height: 50, width: "100%", paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: "#C6C6CD", borderRadius: 4 },
+                inputAndroid: { height: 50, width: "100%", paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: "#C6C6CD", borderRadius: 4 },
+                placeholder: { color: '#676767', fontSize: 16, },
+                iconContainer: {
+                  top: 15, right: 18
+                },
+              }}
+              value={setSelectedRecipeId ? setSelectedRecipeId._id : null}
+              placeholder={{ label: "Select a recipe", value: null, color: '#808080' }}
+              useNativeAndroidPickerStyle={false}
+              Icon={() => {
+                return <Icon name="sort-down" size={16} color="#676767" />;
+              }}
+
+            />
           </View>
 
-          {/* meal recipe recommandation*/}
-          {recommendedRecipes.meals && recommendedRecipes.meals.length > 0 && (
-            <View style={styles.recommendedRecipesContainer}>
-              <Text style={styles.subTitle}>
-                Recommended Recipes for the Day:
-              </Text>
-              {recommendedRecipes.meals.map((recipe, index) => (
-                <Text
-                  key={index}
-                  onPress={() => handleRecipeDetails(recipe.id)}
-                  style={styles.recommendationsText}
-                >
-                  {recipe.title}
-                </Text>
+
+          <View style={styles.componentContainer2}>
+            <Text style={styles.subTitle}>Available Food & Drinks</Text>
+            {/* <Picker
+              style={styles.dropdown}
+
+              selectedValue={
+                setSelectedFoodAndDrink ? setSelectedFoodAndDrink._id : null
+              }
+              onValueChange={(itemValue) => handleFoodAndDrinks(itemValue)}
+            >
+              <Picker.Item label="Select food and drinks" value={null} />
+              {foodAndDrinks.map((recipe) => (
+                <Picker.Item
+                  key={recipe._id}
+                  label={recipe.name}
+                  value={recipe._id}
+                />
               ))}
-            </View>
-          )}
-          <Button
-            onPress={handleGenerateRecommendations}
-            style={styles.resetButton}
-          >
-            Generate Daily Recommendations
-          </Button>
+            </Picker> */}
+            <RNPickerSelect
+              onValueChange={(itemValue) => handleFoodAndDrinks(itemValue)}
+              items={[
+                ...foodAndDrinks.map((recipe) => ({
+                  label: recipe.name,
+                  value: recipe._id,
+                })),
+              ]}
+              style={{
+                inputIOS: { height: 50, width: "100%", paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: "#C6C6CD", borderRadius: 4 },
+                inputAndroid: { height: 50, width: "100%", paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: "#C6C6CD", borderRadius: 4 },
+                placeholder: { color: '#676767', fontSize: 16, },
+                iconContainer: {
+                  top: 15, right: 18
+                },
+              }}
+              value={setSelectedFoodAndDrink ? setSelectedFoodAndDrink._id : null}
+              placeholder={{ label: "Select food and drinks", value: null, color: '#808080' }}
+              useNativeAndroidPickerStyle={false}
+              Icon={() => {
+                return <Icon name="sort-down" size={16} color="#676767" />;
+              }}
 
-          {/* set Recipe for 3 meals */}
-          <View style={styles.componentContainer}>
-            <View style={styles.leftComponent}>
-              <Text style={styles.subTitle}>Breakfast</Text>
-              {renderMealRecipe(breakfastRecipe)}
+            />
+          </View>
+
+
+          {/* search for online recipe */}
+          <View style={styles.componentContainer2}>
+            <Text style={styles.subTitle}>Available Online Recipes</Text>
+            <View style={styles.searchContainer}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search for online recipe"
+                value={search}
+                onChangeText={(text) => handleSearch(text)}
+              />
             </View>
-            <View style={styles.middleComponent}>
-              <Text style={styles.subTitle}>Lunch</Text>
-              {renderMealRecipe(lunchRecipe)}
-            </View>
-            <View style={styles.rightComponent}>
-              <Text style={styles.subTitle}>Dinner</Text>
-              {renderMealRecipe(dinnerRecipe)}
+            {/* list of recipes */}
+            <View style={styles.searchList}>
+              {loading ? (
+                <Text style={styles.recipeTitle}>Loading...</Text>
+              ) : (
+                <ScrollView>
+                  {onlineRecipes.map((item) => (
+                    <TouchableOpacity
+                      key={item.id.toString()}
+                      onPress={() => handleItemClick(item.id)}
+                    >
+                      <Text style={styles.recipeTitle}>{item.title}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              )}
             </View>
           </View>
 
-          {/* total calories */}
-          <View style={styles.componentContainer}>
-            <View style={styles.leftComponent}>
-              <Text style={styles.smallHeadings}>Total Calories</Text>
-              <Text style={styles.smallText}>{handleTotalCalories()} cal</Text>
+
+          {/* Calorie Intake */}
+          <View style={styles.componentContainer2}>
+            <Text style={[styles.subTitle]}>Calorie Intake</Text>
+            <View style={styles.flexRowComponent}>
+              <Text style={[styles.smallHeadings, styles.boldText]}>Total Calories</Text>
+              <Text style={styles.smallHeadings}>{handleTotalCalories()} cal</Text>
             </View>
-            <View style={styles.middleComponent}>
-              <Text style={styles.smallHeadings}>Target Calories</Text>
-              <Text style={styles.smallText}>{targetCalories}</Text>
+            <View style={styles.flexRowComponent}>
+              <Text style={[styles.smallHeadings, styles.boldText]}>Target Calories</Text>
+              <Text style={styles.smallHeadings}>{targetCalories} cal</Text>
             </View>
-            <View style={styles.rightComponent}>
-              <Text style={styles.smallHeadings}>Objective</Text>
+            <View style={styles.flexRowComponent}>
+              <Text style={[styles.smallHeadings, styles.boldText]}>Objective</Text>
               {handleObjectiveIcon()}
             </View>
-          </View>
-          <View style={styles.componentContainer}>
-            <View style={styles.leftComponent}>
-              <Button onPress={() => handleReset()} style={styles.resetButton}>
-                Reset
-              </Button>
+            {/* reset and submit button */}
+            <View style={styles.flexRowComponent}>
+              <View style={styles.leftComponent}>
+                <Button onPress={() => handleReset()} style={styles.resetButton}>
+                  <Text style={styles.buttonText}>Reset</Text>
+                </Button>
+              </View>
+              <View style={styles.rightComponent}>
+                <Button
+                  onPress={() => handleSubmit()}
+                  style={styles.submitButton}
+                >
+                  <Text style={styles.buttonText}>Submit</Text>
+                </Button>
+              </View>
             </View>
-            <View style={styles.rightComponent}>
-              <Button
-                onPress={() => handleSubmit()}
-                style={styles.submitButton}
-              >
-                Submit
-              </Button>
-            </View>
           </View>
-          <TouchableOpacity>
+
+          {/* <TouchableOpacity>
             <Button onPress={handleSummary} style={styles.submitButton}>
               View Summary
             </Button>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </SafeAreaView>
       </TouchableWithoutFeedback>
     </ScrollView>
@@ -618,28 +681,28 @@ const styles = StyleSheet.create({
   //containers
   scrollContainer: {
     flex: 1,
-    backgroundColor: "#FCFCD3",
+    backgroundColor: "#fff",
   },
   container: {
     flex: 1,
-    backgroundColor: "#FCFCD3",
+    backgroundColor: "#F2F2F2",
     alignItems: "center",
-  },
-  pickerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    padding: 16,
   },
   dropdown: {
-    width: 200,
+    width: "100%",
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: "#ED6F21",
+    borderRadius: 16,
   },
   searchInput: {
+    height: 50,
+    width: "100%",
+    paddingHorizontal: 16,
+    fontSize: 16,
     borderWidth: 1,
-    borderColor: "gray",
-    width: 200,
-    margin: 10,
-    padding: 5,
+    borderColor: "#C6C6CD",
+    borderRadius: 4,
   },
   searchContainer: {
     flexDirection: "row",
@@ -656,17 +719,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: "center",
   },
-  mealSelector: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
   subTitle: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
+    color: "#000"
   },
   smallHeadings: {
-    fontSize: 13,
+    fontSize: 14,
     textAlign: "center",
   },
   smallText: {
@@ -674,7 +734,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-  //recommanded recipe
+  buttonText: {
+    color: "#FFF"
+  },
+  boldText: {
+    fontWeight: "bold"
+  },
+  //recommended recipe
   recommendedRecipesContainer: {
     width: 385,
     padding: 5,
@@ -698,34 +764,61 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     margin: 5,
   },
+  componentContainer2: {
+    display: "flex",
+    width: "90%",
+    padding: 16,
+    flexDirection: "column",
+    alignItems: "left",
+    backgroundColor: "#FFF",
+    borderRadius: 16,
+    gap: 8,
+    margin: 8,
+  },
   leftComponent: {
     flex: 1, // Takes up 1/3 of the available space
-    paddingTop: 10,
-    paddingBottom: 10,
   },
   middleComponent: {
     flex: 1, // Takes up 1/3 of the available space
-    paddingTop: 10,
-    paddingBottom: 10,
   },
   rightComponent: {
     flex: 1, // Takes up 1/3 of the available space
-    paddingTop: 10,
-    paddingBottom: 10,
+  },
+  flexRowComponent: {
+    display: "flex",
+    paddingTop: 8,
+    paddingBottom: 8,
+    justifyContent: "space-between",
+    alignItems: "centre",
+    width: "100%",
+    flexDirection: "row",
+    gap: 16,
+  },
+  flexColumnComponent: {
+    display: "flex",
+    paddingTop: 8,
+    paddingBottom: 8,
+    justifyContent: "space-between",
+    alignItems: "centre",
+    width: "100%",
+    flexDirection: "column",
+    gap: 16,
   },
   iconObj: {
     textAlign: "center",
   },
   //buttons
   submitButton: {
-    backgroundColor: "lightgreen",
+    backgroundColor: "#ED6F21",
     margin: 5,
     borderRadius: 10,
+    width: "100%",
   },
   resetButton: {
-    backgroundColor: "lightblue",
+    backgroundColor: "#A9A9A9",
     margin: 5,
     borderRadius: 10,
+    width: "100%",
   },
   recipeTitle: {
     marginLeft: 20,

@@ -57,7 +57,7 @@ import ViewRecipeInfoScreen from "./screens/User/ViewRecipeInfoScreen";
 import ViewRecipeScreen from "./screens/User/ViewRecipeScreen";
 import ViewRequest from "./screens/User/ViewRequest";
 // import FullReportMonthly from "./screens/SystemAdmin/FullReportMonthly";
-import ProgressScreenv2 from "./screens/User/ProgressScreenv2";
+import ProgressScreen from "./screens/User/ProgressScreen";
 import UserInfoScreen from "./screens/User/UserInfoScreen";
 import { Context } from "./store/context";
 
@@ -252,7 +252,7 @@ function App() {
 
           <Stack.Screen name="Edit Recipe" component={EditRecipeScreen} />
 
-          <Stack.Screen name="Track Progressv2" component={ProgressScreenv2} />
+          <Stack.Screen name="Track Progress" component={ProgressScreen} />
 
           <Stack.Screen
             name="Community Recipes"
