@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
-import { View, SafeAreaView, StyleSheet, Text } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import React, { useContext, useState } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Context } from "../../store/context";
-import { useFocusEffect } from '@react-navigation/native';
+
 
 
 const SummaryDailyScreen = ({ route }) => {
@@ -10,16 +11,17 @@ const SummaryDailyScreen = ({ route }) => {
     const [currentUser, setCurrentUser] = useContext(Context);
     const [dailyCalories, setDailyCalories] = useState([]);
     const [userData, setUserData] = useState(user);
-    
+    const navigation = useNavigation();
+
     const currentUserData = userData.find(user => user._id === currentUser._id);
     console.log("1.=============== userData: " + currentUserData.username + " " + " CaloriesLog: " + currentUserData.dailyCaloriesLog[currentUserData.dailyCaloriesLog.length - 1].total_calories);
-    
+
     //current user's calorie goal and daily calorie log
     const targetCalories = Math.round(currentUserData.calorie);
     const CaloriesLog = currentUserData.dailyCaloriesLog;
     console.log("2.-------------- userData: " + currentUserData.username + " " + " CaloriesLog: " + CaloriesLog[CaloriesLog.length - 1].total_calories);
 
-    //console.log(currentUser.dailyCaloriesLog.length + " " + CaloriesLog.length);  
+    //console.log(currentUser.dailyCaloriesLog.length + " " + CaloriesLog.length);
 
     // Get the latest data entry
     const latestDataEntry = CaloriesLog.length > 0 ? CaloriesLog[CaloriesLog.length - 1] : null;
@@ -38,113 +40,251 @@ const SummaryDailyScreen = ({ route }) => {
 
     //const roundedCaloriesMore = caloriesMore.toFixed(2);
     const roundedCaloriesMore = Math.round(caloriesMore);
-    
+
     //percentage of calories consumed
     const percentage = (latestTotalCalories / targetCalories) * 100;
 
     // Determine if calories exceeded the target
     const exceededTarget = latestTotalCalories > targetCalories;
-    const tintColor = exceededTarget ? "#ff0000" : "#55dfe6";
+    const animatedCircularProgressColor = percentage > 100 ? "#FFEBCC" : "#FF9130";
+
+    // Navigation
+    const navigateToTrackProgressScreen = () => {
+        navigation.navigate("Track Progress");
+    };
 
     return (
         <View style={styles.container}>
-            <View style={styles.textContainer}>
+            {/* <View style={styles.textContainer}>
                 <Text style={styles.chartTextBold}>Daily Intake</Text>
             </View>
             <View style={styles.chartContainer}>
                 <AnimatedCircularProgress
-                    size={250}
-                    width={15}
+                    size={200}
+                    width={30}
                     fill={percentage}
-                    tintColor={tintColor}
+                    tintColor={animatedCircularProgressColor}
                     backgroundColor="#e1e2e3"
                     rotation={0}
                     lineCap="round"
                 >
                     {(fill) => (
-                    <View>
-                        <Text style={styles.chartTextBold}>
-                        {latestTotalCalories} / {targetCalories} Cal consumed
-                        </Text>
-                        <Text style={styles.chartText}>
-                            {exceededTarget ? `${roundedCaloriesMore} Cal more` : `${roundedCaloriesLeft} Cal less`}
-                        </Text>
-                    </View>
+                        <View>
+                            <Text style={styles.chartTextBold}>
+                                {latestTotalCalories} / {targetCalories} Cal consumed
+                            </Text>
+                            <Text style={styles.chartText}>
+                                {exceededTarget ? `${roundedCaloriesMore} Cal more` : `${roundedCaloriesLeft} Cal left`}
+                            </Text>
+                        </View>
                     )}
                 </AnimatedCircularProgress>
             </View>
-            <View style={styles.componentContainer}>
+            <View style={styles.flexRowComponent}>
                 <View style={styles.leftComponent}>
-                    <Text style={styles.text}>Daily intake: </Text>
+                    <Text style={styles.text}>Daily intake </Text>
                     <Text style={styles.subText}>{latestTotalCalories}</Text>
                 </View>
                 <View style={styles.rightComponent}>
-                    <Text style={styles.text}>Target Calories:</Text>
+                    <Text style={styles.text}>Target Calories</Text>
                     <Text style={styles.subText}>{targetCalories}</Text>
                 </View>
+            </View> */}
+            <View style={styles.introSection}>
+                <View style={styles.componentContainer}>
+                    <View style={styles.flexColumnComponent}>
+                        <Text style={styles.subTitle}>
+                            Daily Intake
+                        </Text>
+                    </View>
+
+                    <View style={styles.flexRowComponent}>
+                        <View style={styles.leftComponent}>
+                            <Text style={[styles.normalText]}
+                            >Calorie Consumed</Text>
+                            <Text
+                                style={[styles.normalText, styles.orangeText]}
+                            >
+                                {Math.round(latestTotalCalories)} cal
+                            </Text>
+                            <Text style={[styles.normalText]}>
+                                Calories Left
+                            </Text>
+                            <Text style={[styles.normalText, styles.orangeText]}>
+                                {roundedCaloriesLeft} cal
+                            </Text>
+                            <Text style={[styles.normalText]}
+                            >Recommended Intake
+                            </Text>
+                            <Text
+                                style={[styles.normalText, styles.orangeText]}
+                            >
+                                {targetCalories} cal
+                            </Text>
+                        </View>
+                        <View style={styles.rightComponent}>
+                            <AnimatedCircularProgress
+                                size={130}
+                                width={30}
+                                fill={percentage} // Assuming progress is a value between 0 and 100
+                                tintColor={animatedCircularProgressColor}
+                                backgroundColor="#FFEBCC"
+                                rotation={0}
+                                lineCap="round"
+                            >
+                            </AnimatedCircularProgress>
+                        </View>
+                    </View>
+                </View>
+
+                <View style={styles.componentContainer}>
+                    <View style={styles.flexRowComponent}>
+                        <View style={styles.leftComponent}>
+                            <Text style={[styles.subTitle]}
+                            >Breakfast
+                            </Text>
+                            <Text style={[styles.normalText]}
+                            >No Recipe Added
+                            </Text>
+                        </View>
+                        <View style={[styles.rightComponent]}>
+                            <TouchableOpacity
+                                style={styles.iconButton}
+                                onPress={navigateToTrackProgressScreen}
+                            >
+                                <Image
+                                    source={require("../../assets/plusButton.png")}
+                                    style={styles.iconImage}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+
+                <View style={styles.componentContainer}>
+                    <View style={styles.flexRowComponent}>
+                        <View style={styles.leftComponent}>
+                            <Text style={[styles.subTitle]}
+                            >Lunch
+                            </Text>
+                            <Text style={[styles.normalText]}
+                            >No Recipe Added
+                            </Text>
+                        </View>
+                        <View style={[styles.rightComponent]}>
+                            <TouchableOpacity
+                                style={styles.iconButton}
+                                onPress={navigateToTrackProgressScreen}
+                            >
+                                <Image
+                                    source={require("../../assets/plusButton.png")}
+                                    style={styles.iconImage}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+
+                <View style={styles.componentContainer}>
+                    <View style={styles.flexRowComponent}>
+                        <View style={styles.leftComponent}>
+                            <Text style={[styles.subTitle]}
+                            >Dinner
+                            </Text>
+                            <Text style={[styles.normalText]}
+                            >No Recipe Added
+                            </Text>
+                        </View>
+                        <View style={[styles.rightComponent]}>
+                            <TouchableOpacity
+                                style={styles.iconButton}
+                                onPress={navigateToTrackProgressScreen}
+                            >
+                                <Image
+                                    source={require("../../assets/plusButton.png")}
+                                    style={styles.iconImage}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
             </View>
-        </View>
+        </View >
     );
 };
 
 export default SummaryDailyScreen;
 
 const styles = StyleSheet.create({
-    //containers
-    container: {
-        flex: 1,
-        backgroundColor: "#FCFCD3",
-        alignItems: "center",
+    introSection: {
+        padding: 12,
+        borderBottomColor: "#ccc",
     },
-    chartContainer: {
-        marginTop: 25,
-        marginBottom: 25,
-    },
-    textContainer: {    
-        marginTop: 10,
-        marginBottom: 10,
-    },
+    // component
     componentContainer: {
-        flexDirection: "row", // Arrange components horizontally from left to right
-        justifyContent: "space-between", // Space them evenly
-        alignItems: "center", // Center them vertically
-        paddingTop: 5,
-        paddingBottom: 5,
-        margin: 5,
+        display: "flex",
+        width: "100%",
+        padding: 16,
+        backgroundColor: "#FFF",
+        borderRadius: 20,
+        marginBottom: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    flexRowComponent: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "100%",
+        flexDirection: "row",
+    },
+    flexColumnComponent: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "start",
+        width: "100%",
+        flexDirection: "column",
     },
     leftComponent: {
         flex: 1, // Takes up 1/3 of the available space
-        paddingTop: 10,
-        paddingBottom: 10,
     },
     middleComponent: {
         flex: 1, // Takes up 1/3 of the available space
-        paddingTop: 10,
-        paddingBottom: 10,
+        alignItems: "center"
     },
     rightComponent: {
-        flex: 1, // Takes up 1/3 of the available space
-        paddingTop: 10,
-        paddingBottom: 10,
+        display: 'flex',
+        alignItems: "end",
     },
     //text
-    text: {
-        fontSize: 18,
-        fontWeight: "bold",
-        textAlign: "center",
-    },
-    subText: {
-        fontSize: 16,
-        textAlign: "center",
-    },
-    chartText: {
-        fontSize: 16,
-        textAlign: "center",
-    },
-    chartTextBold: {
+    subTitle: {
         fontSize: 20,
         fontWeight: "bold",
-        textAlign: "center",
+        color: "#FF9130"
+    },
+    normalText: {
+        fontSize: 14,
+        margin: 1,
+        // textAlign: "center",
+    },
+    orangeText: {
+        color: "#FF9130"
+    },
+    // Button
+    iconButton: {
+        padding: 10,
+        backgroundColor: "#FFEBCC",
+        borderRadius: 10,
+    },
+    iconImage: {
+        width: 25,
+        height: 25,
     },
 });
 
