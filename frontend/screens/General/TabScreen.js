@@ -98,14 +98,6 @@ export default function TabScreen() {
     }
   }
 
-  const heartIcon =(
-    <MaterialCommunityIcons
-      name={focused ? "heart" : "heart-outline"}
-      size={30}
-      color="#ED6F21"
-    />
-  )
-
 
   return (
     <Tab.Navigator
@@ -134,8 +126,14 @@ export default function TabScreen() {
               />
             );
           } else if (route.name === "Recipes Stuff" && currentUser.userType === "user") {
-            iconName = heartIcon;
-            
+            iconName = focused ? "heart" : "heart-outline", size = 30;
+            return (
+              <MaterialCommunityIcons
+                name={iconName}
+                size={size}
+                color={iconColor}
+              />
+            );           
           } else if (route.name === "Recipes Stuff" && currentUser.userType === "bizpartner") {
             iconName = focused ? "clipboard-list" : "clipboard-list-outline", size = 30;
             return (
