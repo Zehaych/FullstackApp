@@ -144,7 +144,7 @@ const UserScreen = () => {
           <TouchableRipple onPress={onTrackProgressPressed}>
             <View style={styles.menuItem}>
               <Icon name="chart-bar" color="#ED6F21" size={25} />
-              <Text style={styles.menuItemText}>Track Progressv2</Text>
+              <Text style={styles.menuItemText}>Track Progress</Text>
             </View>
           </TouchableRipple>
 
