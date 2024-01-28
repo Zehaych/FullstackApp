@@ -413,115 +413,115 @@ const HomeScreen = ({ navigation }) => {
             </TouchableOpacity>
 
             {/* Recommended Recipe Section */}
-              <Text style={styles.sectionHeader}>Top Picks Of The Day</Text>
-              <ScrollView horizontal={true}>
-                {recommendedRecipes.meals &&
-                  recommendedRecipes.meals.length >= 0 && (
-                    <TouchableOpacity
-                      key={recommendedRecipes.meals[0].id}
-                      style={styles.recipeContainer}
-                      onPress={() =>
-                        navigateToOnlineRecipesInfo(
-                          recommendedRecipes.meals[0].id
-                        )
-                      }
-                    >
-                      <Image
-                        source={{
-                          uri: `https://spoonacular.com/recipeImages/${recommendedRecipes.meals[0].id}-312x231.${recommendedRecipes.meals[0].imageType}`,
-                        }}
-                        style={styles.featuredCardImage}
-                      />
-                      <Text style={styles.communityRecipeTitle}>
-                        {recommendedRecipes.meals[0].title}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-
-                {recommendedRecipes.meals &&
-                  recommendedRecipes.meals.length > 0 && (
-                    <TouchableOpacity
-                      key={recommendedRecipes.meals[1].id}
-                      style={styles.recipeContainer}
-                      onPress={() =>
-                        navigateToOnlineRecipesInfo(
-                          recommendedRecipes.meals[1].id
-                        )
-                      }
-                    >
-                      <Image
-                        source={{
-                          uri: `https://spoonacular.com/recipeImages/${recommendedRecipes.meals[1].id}-312x231.${recommendedRecipes.meals[1].imageType}`,
-                        }}
-                        style={styles.featuredCardImage}
-                      />
-                      <Text style={styles.communityRecipeTitle}>
-                        {recommendedRecipes.meals[1].title}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-
-                {recommendedRecipes.meals &&
-                  recommendedRecipes.meals.length > 0 && (
-                    <TouchableOpacity
-                      key={recommendedRecipes.meals[2].id}
-                      style={styles.recipeContainer}
-                      onPress={() =>
-                        navigateToOnlineRecipesInfo(
-                          recommendedRecipes.meals[2].id
-                        )
-                      }
-                    >
-                      <Image
-                        source={{
-                          uri: `https://spoonacular.com/recipeImages/${recommendedRecipes.meals[2].id}-312x231.${recommendedRecipes.meals[2].imageType}`,
-                        }}
-                        style={styles.featuredCardImage}
-                      />
-                      <Text style={styles.communityRecipeTitle}>
-                        {recommendedRecipes.meals[2].title}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-              </ScrollView>
-
-            {/* Online Recipe Section */}
-              <Text style={styles.sectionHeader} onPress={navigateToOnlineRecipes}
-              >Online Recipes</Text>
-              <ScrollView horizontal={true}>
-                {randomRecipes[0] && (
+            <Text style={styles.sectionHeader}>Top Picks Of The Day</Text>
+            <ScrollView horizontal={true}>
+              {recommendedRecipes.meals &&
+                recommendedRecipes.meals.length >= 0 && (
                   <TouchableOpacity
+                    key={recommendedRecipes.meals[0].id}
                     style={styles.recipeContainer}
                     onPress={() =>
-                      navigateToOnlineRecipesInfo(randomRecipes[0].id)
+                      navigateToOnlineRecipesInfo(
+                        recommendedRecipes.meals[0].id
+                      )
                     }
                   >
                     <Image
-                      source={{ uri: randomRecipes[0].image }}
+                      source={{
+                        uri: `https://spoonacular.com/recipeImages/${recommendedRecipes.meals[0].id}-312x231.${recommendedRecipes.meals[0].imageType}`,
+                      }}
                       style={styles.featuredCardImage}
                     />
                     <Text style={styles.communityRecipeTitle}>
-                      {randomRecipes[0].title}
+                      {recommendedRecipes.meals[0].title}
                     </Text>
                   </TouchableOpacity>
                 )}
-                {randomRecipes[1] && (
+
+              {recommendedRecipes.meals &&
+                recommendedRecipes.meals.length > 0 && (
                   <TouchableOpacity
+                    key={recommendedRecipes.meals[1].id}
                     style={styles.recipeContainer}
                     onPress={() =>
-                      navigateToOnlineRecipesInfo(randomRecipes[1].id)
+                      navigateToOnlineRecipesInfo(
+                        recommendedRecipes.meals[1].id
+                      )
                     }
                   >
                     <Image
-                      source={{ uri: randomRecipes[1].image }}
+                      source={{
+                        uri: `https://spoonacular.com/recipeImages/${recommendedRecipes.meals[1].id}-312x231.${recommendedRecipes.meals[1].imageType}`,
+                      }}
                       style={styles.featuredCardImage}
                     />
-                    <Text numberOfLines={2} ellipsizeMode="tail" style={styles.communityRecipeTitle}>
-                      {randomRecipes[1].title}
+                    <Text style={styles.communityRecipeTitle}>
+                      {recommendedRecipes.meals[1].title}
                     </Text>
                   </TouchableOpacity>
                 )}
-              </ScrollView>
+
+              {recommendedRecipes.meals &&
+                recommendedRecipes.meals.length > 0 && (
+                  <TouchableOpacity
+                    key={recommendedRecipes.meals[2].id}
+                    style={styles.recipeContainer}
+                    onPress={() =>
+                      navigateToOnlineRecipesInfo(
+                        recommendedRecipes.meals[2].id
+                      )
+                    }
+                  >
+                    <Image
+                      source={{
+                        uri: `https://spoonacular.com/recipeImages/${recommendedRecipes.meals[2].id}-312x231.${recommendedRecipes.meals[2].imageType}`,
+                      }}
+                      style={styles.featuredCardImage}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {recommendedRecipes.meals[2].title}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+            </ScrollView>
+
+            {/* Online Recipe Section */}
+            <Text style={styles.sectionHeader} onPress={navigateToOnlineRecipes}
+            >Online Recipes</Text>
+            <ScrollView horizontal={true}>
+              {randomRecipes[0] && (
+                <TouchableOpacity
+                  style={styles.recipeContainer}
+                  onPress={() =>
+                    navigateToOnlineRecipesInfo(randomRecipes[0].id)
+                  }
+                >
+                  <Image
+                    source={{ uri: randomRecipes[0].image }}
+                    style={styles.featuredCardImage}
+                  />
+                  <Text style={styles.communityRecipeTitle}>
+                    {randomRecipes[0].title}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              {randomRecipes[1] && (
+                <TouchableOpacity
+                  style={styles.recipeContainer}
+                  onPress={() =>
+                    navigateToOnlineRecipesInfo(randomRecipes[1].id)
+                  }
+                >
+                  <Image
+                    source={{ uri: randomRecipes[1].image }}
+                    style={styles.featuredCardImage}
+                  />
+                  <Text numberOfLines={2} ellipsizeMode="tail" style={styles.communityRecipeTitle}>
+                    {randomRecipes[1].title}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </ScrollView>
 
             {/* <TouchableOpacity
               style={styles.button}
@@ -640,68 +640,68 @@ const HomeScreen = ({ navigation }) => {
   } else {
     return (
       <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={styles.container}>
-        <StatusBar backgroundColor="white" barStyle="dark-content" />
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
-          <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
-            <View style={styles.menuItem}>
-              <Icon name="scan-helper" color="#FF6347" size={25} />
-            </View>
-          </TouchableRipple>
-        </View>
-        <ImageBackground
-          backgroundColor="#F2F2F2"
-        >
-          <View style={styles.introSection}>
-
-            <View style={styles.flexRowComponent}>
-              <View style={[styles.leftComponent, styles.flexColumnComponent]}>
-                <TouchableOpacity
-                  style={styles.iconContainer}
-                  onPress={navigateToCalculateCaloriesScreen}
-                >
-                  <Image
-                    source={require("../../assets/caloriesCalculator.png")}
-                    style={styles.iconImage}
-                  />
-                  <Text style={styles.iconText}>
-                    Calculate Target Intake
-                  </Text>
-                </TouchableOpacity>
+        <ScrollView style={styles.container}>
+          <StatusBar backgroundColor="white" barStyle="dark-content" />
+          <View style={styles.header}>
+            <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
+            <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
+              <View style={styles.menuItem}>
+                <Icon name="scan-helper" color="#FF6347" size={25} />
               </View>
+            </TouchableRipple>
+          </View>
+          <ImageBackground
+            backgroundColor="#F2F2F2"
+          >
+            <View style={styles.introSection}>
 
-              <View style={[styles.middleComponent, styles.flexColumnComponent]}>
-                <TouchableOpacity
-                  style={styles.iconContainer}
-                  onPress={navigateToAddRecipeScreen}
-                >
-                  <Image
-                    source={require("../../assets/shareRecipe.png")}
-                    style={styles.iconImage}
-                  />
-                  <Text style={styles.iconText}>
-                    Share Your Recipes
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={[styles.rightComponent, styles.flexColumnComponent]}>
-                <View style={styles.introImage}>
+              <View style={styles.flexRowComponent}>
+                <View style={[styles.leftComponent, styles.flexColumnComponent]}>
                   <TouchableOpacity
                     style={styles.iconContainer}
-                    onPress={navigateToInsertMedicalHistoryScreen}
+                    onPress={navigateToCalculateCaloriesScreen}
                   >
                     <Image
-                      source={require("../../assets/medicalHistory.png")}
+                      source={require("../../assets/caloriesCalculator.png")}
                       style={styles.iconImage}
                     />
                     <Text style={styles.iconText}>
-                      Insert Medical History
+                      Calculate Target Intake
                     </Text>
                   </TouchableOpacity>
                 </View>
-                {/* <View style={styles.introImage}>
+
+                <View style={[styles.middleComponent, styles.flexColumnComponent]}>
+                  <TouchableOpacity
+                    style={styles.iconContainer}
+                    onPress={navigateToAddRecipeScreen}
+                  >
+                    <Image
+                      source={require("../../assets/shareRecipe.png")}
+                      style={styles.iconImage}
+                    />
+                    <Text style={styles.iconText}>
+                      Share Your Recipes
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={[styles.rightComponent, styles.flexColumnComponent]}>
+                  <View style={styles.introImage}>
+                    <TouchableOpacity
+                      style={styles.iconContainer}
+                      onPress={navigateToInsertMedicalHistoryScreen}
+                    >
+                      <Image
+                        source={require("../../assets/medicalHistory.png")}
+                        style={styles.iconImage}
+                      />
+                      <Text style={styles.iconText}>
+                        Insert Medical History
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  {/* <View style={styles.introImage}>
                 <TouchableOpacity
                   style={styles.iconButton}
                   onPress={navigateToTrackProgressScreen}
@@ -715,11 +715,11 @@ const HomeScreen = ({ navigation }) => {
                   </Text>
                 </TouchableOpacity>
               </View> */}
+                </View>
               </View>
             </View>
-          </View>
 
-          {/* Online Recipe Section */}
+            {/* Online Recipe Section */}
             <Text style={styles.sectionHeader} onPress={navigateToOnlineRecipes}
             >Online Recipes</Text>
             <ScrollView horizontal={true}>
@@ -757,55 +757,55 @@ const HomeScreen = ({ navigation }) => {
               )}
             </ScrollView>
 
-          {/* <TouchableOpacity
+            {/* <TouchableOpacity
             style={styles.button}
             onPress={navigateToOnlineRecipes}
           >
             <Text style={styles.buttonText}>Explore More Online Recipes</Text>
           </TouchableOpacity> */}
 
-          {/* Community Recipe Section */}
-          <Text style={styles.sectionHeader} onPress={navigateToCommunityRecipes}
-          >Top Community Recipes</Text>
-          {/* Display top community recipes */}
-          <ScrollView horizontal={true}>
-            <View style={styles.flexRowComponent}>
-              {communityRecipes[0] && (
-                <TouchableOpacity
-                  style={styles.recipeContainer}
-                  onPress={() =>
-                    navigateToCommunityRecipesInfo(communityRecipes[0])
-                  }
-                >
-                  <Image
-                    source={{ uri: communityRecipes[0].image }}
-                    style={styles.communityRecipeImage}
-                  />
-                  <Text style={styles.communityRecipeTitle}>
-                    {communityRecipes[0].name}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              {communityRecipes[1] && (
-                <TouchableOpacity
-                  style={styles.recipeContainer}
-                  onPress={() =>
-                    navigateToCommunityRecipesInfo(communityRecipes[1])
-                  }
-                >
-                  <Image
-                    source={{ uri: communityRecipes[1].image }}
-                    style={styles.communityRecipeImage}
-                  />
-                  <Text style={styles.communityRecipeTitle}>
-                    {communityRecipes[1].name}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              {/* Add more top community recipes here */}
-            </View>
-          </ScrollView>
-          {/* <TouchableOpacity
+            {/* Community Recipe Section */}
+            <Text style={styles.sectionHeader} onPress={navigateToCommunityRecipes}
+            >Top Community Recipes</Text>
+            {/* Display top community recipes */}
+            <ScrollView horizontal={true}>
+              <View style={styles.flexRowComponent}>
+                {communityRecipes[0] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainer}
+                    onPress={() =>
+                      navigateToCommunityRecipesInfo(communityRecipes[0])
+                    }
+                  >
+                    <Image
+                      source={{ uri: communityRecipes[0].image }}
+                      style={styles.communityRecipeImage}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {communityRecipes[0].name}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {communityRecipes[1] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainer}
+                    onPress={() =>
+                      navigateToCommunityRecipesInfo(communityRecipes[1])
+                    }
+                  >
+                    <Image
+                      source={{ uri: communityRecipes[1].image }}
+                      style={styles.communityRecipeImage}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {communityRecipes[1].name}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {/* Add more top community recipes here */}
+              </View>
+            </ScrollView>
+            {/* <TouchableOpacity
               style={styles.button}
               onPress={navigateToCommunityRecipes}
             >
@@ -814,48 +814,48 @@ const HomeScreen = ({ navigation }) => {
               </Text>
             </TouchableOpacity> */}
 
-          {/* Business Recipe Section */}
-          <Text style={styles.sectionHeader} onPress={navigateToBusinessRecipes}>Top Business Recipes</Text>
-          {/* Display top community recipes */}
-          <ScrollView horizontal={true}>
-            <View style={styles.flexRowComponent}>
-              {businessRecipes[0] && (
-                <TouchableOpacity
-                  style={styles.recipeContainer}
-                  onPress={() =>
-                    navigateToBusinessRecipesInfo(businessRecipes[0])
-                  }
-                >
-                  <Image
-                    source={{ uri: businessRecipes[0].image }}
-                    style={styles.communityRecipeImage}
-                  />
-                  <Text style={styles.communityRecipeTitle}>
-                    {businessRecipes[0].name}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              {businessRecipes[1] && (
-                <TouchableOpacity
-                  style={styles.recipeContainer}
-                  onPress={() =>
-                    navigateToBusinessRecipesInfo(businessRecipes[1])
-                  }
-                >
-                  <Image
-                    source={{ uri: businessRecipes[1].image }}
-                    style={styles.communityRecipeImage}
-                  />
-                  <Text style={styles.communityRecipeTitle}>
-                    {businessRecipes[1].name}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              {/* Add more top business recipes here */}
-            </View>
-          </ScrollView>
+            {/* Business Recipe Section */}
+            <Text style={styles.sectionHeader} onPress={navigateToBusinessRecipes}>Top Business Recipes</Text>
+            {/* Display top community recipes */}
+            <ScrollView horizontal={true}>
+              <View style={styles.flexRowComponent}>
+                {businessRecipes[0] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainer}
+                    onPress={() =>
+                      navigateToBusinessRecipesInfo(businessRecipes[0])
+                    }
+                  >
+                    <Image
+                      source={{ uri: businessRecipes[0].image }}
+                      style={styles.communityRecipeImage}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {businessRecipes[0].name}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {businessRecipes[1] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainer}
+                    onPress={() =>
+                      navigateToBusinessRecipesInfo(businessRecipes[1])
+                    }
+                  >
+                    <Image
+                      source={{ uri: businessRecipes[1].image }}
+                      style={styles.communityRecipeImage}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {businessRecipes[1].name}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {/* Add more top business recipes here */}
+              </View>
+            </ScrollView>
 
-          {/* <TouchableOpacity
+            {/* <TouchableOpacity
             style={styles.button}
             onPress={navigateToBusinessRecipes}
           >
@@ -864,235 +864,13 @@ const HomeScreen = ({ navigation }) => {
             </Text>
           </TouchableOpacity> */}
 
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>© FYP-23-S4-35</Text>
-          </View>
-        </ImageBackground>
-      </ScrollView >
-    </SafeAreaView >
-  );
-      // <SafeAreaView style={{ flex: 1 }}>
-      //   <ScrollView style={styles.container}>
-      //     <StatusBar backgroundColor="white" barStyle="dark-content" />
-      //     <View style={styles.header}>
-      //       <Text style={styles.headerText}>Hello, {currentUser.username}!</Text>
-      //       <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
-      //         <View style={styles.menuItem}>
-      //           <Icon name="scan-helper" color="#FF6347" size={25} />
-      //         </View>
-      //       </TouchableRipple>
-      //     </View>
-      //     <ImageBackground
-      //       source={require("../../assets/gradientHue.jpg")}
-      //       style={styles.backgroundImage}
-      //     >
-      //       <ImageBackground
-      //         source={require("../../assets/recipe_image.png")}
-      //         style={styles.bannerImage}
-      //       >
-      //         <View style={styles.overlay}>
-      //           <Text style={styles.heyText}>Hello {currentUser.username}</Text>
-      //         </View>
-      //       </ImageBackground>
-      //       <View style={styles.introSection}>
-      //         <Text style={styles.introHeader}>Welcome to NutriRizz</Text>
-      //         <View style={styles.introImages}>
-      //           <View style={styles.introImage}>
-      //             <TouchableOpacity style={styles.iconContainer}>
-      //               <Image
-      //                 source={require("../../assets/image3.png")}
-      //                 style={styles.iconImage}
-      //               />
-      //               <Text style={styles.iconText}>
-      //                 Track Your Progress
-      //               </Text>
-      //             </TouchableOpacity>
-      //           </View>
-      //           <View style={styles.introImage}>
-      //             <TouchableOpacity style={styles.iconContainer}>
-      //               <Image
-      //                 source={require("../../assets/image1.png")}
-      //                 style={styles.iconImage}
-      //               />
-      //               <Text style={styles.iconText}>View Your Intakes</Text>
-      //             </TouchableOpacity>
-      //           </View>
-      //           <View style={styles.introImage}>
-      //             <TouchableOpacity style={styles.iconContainer}>
-      //               <Image
-      //                 source={require("../../assets/image2.png")}
-      //                 style={styles.iconImage}
-      //               />
-      //               <Text style={styles.iconText}>
-      //                 Share Your Recipes
-      //               </Text>
-      //             </TouchableOpacity>
-      //           </View>
-      //         </View>
-      //         <TouchableOpacity
-      //           style={styles.button}
-      //           onPress={navigateToUser}
-      //         >
-      //           <Text style={styles.buttonText}>Start Now</Text>
-      //         </TouchableOpacity>
-      //       </View>
-
-      //         <Text style={styles.sectionHeader}>Online Recipes</Text>
-      //         {randomRecipes[0] && (
-      //           <TouchableOpacity
-      //             style={styles.featuredCard}
-      //             onPress={() =>
-      //               navigateToOnlineRecipesInfo(randomRecipes[0].id)
-      //             }
-      //           >
-      //             <Image
-      //               source={{ uri: randomRecipes[0].image }}
-      //               style={styles.featuredCardImage}
-      //             />
-      //             <Text style={styles.featuredCardTitle}>
-      //               {randomRecipes[0].title}
-      //             </Text>
-      //           </TouchableOpacity>
-      //         )}
-      //         {randomRecipes[1] && (
-      //           <TouchableOpacity
-      //             style={styles.featuredCard}
-      //             onPress={() =>
-      //               navigateToOnlineRecipesInfo(randomRecipes[1].id)
-      //             }
-      //           >
-      //             <Image
-      //               source={{ uri: randomRecipes[1].image }}
-      //               style={styles.featuredCardImage}
-      //             />
-      //             <Text style={styles.featuredCardTitle}>
-      //               {randomRecipes[1].title}
-      //             </Text>
-      //           </TouchableOpacity>
-      //         )}
-      //         {/*
-      //       <TouchableOpacity style={styles.featuredCard}>
-      //         <Image
-      //           source={require("../assets/recipe1.jpg")}
-      //           style={styles.featuredCardImage}
-      //         />
-      //         <Text style={styles.featuredCardTitle}>Spaghetti Bolognese</Text>
-      //       </TouchableOpacity>
-      //       <TouchableOpacity style={styles.featuredCard}>
-      //         <Image
-      //           source={require("../assets/recipe2.jpg")}
-      //           style={styles.featuredCardImage}
-      //         />
-      //         <Text style={styles.featuredCardTitle}>Chicken Alfredo</Text>
-      //       </TouchableOpacity> */}
-      //         {/* Add more featured recipe cards here */}
-
-      //       <TouchableOpacity
-      //         style={styles.button}
-      //         onPress={navigateToOnlineRecipes}
-      //       >
-      //         <Text style={styles.buttonText}>Explore More Online Recipes</Text>
-      //       </TouchableOpacity>
-
-      //       {/* Community Recipe Section */}
-      //       <Text style={styles.sectionHeader}>Top Community Recipes</Text>
-      //       {/* Display top community recipes */}
-      //       {communityRecipes[0] && (
-      //         <TouchableOpacity
-      //           style={styles.recipeContainer}
-      //           onPress={() =>
-      //             navigateToCommunityRecipesInfo(communityRecipes[0])
-      //           }
-      //         >
-      //           <Image
-      //             source={{ uri: communityRecipes[0].image }}
-      //             style={styles.communityRecipeImage}
-      //           />
-      //           <Text style={styles.communityRecipeTitle}>
-      //             {communityRecipes[0].name}
-      //           </Text>
-      //         </TouchableOpacity>
-      //       )}
-      //       {communityRecipes[1] && (
-      //         <TouchableOpacity
-      //           style={styles.recipeContainer}
-      //           onPress={() =>
-      //             navigateToCommunityRecipesInfo(communityRecipes[1])
-      //           }
-      //         >
-      //           <Image
-      //             source={{ uri: communityRecipes[1].image }}
-      //             style={styles.communityRecipeImage}
-      //           />
-      //           <Text style={styles.communityRecipeTitle}>
-      //             {communityRecipes[1].name}
-      //           </Text>
-      //         </TouchableOpacity>
-      //       )}
-      //       {/* Add more top community recipes here */}
-
-      //       <TouchableOpacity
-      //         style={styles.button}
-      //         onPress={navigateToCommunityRecipes}
-      //       >
-      //         <Text style={styles.buttonText}>
-      //           Explore More Community Recipes
-      //         </Text>
-      //       </TouchableOpacity>
-
-      //       {/* Business Recipe Section */}
-      //       <Text style={styles.sectionHeader}>Top Business Recipes</Text>
-      //       {/* Display top community recipes */}
-      //       {businessRecipes[0] && (
-      //         <TouchableOpacity
-      //           style={styles.recipeContainer}
-      //           onPress={() =>
-      //             navigateToBusinessRecipesInfo(businessRecipes[0])
-      //           }
-      //         >
-      //           <Image
-      //             source={{ uri: businessRecipes[0].image }}
-      //             style={styles.communityRecipeImage}
-      //           />
-      //           <Text style={styles.communityRecipeTitle}>
-      //             {businessRecipes[0].name}
-      //           </Text>
-      //         </TouchableOpacity>
-      //       )}
-      //       {businessRecipes[1] && (
-      //         <TouchableOpacity
-      //           style={styles.recipeContainer}
-      //           onPress={() =>
-      //             navigateToBusinessRecipesInfo(businessRecipes[1])
-      //           }
-      //         >
-      //           <Image
-      //             source={{ uri: businessRecipes[1].image }}
-      //             style={styles.communityRecipeImage}
-      //           />
-      //           <Text style={styles.communityRecipeTitle}>
-      //             {businessRecipes[1].name}
-      //           </Text>
-      //         </TouchableOpacity>
-      //       )}
-      //       {/* Add more top community recipes here */}
-
-      //       <TouchableOpacity
-      //         style={styles.button}
-      //         onPress={navigateToBusinessRecipes}
-      //       >
-      //         <Text style={styles.buttonText}>
-      //           Explore More Business Recipes
-      //         </Text>
-      //       </TouchableOpacity>
-
-      //       <View style={styles.footer}>
-      //         <Text style={styles.footerText}>© FYP-23-S4-35</Text>
-      //       </View>
-      //     </ImageBackground>
-      //   </ScrollView>
-      // </SafeAreaView>
-    // );
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>© FYP-23-S4-35</Text>
+            </View>
+          </ImageBackground>
+        </ScrollView >
+      </SafeAreaView >
+    );
   }
 };
 

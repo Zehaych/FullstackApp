@@ -137,19 +137,20 @@ const SummaryMonthlyScreen = ({ route }) => {
                 </View>
 
                 <View style={styles.componentContainer}>
-                    <View style={styles.leftComponent}>
+                    <View style={styles.flexRowComponent}>
                         <Text style={styles.subTitle}>{latestMonthData?.month} Intake</Text>
+                    </View>
+                    <View style={styles.flexRowComponent}>
                         {latestMonthData && (
                             <>
                                 <Text style={[styles.normalText]}>Calories Consumed:</Text>
-                                <Text style={[styles.normalText, styles.orangeText]}>{Math.round(latestMonthData.consumed)} cal</Text>
-
+                                <Text style={[styles.normalText]}>{Math.round(latestMonthData.consumed)} cal</Text>
                             </>
                         )}
                     </View>
-                    <View style={styles.leftComponent}>
+                    <View style={styles.flexRowComponent}>
                         <Text style={styles.normalText}>(AVG)Target Calories:</Text>
-                        <Text style={[styles.normalText, styles.orangeText]}>{Math.round(averageTargetCalories)} cal</Text>
+                        <Text style={[styles.normalText]}>{Math.round(averageTargetCalories)} cal</Text>
                     </View>
                 </View>
                 <View style={styles.componentContainer}>
@@ -162,17 +163,17 @@ const SummaryMonthlyScreen = ({ route }) => {
                             <View style={styles.chartContainerToo}>
                                 <Progress.Bar
                                     progress={month?.progress / 100} // Progress based on the ratio
-                                    width={300}
+                                    width={330}
                                     height={15}
                                     color="#FF9130"
                                     unfilledColor="#FFEBCC"
                                     borderWidth={0}
                                 />
-                                <View>
-                                    <Text style={[styles.normalText, styles.orangeText]}>
+                                <View style={styles.flexRowComponent}>
+                                    <Text style={[styles.normalText]}>
                                         {Math.round(month?.consumed)} / {Math.round(month?.target)} cal consumed
                                     </Text>
-                                    <Text style={[styles.normalText, styles.orangeText]}>
+                                    <Text style={[styles.normalText]}>
                                         {month?.consumed > month?.target
                                             ? `${Math.round(month?.consumed - month?.target)} cal more`
                                             : `${Math.round(month?.target - month?.consumed)} cal less`}
@@ -220,6 +221,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: "100%",
         flexDirection: "row",
+        marginBottom: 10
     },
     flexColumnComponent: {
         display: "flex",
@@ -227,7 +229,7 @@ const styles = StyleSheet.create({
         alignItems: "left",
         width: "100%",
         flexDirection: "column",
-        margin: 4,
+        marginBottom: 10
     },
     leftComponent: {
         flex: 1, // Takes up 1/3 of the available space
@@ -244,7 +246,8 @@ const styles = StyleSheet.create({
     subTitle: {
         fontSize: 20,
         fontWeight: "bold",
-        color: "#FF9130"
+        color: "#FF9130",
+        marginBottom: 10
     },
     normalText: {
         fontSize: 14,

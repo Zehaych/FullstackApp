@@ -131,7 +131,7 @@ const SummaryWeeklyScreen = ({ route }) => {
                     </ScrollView>
                 </View>
                 <View style={styles.componentContainer}>
-                    <Text style={styles.subTitle}>Total Calories Intake: </Text>
+                    <Text style={styles.subTitle}>Total Calories Intake </Text>
                     {weeklyDataSorted.map((week) => (
                         <View key={week.week}>
                             <Text style={[styles.normalText, styles.bold]}> Week {week.week}</Text>
@@ -144,11 +144,11 @@ const SummaryWeeklyScreen = ({ route }) => {
                                     unfilledColor="#FFEBCC"
                                     borderWidth={0}
                                 />
-                                <View>
-                                    <Text style={[styles.normalText, styles.orangeText]}>
+                                <View style={styles.flexRowComponent}>
+                                    <Text style={[styles.normalText]}>
                                         {Math.round(week.totalCalories)} / {roundTargetCalories} cal consumed
                                     </Text>
-                                    <Text style={[styles.normalText, styles.orangeText]}>
+                                    <Text style={[styles.normalText]}>
                                         {week.totalCalories > roundTargetCalories
                                             ? `${Math.round(week.totalCalories - roundTargetCalories)} cal more`
                                             : `${Math.round(roundTargetCalories - week.totalCalories)} cal less`}
@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: "100%",
         flexDirection: "row",
+        marginBottom: 10
     },
     flexColumnComponent: {
         display: "flex",
@@ -203,6 +204,7 @@ const styles = StyleSheet.create({
         width: "100%",
         flexDirection: "column",
         margin: 4,
+        marginBottom: 10
     },
     leftComponent: {
         flex: 1, // Takes up 1/3 of the available space
@@ -219,7 +221,8 @@ const styles = StyleSheet.create({
     subTitle: {
         fontSize: 20,
         fontWeight: "bold",
-        color: "#FF9130"
+        color: "#FF9130",
+        marginBottom: 10
     },
     normalText: {
         fontSize: 14,
