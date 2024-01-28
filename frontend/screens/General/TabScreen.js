@@ -16,6 +16,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { Context } from "../../store/context";
 import { useContext } from "react";
 import { useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/Feather";
 
 const Tab = createBottomTabNavigator();
 
@@ -71,6 +73,7 @@ function FavouritesUserScreen({ navigation }) {
 
 export default function TabScreen() {
   const [currentUser, setCurrentUser] = useContext(Context);
+  const navigation = useNavigation();
 
   const getTabLabel = () => {
     switch (currentUser.userType) {
@@ -98,6 +101,9 @@ export default function TabScreen() {
     }
   }
 
+  const navigateToCart = () => {
+    navigation.navigate("Cart");
+  };
 
   return (
     <Tab.Navigator
@@ -177,7 +183,22 @@ export default function TabScreen() {
       <Tab.Screen
         name="Discover Recipes"
         component={TabRecipes}
-        options={{ tabBarLabel: "Recipes" }}
+        options={{ 
+          tabBarLabel: "Recipes",
+          headerRight: () => (
+            <View style={styles.iconContainer}>
+              <Icon name="shopping-cart"
+                onPress={navigateToCart}
+                color={currentUser.cart.length > 0 ? "#ED6F21" : "#000"}
+                size={24}
+                style={styles.icon}
+              />
+              <Text style={styles.countText}>
+                {currentUser.cart.length > 0 ? currentUser.cart.length : ""}
+              </Text>
+            </View>
+          ),
+        }}
       />
       <Tab.Screen
         name="Recipes Stuff"
@@ -248,3 +269,18 @@ export default function TabScreen() {
         options={{ tabBarLabel: "Progress" }}
       />
 */
+const styles = StyleSheet.create({
+  iconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  countText: {
+    textAlign: "center",
+    marginLeft: 4,
+    fontSize: 16,
+    fontWeight: "500",
+    marginRight: 20,
+    color: "#ED6F21",
+  },
+});

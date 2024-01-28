@@ -267,7 +267,7 @@ const HomeScreen = ({ navigation }) => {
 
   if (currentUser.userType === "user") {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.androidSafeArea}>
         <ScrollView style={styles.container}>
           <StatusBar backgroundColor="white" barStyle="dark-content" />
           <View style={styles.header}>
@@ -639,7 +639,7 @@ const HomeScreen = ({ navigation }) => {
     );
   } else {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.androidSafeArea}>
         <ScrollView style={styles.container}>
           <StatusBar backgroundColor="white" barStyle="dark-content" />
           <View style={styles.header}>
@@ -875,6 +875,10 @@ const HomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  androidSafeArea: {
+    flex: 1,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+  },
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
