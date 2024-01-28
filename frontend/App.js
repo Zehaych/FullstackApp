@@ -200,7 +200,7 @@ function App() {
             name="Add Business Recipe"
             component={AddBizRecipeScreen}
           />
-          <Stack.Screen name="View Recipe" component={ViewRecipeScreen} />
+          <Stack.Screen name="View Added Recipe" component={ViewRecipeScreen} />
 
           <Stack.Screen
             name="View Favourites"

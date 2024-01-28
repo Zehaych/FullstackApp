@@ -68,7 +68,7 @@ const UserScreen = () => {
   };
 
   const onViewRecipePressed = () => {
-    navigation.push("View Recipe");
+    navigation.push("View Added Recipe");
   };
 
   const onTrackProgressPressed = () => {
