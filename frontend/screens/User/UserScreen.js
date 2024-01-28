@@ -1,25 +1,20 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { useContext } from "react";
 import {
-  View,
-  SafeAreaView,
-  StyleSheet,
   Alert,
-  ScrollView,
   Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
 } from "react-native";
 import {
-  Avatar,
-  Title,
-  Caption,
   Text,
-  TouchableRipple,
-  Divider,
+  Title,
+  TouchableRipple
 } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Context } from "../../store/context";
-import { useState, useEffect } from "react";
 
 const UserScreen = () => {
   const navigation = useNavigation();
@@ -149,7 +144,7 @@ const UserScreen = () => {
           <TouchableRipple onPress={onTrackProgressPressed}>
             <View style={styles.menuItem}>
               <Icon name="chart-bar" color="#ED6F21" size={25} />
-              <Text style={styles.menuItemText}>Track Progress</Text>
+              <Text style={styles.menuItemText}>Track Progressv2</Text>
             </View>
           </TouchableRipple>
 
