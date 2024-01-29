@@ -23,7 +23,7 @@ const TabRecipes = ({ route }) => {
 
     return (
         <Tab.Navigator
-            initialRouteName="Daily"
+            initialRouteName="Community"
             screenOptions={({ route }) => ({
                 tabBarLabelStyle: {
                     color: "black", 
