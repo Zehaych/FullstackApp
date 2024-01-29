@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
-import { View, ScrollView, StyleSheet, Text, Dimensions } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 import { BarChart } from "react-native-chart-kit";
-import { Context } from "../../store/context";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
 import * as Progress from 'react-native-progress';
+import { Context } from "../../store/context";
 
-const SummaryMonthlyScreen = ({route}) => {
+const SummaryMonthlyScreen = ({ route }) => {
     const { user } = route.params; // Retrieve the user data passed from the previous screen
     const [currentUser, setCurrentUser] = useContext(Context);
     //const [monthlyCalories, setMonthlyCalories] = useState([]);
@@ -15,7 +14,7 @@ const SummaryMonthlyScreen = ({route}) => {
 
     const currentUserData = userData.find(user => user._id === currentUser._id);
 
-    const averageTargetCalories = (currentUserData.calorie * 365)/12;        //use day in month with the month from calender?
+    const averageTargetCalories = (currentUserData.calorie * 365) / 12;        //use day in month with the month from calender?
     const CaloriesLog = currentUserData.dailyCaloriesLog;
     console.log("1.=====monthly===== userData: " + currentUserData.username + "  CurrentUser's targetCalories: " + CaloriesLog[CaloriesLog.length - 1].total_calories);
 
@@ -26,16 +25,16 @@ const SummaryMonthlyScreen = ({route}) => {
         </View>
     ));     //test
     console.log("dailyCaloriesLog: " + currentUserData.dailyCaloriesLog[4].date);
-    
+
     useEffect(() => {
         const today = new Date();
-        const monthsToDisplay = 6; // Adjust this to change how many months to display
-    
+        const monthsToDisplay = 12; // Adjust this to change how many months to display
+
         const data = [];
         for (let i = monthsToDisplay - 1; i >= 0; i--) {
             const monthStartDate = new Date(today.getFullYear(), today.getMonth() - i, 1);
             const monthEndDate = new Date(today.getFullYear(), today.getMonth() - i + 1, 0);
-        
+
             const monthlyCalories = CaloriesLog.reduce((total, entry) => {
                 const entryDate = new Date(entry.date);
                 if (entryDate >= monthStartDate && entryDate <= monthEndDate) {
@@ -44,7 +43,7 @@ const SummaryMonthlyScreen = ({route}) => {
                 }
                 return total;
             }, 0);
-        
+
             const daysInMonth = monthEndDate.getDate();
             const targetCaloriesForMonth = currentUserData.calorie * daysInMonth;
             const progress = (monthlyCalories / targetCaloriesForMonth) * 100;
@@ -56,12 +55,12 @@ const SummaryMonthlyScreen = ({route}) => {
                 progress: progress,
             });
         }
-    
+
         setMonthlyData(data);
     }, [CaloriesLog]);
-    
+
     const chartData = {
-        labels: monthlyData.map((entry) => entry.month),
+        labels: monthlyData.map((entry) => entry?.month),
         datasets: [
             {
                 data: monthlyData.map((entry) => entry.consumed),
@@ -79,7 +78,7 @@ const SummaryMonthlyScreen = ({route}) => {
     //sort decending
     // const sortedMonthlyData = [...monthlyData].sort((a, b) => {
     //     return new Date(b.month + " 1, 2000") - new Date(a.month + " 1, 2000");
-    // });  
+    // });
 
     const monthNumbers = {
         Jan: 1,
@@ -97,12 +96,12 @@ const SummaryMonthlyScreen = ({route}) => {
     };
 
     const monthlyDataSorted = [...monthlyData];
-    
+
     monthlyDataSorted.sort((a, b) => {
-        if (monthNumbers[a.month] > monthNumbers[b.month]) {
+        if (monthNumbers[a?.month] > monthNumbers[b?.month]) {
             return -1;
         }
-        if (monthNumbers[a.month] < monthNumbers[b.month]) {
+        if (monthNumbers[a?.month] < monthNumbers[b?.month]) {
             return 1;
         }
         return 0;
@@ -113,145 +112,153 @@ const SummaryMonthlyScreen = ({route}) => {
     const chartConfig = {
         backgroundGradientFrom: "#fff",
         backgroundGradientTo: "#fff",
-        color: (opacity = 1) => `rgba(0, 224, 255, ${opacity})`,
+        color: (opacity = 1) => `rgba(255, 165, 0, ${opacity})`,
         labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
         style: {
             borderRadius: 16,
         },
     };
-    
+
     return (
-        <View style={styles.container}>
-            <View style={styles.textContainer}>
-                <Text style={styles.chartTextBold}>Monthly Intake</Text>
-            </View>
-            {/*<Text>{dailyCaloriesLogEntries}</Text>*/}
-            <BarChart
-                data={chartData}
-                width={Dimensions.get("window").width - 16}
-                height={220}
-                yAxisSuffix=" Cal"
-                chartConfig={chartConfig}
-                verticalLabelRotation={0}
-            />
-            <View style={styles.componentContainer}>
-                <View style={styles.leftComponent}>
-                    <Text style={styles.text}>Latest Month intake: </Text>
-                    {latestMonthData && (
-                        <>
-                            <Text style={styles.subText}>{latestMonthData.month} - {Math.round(latestMonthData.consumed)} Cal</Text>
-                        </>
-                    )}
-                </View>
-                <View style={styles.rightComponent}>
-                    <Text style={styles.text}>(AVG)Target Calories:</Text>
-                    <Text style={styles.subText}>{Math.round(averageTargetCalories)} Cal</Text>
-                </View>
-            </View>
-            <ScrollView style={styles.chartContainer}>
-                {monthlyDataSorted.map((month) => (
-                    <View key={month.month}>
-                    <Text style={styles.chartTextBold}>
-                        Monthly Intake - {month.month}
-                    </Text>
-                    <View style={styles.chartContainerToo}>
-                        <Progress.Bar
-                        progress={month.progress / 100} // Progress based on the ratio
-                        width={200}
-                        height={15}
-                        color="#00e0ff"
-                        unfilledColor="#3d5875"
-                        borderColor="#fff" // Add border color if needed
+        <ScrollView>
+            <View style={styles.introSection}>
+                <View style={styles.componentContainer}>
+                    <Text style={styles.subTitle}>Monthly Intake</Text>
+                    <ScrollView horizontal={true}>
+                        <BarChart
+                            data={chartData}
+                            width={Dimensions.get("window").width - 16}
+                            height={220}
+                            yAxisSuffix=" cal"
+                            chartConfig={chartConfig}
+                            verticalLabelRotation={0}
                         />
-                        <View>
-                        <Text style={styles.chartTextBold}>
-                            {Math.round(month.consumed)} / {Math.round(month.target)} Cal consumed
-                        </Text>
-                        <Text style={styles.chartText}>
-                            {month.consumed > month.target
-                            ? `${Math.round(month.consumed - month.target)} Cal more`
-                            : `${Math.round(month.target - month.consumed)} Cal less`}
-                        </Text>
+                    </ScrollView>
+                </View>
+
+                <View style={styles.componentContainer}>
+                    <View style={styles.flexRowComponent}>
+                        <Text style={styles.subTitle}>{latestMonthData?.month} Intake</Text>
+                    </View>
+                    <View style={styles.flexRowComponent}>
+                        {latestMonthData && (
+                            <>
+                                <Text style={[styles.normalText]}>Calories Consumed:</Text>
+                                <Text style={[styles.normalText]}>{Math.round(latestMonthData.consumed)} cal</Text>
+                            </>
+                        )}
+                    </View>
+                    <View style={styles.flexRowComponent}>
+                        <Text style={styles.normalText}>(AVG)Target Calories:</Text>
+                        <Text style={[styles.normalText]}>{Math.round(averageTargetCalories)} cal</Text>
+                    </View>
+                </View>
+                <View style={styles.componentContainer}>
+                    <Text style={styles.subTitle}>Total Calories Intake</Text>
+                    {monthlyDataSorted && monthlyDataSorted?.map((month) => (
+                        <View key={month?.month}>
+                            <Text style={[styles.normalText, styles.bold]}>
+                                {month?.month}
+                            </Text>
+                            <View style={styles.chartContainerToo}>
+                                <Progress.Bar
+                                    progress={month?.progress / 100} // Progress based on the ratio
+                                    width={330}
+                                    height={15}
+                                    color="#FF9130"
+                                    unfilledColor="#FFEBCC"
+                                    borderWidth={0}
+                                />
+                                <View style={styles.flexRowComponent}>
+                                    <Text style={[styles.normalText]}>
+                                        {Math.round(month?.consumed)} / {Math.round(month?.target)} cal consumed
+                                    </Text>
+                                    <Text style={[styles.normalText]}>
+                                        {month?.consumed > month?.target
+                                            ? `${Math.round(month?.consumed - month?.target)} cal more`
+                                            : `${Math.round(month?.target - month?.consumed)} cal less`}
+                                    </Text>
+                                </View>
+                            </View>
                         </View>
-                    </View>
-                    </View>
-                ))}
-            </ScrollView>
-        </View>
+                    ))}
+                </View>
+            </View>
+        </ScrollView>
+
     );
 };
-    
+
 
 export default SummaryMonthlyScreen;
 
 const styles = StyleSheet.create({
     //containers
-    container: {
-        flex: 1,
-        backgroundColor: "#FCFCD3",
-        alignItems: "center",
+    introSection: {
+        padding: 12,
+        borderBottomColor: "#ccc",
     },
-    textContainer: {    
-        marginTop: 10,
-        marginBottom: 10,
-    },
-    chartContainer: {
-        marginTop: 15,
-        marginBottom: 15,
-        margin: 5,
-        width: "98%",
-        borderWidth:2,
-        borderColor: "#CCCCCC",
-    },
-    chartContainerToo: {
-        flex: 1,
-        marginTop: 10,
-        marginBottom: 10,
-        margin: 5,
-        alignItems: "center",
-        alignContent: "center",
-    },
+    // component
     componentContainer: {
-        flexDirection: "row", // Arrange components horizontally from left to right
-        justifyContent: "space-between", // Space them evenly
-        alignItems: "center", // Center them vertically
-        paddingTop: 5,
-        paddingBottom: 5,
-        margin: 5,
+        display: "flex",
+        width: "100%",
+        padding: 16,
+        backgroundColor: "#FFF",
+        borderRadius: 20,
+        marginBottom: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    flexRowComponent: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "100%",
+        flexDirection: "row",
+        marginBottom: 10
+    },
+    flexColumnComponent: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "left",
+        width: "100%",
+        flexDirection: "column",
+        marginBottom: 10
     },
     leftComponent: {
         flex: 1, // Takes up 1/3 of the available space
-        paddingTop: 10,
-        paddingBottom: 10,
     },
     middleComponent: {
         flex: 1, // Takes up 1/3 of the available space
-        paddingTop: 10,
-        paddingBottom: 10,
+        alignItems: "center"
     },
     rightComponent: {
         flex: 1, // Takes up 1/3 of the available space
-        paddingTop: 10,
-        paddingBottom: 10,
+        alignItems: "center"
     },
     //text
-    text: {
-        fontSize: 18,
-        fontWeight: "bold",
-        textAlign: "center",
-    },
-    subText: {
-        fontSize: 16,
-        textAlign: "center",
-    },
-    chartText: {
-        fontSize: 16,
-        textAlign: "center",
-    },
-    chartTextBold: {
+    subTitle: {
         fontSize: 20,
         fontWeight: "bold",
-        textAlign: "center",
+        color: "#FF9130",
+        marginBottom: 10
+    },
+    normalText: {
+        fontSize: 14,
+        margin: 1,
+        // textAlign: "center",
+    },
+    orangeText: {
+        color: "#FF9130"
+    },
+    bold: {
+        fontWeight: "bold"
     },
 });
 

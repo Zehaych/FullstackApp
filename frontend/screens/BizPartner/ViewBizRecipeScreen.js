@@ -168,10 +168,12 @@ const styles = StyleSheet.create({
     width: "100%",
     fontSize: 16,
     fontWeight: "bold",
+    textAlign: "center",
   },
   componentContainer: {
     flexDirection: "row",
     width: "100%",
+    justifyContent: "center",
   },
   icon: {
     marginTop: 10,
