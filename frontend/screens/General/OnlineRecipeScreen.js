@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   header: {},
   searchBar: {
     height: 50,
-    width: screenWidth - 20, // 20 is the total horizontal margin (10 on each side)
+    width: "100%", // 20 is the total horizontal margin (10 on each side)
     borderColor: "gray",
     borderWidth: 1,
     borderRadius: 10,
