@@ -90,7 +90,7 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const recipes = await fetchRandomRecipes(2);
+        const recipes = await fetchRandomRecipes(3);
         setRandomRecipes(recipes);
       } catch (error) {
         console.error("Error fetching random recipes:", error);
@@ -419,7 +419,7 @@ const HomeScreen = ({ navigation }) => {
                 recommendedRecipes.meals.length >= 0 && (
                   <TouchableOpacity
                     key={recommendedRecipes.meals[0].id}
-                    style={styles.recipeContainer}
+                    style={styles.recipeContainerHorizontal}
                     onPress={() =>
                       navigateToOnlineRecipesInfo(
                         recommendedRecipes.meals[0].id
@@ -430,7 +430,7 @@ const HomeScreen = ({ navigation }) => {
                       source={{
                         uri: `https://spoonacular.com/recipeImages/${recommendedRecipes.meals[0].id}-312x231.${recommendedRecipes.meals[0].imageType}`,
                       }}
-                      style={styles.featuredCardImage}
+                      style={styles.imageHorizontal}
                     />
                     <Text style={styles.communityRecipeTitle}>
                       {recommendedRecipes.meals[0].title}
@@ -442,7 +442,7 @@ const HomeScreen = ({ navigation }) => {
                 recommendedRecipes.meals.length > 0 && (
                   <TouchableOpacity
                     key={recommendedRecipes.meals[1].id}
-                    style={styles.recipeContainer}
+                    style={styles.recipeContainerHorizontal}
                     onPress={() =>
                       navigateToOnlineRecipesInfo(
                         recommendedRecipes.meals[1].id
@@ -453,7 +453,7 @@ const HomeScreen = ({ navigation }) => {
                       source={{
                         uri: `https://spoonacular.com/recipeImages/${recommendedRecipes.meals[1].id}-312x231.${recommendedRecipes.meals[1].imageType}`,
                       }}
-                      style={styles.featuredCardImage}
+                      style={styles.imageHorizontal}
                     />
                     <Text style={styles.communityRecipeTitle}>
                       {recommendedRecipes.meals[1].title}
@@ -465,7 +465,7 @@ const HomeScreen = ({ navigation }) => {
                 recommendedRecipes.meals.length > 0 && (
                   <TouchableOpacity
                     key={recommendedRecipes.meals[2].id}
-                    style={styles.recipeContainer}
+                    style={styles.recipeContainerHorizontal}
                     onPress={() =>
                       navigateToOnlineRecipesInfo(
                         recommendedRecipes.meals[2].id
@@ -476,7 +476,7 @@ const HomeScreen = ({ navigation }) => {
                       source={{
                         uri: `https://spoonacular.com/recipeImages/${recommendedRecipes.meals[2].id}-312x231.${recommendedRecipes.meals[2].imageType}`,
                       }}
-                      style={styles.featuredCardImage}
+                      style={styles.imageHorizontal}
                     />
                     <Text style={styles.communityRecipeTitle}>
                       {recommendedRecipes.meals[2].title}
@@ -491,14 +491,14 @@ const HomeScreen = ({ navigation }) => {
             <ScrollView horizontal={true}>
               {randomRecipes[0] && (
                 <TouchableOpacity
-                  style={styles.recipeContainer}
+                  style={styles.recipeContainerHorizontal}
                   onPress={() =>
                     navigateToOnlineRecipesInfo(randomRecipes[0].id)
                   }
                 >
                   <Image
                     source={{ uri: randomRecipes[0].image }}
-                    style={styles.featuredCardImage}
+                    style={styles.imageHorizontal}
                   />
                   <Text style={styles.communityRecipeTitle}>
                     {randomRecipes[0].title}
@@ -507,17 +507,33 @@ const HomeScreen = ({ navigation }) => {
               )}
               {randomRecipes[1] && (
                 <TouchableOpacity
-                  style={styles.recipeContainer}
+                  style={styles.recipeContainerHorizontal}
                   onPress={() =>
                     navigateToOnlineRecipesInfo(randomRecipes[1].id)
                   }
                 >
                   <Image
                     source={{ uri: randomRecipes[1].image }}
-                    style={styles.featuredCardImage}
+                    style={styles.imageHorizontal}
                   />
-                  <Text numberOfLines={2} ellipsizeMode="tail" style={styles.communityRecipeTitle}>
+                  <Text style={styles.communityRecipeTitle}>
                     {randomRecipes[1].title}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              {randomRecipes[2] && (
+                <TouchableOpacity
+                  style={styles.recipeContainerHorizontal}
+                  onPress={() =>
+                    navigateToOnlineRecipesInfo(randomRecipes[2].id)
+                  }
+                >
+                  <Image
+                    source={{ uri: randomRecipes[2].image }}
+                    style={styles.imageHorizontal}
+                  />
+                  <Text style={styles.communityRecipeTitle}>
+                    {randomRecipes[2].title}
                   </Text>
                 </TouchableOpacity>
               )}
@@ -538,14 +554,14 @@ const HomeScreen = ({ navigation }) => {
               <View style={styles.flexRowComponent}>
                 {communityRecipes[0] && (
                   <TouchableOpacity
-                    style={styles.recipeContainer}
+                    style={styles.recipeContainerHorizontal}
                     onPress={() =>
                       navigateToCommunityRecipesInfo(communityRecipes[0])
                     }
                   >
                     <Image
                       source={{ uri: communityRecipes[0].image }}
-                      style={styles.communityRecipeImage}
+                      style={styles.imageHorizontal}
                     />
                     <Text style={styles.communityRecipeTitle}>
                       {communityRecipes[0].name}
@@ -554,17 +570,33 @@ const HomeScreen = ({ navigation }) => {
                 )}
                 {communityRecipes[1] && (
                   <TouchableOpacity
-                    style={styles.recipeContainer}
+                    style={styles.recipeContainerHorizontal}
                     onPress={() =>
                       navigateToCommunityRecipesInfo(communityRecipes[1])
                     }
                   >
                     <Image
                       source={{ uri: communityRecipes[1].image }}
-                      style={styles.communityRecipeImage}
+                      style={styles.imageHorizontal}
                     />
                     <Text style={styles.communityRecipeTitle}>
                       {communityRecipes[1].name}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {communityRecipes[2] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainerHorizontal}
+                    onPress={() =>
+                      navigateToCommunityRecipesInfo(communityRecipes[2])
+                    }
+                  >
+                    <Image
+                      source={{ uri: communityRecipes[2].image }}
+                      style={styles.imageHorizontal}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {communityRecipes[2].name}
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -587,14 +619,14 @@ const HomeScreen = ({ navigation }) => {
               <View style={styles.flexRowComponent}>
                 {businessRecipes[0] && (
                   <TouchableOpacity
-                    style={styles.recipeContainer}
+                    style={styles.recipeContainerHorizontal}
                     onPress={() =>
                       navigateToBusinessRecipesInfo(businessRecipes[0])
                     }
                   >
                     <Image
                       source={{ uri: businessRecipes[0].image }}
-                      style={styles.communityRecipeImage}
+                      style={styles.imageHorizontal}
                     />
                     <Text style={styles.communityRecipeTitle}>
                       {businessRecipes[0].name}
@@ -603,17 +635,33 @@ const HomeScreen = ({ navigation }) => {
                 )}
                 {businessRecipes[1] && (
                   <TouchableOpacity
-                    style={styles.recipeContainer}
+                    style={styles.recipeContainerHorizontal}
                     onPress={() =>
                       navigateToBusinessRecipesInfo(businessRecipes[1])
                     }
                   >
                     <Image
                       source={{ uri: businessRecipes[1].image }}
-                      style={styles.communityRecipeImage}
+                      style={styles.imageHorizontal}
                     />
                     <Text style={styles.communityRecipeTitle}>
                       {businessRecipes[1].name}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {businessRecipes[2] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainerHorizontal}
+                    onPress={() =>
+                      navigateToBusinessRecipesInfo(businessRecipes[2])
+                    }
+                  >
+                    <Image
+                      source={{ uri: businessRecipes[2].image }}
+                      style={styles.imageHorizontal}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {businessRecipes[2].name}
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -725,14 +773,14 @@ const HomeScreen = ({ navigation }) => {
             <ScrollView horizontal={true}>
               {randomRecipes[0] && (
                 <TouchableOpacity
-                  style={styles.recipeContainer}
+                  style={styles.recipeContainerHorizontal}
                   onPress={() =>
                     navigateToOnlineRecipesInfo(randomRecipes[0].id)
                   }
                 >
                   <Image
                     source={{ uri: randomRecipes[0].image }}
-                    style={styles.featuredCardImage}
+                    style={styles.imageHorizontal}
                   />
                   <Text style={styles.communityRecipeTitle}>
                     {randomRecipes[0].title}
@@ -741,17 +789,33 @@ const HomeScreen = ({ navigation }) => {
               )}
               {randomRecipes[1] && (
                 <TouchableOpacity
-                  style={styles.recipeContainer}
+                  style={styles.recipeContainerHorizontal}
                   onPress={() =>
                     navigateToOnlineRecipesInfo(randomRecipes[1].id)
                   }
                 >
                   <Image
                     source={{ uri: randomRecipes[1].image }}
-                    style={styles.featuredCardImage}
+                    style={styles.imageHorizontal}
                   />
                   <Text numberOfLines={2} ellipsizeMode="tail" style={styles.communityRecipeTitle}>
                     {randomRecipes[1].title}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              {randomRecipes[2] && (
+                <TouchableOpacity
+                  style={styles.recipeContainerHorizontal}
+                  onPress={() =>
+                    navigateToOnlineRecipesInfo(randomRecipes[2].id)
+                  }
+                >
+                  <Image
+                    source={{ uri: randomRecipes[2].image }}
+                    style={styles.imageHorizontal}
+                  />
+                  <Text style={styles.communityRecipeTitle}>
+                    {randomRecipes[2].title}
                   </Text>
                 </TouchableOpacity>
               )}
@@ -772,14 +836,14 @@ const HomeScreen = ({ navigation }) => {
               <View style={styles.flexRowComponent}>
                 {communityRecipes[0] && (
                   <TouchableOpacity
-                    style={styles.recipeContainer}
+                    style={styles.recipeContainerHorizontal}
                     onPress={() =>
                       navigateToCommunityRecipesInfo(communityRecipes[0])
                     }
                   >
                     <Image
                       source={{ uri: communityRecipes[0].image }}
-                      style={styles.communityRecipeImage}
+                      style={styles.imageHorizontal}
                     />
                     <Text style={styles.communityRecipeTitle}>
                       {communityRecipes[0].name}
@@ -788,17 +852,33 @@ const HomeScreen = ({ navigation }) => {
                 )}
                 {communityRecipes[1] && (
                   <TouchableOpacity
-                    style={styles.recipeContainer}
+                    style={styles.recipeContainerHorizontal}
                     onPress={() =>
                       navigateToCommunityRecipesInfo(communityRecipes[1])
                     }
                   >
                     <Image
                       source={{ uri: communityRecipes[1].image }}
-                      style={styles.communityRecipeImage}
+                      style={styles.imageHorizontal}
                     />
                     <Text style={styles.communityRecipeTitle}>
                       {communityRecipes[1].name}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {communityRecipes[2] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainerHorizontal}
+                    onPress={() =>
+                      navigateToCommunityRecipesInfo(communityRecipes[2])
+                    }
+                  >
+                    <Image
+                      source={{ uri: communityRecipes[2].image }}
+                      style={styles.imageHorizontal}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {communityRecipes[2].name}
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -821,14 +901,14 @@ const HomeScreen = ({ navigation }) => {
               <View style={styles.flexRowComponent}>
                 {businessRecipes[0] && (
                   <TouchableOpacity
-                    style={styles.recipeContainer}
+                    style={styles.recipeContainerHorizontal}
                     onPress={() =>
                       navigateToBusinessRecipesInfo(businessRecipes[0])
                     }
                   >
                     <Image
                       source={{ uri: businessRecipes[0].image }}
-                      style={styles.communityRecipeImage}
+                      style={styles.imageHorizontal}
                     />
                     <Text style={styles.communityRecipeTitle}>
                       {businessRecipes[0].name}
@@ -837,17 +917,33 @@ const HomeScreen = ({ navigation }) => {
                 )}
                 {businessRecipes[1] && (
                   <TouchableOpacity
-                    style={styles.recipeContainer}
+                    style={styles.recipeContainerHorizontal}
                     onPress={() =>
                       navigateToBusinessRecipesInfo(businessRecipes[1])
                     }
                   >
                     <Image
                       source={{ uri: businessRecipes[1].image }}
-                      style={styles.communityRecipeImage}
+                      style={styles.imageHorizontal}
                     />
                     <Text style={styles.communityRecipeTitle}>
                       {businessRecipes[1].name}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {businessRecipes[2] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainerHorizontal}
+                    onPress={() =>
+                      navigateToBusinessRecipesInfo(businessRecipes[2])
+                    }
+                  >
+                    <Image
+                      source={{ uri: businessRecipes[2].image }}
+                      style={styles.imageHorizontal}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {businessRecipes[2].name}
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -1023,6 +1119,12 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 20,
   },
+  imageHorizontal: {
+    width: 160,
+    height: 175,
+    resizeMode: "cover",
+    borderRadius: 10,
+  },
   featuredCardTitle: {
     marginTop: 10,
     fontSize: 16,
@@ -1046,13 +1148,31 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  recipeContainerHorizontal: {
+    //flexDirection: "column",
+    alignItems: "center",
+    borderRadius: 20,
+    margin: 8,
+    padding: 10,
+    //gap: 8,
+    width: 180,
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
   communityRecipeImage: {
     width: 150,
     height: 150,
     borderRadius: 20,
   },
   communityRecipeTitle: {
-    // marginTop: 10,
+    marginTop: 5,
     fontSize: 14,
     textAlign: "center",
     // width: "100%"

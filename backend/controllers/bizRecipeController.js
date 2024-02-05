@@ -474,7 +474,7 @@ exports.getHighRatedBizRecipes = async (req, res) => {
     const highRatedRecipes = await BizRecipe.find({
       averageRating: { $gte: 4 },
     })
-      .limit(2) // Limit the results to two recipes
+      .limit(3) // Limit the results to two recipes
       .exec();
 
     res.status(200).json(highRatedRecipes);

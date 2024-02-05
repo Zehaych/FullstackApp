@@ -287,7 +287,7 @@ exports.deleteRating = asyncHandler(async (req, res) => {
 exports.getHighRatedRecipes = async (req, res) => {
   try {
     const highRatedRecipes = await Recipe.find({ averageRating: { $gte: 4 } })
-      .limit(2) // Limit the results to two recipes
+      .limit(3) // Limit the results to two recipes
       .exec();
 
     res.status(200).json(highRatedRecipes);
