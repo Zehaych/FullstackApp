@@ -97,7 +97,7 @@ const HomeScreen = ({ navigation }) => {
     navigation.navigate("ReportedBizRecipe");
   }
 
-  navigateToCreateBizAccountScreen = () => {
+  const navigateToCreateBizAccountScreen = () => {
     navigation.navigate("BizPartnerSignUp");
   }
 
