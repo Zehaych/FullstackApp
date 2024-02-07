@@ -59,6 +59,10 @@ const OnlineRecipeInfoScreen = ({ route }) => {
     return rating;
   }
 
+  // Remove <p>, <ol>, and <li> tags from instructions
+  const cleanInstructions = (instructions) => {
+    return instructions.replace(/<\/?p>|<\/?ol>|<\/?li>/g, " ");
+  };
 
   return (
     <ScrollView>
@@ -150,7 +154,7 @@ const OnlineRecipeInfoScreen = ({ route }) => {
               <View style={styles.inAlign}>
                 
                 <Text style={styles.customTextInstructions}>
-                  {recipeDetails.instructions}
+                  {cleanInstructions(recipeDetails.instructions)}
                 </Text>
               </View>
             ) : (
