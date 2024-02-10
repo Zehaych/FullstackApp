@@ -114,9 +114,10 @@ const SummaryMonthlyScreen = ({ route }) => {
         backgroundGradientTo: "#fff",
         color: (opacity = 1) => `rgba(255, 165, 0, ${opacity})`,
         labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-        style: {
-            borderRadius: 16,
-        },
+        // style: {
+        //     borderRadius: 16,
+        // },
+        barPercentage: 0.8,
     };
 
     return (

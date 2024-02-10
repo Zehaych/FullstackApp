@@ -1,8 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useContext, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Context } from "../../store/context";
+//import { ScrollView } from "react-native-gesture-handler";
 
 
 
@@ -54,162 +55,164 @@ const SummaryDailyScreen = ({ route }) => {
     };
 
     return (
-        <View style={styles.container}>
-            {/* <View style={styles.textContainer}>
-                <Text style={styles.chartTextBold}>Daily Intake</Text>
-            </View>
-            <View style={styles.chartContainer}>
-                <AnimatedCircularProgress
-                    size={200}
-                    width={30}
-                    fill={percentage}
-                    tintColor={animatedCircularProgressColor}
-                    backgroundColor="#e1e2e3"
-                    rotation={0}
-                    lineCap="round"
-                >
-                    {(fill) => (
-                        <View>
-                            <Text style={styles.chartTextBold}>
-                                {latestTotalCalories} / {targetCalories} Cal consumed
-                            </Text>
-                            <Text style={styles.chartText}>
-                                {exceededTarget ? `${roundedCaloriesMore} Cal more` : `${roundedCaloriesLeft} Cal left`}
+        <ScrollView>
+            <View style={styles.container}>
+                {/* <View style={styles.textContainer}>
+                    <Text style={styles.chartTextBold}>Daily Intake</Text>
+                </View>
+                <View style={styles.chartContainer}>
+                    <AnimatedCircularProgress
+                        size={200}
+                        width={30}
+                        fill={percentage}
+                        tintColor={animatedCircularProgressColor}
+                        backgroundColor="#e1e2e3"
+                        rotation={0}
+                        lineCap="round"
+                    >
+                        {(fill) => (
+                            <View>
+                                <Text style={styles.chartTextBold}>
+                                    {latestTotalCalories} / {targetCalories} Cal consumed
+                                </Text>
+                                <Text style={styles.chartText}>
+                                    {exceededTarget ? `${roundedCaloriesMore} Cal more` : `${roundedCaloriesLeft} Cal left`}
+                                </Text>
+                            </View>
+                        )}
+                    </AnimatedCircularProgress>
+                </View>
+                <View style={styles.flexRowComponent}>
+                    <View style={styles.leftComponent}>
+                        <Text style={styles.text}>Daily intake </Text>
+                        <Text style={styles.subText}>{latestTotalCalories}</Text>
+                    </View>
+                    <View style={styles.rightComponent}>
+                        <Text style={styles.text}>Target Calories</Text>
+                        <Text style={styles.subText}>{targetCalories}</Text>
+                    </View>
+                </View> */}
+                <View style={styles.introSection}>
+                    <View style={styles.componentContainer}>
+                        <View style={styles.flexColumnComponent}>
+                            <Text style={styles.subTitle}>
+                                Daily Intake
                             </Text>
                         </View>
-                    )}
-                </AnimatedCircularProgress>
-            </View>
-            <View style={styles.flexRowComponent}>
-                <View style={styles.leftComponent}>
-                    <Text style={styles.text}>Daily intake </Text>
-                    <Text style={styles.subText}>{latestTotalCalories}</Text>
-                </View>
-                <View style={styles.rightComponent}>
-                    <Text style={styles.text}>Target Calories</Text>
-                    <Text style={styles.subText}>{targetCalories}</Text>
-                </View>
-            </View> */}
-            <View style={styles.introSection}>
-                <View style={styles.componentContainer}>
-                    <View style={styles.flexColumnComponent}>
-                        <Text style={styles.subTitle}>
-                            Daily Intake
-                        </Text>
+
+                        <View style={styles.flexRowComponent}>
+                            <View style={styles.leftComponent}>
+                                <Text style={[styles.normalText]}
+                                >Calorie Consumed</Text>
+                                <Text
+                                    style={[styles.normalText, styles.orangeText]}
+                                >
+                                    {Math.round(latestTotalCalories)} cal
+                                </Text>
+                                <Text style={[styles.normalText]}>
+                                    Calories Left
+                                </Text>
+                                <Text style={[styles.normalText, styles.orangeText]}>
+                                    {roundedCaloriesLeft} cal
+                                </Text>
+                                <Text style={[styles.normalText]}
+                                >Recommended Intake
+                                </Text>
+                                <Text
+                                    style={[styles.normalText, styles.orangeText]}
+                                >
+                                    {targetCalories} cal
+                                </Text>
+                            </View>
+                            <View style={styles.rightComponent}>
+                                <AnimatedCircularProgress
+                                    size={130}
+                                    width={30}
+                                    fill={percentage} // Assuming progress is a value between 0 and 100
+                                    tintColor={animatedCircularProgressColor}
+                                    backgroundColor="#FFEBCC"
+                                    rotation={0}
+                                    lineCap="round"
+                                >
+                                </AnimatedCircularProgress>
+                            </View>
+                        </View>
                     </View>
 
-                    <View style={styles.flexRowComponent}>
-                        <View style={styles.leftComponent}>
-                            <Text style={[styles.normalText]}
-                            >Calorie Consumed</Text>
-                            <Text
-                                style={[styles.normalText, styles.orangeText]}
-                            >
-                                {Math.round(latestTotalCalories)} cal
-                            </Text>
-                            <Text style={[styles.normalText]}>
-                                Calories Left
-                            </Text>
-                            <Text style={[styles.normalText, styles.orangeText]}>
-                                {roundedCaloriesLeft} cal
-                            </Text>
-                            <Text style={[styles.normalText]}
-                            >Recommended Intake
-                            </Text>
-                            <Text
-                                style={[styles.normalText, styles.orangeText]}
-                            >
-                                {targetCalories} cal
-                            </Text>
-                        </View>
-                        <View style={styles.rightComponent}>
-                            <AnimatedCircularProgress
-                                size={130}
-                                width={30}
-                                fill={percentage} // Assuming progress is a value between 0 and 100
-                                tintColor={animatedCircularProgressColor}
-                                backgroundColor="#FFEBCC"
-                                rotation={0}
-                                lineCap="round"
-                            >
-                            </AnimatedCircularProgress>
+                    <View style={styles.componentContainer}>
+                        <View style={styles.flexRowComponent}>
+                            <View style={styles.leftComponent}>
+                                <Text style={[styles.subTitle]}
+                                >Breakfast
+                                </Text>
+                                <Text style={[styles.normalText]}
+                                >No Recipe Added
+                                </Text>
+                            </View>
+                            <View style={[styles.rightComponent]}>
+                                <TouchableOpacity
+                                    style={styles.iconButton}
+                                    onPress={navigateToTrackProgressScreen}
+                                >
+                                    <Image
+                                        source={require("../../assets/plusButton.png")}
+                                        style={styles.iconImage}
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
-                </View>
 
-                <View style={styles.componentContainer}>
-                    <View style={styles.flexRowComponent}>
-                        <View style={styles.leftComponent}>
-                            <Text style={[styles.subTitle]}
-                            >Breakfast
-                            </Text>
-                            <Text style={[styles.normalText]}
-                            >No Recipe Added
-                            </Text>
-                        </View>
-                        <View style={[styles.rightComponent]}>
-                            <TouchableOpacity
-                                style={styles.iconButton}
-                                onPress={navigateToTrackProgressScreen}
-                            >
-                                <Image
-                                    source={require("../../assets/plusButton.png")}
-                                    style={styles.iconImage}
-                                />
-                            </TouchableOpacity>
+                    <View style={styles.componentContainer}>
+                        <View style={styles.flexRowComponent}>
+                            <View style={styles.leftComponent}>
+                                <Text style={[styles.subTitle]}
+                                >Lunch
+                                </Text>
+                                <Text style={[styles.normalText]}
+                                >No Recipe Added
+                                </Text>
+                            </View>
+                            <View style={[styles.rightComponent]}>
+                                <TouchableOpacity
+                                    style={styles.iconButton}
+                                    onPress={navigateToTrackProgressScreen}
+                                >
+                                    <Image
+                                        source={require("../../assets/plusButton.png")}
+                                        style={styles.iconImage}
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
-                </View>
 
-                <View style={styles.componentContainer}>
-                    <View style={styles.flexRowComponent}>
-                        <View style={styles.leftComponent}>
-                            <Text style={[styles.subTitle]}
-                            >Lunch
-                            </Text>
-                            <Text style={[styles.normalText]}
-                            >No Recipe Added
-                            </Text>
-                        </View>
-                        <View style={[styles.rightComponent]}>
-                            <TouchableOpacity
-                                style={styles.iconButton}
-                                onPress={navigateToTrackProgressScreen}
-                            >
-                                <Image
-                                    source={require("../../assets/plusButton.png")}
-                                    style={styles.iconImage}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-
-                <View style={styles.componentContainer}>
-                    <View style={styles.flexRowComponent}>
-                        <View style={styles.leftComponent}>
-                            <Text style={[styles.subTitle]}
-                            >Dinner
-                            </Text>
-                            <Text style={[styles.normalText]}
-                            >No Recipe Added
-                            </Text>
-                        </View>
-                        <View style={[styles.rightComponent]}>
-                            <TouchableOpacity
-                                style={styles.iconButton}
-                                onPress={navigateToTrackProgressScreen}
-                            >
-                                <Image
-                                    source={require("../../assets/plusButton.png")}
-                                    style={styles.iconImage}
-                                />
-                            </TouchableOpacity>
+                    <View style={styles.componentContainer}>
+                        <View style={styles.flexRowComponent}>
+                            <View style={styles.leftComponent}>
+                                <Text style={[styles.subTitle]}
+                                >Dinner
+                                </Text>
+                                <Text style={[styles.normalText]}
+                                >No Recipe Added
+                                </Text>
+                            </View>
+                            <View style={[styles.rightComponent]}>
+                                <TouchableOpacity
+                                    style={styles.iconButton}
+                                    onPress={navigateToTrackProgressScreen}
+                                >
+                                    <Image
+                                        source={require("../../assets/plusButton.png")}
+                                        style={styles.iconImage}
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 </View>
-            </View>
-        </View >
+            </View >
+        </ScrollView>    
     );
 };
 

@@ -107,6 +107,7 @@ const SummaryWeeklyScreen = ({ route }) => {
         // style: {
         //     borderRadius: 16,
         // },
+        barPercentage: 0.8,
     };
 
     const weeklyTargetCalories = targetCalories * 7;
