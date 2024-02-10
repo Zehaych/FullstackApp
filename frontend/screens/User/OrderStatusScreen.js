@@ -112,11 +112,11 @@ const OrderStatusScreen = () => {
 
         {/* title & status */}
         <View style={styles.titleContainer}>
-          <View>
+          <View style={styles.leftComponent}>
             <Text style={styles.title}>{item.recipeName}</Text>
           </View>
 
-          <View style={styles.itemDetailRight}>
+          <View style={styles.rightComponent}>
             <Text style={styles.itemDetailRightText}>{item.status}</Text>
           </View>
         </View>
@@ -316,5 +316,12 @@ const styles = StyleSheet.create({
   },
   deleteButtonContainer: {
     backgroundColor: "white"
+  },
+  leftComponent: {
+    width: "50%",
+  },
+  rightComponent: {
+    width: "50%",
+    alignItems: "flex-end",
   },
 });
