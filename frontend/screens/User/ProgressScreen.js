@@ -445,23 +445,23 @@ const ProgressScreen = () => {
       >
         <SafeAreaView style={styles.container}>
           {/* Today's Meals */}
-          <View style={styles.componentContainer2}>
+          <View style={styles.componentContainer}>
             <Text style={styles.subTitle}>Today's Meal</Text>
-            <View style={styles.flexRowComponent}>
+            <View style={styles.componentRow}>
               <Text style={[styles.smallHeadings, styles.boldText]}>Breakfast</Text>
               {renderMealRecipe(breakfastRecipe)}
             </View>
-            <View style={styles.flexRowComponent}>
+            <View style={styles.componentRow}>
               <Text style={[styles.smallHeadings, styles.boldText]}>Lunch</Text>
               {renderMealRecipe(lunchRecipe)}
             </View>
-            <View style={styles.flexRowComponent}>
+            <View style={styles.componentRow}>
               <Text style={[styles.smallHeadings, styles.boldText]}>Dinner</Text>
               {renderMealRecipe(dinnerRecipe)}
             </View>
             {/* meal recipe recommendation*/}
             {recommendedRecipes.meals && recommendedRecipes.meals.length > 0 && (
-              <View style={styles.flexColumnComponent}>
+              <View style={styles.componentContainer}>
                 <Text style={styles.subTitle}>
                   Recommended Recipes:
                 </Text>
@@ -476,7 +476,7 @@ const ProgressScreen = () => {
                 ))}
               </View>
             )}
-            <View style={styles.flexRowComponent}>
+            <View style={styles.componentRow}>
               <Button
                 onPress={handleGenerateRecommendations}
                 style={styles.submitButton}
@@ -488,7 +488,7 @@ const ProgressScreen = () => {
 
 
           {/* dropdown to choose meal */}
-          <View style={styles.componentContainer2}>
+          <View style={styles.componentContainer}>
             <Text style={styles.subTitle}>Choose meal to add</Text>
             <RNPickerSelect
               onValueChange={(itemValue) => {
@@ -521,11 +521,12 @@ const ProgressScreen = () => {
                 return <Icon name="sort-down" size={16} color="#676767" />;
               }}
             />
+            <View style={styles.spacer}></View>
           </View>
 
 
           {/* search for member recipe */}
-          <View style={styles.componentContainer2}>
+          <View style={styles.componentContainer}>
             <Text style={styles.subTitle}>Member Recipes</Text>
             <RNPickerSelect
               onValueChange={(itemValue) => handleSelectMemberRecipe(itemValue)}
@@ -551,10 +552,11 @@ const ProgressScreen = () => {
               }}
 
             />
+            <View style={styles.spacer}></View>
           </View>
 
 
-          <View style={styles.componentContainer2}>
+          <View style={styles.componentContainer}>
             <Text style={styles.subTitle}>Available Food & Drinks</Text>
             {/* <Picker
               style={styles.dropdown}
@@ -597,11 +599,12 @@ const ProgressScreen = () => {
               }}
 
             />
+            <View style={styles.spacer}></View>
           </View>
 
 
           {/* search for online recipe */}
-          <View style={styles.componentContainer2}>
+          <View style={styles.componentContainer}>
             <Text style={styles.subTitle}>Available Online Recipes</Text>
             <View style={styles.searchContainer}>
               <TextInput
@@ -632,34 +635,37 @@ const ProgressScreen = () => {
 
 
           {/* Calorie Intake */}
-          <View style={styles.componentContainer2}>
+          <View style={styles.componentContainer}>
             <Text style={[styles.subTitle]}>Calorie Intake</Text>
-            <View style={styles.flexRowComponent}>
+            <View style={styles.componentRow}>
               <Text style={[styles.smallHeadings, styles.boldText]}>Total Calories</Text>
               <Text style={styles.smallHeadings}>{handleTotalCalories()} cal</Text>
             </View>
-            <View style={styles.flexRowComponent}>
+            <View style={styles.componentRow}>
               <Text style={[styles.smallHeadings, styles.boldText]}>Target Calories</Text>
               <Text style={styles.smallHeadings}>{targetCalories} cal</Text>
             </View>
-            <View style={styles.flexRowComponent}>
+            <View style={styles.componentRow}>
               <Text style={[styles.smallHeadings, styles.boldText]}>Objective</Text>
               {handleObjectiveIcon()}
             </View>
             {/* reset and submit button */}
-            <View style={styles.flexRowComponent}>
-              <View style={styles.leftComponent}>
-                <Button onPress={() => handleReset()} style={styles.resetButton}>
+            <View style={styles.componentRow}>
+              <View style={styles.leftComponent}>              
+                <TouchableOpacity 
+                  onPress={() => handleReset()} 
+                  style={styles.resetButton}
+                >
                   <Text style={styles.buttonText}>Reset</Text>
-                </Button>
+                </TouchableOpacity>
               </View>
               <View style={styles.rightComponent}>
-                <Button
+                <TouchableOpacity
                   onPress={() => handleSubmit()}
-                  style={styles.submitButton}
+                  style={styles.submitButton2}
                 >
                   <Text style={styles.buttonText}>Submit</Text>
-                </Button>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -680,14 +686,15 @@ export default ProgressScreen;
 const styles = StyleSheet.create({
   //containers
   scrollContainer: {
-    flex: 1,
-    backgroundColor: "#fff",
+    //flex: 1,
+    backgroundColor: "#F2F2F2",
   },
   container: {
     flex: 1,
     backgroundColor: "#F2F2F2",
-    alignItems: "center",
-    padding: 16,
+    //alignItems: "center",
+    padding: 5,
+    //marginHorizontal: 5,
   },
   dropdown: {
     width: "100%",
@@ -723,7 +730,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
-    color: "#000"
+    color: "#000",
+    marginBottom: 5,
   },
   smallHeadings: {
     fontSize: 14,
@@ -757,71 +765,97 @@ const styles = StyleSheet.create({
   },
   //component
   componentContainer: {
-    flexDirection: "row", // Arrange components horizontally from left to right
-    justifyContent: "space-between", // Space them evenly
-    alignItems: "center", // Center them vertically
-    paddingTop: 5,
-    paddingBottom: 5,
+    flex: 1,
+    //flexDirection: "row", // Arrange components horizontally from left to right
+    //justifyContent: "space-between", // Space them evenly
+    //alignItems: "center", // Center them vertically
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingHorizontal: 20,
     margin: 5,
-  },
-  componentContainer2: {
-    display: "flex",
-    width: "90%",
-    padding: 16,
-    flexDirection: "column",
-    alignItems: "left",
+    borderRadius: 20,
     backgroundColor: "#FFF",
-    borderRadius: 16,
-    gap: 8,
-    margin: 8,
+  },
+  // componentContainer2: {
+  //   display: "flex",
+  //   width: "90%",
+  //   padding: 16,
+  //   flexDirection: "column",
+  //   alignItems: "left",
+  //   backgroundColor: "#FFF",
+  //   borderRadius: 16,
+  //   gap: 8,
+  //   margin: 8,
+  // },
+  componentRow:{
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 10,
   },
   leftComponent: {
     flex: 1, // Takes up 1/3 of the available space
+    //alignContent: "flex-start",
+    alignItems: "flex-start",
   },
   middleComponent: {
     flex: 1, // Takes up 1/3 of the available space
   },
   rightComponent: {
     flex: 1, // Takes up 1/3 of the available space
+    //alignContent: "flex-end",
+    alignItems: "flex-end",
   },
-  flexRowComponent: {
-    display: "flex",
-    paddingTop: 8,
-    paddingBottom: 8,
-    justifyContent: "space-between",
-    alignItems: "centre",
-    width: "100%",
-    flexDirection: "row",
-    gap: 16,
-  },
-  flexColumnComponent: {
-    display: "flex",
-    paddingTop: 8,
-    paddingBottom: 8,
-    justifyContent: "space-between",
-    alignItems: "centre",
-    width: "100%",
-    flexDirection: "column",
-    gap: 16,
-  },
+  // flexRowComponent: {
+  //   display: "flex",
+  //   paddingTop: 8,
+  //   paddingBottom: 8,
+  //   justifyContent: "space-between",
+  //   alignItems: "centre",
+  //   width: "100%",
+  //   flexDirection: "row",
+  //   gap: 16,
+  // },
+  // flexColumnComponent: {
+  //   display: "flex",
+  //   paddingTop: 8,
+  //   paddingBottom: 8,
+  //   justifyContent: "space-between",
+  //   alignItems: "centre",
+  //   width: "100%",
+  //   flexDirection: "column",
+  //   gap: 16,
+  // },
   iconObj: {
     textAlign: "center",
   },
   //buttons
   submitButton: {
     backgroundColor: "#ED6F21",
-    margin: 5,
     borderRadius: 10,
     width: "100%",
   },
   resetButton: {
     backgroundColor: "#A9A9A9",
-    margin: 5,
+    marginVertical: 5,
+    padding: 10,
     borderRadius: 10,
-    width: "100%",
+    width: "95%",
+    alignItems: "center",
+  },
+  submitButton2: {
+    backgroundColor: "#ED6F21",
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 10,
+    width: "95%",
+    alignItems: "center",
   },
   recipeTitle: {
     marginLeft: 20,
+  },
+  spacer: {
+    marginVertical: 5,
   },
 });
 
