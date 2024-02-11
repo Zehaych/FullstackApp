@@ -228,7 +228,7 @@ const FoodRequestedPending = () => {
                     </TouchableOpacity>
                     <TouchableOpacity 
                         style={styles.confirmButton2} 
-                        onPress={() => rejectFoodRequest(item._id)}
+                        onPress={() => rejectFoodRequest(currentRequest._id)}
                     >
                         <Text style={styles.confirmButtonText}>Reject Request</Text>
                     </TouchableOpacity>
