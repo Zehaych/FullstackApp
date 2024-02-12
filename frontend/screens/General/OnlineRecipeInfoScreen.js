@@ -61,7 +61,8 @@ const OnlineRecipeInfoScreen = ({ route }) => {
 
   // Remove <p>, <ol>, and <li> tags from instructions
   const cleanInstructions = (instructions) => {
-    return instructions.replace(/<\/?p>|<\/?ol>|<\/?li>/g, " ");
+    const cleanedInstructionsArray =  instructions.replace(/<\/?p>|<\/?ol>|<\/?li>/g, "\n").split('\n').filter(instruction => instruction.trim() !== '');
+    return cleanedInstructionsArray;
   };
 
   return (
@@ -151,11 +152,22 @@ const OnlineRecipeInfoScreen = ({ route }) => {
             <Text style={styles.customHeadings}>Instructions:</Text>
             
             {recipeDetails.instructions ? (
-              <View style={styles.inAlign}>
-                
-                <Text style={styles.customTextInstructions}>
-                  {cleanInstructions(recipeDetails.instructions)}
-                </Text>
+              <View style={styles.inAlign}>                
+                {cleanInstructions(recipeDetails.instructions).map (
+                  (instruction, index) => (
+                    <View key={index}> 
+                      <View style={styles.ingredientContainer}>
+                        <Text style={styles.ingredientText}>•</Text>      
+                        <Text style={styles.subText}>Step {index + 1}:</Text>      
+                      </View>
+
+                      <View style={styles.ingredientContainer}>
+                        <Text style={styles.ingredientText}> </Text>      
+                        <Text style={styles.subText}>{instruction}</Text>      
+                      </View>
+                    </View>
+                  )
+                )}
               </View>
             ) : (
               <Text style={styles.customText}>
@@ -296,11 +308,7 @@ const styles = StyleSheet.create({
   },
   //ingredient
   ingredientContainer: {
-    flexDirection: "row", // Arrange components horizontally from left to right
-    // justifyContent: "space-between", // Space them evenly
-    // alignItems: "center", // Center them vertically
-    // paddingTop: 10,
-    // paddingBottom: 10,
+    flexDirection: "row",
   },
   ingredientImage: {
     width: 50,
@@ -366,6 +374,11 @@ const styles = StyleSheet.create({
   ingredientText: {
     fontSize: 30,
     color: "#FF9130",
+  },
+  subText: {
+    fontSize: 16,
+    textAlign: "left",
+    margin: 10,
   },
 });
 
