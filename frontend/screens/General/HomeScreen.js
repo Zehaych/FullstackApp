@@ -294,16 +294,18 @@ const HomeScreen = ({ navigation }) => {
   if (currentUser.userType === "user") {
     return (
       <SafeAreaView style={styles.androidSafeArea}>
+        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
+          <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
+            <View style={styles.menuItem}>
+              <Icon name="scan-helper" color="#FF6347" size={25} />
+            </View>
+          </TouchableRipple>
+        </View>
+
         <ScrollView style={styles.container}>
-          <StatusBar backgroundColor="white" barStyle="dark-content" />
-          <View style={styles.header}>
-            <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
-            <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
-              <View style={styles.menuItem}>
-                <Icon name="scan-helper" color="#FF6347" size={25} />
-              </View>
-            </TouchableRipple>
-          </View>
           <ImageBackground
             backgroundColor="#F2F2F2"
           >
@@ -715,16 +717,18 @@ const HomeScreen = ({ navigation }) => {
   } else if (currentUser.userType === "bizpartner") {
     return (
       <SafeAreaView style={styles.androidSafeArea}>
+        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
+          <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
+            <View style={styles.menuItem}>
+              <Icon name="scan-helper" color="#FF6347" size={25} />
+            </View>
+          </TouchableRipple>
+        </View>
+
         <ScrollView style={styles.container}>
-          <StatusBar backgroundColor="white" barStyle="dark-content" />
-          <View style={styles.header}>
-            <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
-            <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
-              <View style={styles.menuItem}>
-                <Icon name="scan-helper" color="#FF6347" size={25} />
-              </View>
-            </TouchableRipple>
-          </View>
           <ImageBackground
             backgroundColor="#F2F2F2"
           >
@@ -977,16 +981,18 @@ const HomeScreen = ({ navigation }) => {
   } else {
     return (
       <SafeAreaView style={styles.androidSafeArea}>
+        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
+          <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
+            <View style={styles.menuItem}>
+              <Icon name="scan-helper" color="#FF6347" size={25} />
+            </View>
+          </TouchableRipple>
+        </View>
+        
         <ScrollView style={styles.container}>
-          <StatusBar backgroundColor="white" barStyle="dark-content" />
-          <View style={styles.header}>
-            <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
-            <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
-              <View style={styles.menuItem}>
-                <Icon name="scan-helper" color="#FF6347" size={25} />
-              </View>
-            </TouchableRipple>
-          </View>
           <ImageBackground
             backgroundColor="#F2F2F2"
           >
@@ -1252,10 +1258,11 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
-    flex: 1,
+    // flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    backgroundColor:"white"
   },
   headerText: {
     fontSize: 20,
