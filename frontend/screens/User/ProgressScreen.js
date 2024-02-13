@@ -845,7 +845,7 @@ const styles = StyleSheet.create({
   },
   resetButton: {
     backgroundColor: "#A9A9A9",
-    marginVertical: 5,
+    // marginVertical: 5,
     padding: 10,
     borderRadius: 10,
     width: "95%",
@@ -854,7 +854,7 @@ const styles = StyleSheet.create({
   submitButton2: {
     backgroundColor: "#ED6F21",
     padding: 10,
-    marginVertical: 5,
+    // marginVertical: 5,
     borderRadius: 10,
     width: "95%",
     alignItems: "center",

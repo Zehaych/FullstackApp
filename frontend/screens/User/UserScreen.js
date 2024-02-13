@@ -85,11 +85,11 @@ const UserScreen = () => {
   };
   const onViewFavouritesPressed = () => {
     // Navigate to the "Insert Medical History" screen
-    navigation.push("View Favourites");
+    navigation.push("Favourites", { screen: "Community" });
   };
   const onViewBizFavouritesPressed = () => {
     // Navigate to the "Insert Medical History" screen
-    navigation.push("View Business Favourites");
+    navigation.push("Favourites", { screen: "Business" });
   };
 
   return (

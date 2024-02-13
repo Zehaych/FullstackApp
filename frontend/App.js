@@ -59,6 +59,7 @@ import ViewRequest from "./screens/User/ViewRequest";
 // import FullReportMonthly from "./screens/SystemAdmin/FullReportMonthly";
 import ProgressScreen from "./screens/User/ProgressScreen";
 import UserInfoScreen from "./screens/User/UserInfoScreen";
+import TabFavourites from "./screens/User/TabFavourites";
 import { Context } from "./store/context";
 
 
@@ -320,6 +321,11 @@ function App() {
             name="Recipes"
             component={TabRecipes}
             options={{ headerTitle: "" }}
+          />
+          <Stack.Screen
+            name="Favourites"
+            component={TabFavourites}
+            options={{ headerTitle: "Favourite Recipes" }}
           />
         </Stack.Navigator>
       </NavigationContainer>
