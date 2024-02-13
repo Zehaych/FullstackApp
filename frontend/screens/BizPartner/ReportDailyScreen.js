@@ -208,7 +208,9 @@ const styles = StyleSheet.create({
   },
   subtitle: { 
     fontSize: 16, 
-    marginBottom: 5 
+    marginBottom: 5,
+    textAlign: "right",
+    width: "60%",
   },
   subtitle1: {
     fontSize: 16,
