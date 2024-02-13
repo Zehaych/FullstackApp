@@ -244,13 +244,13 @@ const FullReportMonthly = ({ route }) => {
           <Text style={styles.title2}>Monthly Sales</Text>
           <View style={styles.componentContainer}>
             <Text style={styles.subtitle1}>Total Sales</Text>
-            <Text style={styles.subtitle}>${totalSales}</Text>
+            <Text style={styles.salesSubtitle}>${totalSales}</Text>
           </View>
           <View style={styles.componentContainer}>
             <Text style={styles.subtitle1}>
               Most Ordered
             </Text>
-            <Text style={styles.subtitle}>
+            <Text style={styles.salesSubtitle}>
               {mostOrderedRecipes.join("\n")}
             </Text>
           </View>
@@ -315,6 +315,12 @@ const styles = StyleSheet.create({
   subtitle: { 
     fontSize: 16, 
     marginBottom: 5, 
+  },
+  salesSubtitle: { 
+    fontSize: 16, 
+    marginBottom: 5,
+    textAlign: "right",
+    width: "60%",
   },
   subtitle1: {
     fontSize: 16,
