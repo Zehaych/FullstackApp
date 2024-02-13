@@ -102,28 +102,33 @@ const SummaryDailyScreen = ({ route }) => {
 
                         <View style={styles.flexRowComponent}>
                             <View style={styles.leftComponent}>
-                                <Text style={[styles.normalText]}
-                                >Calorie Consumed</Text>
-                                <Text
-                                    style={[styles.normalText, styles.orangeText]}
-                                >
-                                    {Math.round(latestTotalCalories)} cal
-                                </Text>
-                                <Text style={[styles.normalText]}>
+                                <View>
+                                    <Text style={[styles.normalText]}>
+                                        Calorie Consumed
+                                    </Text>
+                                    <Text style={[styles.normalText, styles.orangeText]}>
+                                        {Math.round(latestTotalCalories)} cal
+                                    </Text>
+                                </View>
+                                
+                                
+                                {/* <Text style={[styles.normalText]}>
                                     Calories Left
                                 </Text>
                                 <Text style={[styles.normalText, styles.orangeText]}>
                                     {roundedCaloriesLeft} cal
-                                </Text>
-                                <Text style={[styles.normalText]}
-                                >Recommended Intake
-                                </Text>
-                                <Text
-                                    style={[styles.normalText, styles.orangeText]}
-                                >
-                                    {targetCalories} cal
-                                </Text>
+                                </Text> */}
+                                <View>
+                                    <Text style={[styles.normalText]}>
+                                        Recommended Intake
+                                    </Text>
+                                    <Text style={[styles.normalText, styles.orangeText]}>
+                                        {targetCalories} cal
+                                    </Text>
+                                </View>
+                                
                             </View>
+
                             <View style={styles.rightComponent}>
                                 <AnimatedCircularProgress
                                     size={130}
@@ -256,6 +261,7 @@ const styles = StyleSheet.create({
     },
     leftComponent: {
         flex: 1, // Takes up 1/3 of the available space
+        gap: 8,
     },
     middleComponent: {
         flex: 1, // Takes up 1/3 of the available space
@@ -272,7 +278,7 @@ const styles = StyleSheet.create({
         color: "#FF9130"
     },
     normalText: {
-        fontSize: 14,
+        fontSize: 16,
         margin: 1,
         // textAlign: "center",
     },

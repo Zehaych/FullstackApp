@@ -693,7 +693,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F2F2F2",
     //alignItems: "center",
-    padding: 5,
+    padding: 20,
     //marginHorizontal: 5,
   },
   dropdown: {
@@ -718,13 +718,13 @@ const styles = StyleSheet.create({
   //search result
   searchList: {
     width: 385,
-    padding: 10,
+    // padding: 10,
     margin: 5,
   },
   //text
   mealDetails: {
-    fontSize: 15,
-    textAlign: "center",
+    fontSize: 16,
+    textAlign: "right",
   },
   subTitle: {
     fontSize: 20,
@@ -734,7 +734,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   smallHeadings: {
-    fontSize: 14,
+    fontSize: 16,
     textAlign: "center",
   },
   smallText: {
@@ -742,11 +742,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
+  emptyMealRecipe: {
+    fontSize: 16,
+  },
   buttonText: {
-    color: "#FFF"
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   boldText: {
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   //recommended recipe
   recommendedRecipesContainer: {
@@ -766,15 +771,18 @@ const styles = StyleSheet.create({
   //component
   componentContainer: {
     flex: 1,
-    //flexDirection: "row", // Arrange components horizontally from left to right
-    //justifyContent: "space-between", // Space them evenly
-    //alignItems: "center", // Center them vertically
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingHorizontal: 20,
-    margin: 5,
+    backgroundColor: "#FFFFFF",
     borderRadius: 20,
-    backgroundColor: "#FFF",
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
   },
   // componentContainer2: {
   //   display: "flex",
@@ -789,7 +797,7 @@ const styles = StyleSheet.create({
   // },
   componentRow:{
     flexDirection: "row",
-    alignItems: "center",
+    // alignItems: "center",
     justifyContent: "space-between",
     marginVertical: 10,
   },

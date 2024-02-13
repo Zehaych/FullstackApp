@@ -156,7 +156,7 @@ function App() {
           <Stack.Screen
             name="FoodRecognitionScreen"
             component={FoodRecognitionScreen}
-            options={{ headerShown: false }}
+            options={{ headerTitle: "Food Recognition" }}
           />
           <Stack.Screen
             name="Sign up"
