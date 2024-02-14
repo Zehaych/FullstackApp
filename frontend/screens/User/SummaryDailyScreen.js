@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useContext, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
+import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Context } from "../../store/context";
 //import { ScrollView } from "react-native-gesture-handler";
@@ -57,41 +57,6 @@ const SummaryDailyScreen = ({ route }) => {
     return (
         <ScrollView>
             <View style={styles.container}>
-                {/* <View style={styles.textContainer}>
-                    <Text style={styles.chartTextBold}>Daily Intake</Text>
-                </View>
-                <View style={styles.chartContainer}>
-                    <AnimatedCircularProgress
-                        size={200}
-                        width={30}
-                        fill={percentage}
-                        tintColor={animatedCircularProgressColor}
-                        backgroundColor="#e1e2e3"
-                        rotation={0}
-                        lineCap="round"
-                    >
-                        {(fill) => (
-                            <View>
-                                <Text style={styles.chartTextBold}>
-                                    {latestTotalCalories} / {targetCalories} Cal consumed
-                                </Text>
-                                <Text style={styles.chartText}>
-                                    {exceededTarget ? `${roundedCaloriesMore} Cal more` : `${roundedCaloriesLeft} Cal left`}
-                                </Text>
-                            </View>
-                        )}
-                    </AnimatedCircularProgress>
-                </View>
-                <View style={styles.flexRowComponent}>
-                    <View style={styles.leftComponent}>
-                        <Text style={styles.text}>Daily intake </Text>
-                        <Text style={styles.subText}>{latestTotalCalories}</Text>
-                    </View>
-                    <View style={styles.rightComponent}>
-                        <Text style={styles.text}>Target Calories</Text>
-                        <Text style={styles.subText}>{targetCalories}</Text>
-                    </View>
-                </View> */}
                 <View style={styles.introSection}>
                     <View style={styles.componentContainer}>
                         <View style={styles.flexColumnComponent}>
@@ -144,7 +109,7 @@ const SummaryDailyScreen = ({ route }) => {
                         </View>
                     </View>
 
-                    <View style={styles.componentContainer}>
+                    {/* <View style={styles.componentContainer}>
                         <View style={styles.flexRowComponent}>
                             <View style={styles.leftComponent}>
                                 <Text style={[styles.subTitle]}
@@ -166,58 +131,20 @@ const SummaryDailyScreen = ({ route }) => {
                                 </TouchableOpacity>
                             </View>
                         </View>
+                    </View> */}
+                    <View style={styles.button}>
+                        <Button
+                            onPress={navigateToTrackProgressScreen}
+                            style={styles.buttonText}
+                            title="Add Recipes Of The Day"
+                        >
+                            {/* <Text style={styles.buttonText}>Add Recipes Of The Day</Text> */}
+                        </Button>
                     </View>
 
-                    <View style={styles.componentContainer}>
-                        <View style={styles.flexRowComponent}>
-                            <View style={styles.leftComponent}>
-                                <Text style={[styles.subTitle]}
-                                >Lunch
-                                </Text>
-                                <Text style={[styles.normalText]}
-                                >No Recipe Added
-                                </Text>
-                            </View>
-                            <View style={[styles.rightComponent]}>
-                                <TouchableOpacity
-                                    style={styles.iconButton}
-                                    onPress={navigateToTrackProgressScreen}
-                                >
-                                    <Image
-                                        source={require("../../assets/plusButton.png")}
-                                        style={styles.iconImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-
-                    <View style={styles.componentContainer}>
-                        <View style={styles.flexRowComponent}>
-                            <View style={styles.leftComponent}>
-                                <Text style={[styles.subTitle]}
-                                >Dinner
-                                </Text>
-                                <Text style={[styles.normalText]}
-                                >No Recipe Added
-                                </Text>
-                            </View>
-                            <View style={[styles.rightComponent]}>
-                                <TouchableOpacity
-                                    style={styles.iconButton}
-                                    onPress={navigateToTrackProgressScreen}
-                                >
-                                    <Image
-                                        source={require("../../assets/plusButton.png")}
-                                        style={styles.iconImage}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
                 </View>
             </View >
-        </ScrollView>    
+        </ScrollView>
     );
 };
 
@@ -285,6 +212,9 @@ const styles = StyleSheet.create({
     orangeText: {
         color: "#FF9130"
     },
+    buttonText: {
+        color: "#FFF"
+    },
     // Button
     iconButton: {
         padding: 10,
@@ -295,92 +225,9 @@ const styles = StyleSheet.create({
         width: 25,
         height: 25,
     },
+    button: {
+        backgroundColor: "#ED6F21",
+        borderRadius: 10,
+        width: "100%",
+    },
 });
-
-
-
-/*
-useFocusEffect(
-        React.useCallback(() => {
-            const fetchUserData = async () => {
-                try {
-                const userId = userData._id; 
-                const response = await fetch(
-                    `${process.env.EXPO_PUBLIC_IP}/user/getUserById/${userId}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
-        
-                if (response.ok) {
-                    const data = await response.json();
-                    setUserData(data); // Update the userData with the fetched data
-                } else {
-                    console.error("Failed to fetch user data");
-                    // Handle errors as appropriate
-                }
-                } catch (error) {
-                console.error("Error fetching user data:", error);
-                // Handle errors as appropriate
-                }
-            };
-        
-            fetchUserData();
-        }, [])
-    );
-    console.log("userData: " + userData);
-
-
-
-
-<AnimatedCircularProgress
-                size={200}
-                width={15}
-                fill={percentage}
-                tintColor="#00e0ff"
-                backgroundColor="#3d5875"
-                rotation={0}
-                lineCap="round"
-            >
-                {(fill) => (
-                <View>
-                    <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-                    {dailyCalories} / {targetCalories} Calories
-                    </Text>
-                    <Text style={{ fontSize: 16 }}>Daily Intake</Text>
-                </View>
-                )}
-            </AnimatedCircularProgress>
-
-
-            //today's date
-    const currentDate = new Date();
-
-    const dailyCaloriesLogEntries = currentUser.dailyCaloriesLog.map((entry) => (
-        <View key={entry._id}>
-            <Text>Date: {new Date(entry.date).toDateString()}</Text>
-            <Text>Total Calories: {entry.total_calories}</Text>
-        </View>
-    ));       //test
-
-    console.log("currentDate: " + currentDate + " " + typeof  currentDate + " " + currentDate.toDateString());
-    console.log("dailyCaloriesLog: " + currentUser.dailyCaloriesLog);
-
-    //current user's calorie daily intake for the day
-    const currentDayEntry = currentUser.dailyCaloriesLog.findLast((entry) => {
-        const entryDate = new Date(entry.date);
-        return (
-          entryDate.getFullYear() === currentDate.getFullYear() &&
-          entryDate.getMonth() === currentDate.getMonth() &&
-          entryDate.getDate() === currentDate.getDate()-1
-        );
-    });
-
-    const dailyCalories = currentDayEntry ? currentDayEntry.total_calories : 0;
-
-    //percentage of calories consumed
-    const percentage = (dailyCalories / targetCalories) * 100;
-*/

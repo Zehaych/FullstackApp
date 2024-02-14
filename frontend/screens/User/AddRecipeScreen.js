@@ -1,22 +1,20 @@
-import React, { useState } from "react";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import React, { useContext, useState } from "react";
 import {
-  View,
-  TextInput,
-  Button,
   Image,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
+  View
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { useContext } from "react";
-import { Context } from "../../store/context";
-import * as ImagePicker from "expo-image-picker";
-import { storage } from "../../services/firebase";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { TouchableRipple } from "react-native-paper";
 import Icon from 'react-native-vector-icons/Feather';
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { storage } from "../../services/firebase";
+import { Context } from "../../store/context";
 
 const AddRecipeScreen = () => {
   const navigation = useNavigation();
@@ -222,7 +220,7 @@ const AddRecipeScreen = () => {
             onChangeText={(text) => setCalories(text)}
             keyboardType="numeric" // This ensures the keyboard displays numbers
             placeholderTextColor="#808080"
-          />        
+          />
 
           <Text style={styles.label}>Time Taken</Text>
           <TextInput

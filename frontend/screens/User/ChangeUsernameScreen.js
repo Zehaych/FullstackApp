@@ -1,17 +1,13 @@
-import React, { useState, useContext } from "react";
-import { Context } from "../../store/context";
+import { useNavigation } from "@react-navigation/native";
+import React, { useContext, useState } from "react";
 import {
-  Keyboard,
   StyleSheet,
-  View,
   Text,
   TextInput,
   TouchableOpacity,
-  Button,
-  ScrollView,
-  Dimensions,
+  View
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { Context } from "../../store/context";
 
 const ChangeUsernameScreen = () => {
   const navigation = useNavigation();
@@ -81,7 +77,7 @@ const ChangeUsernameScreen = () => {
     <View style={styles.container}>
 
       {/* New UserName */}
-      <View>
+      <View style={styles.detailContainer}>
         <Text style={styles.title}>New Username</Text>
         <TextInput
           style={styles.input}
@@ -92,7 +88,7 @@ const ChangeUsernameScreen = () => {
       </View>
         
       {/* Password */}
-      <View>
+      <View style={styles.detailContainer}>
         <Text style={styles.title}>Password</Text>
         <TextInput
           style={styles.input}
@@ -135,6 +131,9 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
   },
+  detailContainer: {
+    width: "100%",
+  },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
@@ -148,11 +147,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ED6F21',
     padding: 10,
+    width: "100%",
   },
   updatebuttonText: {
     color: "#FFF",
     fontWeight: 'bold',
     fontSize: 16,
+    width: "100%",
+    textAlign: 'center',
   }
 });
 
