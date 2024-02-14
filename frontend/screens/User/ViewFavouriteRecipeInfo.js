@@ -702,29 +702,32 @@ export default function ViewFavouriteRecipeInfo({ route }) {
             ) : (
               currentUserReviews.length > 0 && (
                 <View style={styles.detailBox}>
-                  <Text style={styles.subTitle}>
-                    Your Review{" "}
+                  <View style={styles.userReviewContainer}>
 
-                    <TouchableOpacity
-                      onPress={() =>
-                        handleEditClick(
-                          currentUserReviews[0]._id,
-                          currentUserReviews[0].reviews,
-                          currentUserReviews[0].ratings
-                        )
-                      }
-                      style={styles.editIcon}
-                    >
-                      <Icon name="edit" size={24} color="#007BFF" />
-                    </TouchableOpacity>
+                    <Text style={styles.subTitle}>Your Review{" "}</Text>
+                    
+                    <View style={styles.userReviewIconContainer}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          handleEditClick(
+                            currentUserReviews[0]._id,
+                            currentUserReviews[0].reviews,
+                            currentUserReviews[0].ratings
+                          )
+                        }
+                        style={styles.editIcon}
+                      >
+                        <Icon name="edit" size={24} color="#007BFF" />
+                      </TouchableOpacity>
 
-                    <TouchableOpacity
-                      onPress={() => confirmDeleteReview(currentUserReviews[0]._id)}
-                      style={styles.deleteIcon}
-                    >
-                      <Icon name="delete" size={24} color="#FF6347" />
-                    </TouchableOpacity>
-                  </Text>
+                      <TouchableOpacity
+                        onPress={() => confirmDeleteReview(currentUserReviews[0]._id)}
+                        style={styles.deleteIcon}
+                      >
+                        <Icon name="delete" size={24} color="#FF6347" />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
 
                   {currentUserReviews.map((review, index) => (
                     <View key={index} style={styles.ratingContainer}>
@@ -1220,5 +1223,14 @@ const styles = StyleSheet.create({
   },
   reportContainer: {
     alignItems: "center"
+  },
+  userReviewContainer: {
+    flexDirection: 'row',
+    justifyContent: "space-between",
+  },
+  userReviewIconContainer: {
+    flexDirection: "row",
+    gap: 8,
+    marginVertical: 10,
   },
 });

@@ -109,7 +109,6 @@ const styles = StyleSheet.create({
         borderRadius: 24,
         padding: 12,
         backgroundColor: "#FFF",
-        gap: 12,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -149,7 +148,7 @@ const styles = StyleSheet.create({
         fontSize: 14
     },
     resultsHeader: {
-        fontWeight: "bold", fontSize: 17
+        fontWeight: "bold", fontSize: 16
     },
     // dateResults: {
     //     fontWeight: "normal", fontSize: 17
