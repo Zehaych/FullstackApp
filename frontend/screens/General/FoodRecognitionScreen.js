@@ -1,6 +1,11 @@
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytesResumable
+} from "firebase/storage";
+import { useContext, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -12,8 +17,9 @@ import {
   View
 } from "react-native";
 import * as Progress from 'react-native-progress';
-
 import { SafeAreaView } from "react-native-safe-area-context";
+import { storage } from "../../services/firebase";
+import { Context } from "../../store/context";
 
 const PAT = "51ce8aa8d91b476b8c771030d6d0a12a";
 // Specify the correct user_id/app_id pairings
@@ -39,9 +45,44 @@ const FoodRecognitionScreen = ({ navigation }) => {
   const [classifiedResults, setClassifiedResults] = useState(null);
   const [base64, setBase64] = useState("");
 
+  const [currentUser, setCurrentUser] = useContext(Context);
+
   const handleImageUploadClick = () => {
     setIsClicked(!isClicked);
 
+  };
+
+  const uploadImage = async (uri) => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      const filename = uri.substring(uri.lastIndexOf("/") + 1);
+      const storageRef = ref(storage, `images/${filename}`);
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+
+      return new Promise((resolve, reject) => {
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            reject(error);
+          },
+          () => {
+            // Handle successful uploads on complete
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+            });
+          }
+        );
+      });
+    } catch (error) {
+      console.error("Error uploading image: ", error);
+      throw error;
+    }
   };
 
   const handleConvertImageToBase64 = async (imageUri) => {
@@ -96,7 +137,21 @@ const FoodRecognitionScreen = ({ navigation }) => {
       let formattedResult = result.substring(startIndex, endIndex + 1).trim();
       setIsLoading(false)
       setClassifiedResults(JSON.parse(formattedResult))
-      console.log(JSON.parse(formattedResult))
+
+      imageUrl = await uploadImage(image.uri);
+
+      // save to food recognition log
+      const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/updateFoodRecognition/${currentUser._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          food: JSON.parse(formattedResult),
+          imageUrl
+        }),
+      })
+
     } catch (error) {
       console.log(error)
     }
