@@ -78,6 +78,24 @@ const userSchema = new Schema({
       },
     },
   ],
+  foodRecognitionLog: [
+    {
+      date: {
+        type: Date,
+        default: Date.now
+      },
+      imageUrl: {
+        type: String
+      },
+      food: [
+        {
+          name: String,
+          calories: String
+        }
+      ]
+
+    }
+  ],
   favouriteRecipes: [
     {
       type: mongoose.Types.ObjectId,
