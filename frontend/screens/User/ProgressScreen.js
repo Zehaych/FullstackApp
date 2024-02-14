@@ -651,9 +651,9 @@ const ProgressScreen = () => {
             </View>
             {/* reset and submit button */}
             <View style={styles.componentRow}>
-              <View style={styles.leftComponent}>              
-                <TouchableOpacity 
-                  onPress={() => handleReset()} 
+              <View style={styles.leftComponent}>
+                <TouchableOpacity
+                  onPress={() => handleReset()}
                   style={styles.resetButton}
                 >
                   <Text style={styles.buttonText}>Reset</Text>
@@ -686,15 +686,15 @@ export default ProgressScreen;
 const styles = StyleSheet.create({
   //containers
   scrollContainer: {
-    //flex: 1,
     backgroundColor: "#F2F2F2",
   },
   container: {
-    flex: 1,
     backgroundColor: "#F2F2F2",
     //alignItems: "center",
     padding: 20,
     //marginHorizontal: 5,
+    flex: 1,
+    margin: 20,
   },
   dropdown: {
     width: "100%",
@@ -784,17 +784,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     elevation: 5,
   },
-  // componentContainer2: {
-  //   display: "flex",
-  //   width: "90%",
-  //   padding: 16,
-  //   flexDirection: "column",
-  //   alignItems: "left",
-  //   backgroundColor: "#FFF",
-  //   borderRadius: 16,
-  //   gap: 8,
-  //   margin: 8,
-  // },
   componentRow:{
     flexDirection: "row",
     // alignItems: "center",
@@ -875,7 +864,7 @@ const styles = StyleSheet.create({
           selectedValue={selectedDropdownValue}
           onValueChange={(itemValue, itemIndex) => setSelectedDropdownValue(itemValue)}
           style={styles.dropdown}
-        > 
+        >
 
         <TouchableOpacity style={styles.addButton} onPress={() => handleAddRecipe()}>
           <Icon name="plus" size={20} color="white" />

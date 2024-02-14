@@ -1,17 +1,13 @@
-import React, { useState, useContext } from "react";
-import { Context } from "../../store/context";
+import { useNavigation } from "@react-navigation/native";
+import React, { useContext, useState } from "react";
 import {
-  Keyboard,
   StyleSheet,
-  View,
   Text,
   TextInput,
   TouchableOpacity,
-  Button,
-  ScrollView,
-  Dimensions,
+  View
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { Context } from "../../store/context";
 
 const ChangeEmailScreen = () => {
   const navigation = useNavigation();
@@ -86,7 +82,7 @@ const ChangeEmailScreen = () => {
     <View style={styles.container}>
 
         {/* New Email */}
-      <View>
+      <View style={styles.detailContainer}>
         <Text style={styles.title}>New Email</Text>
         <TextInput
           style={styles.input}
@@ -98,7 +94,7 @@ const ChangeEmailScreen = () => {
       </View>
       
       {/* Password */}
-      <View>
+      <View style={styles.detailContainer}>
         <Text style={styles.title}>Password</Text>
         <TextInput
           style={styles.input}
@@ -140,6 +136,9 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
   },
+  detailContainer:{
+    width: "100%",
+  },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
@@ -153,6 +152,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ED6F21',
     padding: 10,
+    width: "100%",
   },
   updatebuttonText: {
     color: "#FFF",
