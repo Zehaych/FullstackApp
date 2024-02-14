@@ -99,18 +99,27 @@ export default function ViewFoodRecognitionLog({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#F5F5F5",
-        margin: 20,
+        backgroundColor: "#f2f2f2",
     },
     foodRecognitionLogCard: {
+        margin: 24,
         display: "flex",
         gap: 12,
         marginBottom: 10,
-        padding: 10,
+        borderRadius: 24,
+        padding: 12,
         backgroundColor: "#FFF",
-        borderRadius: 10,
-
-    }, image: {
+        gap: 12,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    image: {
         width: "100%",
         height: 300,
         resizeMode: "cover",

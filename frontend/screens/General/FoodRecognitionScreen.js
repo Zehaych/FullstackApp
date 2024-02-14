@@ -137,8 +137,6 @@ const FoodRecognitionScreen = ({ navigation }) => {
       let formattedResult = result.substring(startIndex, endIndex + 1).trim();
       setIsLoading(false)
       setClassifiedResults(JSON.parse(formattedResult))
-      console.log(JSON.parse(formattedResult))
-
 
       imageUrl = await uploadImage(image.uri);
 
