@@ -52,6 +52,7 @@ import ViewBizFavouriteRecipeInfo from "./screens/User/ViewBizFavouriteRecipeInf
 import ViewBizFavouritesScreen from "./screens/User/ViewBizFavouritesScreen";
 import ViewFavouriteRecipeInfo from "./screens/User/ViewFavouriteRecipeInfo";
 import ViewFavouritesScreen from "./screens/User/ViewFavouritesScreen";
+import ViewFoodRecognitionLog from "./screens/User/ViewFoodRecognitionLog";
 import ViewPastOrdersScreen from "./screens/User/ViewPastOrdersScreen";
 import ViewRecipeInfoScreen from "./screens/User/ViewRecipeInfoScreen";
 import ViewRecipeScreen from "./screens/User/ViewRecipeScreen";
@@ -201,6 +202,8 @@ function App() {
             component={AddBizRecipeScreen}
           />
           <Stack.Screen name="View Added Recipe" component={ViewRecipeScreen} />
+
+          <Stack.Screen name="View Food Recognition Log" component={ViewFoodRecognitionLog} />
 
           <Stack.Screen
             name="View Favourites"

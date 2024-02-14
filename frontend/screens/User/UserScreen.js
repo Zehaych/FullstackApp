@@ -66,6 +66,10 @@ const UserScreen = () => {
     navigation.push("View Added Recipe");
   };
 
+  const onViewFoodRecognitionLog = () => {
+    navigation.push("View Food Recognition Log")
+  }
+
   const onTrackProgressPressed = () => {
     navigation.push("Track Progress");
   };
@@ -161,6 +165,13 @@ const UserScreen = () => {
             <View style={styles.menuItem}>
               <Icon name="silverware-fork-knife" color="#ED6F21" size={25} />
               <Text style={styles.menuItemText}>View Added Recipe</Text>
+            </View>
+          </TouchableRipple>
+
+          <TouchableRipple onPress={onViewFoodRecognitionLog}>
+            <View style={styles.menuItem}>
+              <Icon name="silverware-fork-knife" color="#ED6F21" size={25} />
+              <Text style={styles.menuItemText}>View Food Recognition Log</Text>
             </View>
           </TouchableRipple>
 
