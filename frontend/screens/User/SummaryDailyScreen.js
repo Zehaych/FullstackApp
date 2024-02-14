@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useContext, useState } from "react";
-import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Button, ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { Context } from "../../store/context";
 //import { ScrollView } from "react-native-gesture-handler";
@@ -133,13 +133,12 @@ const SummaryDailyScreen = ({ route }) => {
                         </View>
                     </View> */}
                     <View style={styles.button}>
-                        <Button
-                            onPress={navigateToTrackProgressScreen}
-                            style={styles.buttonText}
-                            title="Add Recipes Of The Day"
+                        <TouchableOpacity
+                            onPress={() => navigateToTrackProgressScreen()}
+                            style={styles.submitButton2}
                         >
-                            {/* <Text style={styles.buttonText}>Add Recipes Of The Day</Text> */}
-                        </Button>
+                            <Text style={styles.buttonText}>Add Recipes Of The Day</Text>
+                        </TouchableOpacity>
                     </View>
 
                 </View>
@@ -213,8 +212,18 @@ const styles = StyleSheet.create({
         color: "#FF9130"
     },
     buttonText: {
-        color: "#FFF"
+        color: "#FFF",
+        fontSize: 16,
+        fontWeight: "bold",
     },
+    submitButton2: {
+        backgroundColor: "#ED6F21",
+        padding: 10,
+        // marginVertical: 5,
+        borderRadius: 10,
+        width: "95%",
+        alignItems: "center",
+      },
     // Button
     iconButton: {
         padding: 10,

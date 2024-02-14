@@ -691,17 +691,17 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#F2F2F2",
     //alignItems: "center",
-    padding: 20,
+    // padding: 20,
     //marginHorizontal: 5,
     flex: 1,
     margin: 20,
   },
-  dropdown: {
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#ED6F21",
-    borderRadius: 16,
-  },
+  // dropdown: {
+  //   width: "100%",
+  //   borderWidth: 1,
+  //   borderColor: "#ED6F21",
+  //   borderRadius: 16,
+  // },
   searchInput: {
     height: 50,
     width: "100%",
@@ -795,9 +795,9 @@ const styles = StyleSheet.create({
     //alignContent: "flex-start",
     alignItems: "flex-start",
   },
-  middleComponent: {
-    flex: 1, // Takes up 1/3 of the available space
-  },
+  // middleComponent: {
+  //   flex: 1, // Takes up 1/3 of the available space
+  // },
   rightComponent: {
     flex: 1, // Takes up 1/3 of the available space
     //alignContent: "flex-end",
