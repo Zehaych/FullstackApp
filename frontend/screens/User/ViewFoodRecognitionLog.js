@@ -6,6 +6,7 @@ import {
     SafeAreaView,
     StyleSheet,
     Text,
+    TouchableOpacity,
     View
 } from "react-native";
 import { Context } from "../../store/context";
@@ -30,7 +31,6 @@ export default function ViewFoodRecognitionLog({ navigation }) {
 
         }
     }
-    console.log(foodRecognitionLog)
 
     useEffect(() => {
         fetchFoodRecognitionLog();
@@ -38,7 +38,7 @@ export default function ViewFoodRecognitionLog({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <FlatList
+            {foodRecognitionLog?.length !== 0 ? <FlatList
                 data={foodRecognitionLog}
                 numColumns={1}
                 keyExtractor={(item) => item._id}
@@ -50,7 +50,14 @@ export default function ViewFoodRecognitionLog({ navigation }) {
                         >
                             {item.imageUrl && <Image source={{ uri: item.imageUrl }} style={styles.image} />
                             }
-                            <Text style={styles.recipeTitle}>{`${date.getUTCDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`}</Text>
+                            <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                                <View>
+                                    <Text style={styles.resultsHeader}>Date</Text>
+                                </View>
+                                <View>
+                                    <Text style={styles.resultsHeader}>{`${date.getUTCDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`}</Text>
+                                </View>
+                            </View>
                             <View style={{ flex: 1, justifyContent: "space-between", width: "100%" }}>
                                 <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
                                     <View>
@@ -78,7 +85,13 @@ export default function ViewFoodRecognitionLog({ navigation }) {
                         </View>
                     )
                 }}
-            />
+            /> : <View style={{ display: "flex", alignItems: 'center', gap: 10 }}><Text>No data yet!</Text>
+                <TouchableOpacity
+                    style={{ backgroundColor: '#FFF', padding: 12, borderRadius: 10, backgroundColor: '#ED6F21', width: "100%", alignItems: "center" }}
+                    onPress={() =>
+                        navigation.navigate("FoodRecognitionScreen")
+                    }
+                ><Text style={{ color: '#FFF', fontWeight: "bold" }}>Recognize Food Now!</Text></TouchableOpacity></View>}
         </SafeAreaView>
     )
 }
@@ -128,5 +141,8 @@ const styles = StyleSheet.create({
     },
     resultsHeader: {
         fontWeight: "bold", fontSize: 17
-    }
+    },
+    // dateResults: {
+    //     fontWeight: "normal", fontSize: 17
+    // }
 })
