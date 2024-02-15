@@ -208,7 +208,8 @@ const UserScreen = () => {
               <Text style={styles.menuItemText}>View Request Status</Text>
             </View>
           </TouchableRipple>
-
+          <View style={styles.divider} />
+          <Text style={styles.subTitle}>Others</Text>
           <TouchableRipple onPress={onPastOrderspressed}>
             <View style={styles.menuItem}>
               <Icon name="clipboard-list-outline" color="#ED6F21" size={25} />

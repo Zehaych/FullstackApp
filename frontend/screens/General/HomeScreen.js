@@ -1373,10 +1373,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 20,
     // marginHorizontal: 16,
-    marginVertical: 10,
+    // marginVertical: 10,
     padding: 10,
     //gap: 8,
     width: 180,
+    height: "100%",
     backgroundColor: "#FFFFFF",
     shadowColor: "#000",
     shadowOffset: {
@@ -1451,6 +1452,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     paddingHorizontal: 16,
+    paddingVertical: 8,
     gap: 8,
   },
   dailyIntakeFlexRowComponent: {
