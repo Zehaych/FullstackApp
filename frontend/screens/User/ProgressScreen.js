@@ -767,9 +767,12 @@ const ProgressScreen = () => {
           {/* food recognition */}
           <View style={styles.componentContainer}>
             <Text style={styles.subTitle}>Food Recognition Log</Text>
-            <View style={[styles.searchContainer, {justifyContent: 'çenter', display: 'flex'}]}>
+
+            <View>
               {
-                foodRecognitionCalories || image ? <View>
+                foodRecognitionCalories || image ? 
+                <View style={styles.foodRecognitionContainer}>
+
                   {image && <Image
                     source={image}
                     style={[{ width: imageDimensions, height: imageDimensions, borderRadius: 24 }, isClicked && styles.clickedImage]}
@@ -799,12 +802,12 @@ const ProgressScreen = () => {
                       </TouchableOpacity>
                     </View>
                   </View>
-                </View> : <TouchableOpacity
+                </View> : <Button
                   onPress={handlePickImage}
-                  style={styles.submitButton2}
+                  style={styles.submitButton}
                 >
                   <Text style={styles.buttonText}>Recognize Food</Text>
-                </TouchableOpacity>
+                </Button>
               }
 
 
@@ -1031,6 +1034,10 @@ const styles = StyleSheet.create({
   },
   spacer: {
     marginVertical: 5,
+  },
+  foodRecognitionContainer: {
+    alignItems: "center",
+    gap: 8,
   },
 });
 
