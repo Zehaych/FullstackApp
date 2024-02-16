@@ -10,7 +10,6 @@ import {
   Dimensions,
   Image,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -41,6 +40,7 @@ const FoodRecognitionScreen = ({ navigation }) => {
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false)
   const [isClicked, setIsClicked] = useState(false);
+  const [totalCalories, setTotalCalories] = useState(0);
 
   const [classifiedResults, setClassifiedResults] = useState(null);
   const [base64, setBase64] = useState("");
@@ -49,7 +49,6 @@ const FoodRecognitionScreen = ({ navigation }) => {
 
   const handleImageUploadClick = () => {
     setIsClicked(!isClicked);
-
   };
 
   const uploadImage = async (uri) => {
@@ -157,7 +156,6 @@ const FoodRecognitionScreen = ({ navigation }) => {
     }
   }
 
-
   const handlePickImage = async () => {
     handleImageUploadClick()
     // Ask for permission to access the camera roll
@@ -211,10 +209,6 @@ const FoodRecognitionScreen = ({ navigation }) => {
               </TouchableOpacity>
             </View>}
 
-            {
-              isLoading && <Progress.Circle size={50} indeterminate={true} />
-            }
-
             {classifiedResults && <View style={{ flex: 1, justifyContent: "space-between", width: "100%" }}>
               <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
                 <View>
@@ -237,6 +231,9 @@ const FoodRecognitionScreen = ({ navigation }) => {
                 );
               })}
             </View>}
+            {
+              isLoading && <Progress.Circle size={50} indeterminate={true} />
+            }
           </View>
         </View>
 
@@ -252,22 +249,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: "#F2F2F2",
   },
-  // header: {
-  //   // padding: 20,
-  //   maxHeight: 50,
-  //   borderBottomWidth: 1,
-  //   backgroundColor: "#FFF",
-  //   borderBottomColor: "#ccc",
-  //   flex: 1,
-  //   flexDirection: "row",
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  //   width: "100%",
-  // },
-  // headerText: {
-  //   fontSize: 17,
-  //   fontWeight: "bold",
-  // },
   body: {
     flex: 1,
     alignItems: "center",

@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
   Alert,
+  Dimensions,
+  Image,
   Keyboard,
   SafeAreaView,
   ScrollView,
@@ -12,10 +14,13 @@ import {
   View
 } from "react-native";
 import { Button } from "react-native-paper";
+import * as Progress from 'react-native-progress';
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Context } from "../../store/context";
 //import { ScrollView } from 'react-native-virtualized-view';
 import { useNavigation } from "@react-navigation/native";
+import * as FileSystem from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
 import RNPickerSelect from 'react-native-picker-select';
 import {
   fetchRecipeDetails,
@@ -43,6 +48,11 @@ const ProgressScreen = () => {
   const [recipeDetails, setRecipeDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentUser, setCurrentUser] = useContext(Context);
+  const [foodRecognitionCalories, setFoodRecognitionCalories] = useState(0)
+  const [image, setImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false)
+  const [isClicked, setIsClicked] = useState(false);
+  const [base64, setBase64] = useState("");
 
   const [recommendedRecipes, setRecommendedRecipes] = useState([]);
   // const targetCalories = 2000; // Set your desired target calories here
@@ -339,6 +349,10 @@ const ProgressScreen = () => {
         totalCalories += dinnerRecipe.nutrition.nutrients[0].amount;
       }
     }
+
+    if (foodRecognitionCalories) {
+      totalCalories += foodRecognitionCalories
+    }
     return totalCalories.toFixed(2);
   };
 
@@ -365,6 +379,14 @@ const ProgressScreen = () => {
     return null; // Return null if no condition is met
   };
 
+  const handleResetFoodRecognition = () => {
+    setFoodRecognitionCalories(0)
+    setImage(null)
+    setIsLoading(false)
+    setIsClicked(false)
+    setBase64("")
+  }
+
   // handle reset
   const handleReset = () => {
     setSelectedDropdownValue("none");
@@ -376,6 +398,7 @@ const ProgressScreen = () => {
     setSelectedRecipeId(null);
     setRecipeDetails(null);
     setSelectedFoodAndDrink(null);
+    handleResetFoodRecognition()
   };
 
   //handle submit
@@ -432,9 +455,109 @@ const ProgressScreen = () => {
     }
   };
 
+  const handleImageUploadClick = () => {
+    setIsClicked(!isClicked);
+  };
+
+  const handleConvertImageToBase64 = async (imageUri) => {
+    try {
+      const base64 = await FileSystem.readAsStringAsync(imageUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      setBase64(base64);
+    } catch (error) {
+      console.error("Error converting image to base64:", error);
+    }
+  };
+
+  const handlePickImage = async () => {
+    handleImageUploadClick()
+    // Ask for permission to access the camera roll
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (status !== "granted") {
+      alert("Permission to access camera roll is required!");
+      return;
+    }
+
+    // Launch the image picker
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      // Set the selected image
+
+      setImage({ uri: result.assets[0].uri });
+      handleConvertImageToBase64(result.assets[0].uri);
+    }
+  };
+
+
+
+  const handleAddToCalories = async () => {
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.EXPO_PUBLIC_OPEN_AI}`
+    };
+
+    const payload = {
+      "model": "gpt-4-vision-preview",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Estimate the type of food in the image and a rough estimate of the calories only. Make it concise and formatted. Do not add filler words. Provide the data in a json, where the key is the food, and the value is a numeric average of the estimate."
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": `data:image/jpeg;base64,${base64}`
+              }
+            }
+          ]
+        }
+      ],
+      "max_tokens": 1500,
+    };
+
+    setIsLoading(true)
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(payload)
+    })
+
+    const responseData = await response.json()
+
+    try {
+
+      const result = responseData?.["choices"]?.[0]?.["message"]?.["content"]
+      let startIndex = result?.indexOf('{');
+      let endIndex = result?.lastIndexOf('}');
+      let formattedResult = JSON.parse(result.substring(startIndex, endIndex + 1).trim());
+      setIsLoading(false)
+
+      const totalCal = Object.values(formattedResult).reduce((accumulator, value) => accumulator + Number(value), 0)
+      if (totalCal) {
+        setFoodRecognitionCalories(Number(totalCal))
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     fetchCurrentUser();
   }, []);
+
+  const imageDimensions = Dimensions.get('window').width * 0.8
 
   return (
     <ScrollView style={styles.scrollContainer}>
@@ -458,6 +581,14 @@ const ProgressScreen = () => {
             <View style={styles.componentRow}>
               <Text style={[styles.smallHeadings, styles.boldText]}>Dinner</Text>
               {renderMealRecipe(dinnerRecipe)}
+            </View>
+            <View style={styles.componentRow}>
+              <Text style={[styles.smallHeadings, styles.boldText]}>Recognized Image</Text>
+              {foodRecognitionCalories === 0 ? <Text style={styles.emptyMealRecipe}>
+                No Recognized Food
+              </Text> : <View style={styles.mealRecipe}>
+                <Text style={styles.mealDetails}>{foodRecognitionCalories} kcal</Text>
+              </View>}
             </View>
             {/* meal recipe recommendation*/}
             {recommendedRecipes.meals && recommendedRecipes.meals.length > 0 && (
@@ -633,6 +764,53 @@ const ProgressScreen = () => {
             </View>
           </View>
 
+          {/* food recognition */}
+          <View style={styles.componentContainer}>
+            <Text style={styles.subTitle}>Food Recognition Log</Text>
+            <View style={[styles.searchContainer, {justifyContent: 'çenter', display: 'flex'}]}>
+              {
+                foodRecognitionCalories || image ? <View>
+                  {image && <Image
+                    source={image}
+                    style={[{ width: imageDimensions, height: imageDimensions, borderRadius: 24 }, isClicked && styles.clickedImage]}
+                  />}
+                  {
+                    isLoading && <Progress.Circle size={50} indeterminate={true} />
+                  }
+                  {foodRecognitionCalories !== 0 && <View style={styles.componentRow}>
+                    <Text style={[styles.smallHeadings, styles.boldText]}>Food Recognition Calories</Text>
+                    <Text style={styles.smallHeadings}>{foodRecognitionCalories} cal</Text>
+                  </View>}
+                  <View style={styles.componentRow}>
+                    <View style={styles.leftComponent}>
+                      <TouchableOpacity
+                        onPress={handleResetFoodRecognition}
+                        style={styles.resetButton}
+                      >
+                        <Text style={styles.buttonText}>Reset</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.rightComponent}>
+                      <TouchableOpacity
+                        onPress={handleAddToCalories}
+                        style={styles.submitButton2}
+                      >
+                        <Text style={styles.buttonText}>Add To Calories</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View> : <TouchableOpacity
+                  onPress={handlePickImage}
+                  style={styles.submitButton2}
+                >
+                  <Text style={styles.buttonText}>Recognize Food</Text>
+                </TouchableOpacity>
+              }
+
+
+
+            </View>
+          </View>
 
           {/* Calorie Intake */}
           <View style={styles.componentContainer}>
@@ -784,7 +962,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     elevation: 5,
   },
-  componentRow:{
+  componentRow: {
     flexDirection: "row",
     // alignItems: "center",
     justifyContent: "space-between",
