@@ -4,7 +4,7 @@ Source Code Setup Instructions
 2) Install Visual Studio Code, a versatile code editor.
 3) Launch Visual Studio Code and import the source code folder.
 4) Open two terminals within Visual Studio Code, such as PowerShell.
-*Note that you will require 2 .env files for the source code set up, it will not work if the .env files are not present (one is to be placed in the backend folder the other in the frontend folder)
+### *Note that you will require 2 .env files for the source code set up, it will not work if the .env files are not present (one is to be placed in the backend folder the other in the frontend folder)
 
 Terminal 1:
 Ensure that you are already in the FullstackApp directory. If not, navigate to it by entering cd FullstackApp.
