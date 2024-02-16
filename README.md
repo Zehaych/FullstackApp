@@ -31,7 +31,7 @@ A QR code should appear after initialisation.
 
 10) For business partner access, enter testbizpartner as the username and 12345678 as the password.
 
-11) Please note, the online API for recipe requests has a limited number of calls per day. If you encounter blank sections in the online recipes, it indicates that the API requests have been exhausted for the day. However, you can modify the API key by commenting out the old key and uncommenting a different one in the source code. Simply save the changes with ctrl + s to re-enable the online API, unless the request quota has been depleted.
+11) Please note that the online API for recipe requests has a limited number of calls per day. If you encounter blank sections in the online recipes, it signifies that the API requests have reached their daily limit. However, you have the option to adjust the API key by editing the 'Api.js' file located at FullstackApp > frontend > services > Api.js. Simply double-click on the 'Api.js' file to access it. Once inside, you can comment out the old API key and uncomment a different one. Remember to save your changes with ctrl + s to reactivate the online API, unless the request quota has been exhausted.
 
 12) Should you still encounter any issues during usage, you can refresh the app by pressing the 'R' key in the terminal from which the app was launched.
 
