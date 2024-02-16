@@ -144,45 +144,48 @@ const SummaryMonthlyScreen = ({ route }) => {
                     <View style={styles.flexRowComponent}>
                         {latestMonthData && (
                             <>
-                                <Text style={[styles.normalText]}>Calories Consumed:</Text>
-                                <Text style={[styles.normalText]}>{Math.round(latestMonthData.consumed)} cal</Text>
+                                <Text style={[styles.calorieText]}>Calories Consumed</Text>
+                                <Text style={[styles.orangeText]}>{Math.round(latestMonthData.consumed)} cal</Text>
                             </>
                         )}
                     </View>
                     <View style={styles.flexRowComponent}>
-                        <Text style={styles.normalText}>(AVG)Target Calories:</Text>
-                        <Text style={[styles.normalText]}>{Math.round(averageTargetCalories)} cal</Text>
+                        <Text style={styles.calorieText}>Target Calories</Text>
+                        <Text style={[styles.orangeText]}>{Math.round(averageTargetCalories)} cal</Text>
                     </View>
                 </View>
+                
                 <View style={styles.componentContainer}>
                     <Text style={styles.subTitle}>Total Calories Intake</Text>
-                    {monthlyDataSorted && monthlyDataSorted?.map((month) => (
-                        <View key={month?.month}>
-                            <Text style={[styles.normalText, styles.bold]}>
-                                {month?.month}
-                            </Text>
-                            <View style={styles.chartContainerToo}>
-                                <Progress.Bar
-                                    progress={month?.progress / 100} // Progress based on the ratio
-                                    width={330}
-                                    height={15}
-                                    color="#FF9130"
-                                    unfilledColor="#FFEBCC"
-                                    borderWidth={0}
-                                />
-                                <View style={styles.flexRowComponent}>
-                                    <Text style={[styles.normalText]}>
-                                        {Math.round(month?.consumed)} / {Math.round(month?.target)} cal consumed
-                                    </Text>
-                                    <Text style={[styles.normalText]}>
-                                        {month?.consumed > month?.target
-                                            ? `${Math.round(month?.consumed - month?.target)} cal more`
-                                            : `${Math.round(month?.target - month?.consumed)} cal less`}
-                                    </Text>
+                    <View style={styles.progresslist}>
+                        {monthlyDataSorted && monthlyDataSorted?.map((month) => (
+                            <View key={month?.month}>
+                                <Text style={[styles.normalText, styles.bold]}>
+                                    {month?.month}
+                                </Text>
+                                <View style={styles.flexColumnComponent}>
+                                    <Progress.Bar
+                                        progress={month?.progress / 100} // Progress based on the ratio
+                                        width={null}
+                                        height={15}
+                                        color="#FF9130"
+                                        unfilledColor="#FFEBCC"
+                                        borderWidth={0}
+                                    />
+                                    <View style={styles.flexRowComponent}>
+                                        <Text style={[styles.normalText]}>
+                                            {Math.round(month?.consumed)} / {Math.round(month?.target)} cal consumed
+                                        </Text>
+                                        <Text style={[styles.normalText]}>
+                                            {month?.consumed > month?.target
+                                                ? `${Math.round(month?.consumed - month?.target)} cal more`
+                                                : `${Math.round(month?.target - month?.consumed)} cal less`}
+                                        </Text>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
-                    ))}
+                        ))}
+                    </View>
                 </View>
             </View>
         </ScrollView>
@@ -222,26 +225,13 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: "100%",
         flexDirection: "row",
-        marginBottom: 10
     },
     flexColumnComponent: {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "left",
-        width: "100%",
         flexDirection: "column",
-        marginBottom: 10
-    },
-    leftComponent: {
-        flex: 1, // Takes up 1/3 of the available space
-    },
-    middleComponent: {
-        flex: 1, // Takes up 1/3 of the available space
-        alignItems: "center"
-    },
-    rightComponent: {
-        flex: 1, // Takes up 1/3 of the available space
-        alignItems: "center"
+        marginVertical: 4,
     },
     //text
     subTitle: {
@@ -252,14 +242,21 @@ const styles = StyleSheet.create({
     },
     normalText: {
         fontSize: 14,
-        margin: 1,
-        // textAlign: "center",
     },
     orangeText: {
-        color: "#FF9130"
+        color: "#FF9130",
+        fontWeight: "bold",
+        fontSize: 16,
     },
     bold: {
         fontWeight: "bold"
+    },
+    progresslist: {
+        gap: 16
+    },
+    calorieText: {
+        fontSize: 16,
+        marginBottom: 10,
     },
 });
 

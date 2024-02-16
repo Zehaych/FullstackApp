@@ -39,40 +39,40 @@ export default function ViewRecipeInfoScreen({ route }) {
   const [username, setUsername] = useState("");
 
   // new
-  const [userReview, setUserReview] = useState("");
+  // const [userReview, setUserReview] = useState("");
   const [isCreator, setIsCreator] = useState(false);
   // const [userRating, setUserRating] = useState("");
   const [submittedReviews, setSubmittedReviews] = useState([]);
   const [currentUserReviews, setCurrentUserReviews] = useState([]);
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [editReview, setEditReview] = useState("");
-  const [editRating, setEditRating] = useState(0);
-  const [editingReviewId, setEditingReviewId] = useState(null);
-  const [userRating, setUserRating] = useState(0); // Updated for star rating
+  // const [editModalVisible, setEditModalVisible] = useState(false);
+  // const [editReview, setEditReview] = useState("");
+  // const [editRating, setEditRating] = useState(0);
+  // const [editingReviewId, setEditingReviewId] = useState(null);
+  // const [userRating, setUserRating] = useState(0); // Updated for star rating
 
-  const [activeSlide, setActiveSlide] = useState(0);
+  // const [activeSlide, setActiveSlide] = useState(0);
 
-  const [reportModalVisible, setReportModalVisible] = useState(false);
-  const [reportReason, setReportReason] = useState("");
-  const reportReasons = [
-    "Inappropriate Content",
-    "False Information",
-    "Offensive Language",
-    "Health Misinformation",
-    "Plagiarism",
-  ];
-  const [additionalDetails, setAdditionalDetails] = useState("");
+  // const [reportModalVisible, setReportModalVisible] = useState(false);
+  // const [reportReason, setReportReason] = useState("");
+  // const reportReasons = [
+  //   "Inappropriate Content",
+  //   "False Information",
+  //   "Offensive Language",
+  //   "Health Misinformation",
+  //   "Plagiarism",
+  // ];
+  // const [additionalDetails, setAdditionalDetails] = useState("");
 
   const [currentUser, setCurrentUser] = useContext(Context);
 
-  const [activeReason, setActiveReason] = useState(null);
+  // const [activeReason, setActiveReason] = useState(null);
 
-  const [isFavorite, setIsFavorite] = useState(false);
+  // const [isFavorite, setIsFavorite] = useState(false);
 
-  const handleReasonPress = (reason) => {
-    setReportReason(reason);
-    setActiveReason(reason);
-  };
+  // const handleReasonPress = (reason) => {
+  //   setReportReason(reason);
+  //   setActiveReason(reason);
+  // };
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -98,246 +98,246 @@ export default function ViewRecipeInfoScreen({ route }) {
   }, [recipeData, currentUser._id]);
 
   // Function to handle Swiper's index change
-  const onIndexChanged = (index) => {
-    setActiveSlide(index);
-  };
+  // const onIndexChanged = (index) => {
+  //   setActiveSlide(index);
+  // };
 
   // Function to move to the next slide
-  const moveToNextSlide = () => {
-    if (activeSlide < submittedReviews.length - 1) {
-      swiperRef.scrollBy(1);
-    }
-  };
+  // const moveToNextSlide = () => {
+  //   if (activeSlide < submittedReviews.length - 1) {
+  //     swiperRef.scrollBy(1);
+  //   }
+  // };
 
   // Function to move to the previous slide
-  const moveToPrevSlide = () => {
-    if (activeSlide > 0) {
-      swiperRef.scrollBy(-1);
-    }
-  };
+  // const moveToPrevSlide = () => {
+  //   if (activeSlide > 0) {
+  //     swiperRef.scrollBy(-1);
+  //   }
+  // };
 
   // Reference to the Swiper component
-  let swiperRef;
+  // let swiperRef;
 
-  const reportRecipe = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/recipe/reportRecipe/${recipeData._id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: currentUser._id,
-            feedback: reportReason,
-            additionalComment: additionalDetails,
-          }),
-        }
-      );
-      console.log(recipeData._id);
-      console.log(currentUser._id);
-      if (response.ok) {
-        Alert.alert(
-          "Report Submitted",
-          "Your report has been submitted for review."
-        );
-      } else {
-        Alert.alert("Report Failed", "Failed to submit the report.");
-      }
-    } catch (error) {
-      console.error("Error reporting recipe:", error);
-      Alert.alert("Error", "An error occurred while submitting the report.");
-    }
-  };
+  // const reportRecipe = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${process.env.EXPO_PUBLIC_IP}/recipe/reportRecipe/${recipeData._id}`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           userId: currentUser._id,
+  //           feedback: reportReason,
+  //           additionalComment: additionalDetails,
+  //         }),
+  //       }
+  //     );
+  //     console.log(recipeData._id);
+  //     console.log(currentUser._id);
+  //     if (response.ok) {
+  //       Alert.alert(
+  //         "Report Submitted",
+  //         "Your report has been submitted for review."
+  //       );
+  //     } else {
+  //       Alert.alert("Report Failed", "Failed to submit the report.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error reporting recipe:", error);
+  //     Alert.alert("Error", "An error occurred while submitting the report.");
+  //   }
+  // };
 
   // new
   // When the edit icon is clicked
-  const handleEditClick = (reviewId, currentReview, currentRating) => {
-    setEditingReviewId(reviewId);
-    setEditReview(currentReview);
-    setEditRating(currentRating);
-    setEditModalVisible(true);
-  };
+  // const handleEditClick = (reviewId, currentReview, currentRating) => {
+  //   setEditingReviewId(reviewId);
+  //   setEditReview(currentReview);
+  //   setEditRating(currentRating);
+  //   setEditModalVisible(true);
+  // };
 
   // Submit the edited review
-  const submitEditedReview = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/recipe/editRating/${recipeData._id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            recipeId: recipeData._id,
-            reviewId: editingReviewId,
-            newReview: editReview,
-            newRating: Number(editRating),
-          }),
-        }
-      );
+  // const submitEditedReview = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${process.env.EXPO_PUBLIC_IP}/recipe/editRating/${recipeData._id}`,
+  //       {
+  //         method: "PATCH",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           recipeId: recipeData._id,
+  //           reviewId: editingReviewId,
+  //           newReview: editReview,
+  //           newRating: Number(editRating),
+  //         }),
+  //       }
+  //     );
 
-      if (response.ok) {
-        const updatedRecipeData = await response.json();
+  //     if (response.ok) {
+  //       const updatedRecipeData = await response.json();
 
-        // Update the local state with the new recipe data
-        route.params.recipeData = updatedRecipeData;
+  //       // Update the local state with the new recipe data
+  //       route.params.recipeData = updatedRecipeData;
 
-        // Update the state for reviews with usernames
-        const reviewsWithUsernames = await Promise.all(
-          updatedRecipeData.reviewsAndRatings.map(async (review) => {
-            const username = await fetchUsernameById(review.name);
-            return { ...review, username };
-          })
-        );
+  //       // Update the state for reviews with usernames
+  //       const reviewsWithUsernames = await Promise.all(
+  //         updatedRecipeData.reviewsAndRatings.map(async (review) => {
+  //           const username = await fetchUsernameById(review.name);
+  //           return { ...review, username };
+  //         })
+  //       );
 
-        const currentUserReviews = reviewsWithUsernames
-          .filter((review) => review.name === currentUser._id)
-          .reverse();
-        const otherUserReviews = reviewsWithUsernames
-          .filter((review) => review.name !== currentUser._id)
-          .reverse();
+  //       const currentUserReviews = reviewsWithUsernames
+  //         .filter((review) => review.name === currentUser._id)
+  //         .reverse();
+  //       const otherUserReviews = reviewsWithUsernames
+  //         .filter((review) => review.name !== currentUser._id)
+  //         .reverse();
 
-        setSubmittedReviews(otherUserReviews);
-        setCurrentUserReviews(currentUserReviews);
+  //       setSubmittedReviews(otherUserReviews);
+  //       setCurrentUserReviews(currentUserReviews);
 
-        Alert.alert("Success", "Your review has been updated.");
-      } else {
-        Alert.alert("Error", "Failed to update the review.");
-      }
-    } catch (error) {
-      console.error("Error updating review:", error);
-      Alert.alert("Error", "An error occurred while updating the review.");
-    }
+  //       Alert.alert("Success", "Your review has been updated.");
+  //     } else {
+  //       Alert.alert("Error", "Failed to update the review.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating review:", error);
+  //     Alert.alert("Error", "An error occurred while updating the review.");
+  //   }
 
-    // Close the edit modal
-    setEditModalVisible(false);
-  };
+  //   // Close the edit modal
+  //   setEditModalVisible(false);
+  // };
 
-  const confirmDeleteReview = (reviewId) => {
-    Alert.alert(
-      "Delete Review",
-      "Are you sure you want to delete your review?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "OK", onPress: () => deleteReview(reviewId) },
-      ],
-      { cancelable: false }
-    );
-  };
+  // const confirmDeleteReview = (reviewId) => {
+  //   Alert.alert(
+  //     "Delete Review",
+  //     "Are you sure you want to delete your review?",
+  //     [
+  //       { text: "Cancel", style: "cancel" },
+  //       { text: "OK", onPress: () => deleteReview(reviewId) },
+  //     ],
+  //     { cancelable: false }
+  //   );
+  // };
 
-  const deleteReview = async (reviewId) => {
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/recipe/deleteRating/${recipeData._id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ reviewId }),
-        }
-      );
+  // const deleteReview = async (reviewId) => {
+  //   try {
+  //     const response = await fetch(
+  //       `${process.env.EXPO_PUBLIC_IP}/recipe/deleteRating/${recipeData._id}`,
+  //       {
+  //         method: "DELETE",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ reviewId }),
+  //       }
+  //     );
 
-      if (response.ok) {
-        // Update the reviews list
-        const updatedReviews = submittedReviews.filter(
-          (review) => review._id !== reviewId
-        );
-        setSubmittedReviews(updatedReviews);
+  //     if (response.ok) {
+  //       // Update the reviews list
+  //       const updatedReviews = submittedReviews.filter(
+  //         (review) => review._id !== reviewId
+  //       );
+  //       setSubmittedReviews(updatedReviews);
 
-        // Recalculate average rating and total ratings
-        const totalRatings = updatedReviews.length;
-        const sumRatings = updatedReviews.reduce(
-          (acc, curr) => acc + curr.ratings,
-          0
-        );
-        const averageRating = totalRatings > 0 ? sumRatings / totalRatings : 0;
+  //       // Recalculate average rating and total ratings
+  //       const totalRatings = updatedReviews.length;
+  //       const sumRatings = updatedReviews.reduce(
+  //         (acc, curr) => acc + curr.ratings,
+  //         0
+  //       );
+  //       const averageRating = totalRatings > 0 ? sumRatings / totalRatings : 0;
 
-        // Update the state
-        route.params.recipeData.averageRating = averageRating;
-        route.params.recipeData.totalRatings = totalRatings;
+  //       // Update the state
+  //       route.params.recipeData.averageRating = averageRating;
+  //       route.params.recipeData.totalRatings = totalRatings;
 
-        // Reflect these changes in your component's state
-        setCurrentUserReviews([]);
-        // Optionally call fetchReviews() if you need to update other parts of the state
+  //       // Reflect these changes in your component's state
+  //       setCurrentUserReviews([]);
+  //       // Optionally call fetchReviews() if you need to update other parts of the state
 
-        Alert.alert(
-          "Review Deleted",
-          "Your review has been successfully deleted."
-        );
-      } else {
-        Alert.alert("Error", "Failed to delete the review.");
-      }
-    } catch (error) {
-      console.error("Error deleting review:", error);
-      Alert.alert("Error", "An error occurred while deleting the review.");
-    }
-  };
+  //       Alert.alert(
+  //         "Review Deleted",
+  //         "Your review has been successfully deleted."
+  //       );
+  //     } else {
+  //       Alert.alert("Error", "Failed to delete the review.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting review:", error);
+  //     Alert.alert("Error", "An error occurred while deleting the review.");
+  //   }
+  // };
 
-  const submitReviewAndRating = async () => {
-    if (!userReview.trim() || userRating === 0) {
-      Alert.alert("Error", "Please enter both review and rating.");
-      return;
-    }
+  // const submitReviewAndRating = async () => {
+  //   if (!userReview.trim() || userRating === 0) {
+  //     Alert.alert("Error", "Please enter both review and rating.");
+  //     return;
+  //   }
 
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/recipe/ratings`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: recipeData._id,
-            name: currentUser._id,
-            reviews: userReview,
-            ratings: Number(userRating),
-          }),
-        }
-      );
+  //   try {
+  //     const response = await fetch(
+  //       `${process.env.EXPO_PUBLIC_IP}/recipe/ratings`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           id: recipeData._id,
+  //           name: currentUser._id,
+  //           reviews: userReview,
+  //           ratings: Number(userRating),
+  //         }),
+  //       }
+  //     );
 
-      if (response.ok) {
-        // Assuming you get the updated recipe data in the response
-        const updatedRecipeData = await response.json();
+  //     if (response.ok) {
+  //       // Assuming you get the updated recipe data in the response
+  //       const updatedRecipeData = await response.json();
 
-        // Update the local state with the new recipe data
-        route.params.recipeData = updatedRecipeData;
+  //       // Update the local state with the new recipe data
+  //       route.params.recipeData = updatedRecipeData;
 
-        // Update the state for reviews with usernames
-        const reviewsWithUsernames = await Promise.all(
-          updatedRecipeData.reviewsAndRatings.map(async (review) => {
-            const username = await fetchUsernameById(review.name);
-            return { ...review, username };
-          })
-        );
+  //       // Update the state for reviews with usernames
+  //       const reviewsWithUsernames = await Promise.all(
+  //         updatedRecipeData.reviewsAndRatings.map(async (review) => {
+  //           const username = await fetchUsernameById(review.name);
+  //           return { ...review, username };
+  //         })
+  //       );
 
-        const currentUserReviews = reviewsWithUsernames
-          .filter((review) => review.name === currentUser._id)
-          .reverse();
-        const otherUserReviews = reviewsWithUsernames
-          .filter((review) => review.name !== currentUser._id)
-          .reverse();
+  //       const currentUserReviews = reviewsWithUsernames
+  //         .filter((review) => review.name === currentUser._id)
+  //         .reverse();
+  //       const otherUserReviews = reviewsWithUsernames
+  //         .filter((review) => review.name !== currentUser._id)
+  //         .reverse();
 
-        setSubmittedReviews(otherUserReviews);
-        setCurrentUserReviews(currentUserReviews);
+  //       setSubmittedReviews(otherUserReviews);
+  //       setCurrentUserReviews(currentUserReviews);
 
-        // Reset form fields
-        setUserReview("");
-        setUserRating("");
+  //       // Reset form fields
+  //       setUserReview("");
+  //       setUserRating("");
 
-        Alert.alert("Success", "Your review has been submitted.");
-      } else {
-        Alert.alert("Error", "Failed to submit the review.");
-      }
-    } catch (error) {
-      console.error("Error submitting review:", error);
-      Alert.alert("Error", "An error occurred while submitting the review.");
-    }
-  };
+  //       Alert.alert("Success", "Your review has been submitted.");
+  //     } else {
+  //       Alert.alert("Error", "Failed to submit the review.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting review:", error);
+  //     Alert.alert("Error", "An error occurred while submitting the review.");
+  //   }
+  // };
 
   // Function to fetch username based on UserId
   const fetchUsernameById = async (userId) => {
@@ -425,9 +425,9 @@ export default function ViewRecipeInfoScreen({ route }) {
   };
 
   // Function to handle changes in star rating
-  const handleRatingChange = (newRating) => {
-    setUserRating(newRating);
-  };
+  // const handleRatingChange = (newRating) => {
+  //   setUserRating(newRating);
+  // };
 
   const Rating = ({ rating }) => {
     const fullStars = Math.floor(rating);
@@ -450,94 +450,94 @@ export default function ViewRecipeInfoScreen({ route }) {
   };
 
   // StarRatingInput component (centralized)
-  const StarRatingInput = ({ maxRating = 5, rating, onRatingChange }) => {
-    return (
-      <View style={{ flexDirection: "row", justifyContent: "center" }}>
-        {/* Centering the stars */}
-        {[...Array(maxRating)].map((_, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => onRatingChange(index + 1)}
-          >
-            <Icon
-              name={index < rating ? "star" : "star-outline"}
-              color="orange"
-              size={30}
-            />
-          </TouchableOpacity>
-        ))}
-      </View>
-    );
-  };
+  // const StarRatingInput = ({ maxRating = 5, rating, onRatingChange }) => {
+  //   return (
+  //     <View style={{ flexDirection: "row", justifyContent: "center" }}>
+  //       {/* Centering the stars */}
+  //       {[...Array(maxRating)].map((_, index) => (
+  //         <TouchableOpacity
+  //           key={index}
+  //           onPress={() => onRatingChange(index + 1)}
+  //         >
+  //           <Icon
+  //             name={index < rating ? "star" : "star-outline"}
+  //             color="orange"
+  //             size={30}
+  //           />
+  //         </TouchableOpacity>
+  //       ))}
+  //     </View>
+  //   );
+  // };
 
-  const handleFavoriteIcon = async () => {
-    const action = isFavorite ? "remove" : "add";
+  // const handleFavoriteIcon = async () => {
+  //   const action = isFavorite ? "remove" : "add";
 
-    try {
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_IP}/user/updateFavorites/${currentUser._id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            recipeId: recipeData._id,
-            action: action,
-          }),
-        }
-      );
+  //   try {
+  //     const response = await fetch(
+  //       `${process.env.EXPO_PUBLIC_IP}/user/updateFavorites/${currentUser._id}`,
+  //       {
+  //         method: "PATCH",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           recipeId: recipeData._id,
+  //           action: action,
+  //         }),
+  //       }
+  //     );
 
-      if (response.ok) {
-        // Update the favorite state locally
-        setIsFavorite((prev) => !prev);
+  //     if (response.ok) {
+  //       // Update the favorite state locally
+  //       setIsFavorite((prev) => !prev);
 
-        // Update the currentUser context
-        const updatedFavorites =
-          action === "add"
-            ? [...currentUser.favouriteRecipes, recipeData._id]
-            : currentUser.favouriteRecipes.filter(
-                (id) => id !== recipeData._id
-              );
-        setCurrentUser({ ...currentUser, favouriteRecipes: updatedFavorites });
+  //       // Update the currentUser context
+  //       const updatedFavorites =
+  //         action === "add"
+  //           ? [...currentUser.favouriteRecipes, recipeData._id]
+  //           : currentUser.favouriteRecipes.filter(
+  //               (id) => id !== recipeData._id
+  //             );
+  //       setCurrentUser({ ...currentUser, favouriteRecipes: updatedFavorites });
 
-        // Notify the user
-        if (action === "add") {
-          Alert.alert(
-            "Added to Favorites",
-            "This recipe has been added to your favorites."
-          );
-        } else {
-          Alert.alert(
-            "Removed from Favorites",
-            "This recipe has been removed from your favorites."
-          );
-        }
-      } else {
-        Alert.alert("Error", "Failed to update favorites.");
-      }
-    } catch (error) {
-      console.error("Error updating favorites:", error);
-      Alert.alert("Error", "An error occurred while updating the favorites.");
-    }
-  };
+  //       // Notify the user
+  //       if (action === "add") {
+  //         Alert.alert(
+  //           "Added to Favorites",
+  //           "This recipe has been added to your favorites."
+  //         );
+  //       } else {
+  //         Alert.alert(
+  //           "Removed from Favorites",
+  //           "This recipe has been removed from your favorites."
+  //         );
+  //       }
+  //     } else {
+  //       Alert.alert("Error", "Failed to update favorites.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating favorites:", error);
+  //     Alert.alert("Error", "An error occurred while updating the favorites.");
+  //   }
+  // };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const checkIfFavorite = () => {
-        const isFav = currentUser.favouriteRecipes.includes(recipeData._id);
-        setIsFavorite(isFav);
-      };
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     const checkIfFavorite = () => {
+  //       const isFav = currentUser.favouriteRecipes.includes(recipeData._id);
+  //       setIsFavorite(isFav);
+  //     };
 
-      if (currentUser && recipeData) {
-        checkIfFavorite();
-      }
+  //     if (currentUser && recipeData) {
+  //       checkIfFavorite();
+  //     }
 
-      return () => {
-        // Optional cleanup if needed
-      };
-    }, [currentUser, recipeData])
-  );
+  //     return () => {
+  //       // Optional cleanup if needed
+  //     };
+  //   }, [currentUser, recipeData])
+  // );
 
   const handleEditPress = () => {
     navigation.navigate("Edit Recipe", { recipeData });

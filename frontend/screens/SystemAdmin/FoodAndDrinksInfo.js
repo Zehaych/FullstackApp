@@ -501,6 +501,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: 'white',
         fontWeight: "bold",
+        fontSize: 16,
     },
     detailBox: {
         //flex: 1,

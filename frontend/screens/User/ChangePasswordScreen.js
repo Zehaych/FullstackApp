@@ -1,7 +1,7 @@
-import React, { useState, useContext } from "react";
-import { Context } from "../../store/context";
-import { View, TextInput, Text, TouchableOpacity, Button, ScrollView, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import React, { useContext, useState } from "react";
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Context } from "../../store/context";
 
 const ChangePasswordScreen = () => {
   const navigation = useNavigation();
@@ -70,7 +70,7 @@ const ChangePasswordScreen = () => {
     <View style={styles.container}>
           
       {/* Current Password */}
-      <View>
+      <View style={styles.detailContainer}>
         <Text style={styles.title}>Current Password</Text>
         <TextInput
           style={styles.input}
@@ -82,7 +82,7 @@ const ChangePasswordScreen = () => {
       </View>
       
       {/* New Password */}
-      <View>
+      <View style={styles.detailContainer}>
         <Text style={styles.title}>New Password</Text>
         <TextInput
           style={styles.input}
@@ -94,7 +94,7 @@ const ChangePasswordScreen = () => {
       </View>
 
       {/* Confirm New Password */}
-      <View>
+      <View style={styles.detailContainer}>
         <Text style={styles.title}>Confirm New Password</Text>
         <TextInput
           style={styles.input}
@@ -137,6 +137,9 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
   },
+  detailContainer: {
+    width: "100%",
+  },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
@@ -150,10 +153,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ED6F21',
     padding: 10,
+    width: '100%'
   },
   updatebuttonText: {
     color: "#FFF",
     fontWeight: 'bold',
+    fontSize: 16,
   }
 });
 

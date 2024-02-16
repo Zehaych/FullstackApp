@@ -83,6 +83,7 @@ exports.register = async (req, res) => {
       gender: " ",
       calorie: 0,
       dailyCaloriesLog: [],
+      foodRecognitionLog: [],
     })
       .then((user) =>
         res.status(200).json({
@@ -605,6 +606,58 @@ exports.deleteUser = asyncHandler(async (req, res) => {
 
   res.status(200).json({ message: "User deleted successfully" });
 });
+
+// Food Recognition
+exports.updateFoodRecognition = asyncHandler(async (req, res) => {
+ const userId = req.params.id;
+ const user = await User.findById(userId);
+
+ const {food, imageUrl} = req.body
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  try {
+    const foodObject = Object.entries(food).map(([key,value]) => {
+      return {
+        name: key,
+        calories: value
+      }
+    })
+
+    const foodLog = {
+      date: new Date(),
+      imageUrl,
+      food: foodObject
+    }
+   
+    if(food){
+      user.foodRecognitionLog.push(foodLog)
+  
+      await user.save();
+      res.status(200).json({ message: "Food Recognition updated successfully" });
+    } 
+} catch (error) {
+  throw new Error(`Error saving food recognition log: ${error.message}`);
+}
+})
+
+exports.getFoodRecognition = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  try {
+  res.json(user.foodRecognitionLog);
+} catch (error) {
+  throw new Error(`Error getting food recognition log: ${error.message}`);
+}
+});
+
 
 // Update Business Partner username
 exports.updateUsername = asyncHandler(async (req, res) => {

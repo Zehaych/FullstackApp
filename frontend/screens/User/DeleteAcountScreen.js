@@ -1,7 +1,7 @@
-import React, { useState, useContext } from "react";
-import { Context } from "../../store/context";
-import { View, TextInput, Text, TouchableOpacity, Button, ScrollView, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import React, { useContext, useState } from "react";
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Context } from "../../store/context";
 
 const DeleteAccountScreen = () => {
   const navigation = useNavigation();
@@ -73,7 +73,7 @@ const DeleteAccountScreen = () => {
     <View style={styles.container}>
       
       {/* Email */}
-      <View>
+      <View style={styles.detailContainer}>
         <Text style={styles.title}>Email</Text>
         <TextInput
           style={styles.input}
@@ -85,7 +85,7 @@ const DeleteAccountScreen = () => {
       </View>
 
       {/* Password */}
-      <View>
+      <View style={styles.detailContainer}>
         <Text style={styles.title}>Password</Text>
         <TextInput
           style={styles.input}
@@ -128,6 +128,9 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
   },
+  detailContainer: {
+    width: '100%'
+  },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
@@ -141,10 +144,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ED6F21',
     padding: 10,
+    width: '100%',
   },
   updatebuttonText: {
     color: "#FFF",
     fontWeight: 'bold',
+    fontSize: 16,
+    width: '100%',
+    textAlign: 'center',
   }
 });
 

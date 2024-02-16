@@ -53,7 +53,7 @@ function FavouritesUserScreen({ navigation }) {
     if (currentUser.userType === "user") {
       navigation.reset({
         index: 0,
-        routes: [{ name: "Favourites Recipes" }],
+        routes: [{ name: "Favourite Recipes" }],
       });
     } else if (currentUser.userType === "bizpartner") {
       navigation.reset({
@@ -207,7 +207,7 @@ export default function TabScreen() {
       />
 
       <Tab.Screen
-        name="Favourites Recipes" 
+        name="Favourite Recipes" 
         component={TabFavourites}
         options={{ tabBarButton: () => null }}
       />

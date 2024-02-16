@@ -66,6 +66,10 @@ const UserScreen = () => {
     navigation.push("View Added Recipe");
   };
 
+  const onViewFoodRecognitionLog = () => {
+    navigation.push("View Food Recognition Log")
+  }
+
   const onTrackProgressPressed = () => {
     navigation.push("Track Progress");
   };
@@ -85,11 +89,11 @@ const UserScreen = () => {
   };
   const onViewFavouritesPressed = () => {
     // Navigate to the "Insert Medical History" screen
-    navigation.push("View Favourites");
+    navigation.push("Favourites", { screen: "Community" });
   };
   const onViewBizFavouritesPressed = () => {
     // Navigate to the "Insert Medical History" screen
-    navigation.push("View Business Favourites");
+    navigation.push("Favourites", { screen: "Business" });
   };
 
   return (
@@ -164,6 +168,13 @@ const UserScreen = () => {
             </View>
           </TouchableRipple>
 
+          <TouchableRipple onPress={onViewFoodRecognitionLog}>
+            <View style={styles.menuItem}>
+              <Icon name="silverware-fork-knife" color="#ED6F21" size={25} />
+              <Text style={styles.menuItemText}>View Food Recognition Log</Text>
+            </View>
+          </TouchableRipple>
+
           <View style={styles.divider} />
           <Text style={styles.subTitle}>Favourite Recipe</Text>
           <TouchableRipple onPress={onViewFavouritesPressed}>
@@ -197,7 +208,8 @@ const UserScreen = () => {
               <Text style={styles.menuItemText}>View Request Status</Text>
             </View>
           </TouchableRipple>
-
+          <View style={styles.divider} />
+          <Text style={styles.subTitle}>Others</Text>
           <TouchableRipple onPress={onPastOrderspressed}>
             <View style={styles.menuItem}>
               <Icon name="clipboard-list-outline" color="#ED6F21" size={25} />

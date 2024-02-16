@@ -122,7 +122,7 @@ const CartScreen = () => {
         {/* cost & quantity */}
         <View style={styles.amountContainer}>
           <View style={styles.amount}>
-            <Text style={styles.amountText}>${item.recipePrice}</Text>
+            <Text style={styles.amountText}>{formatPrice(item.recipePrice)}</Text>
           </View>
 
           <View style={styles.quantity}>

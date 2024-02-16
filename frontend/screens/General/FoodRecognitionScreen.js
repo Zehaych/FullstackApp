@@ -1,6 +1,11 @@
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytesResumable
+} from "firebase/storage";
+import { useContext, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -12,8 +17,9 @@ import {
   View
 } from "react-native";
 import * as Progress from 'react-native-progress';
-
 import { SafeAreaView } from "react-native-safe-area-context";
+import { storage } from "../../services/firebase";
+import { Context } from "../../store/context";
 
 const PAT = "51ce8aa8d91b476b8c771030d6d0a12a";
 // Specify the correct user_id/app_id pairings
@@ -39,9 +45,44 @@ const FoodRecognitionScreen = ({ navigation }) => {
   const [classifiedResults, setClassifiedResults] = useState(null);
   const [base64, setBase64] = useState("");
 
+  const [currentUser, setCurrentUser] = useContext(Context);
+
   const handleImageUploadClick = () => {
     setIsClicked(!isClicked);
 
+  };
+
+  const uploadImage = async (uri) => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      const filename = uri.substring(uri.lastIndexOf("/") + 1);
+      const storageRef = ref(storage, `images/${filename}`);
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+
+      return new Promise((resolve, reject) => {
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            reject(error);
+          },
+          () => {
+            // Handle successful uploads on complete
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+            });
+          }
+        );
+      });
+    } catch (error) {
+      console.error("Error uploading image: ", error);
+      throw error;
+    }
   };
 
   const handleConvertImageToBase64 = async (imageUri) => {
@@ -96,7 +137,21 @@ const FoodRecognitionScreen = ({ navigation }) => {
       let formattedResult = result.substring(startIndex, endIndex + 1).trim();
       setIsLoading(false)
       setClassifiedResults(JSON.parse(formattedResult))
-      console.log(JSON.parse(formattedResult))
+
+      imageUrl = await uploadImage(image.uri);
+
+      // save to food recognition log
+      const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/updateFoodRecognition/${currentUser._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          food: JSON.parse(formattedResult),
+          imageUrl
+        }),
+      })
+
     } catch (error) {
       console.log(error)
     }
@@ -132,58 +187,59 @@ const FoodRecognitionScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar backgroundColor="white" barStyle="dark-content" />
+      {/* <StatusBar backgroundColor="white" barStyle="dark-content" />
       <View style={styles.header}>
         <Text style={styles.headerText}>Food Recognition</Text>
-      </View>
-      <ScrollView style={styles.container}>
+      </View> */}
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.body}>
+            {(
+              <TouchableOpacity onPress={handlePickImage}>
+                <Image
+                  source={image || require("../../assets/upload_food.png")}
+                  style={[{ width: imageDimensions, height: imageDimensions, borderRadius: 24 }, isClicked && styles.clickedImage]}
+                />
+              </TouchableOpacity>
+            )}
+            {image && <View style={styles.buttonGroup}>
+              <TouchableOpacity
+                style={styles.selectImageButton}
+                onPress={handleClassifyFood}
+              >
+                <Text style={styles.selectImageButtonText}>Calculate My Food!</Text>
+              </TouchableOpacity>
+            </View>}
 
+            {
+              isLoading && <Progress.Circle size={50} indeterminate={true} />
+            }
 
-        <View style={styles.body}>
-          {(
-            <TouchableOpacity onPress={handlePickImage}>
-              <Image
-                source={image || require("../../assets/upload_food.png")}
-                style={[{ width: imageDimensions, height: imageDimensions, borderRadius: 24 }, isClicked && styles.clickedImage]}
-              />
-            </TouchableOpacity>
-          )}
-          {image && <View style={styles.buttonGroup}>
-            <TouchableOpacity
-              style={styles.selectImageButton}
-              onPress={handleClassifyFood}
-            >
-              <Text style={styles.selectImageButtonText}>Calculate My Food!</Text>
-            </TouchableOpacity>
-          </View>}
-
-          {
-            isLoading && <Progress.Circle size={50} indeterminate={true} />
-          }
-
-          {classifiedResults && <View style={{ flex: 1, justifyContent: "space-between", width: "100%" }}>
-            <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
-              <View>
-                <Text style={styles.resultsHeader}>Food</Text>
-              </View>
-              <View>
-                <Text style={styles.resultsHeader} >Calories</Text>
-              </View>
-            </View>
-            {Object.keys(classifiedResults).map((resultKey, index) => {
-              return (
-                <View style={styles.classifiedResultsView} key={index}>
-                  <View>
-                    <Text style={styles.resultText}>{resultKey}</Text>
-                  </View>
-                  <View>
-                    <Text style={styles.resultText}>{classifiedResults?.[resultKey]}</Text>
-                  </View>
+            {classifiedResults && <View style={{ flex: 1, justifyContent: "space-between", width: "100%" }}>
+              <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                <View>
+                  <Text style={styles.resultsHeader}>Food</Text>
                 </View>
-              );
-            })}
-          </View>}
+                <View>
+                  <Text style={styles.resultsHeader} >Calories</Text>
+                </View>
+              </View>
+              {Object.keys(classifiedResults).map((resultKey, index) => {
+                return (
+                  <View style={styles.classifiedResultsView} key={index}>
+                    <View>
+                      <Text style={styles.resultText}>{resultKey}</Text>
+                    </View>
+                    <View>
+                      <Text style={styles.resultText}>{classifiedResults?.[resultKey]}</Text>
+                    </View>
+                  </View>
+                );
+              })}
+            </View>}
+          </View>
         </View>
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -192,33 +248,31 @@ const FoodRecognitionScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f2f2f2",
     paddingHorizontal: 24,
-    paddingTop: 24,
+    paddingVertical: 8,
+    backgroundColor: "#F2F2F2",
   },
-  header: {
-    // padding: 20,
-    maxHeight: 50,
-    borderBottomWidth: 1,
-    backgroundColor: "#FFF",
-    borderBottomColor: "#ccc",
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-  headerText: {
-    fontSize: 17,
-    fontWeight: "bold",
-  },
+  // header: {
+  //   // padding: 20,
+  //   maxHeight: 50,
+  //   borderBottomWidth: 1,
+  //   backgroundColor: "#FFF",
+  //   borderBottomColor: "#ccc",
+  //   flex: 1,
+  //   flexDirection: "row",
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   width: "100%",
+  // },
+  // headerText: {
+  //   fontSize: 17,
+  //   fontWeight: "bold",
+  // },
   body: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
     alignItems: "center",
-    borderRadius: 24,
-    padding: 12,
+    borderRadius: 20,
+    padding: 16,
     backgroundColor: "#fff",
     shadowColor: "#000",
     shadowOffset: {
@@ -228,12 +282,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    gap: 12
+    gap: 12,
   },
   buttonGroup: {
     flex: 1,
     flexDirection: "row",
-
   },
   classifiedResultsView: {
     marginTop: 12,

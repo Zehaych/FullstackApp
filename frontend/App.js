@@ -52,6 +52,7 @@ import ViewBizFavouriteRecipeInfo from "./screens/User/ViewBizFavouriteRecipeInf
 import ViewBizFavouritesScreen from "./screens/User/ViewBizFavouritesScreen";
 import ViewFavouriteRecipeInfo from "./screens/User/ViewFavouriteRecipeInfo";
 import ViewFavouritesScreen from "./screens/User/ViewFavouritesScreen";
+import ViewFoodRecognitionLog from "./screens/User/ViewFoodRecognitionLog";
 import ViewPastOrdersScreen from "./screens/User/ViewPastOrdersScreen";
 import ViewRecipeInfoScreen from "./screens/User/ViewRecipeInfoScreen";
 import ViewRecipeScreen from "./screens/User/ViewRecipeScreen";
@@ -59,6 +60,7 @@ import ViewRequest from "./screens/User/ViewRequest";
 // import FullReportMonthly from "./screens/SystemAdmin/FullReportMonthly";
 import ProgressScreen from "./screens/User/ProgressScreen";
 import UserInfoScreen from "./screens/User/UserInfoScreen";
+import TabFavourites from "./screens/User/TabFavourites";
 import { Context } from "./store/context";
 
 
@@ -156,7 +158,7 @@ function App() {
           <Stack.Screen
             name="FoodRecognitionScreen"
             component={FoodRecognitionScreen}
-            options={{ headerShown: false }}
+            options={{ headerTitle: "Food Recognition" }}
           />
           <Stack.Screen
             name="Sign up"
@@ -201,6 +203,8 @@ function App() {
             component={AddBizRecipeScreen}
           />
           <Stack.Screen name="View Added Recipe" component={ViewRecipeScreen} />
+
+          <Stack.Screen name="View Food Recognition Log" component={ViewFoodRecognitionLog} />
 
           <Stack.Screen
             name="View Favourites"
@@ -320,6 +324,11 @@ function App() {
             name="Recipes"
             component={TabRecipes}
             options={{ headerTitle: "" }}
+          />
+          <Stack.Screen
+            name="Favourites"
+            component={TabFavourites}
+            options={{ headerTitle: "Favourite Recipes" }}
           />
         </Stack.Navigator>
       </NavigationContainer>

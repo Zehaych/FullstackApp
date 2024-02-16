@@ -30,7 +30,7 @@ const HomeScreen = ({ navigation }) => {
 
   // ==================== for navigation ====================
   const navigateToCommunityRecipes = () => {
-    navigation.navigate("Community Recipes");
+    navigation.navigate("Recipes");
   };
 
   const navigateToUser = () => {
@@ -38,11 +38,11 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const navigateToOnlineRecipes = () => {
-    navigation.navigate("Online Recipes");
+    navigation.navigate("Recipes", { screen: "Online" });
   };
 
   const navigateToBusinessRecipes = () => {
-    navigation.navigate("Business Recipes");
+    navigation.navigate("Recipes", { screen: "Business" });
   };
 
   const navigateToFoodRecognitionScreen = () => {
@@ -294,16 +294,18 @@ const HomeScreen = ({ navigation }) => {
   if (currentUser.userType === "user") {
     return (
       <SafeAreaView style={styles.androidSafeArea}>
+        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
+          <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
+            <View style={styles.menuItem}>
+              <Icon name="scan-helper" color="#FF6347" size={25} />
+            </View>
+          </TouchableRipple>
+        </View>
+
         <ScrollView style={styles.container}>
-          <StatusBar backgroundColor="white" barStyle="dark-content" />
-          <View style={styles.header}>
-            <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
-            <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
-              <View style={styles.menuItem}>
-                <Icon name="scan-helper" color="#FF6347" size={25} />
-              </View>
-            </TouchableRipple>
-          </View>
           <ImageBackground
             backgroundColor="#F2F2F2"
           >
@@ -323,22 +325,27 @@ const HomeScreen = ({ navigation }) => {
                           </Text>
                         </View>
 
-                        <View style={styles.flexRowComponent}>
+                        <View style={styles.dailyIntakeFlexRowComponent}>
                           <View style={styles.leftComponent}>
-                            <Text style={[styles.normalText]}
-                            >Calorie Consumed</Text>
-                            <Text
-                              style={[styles.normalText, styles.orangeText]}
-                            >
-                              {Math.round(latestTotalCalories)} cal
-                            </Text>
-                            <Text style={[styles.normalText]}
-                            >Recommended Intake</Text>
-                            <Text
-                              style={[styles.normalText, styles.orangeText]}
-                            >
-                              {Math.round(latestUserData.calorie)} cal
-                            </Text>
+                            <View>
+                              <Text style={[styles.normalText]}>
+                                Calorie Consumed
+                              </Text>
+                              <Text style={[styles.normalText, styles.orangeText]}>
+                                {Math.round(latestTotalCalories)} cal
+                              </Text>
+                            </View>
+                            
+                            <View>
+                              <Text style={[styles.normalText]}>
+                                Recommended Intake
+                              </Text>
+                              <Text style={[styles.normalText, styles.orangeText]}>
+                                {Math.round(latestUserData.calorie)} cal
+                              </Text>
+                            </View>
+
+
                           </View>
                           <View style={styles.rightComponent}>
                             <AnimatedCircularProgress
@@ -433,8 +440,9 @@ const HomeScreen = ({ navigation }) => {
             {/* Recommended Recipe Section */}
             <Text style={styles.sectionHeader}>Top Picks Of The Day</Text>
             <ScrollView horizontal={true}>
-              {recommendedRecipes.meals &&
-                recommendedRecipes.meals.length >= 0 && (
+              <View style={styles.flexRowComponent}>
+                {recommendedRecipes.meals &&
+                  recommendedRecipes.meals.length >= 0 && (
                   <TouchableOpacity
                     key={recommendedRecipes.meals[0].id}
                     style={styles.recipeContainerHorizontal}
@@ -456,8 +464,8 @@ const HomeScreen = ({ navigation }) => {
                   </TouchableOpacity>
                 )}
 
-              {recommendedRecipes.meals &&
-                recommendedRecipes.meals.length > 0 && (
+                {recommendedRecipes.meals &&
+                  recommendedRecipes.meals.length > 0 && (
                   <TouchableOpacity
                     key={recommendedRecipes.meals[1].id}
                     style={styles.recipeContainerHorizontal}
@@ -479,8 +487,8 @@ const HomeScreen = ({ navigation }) => {
                   </TouchableOpacity>
                 )}
 
-              {recommendedRecipes.meals &&
-                recommendedRecipes.meals.length > 0 && (
+                {recommendedRecipes.meals &&
+                  recommendedRecipes.meals.length > 0 && (
                   <TouchableOpacity
                     key={recommendedRecipes.meals[2].id}
                     style={styles.recipeContainerHorizontal}
@@ -490,71 +498,74 @@ const HomeScreen = ({ navigation }) => {
                       )
                     }
                   >
-                    <Image
-                      source={{
-                        uri: `https://spoonacular.com/recipeImages/${recommendedRecipes.meals[2].id}-312x231.${recommendedRecipes.meals[2].imageType}`,
-                      }}
-                      style={styles.imageHorizontal}
-                    />
-                    <Text style={styles.communityRecipeTitle}>
-                      {recommendedRecipes.meals[2].title}
-                    </Text>
+                      <Image
+                        source={{
+                          uri: `https://spoonacular.com/recipeImages/${recommendedRecipes.meals[2].id}-312x231.${recommendedRecipes.meals[2].imageType}`,
+                        }}
+                        style={styles.imageHorizontal}
+                      />
+                      <Text style={styles.communityRecipeTitle}>
+                        {recommendedRecipes.meals[2].title}
+                      </Text>
                   </TouchableOpacity>
                 )}
+              </View>
             </ScrollView>
 
             {/* Online Recipe Section */}
             <Text style={styles.sectionHeader} onPress={navigateToOnlineRecipes}
             >Online Recipes</Text>
             <ScrollView horizontal={true}>
-              {randomRecipes[0] && (
-                <TouchableOpacity
-                  style={styles.recipeContainerHorizontal}
-                  onPress={() =>
-                    navigateToOnlineRecipesInfo(randomRecipes[0].id)
-                  }
-                >
-                  <Image
-                    source={{ uri: randomRecipes[0].image }}
-                    style={styles.imageHorizontal}
-                  />
-                  <Text style={styles.communityRecipeTitle}>
-                    {randomRecipes[0].title}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              {randomRecipes[1] && (
-                <TouchableOpacity
-                  style={styles.recipeContainerHorizontal}
-                  onPress={() =>
-                    navigateToOnlineRecipesInfo(randomRecipes[1].id)
-                  }
-                >
-                  <Image
-                    source={{ uri: randomRecipes[1].image }}
-                    style={styles.imageHorizontal}
-                  />
-                  <Text style={styles.communityRecipeTitle}>
-                    {randomRecipes[1].title}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              {randomRecipes[2] && (
-                <TouchableOpacity
-                  style={styles.recipeContainerHorizontal}
-                  onPress={() =>
-                    navigateToOnlineRecipesInfo(randomRecipes[2].id)
-                  }
-                >
-                  <Image
-                    source={{ uri: randomRecipes[2].image }}
-                    style={styles.imageHorizontal}
-                  />
-                  <Text style={styles.communityRecipeTitle}>
-                    {randomRecipes[2].title}
-                  </Text>
-                </TouchableOpacity>
-              )}
+              <View style={styles.flexRowComponent}>
+                {randomRecipes[0] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainerHorizontal}
+                    onPress={() =>
+                      navigateToOnlineRecipesInfo(randomRecipes[0].id)
+                    }
+                  >
+                    <Image
+                      source={{ uri: randomRecipes[0].image }}
+                      style={styles.imageHorizontal}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {randomRecipes[0].title}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {randomRecipes[1] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainerHorizontal}
+                    onPress={() =>
+                      navigateToOnlineRecipesInfo(randomRecipes[1].id)
+                    }
+                  >
+                    <Image
+                      source={{ uri: randomRecipes[1].image }}
+                      style={styles.imageHorizontal}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {randomRecipes[1].title}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {randomRecipes[2] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainerHorizontal}
+                    onPress={() =>
+                      navigateToOnlineRecipesInfo(randomRecipes[2].id)
+                    }
+                  >
+                    <Image
+                      source={{ uri: randomRecipes[2].image }}
+                      style={styles.imageHorizontal}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {randomRecipes[2].title}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </ScrollView>
 
             {/* <TouchableOpacity
@@ -706,16 +717,18 @@ const HomeScreen = ({ navigation }) => {
   } else if (currentUser.userType === "bizpartner") {
     return (
       <SafeAreaView style={styles.androidSafeArea}>
+        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
+          <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
+            <View style={styles.menuItem}>
+              <Icon name="scan-helper" color="#FF6347" size={25} />
+            </View>
+          </TouchableRipple>
+        </View>
+
         <ScrollView style={styles.container}>
-          <StatusBar backgroundColor="white" barStyle="dark-content" />
-          <View style={styles.header}>
-            <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
-            <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
-              <View style={styles.menuItem}>
-                <Icon name="scan-helper" color="#FF6347" size={25} />
-              </View>
-            </TouchableRipple>
-          </View>
           <ImageBackground
             backgroundColor="#F2F2F2"
           >
@@ -767,54 +780,56 @@ const HomeScreen = ({ navigation }) => {
             <Text style={styles.sectionHeader} onPress={navigateToOnlineRecipes}
             >Online Recipes</Text>
             <ScrollView horizontal={true}>
-              {randomRecipes[0] && (
-                <TouchableOpacity
-                  style={styles.recipeContainerHorizontal}
-                  onPress={() =>
-                    navigateToOnlineRecipesInfo(randomRecipes[0].id)
-                  }
-                >
-                  <Image
-                    source={{ uri: randomRecipes[0].image }}
-                    style={styles.imageHorizontal}
-                  />
-                  <Text style={styles.communityRecipeTitle}>
-                    {randomRecipes[0].title}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              {randomRecipes[1] && (
-                <TouchableOpacity
-                  style={styles.recipeContainerHorizontal}
-                  onPress={() =>
-                    navigateToOnlineRecipesInfo(randomRecipes[1].id)
-                  }
-                >
-                  <Image
-                    source={{ uri: randomRecipes[1].image }}
-                    style={styles.imageHorizontal}
-                  />
-                  <Text numberOfLines={2} ellipsizeMode="tail" style={styles.communityRecipeTitle}>
-                    {randomRecipes[1].title}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              {randomRecipes[2] && (
-                <TouchableOpacity
-                  style={styles.recipeContainerHorizontal}
-                  onPress={() =>
-                    navigateToOnlineRecipesInfo(randomRecipes[2].id)
-                  }
-                >
-                  <Image
-                    source={{ uri: randomRecipes[2].image }}
-                    style={styles.imageHorizontal}
-                  />
-                  <Text style={styles.communityRecipeTitle}>
-                    {randomRecipes[2].title}
-                  </Text>
-                </TouchableOpacity>
-              )}
+              <View style={styles.flexRowComponent}>
+                {randomRecipes[0] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainerHorizontal}
+                    onPress={() =>
+                      navigateToOnlineRecipesInfo(randomRecipes[0].id)
+                    }
+                  >
+                    <Image
+                      source={{ uri: randomRecipes[0].image }}
+                      style={styles.imageHorizontal}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {randomRecipes[0].title}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {randomRecipes[1] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainerHorizontal}
+                    onPress={() =>
+                      navigateToOnlineRecipesInfo(randomRecipes[1].id)
+                    }
+                  >
+                    <Image
+                      source={{ uri: randomRecipes[1].image }}
+                      style={styles.imageHorizontal}
+                    />
+                    <Text numberOfLines={2} ellipsizeMode="tail" style={styles.communityRecipeTitle}>
+                      {randomRecipes[1].title}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {randomRecipes[2] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainerHorizontal}
+                    onPress={() =>
+                      navigateToOnlineRecipesInfo(randomRecipes[2].id)
+                    }
+                  >
+                    <Image
+                      source={{ uri: randomRecipes[2].image }}
+                      style={styles.imageHorizontal}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {randomRecipes[2].title}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </ScrollView>
 
             {/* <TouchableOpacity
@@ -966,16 +981,18 @@ const HomeScreen = ({ navigation }) => {
   } else {
     return (
       <SafeAreaView style={styles.androidSafeArea}>
+        <StatusBar backgroundColor="white" barStyle="dark-content" />
+        
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
+          <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
+            <View style={styles.menuItem}>
+              <Icon name="scan-helper" color="#FF6347" size={25} />
+            </View>
+          </TouchableRipple>
+        </View>
+        
         <ScrollView style={styles.container}>
-          <StatusBar backgroundColor="white" barStyle="dark-content" />
-          <View style={styles.header}>
-            <Text style={styles.headerText}>Welcome, {currentUser.username}!</Text>
-            <TouchableRipple onPress={navigateToFoodRecognitionScreen}>
-              <View style={styles.menuItem}>
-                <Icon name="scan-helper" color="#FF6347" size={25} />
-              </View>
-            </TouchableRipple>
-          </View>
           <ImageBackground
             backgroundColor="#F2F2F2"
           >
@@ -1027,54 +1044,56 @@ const HomeScreen = ({ navigation }) => {
             <Text style={styles.sectionHeader} onPress={navigateToOnlineRecipes}
             >Online Recipes</Text>
             <ScrollView horizontal={true}>
-              {randomRecipes[0] && (
-                <TouchableOpacity
-                  style={styles.recipeContainerHorizontal}
-                  onPress={() =>
-                    navigateToOnlineRecipesInfo(randomRecipes[0].id)
-                  }
-                >
-                  <Image
-                    source={{ uri: randomRecipes[0].image }}
-                    style={styles.imageHorizontal}
-                  />
-                  <Text style={styles.communityRecipeTitle}>
-                    {randomRecipes[0].title}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              {randomRecipes[1] && (
-                <TouchableOpacity
-                  style={styles.recipeContainerHorizontal}
-                  onPress={() =>
-                    navigateToOnlineRecipesInfo(randomRecipes[1].id)
-                  }
-                >
-                  <Image
-                    source={{ uri: randomRecipes[1].image }}
-                    style={styles.imageHorizontal}
-                  />
-                  <Text numberOfLines={2} ellipsizeMode="tail" style={styles.communityRecipeTitle}>
-                    {randomRecipes[1].title}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              {randomRecipes[2] && (
-                <TouchableOpacity
-                  style={styles.recipeContainerHorizontal}
-                  onPress={() =>
-                    navigateToOnlineRecipesInfo(randomRecipes[2].id)
-                  }
-                >
-                  <Image
-                    source={{ uri: randomRecipes[2].image }}
-                    style={styles.imageHorizontal}
-                  />
-                  <Text style={styles.communityRecipeTitle}>
-                    {randomRecipes[2].title}
-                  </Text>
-                </TouchableOpacity>
-              )}
+              <View style={styles.flexRowComponent}>
+                {randomRecipes[0] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainerHorizontal}
+                    onPress={() =>
+                      navigateToOnlineRecipesInfo(randomRecipes[0].id)
+                    }
+                  >
+                    <Image
+                      source={{ uri: randomRecipes[0].image }}
+                      style={styles.imageHorizontal}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {randomRecipes[0].title}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {randomRecipes[1] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainerHorizontal}
+                    onPress={() =>
+                      navigateToOnlineRecipesInfo(randomRecipes[1].id)
+                    }
+                  >
+                    <Image
+                      source={{ uri: randomRecipes[1].image }}
+                      style={styles.imageHorizontal}
+                    />
+                    <Text numberOfLines={2} ellipsizeMode="tail" style={styles.communityRecipeTitle}>
+                      {randomRecipes[1].title}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {randomRecipes[2] && (
+                  <TouchableOpacity
+                    style={styles.recipeContainerHorizontal}
+                    onPress={() =>
+                      navigateToOnlineRecipesInfo(randomRecipes[2].id)
+                    }
+                  >
+                    <Image
+                      source={{ uri: randomRecipes[2].image }}
+                      style={styles.imageHorizontal}
+                    />
+                    <Text style={styles.communityRecipeTitle}>
+                      {randomRecipes[2].title}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </ScrollView>
 
             {/* <TouchableOpacity
@@ -1239,10 +1258,11 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
-    flex: 1,
+    // flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    backgroundColor:"white"
   },
   headerText: {
     fontSize: 20,
@@ -1262,10 +1282,11 @@ const styles = StyleSheet.create({
   subTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#FF9130"
+    color: "#FF9130",
+    marginBottom: 5,
   },
   normalText: {
-    fontSize: 14,
+    fontSize: 16,
     margin: 1,
     // textAlign: "center",
   },
@@ -1294,8 +1315,10 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   introSection: {
-    padding: 12,
-    borderBottomColor: "#ccc",
+    padding: 16,
+  },
+  introSection2: {
+    paddingHorizontal: 16,
   },
   introHeader: {
     fontSize: 20,
@@ -1326,7 +1349,8 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: 20,
     fontWeight: "bold",
-    margin: 10,
+    marginHorizontal: 16,
+    marginVertical: 10,
     color: "#FF9130"
   },
   recommandText: {
@@ -1348,10 +1372,12 @@ const styles = StyleSheet.create({
     //flexDirection: "column",
     alignItems: "center",
     borderRadius: 20,
-    margin: 10,
+    // marginHorizontal: 16,
+    // marginVertical: 10,
     padding: 10,
     //gap: 8,
     width: 180,
+    height: "100%",
     backgroundColor: "#FFFFFF",
     shadowColor: "#000",
     shadowOffset: {
@@ -1377,7 +1403,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ED6F21",
     padding: 10,
     borderRadius: 10,
-    marginHorizontal: 10,
+    marginHorizontal: 16,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -1425,32 +1451,43 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     flexDirection: "row",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    gap: 8,
   },
-  flexColumnComponent: {
+  dailyIntakeFlexRowComponent: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    flexDirection: "column",
+    flexDirection: "row",
+  },
+  flexColumnComponent: {
+    // display: "flex",
+    // justifyContent: "space-between",
+    // alignItems: "center",
+    // width: "100%",
+    // flexDirection: "column",
   },
   leftComponent: {
     flex: 1, // Takes up 1/3 of the available space
+    gap: 8,
   },
   middleComponent: {
     flex: 1, // Takes up 1/3 of the available space
     alignItems: "center"
   },
   rightComponent: {
-    flex: 1, // Takes up 1/3 of the available space
-    alignItems: "center"
+    // flex: 1, // Takes up 1/3 of the available space
+    // alignItems: "center"
   },
   componentContainer2: {
     flexDirection: "row", 
     justifyContent: "space-between", 
     alignItems: "center", 
-    paddingTop: 5,
-    paddingBottom: 5,
-    //margin: 5,
+    // paddingTop: 5,
+    // paddingBottom: 5,
+    gap: 5,
   },
   iconContainer: {
     flex: 1,
@@ -1459,7 +1496,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     marginTop: 5,
-    marginHorizontal: 5,
+    // marginHorizontal: 5,
     shadowColor: "#000000",
     shadowOffset: {
       width: 0,

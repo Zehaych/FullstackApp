@@ -651,9 +651,9 @@ const ProgressScreen = () => {
             </View>
             {/* reset and submit button */}
             <View style={styles.componentRow}>
-              <View style={styles.leftComponent}>              
-                <TouchableOpacity 
-                  onPress={() => handleReset()} 
+              <View style={styles.leftComponent}>
+                <TouchableOpacity
+                  onPress={() => handleReset()}
                   style={styles.resetButton}
                 >
                   <Text style={styles.buttonText}>Reset</Text>
@@ -686,22 +686,22 @@ export default ProgressScreen;
 const styles = StyleSheet.create({
   //containers
   scrollContainer: {
-    //flex: 1,
     backgroundColor: "#F2F2F2",
   },
   container: {
-    flex: 1,
     backgroundColor: "#F2F2F2",
     //alignItems: "center",
-    padding: 5,
+    // padding: 20,
     //marginHorizontal: 5,
+    flex: 1,
+    margin: 20,
   },
-  dropdown: {
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#ED6F21",
-    borderRadius: 16,
-  },
+  // dropdown: {
+  //   width: "100%",
+  //   borderWidth: 1,
+  //   borderColor: "#ED6F21",
+  //   borderRadius: 16,
+  // },
   searchInput: {
     height: 50,
     width: "100%",
@@ -718,13 +718,13 @@ const styles = StyleSheet.create({
   //search result
   searchList: {
     width: 385,
-    padding: 10,
+    // padding: 10,
     margin: 5,
   },
   //text
   mealDetails: {
-    fontSize: 15,
-    textAlign: "center",
+    fontSize: 16,
+    textAlign: "right",
   },
   subTitle: {
     fontSize: 20,
@@ -734,7 +734,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   smallHeadings: {
-    fontSize: 14,
+    fontSize: 16,
     textAlign: "center",
   },
   smallText: {
@@ -742,11 +742,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
+  emptyMealRecipe: {
+    fontSize: 16,
+  },
   buttonText: {
-    color: "#FFF"
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   boldText: {
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   //recommended recipe
   recommendedRecipesContainer: {
@@ -766,30 +771,22 @@ const styles = StyleSheet.create({
   //component
   componentContainer: {
     flex: 1,
-    //flexDirection: "row", // Arrange components horizontally from left to right
-    //justifyContent: "space-between", // Space them evenly
-    //alignItems: "center", // Center them vertically
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingHorizontal: 20,
-    margin: 5,
+    backgroundColor: "#FFFFFF",
     borderRadius: 20,
-    backgroundColor: "#FFF",
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
   },
-  // componentContainer2: {
-  //   display: "flex",
-  //   width: "90%",
-  //   padding: 16,
-  //   flexDirection: "column",
-  //   alignItems: "left",
-  //   backgroundColor: "#FFF",
-  //   borderRadius: 16,
-  //   gap: 8,
-  //   margin: 8,
-  // },
   componentRow:{
     flexDirection: "row",
-    alignItems: "center",
+    // alignItems: "center",
     justifyContent: "space-between",
     marginVertical: 10,
   },
@@ -798,9 +795,9 @@ const styles = StyleSheet.create({
     //alignContent: "flex-start",
     alignItems: "flex-start",
   },
-  middleComponent: {
-    flex: 1, // Takes up 1/3 of the available space
-  },
+  // middleComponent: {
+  //   flex: 1, // Takes up 1/3 of the available space
+  // },
   rightComponent: {
     flex: 1, // Takes up 1/3 of the available space
     //alignContent: "flex-end",
@@ -837,7 +834,7 @@ const styles = StyleSheet.create({
   },
   resetButton: {
     backgroundColor: "#A9A9A9",
-    marginVertical: 5,
+    // marginVertical: 5,
     padding: 10,
     borderRadius: 10,
     width: "95%",
@@ -846,7 +843,7 @@ const styles = StyleSheet.create({
   submitButton2: {
     backgroundColor: "#ED6F21",
     padding: 10,
-    marginVertical: 5,
+    // marginVertical: 5,
     borderRadius: 10,
     width: "95%",
     alignItems: "center",
@@ -867,7 +864,7 @@ const styles = StyleSheet.create({
           selectedValue={selectedDropdownValue}
           onValueChange={(itemValue, itemIndex) => setSelectedDropdownValue(itemValue)}
           style={styles.dropdown}
-        > 
+        >
 
         <TouchableOpacity style={styles.addButton} onPress={() => handleAddRecipe()}>
           <Icon name="plus" size={20} color="white" />

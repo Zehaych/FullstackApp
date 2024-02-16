@@ -116,48 +116,51 @@ const SummaryWeeklyScreen = ({ route }) => {
     const weeklyDataSorted = [...weeklyData].sort((a, b) => b.week - a.week);
 
     return (
-        <ScrollView style={styles.chartContainer}>
+        <ScrollView>
             <View style={styles.introSection}>
                 <View style={styles.componentContainer}>
                     <Text style={styles.subTitle}>Weekly Intake</Text>
                     <ScrollView horizontal={true}>
-                    <BarChart
-                        data={chartData}
-                        width={Dimensions.get("window").width - 16}
-                        height={220}
-                        yAxisSuffix="cal"
-                        chartConfig={chartConfig}
-                        verticalLabelRotation={0}
-                    />
+                        <BarChart
+                            data={chartData}
+                            width={Dimensions.get("window").width - 16}
+                            height={220}
+                            yAxisSuffix="cal"
+                            chartConfig={chartConfig}
+                            verticalLabelRotation={0}
+                        />
                     </ScrollView>
                 </View>
+
                 <View style={styles.componentContainer}>
                     <Text style={styles.subTitle}>Total Calories Intake </Text>
-                    {weeklyDataSorted.map((week) => (
-                        <View key={week.week}>
-                            <Text style={[styles.normalText, styles.bold]}> Week {week.week}</Text>
-                            <View style={styles.flexColumnComponent}>
-                                <Progress.Bar
-                                    progress={week.totalCalories / roundTargetCalories} // Progress based on the ratio
-                                    width={330}
-                                    height={15}
-                                    color="#FF9130"
-                                    unfilledColor="#FFEBCC"
-                                    borderWidth={0}
-                                />
-                                <View style={styles.flexRowComponent}>
-                                    <Text style={[styles.normalText]}>
-                                        {Math.round(week.totalCalories)} / {roundTargetCalories} cal consumed
-                                    </Text>
-                                    <Text style={[styles.normalText]}>
-                                        {week.totalCalories > roundTargetCalories
-                                            ? `${Math.round(week.totalCalories - roundTargetCalories)} cal more`
-                                            : `${Math.round(roundTargetCalories - week.totalCalories)} cal less`}
-                                    </Text>
+                    <View style={styles.progresslist}>
+                        {weeklyDataSorted.map((week) => (
+                            <View key={week.week}>
+                                <Text style={[styles.normalText, styles.bold]}>Week {week.week}</Text>
+                                <View style={styles.flexColumnComponent}>
+                                    <Progress.Bar
+                                        progress={week.totalCalories / roundTargetCalories} // Progress based on the ratio
+                                        width={null}
+                                        height={15}
+                                        color="#FF9130"
+                                        unfilledColor="#FFEBCC"
+                                        borderWidth={0}
+                                    />
+                                    <View style={styles.flexRowComponent}>
+                                        <Text style={[styles.normalText]}>
+                                            {Math.round(week.totalCalories)} / {roundTargetCalories} cal consumed
+                                        </Text>
+                                        <Text style={[styles.normalText]}>
+                                            {week.totalCalories > roundTargetCalories
+                                                ? `${Math.round(week.totalCalories - roundTargetCalories)} cal more`
+                                                : `${Math.round(roundTargetCalories - week.totalCalories)} cal less`}
+                                        </Text>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
-                    ))}
+                        ))}
+                    </View>
                 </View>
             </View>
         </ScrollView>
@@ -196,27 +199,13 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: "100%",
         flexDirection: "row",
-        marginBottom: 10
     },
     flexColumnComponent: {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "left",
-        width: "100%",
         flexDirection: "column",
-        margin: 4,
-        marginBottom: 10
-    },
-    leftComponent: {
-        flex: 1, // Takes up 1/3 of the available space
-    },
-    middleComponent: {
-        flex: 1, // Takes up 1/3 of the available space
-        alignItems: "center"
-    },
-    rightComponent: {
-        flex: 1, // Takes up 1/3 of the available space
-        alignItems: "center"
+        marginVertical: 4,
     },
     //text
     subTitle: {
@@ -227,14 +216,15 @@ const styles = StyleSheet.create({
     },
     normalText: {
         fontSize: 14,
-        margin: 1,
-        // textAlign: "center",
     },
     orangeText: {
         color: "#FF9130"
     },
     bold: {
         fontWeight: "bold"
+    },
+    progresslist: {
+        gap: 16
     },
 });
 
