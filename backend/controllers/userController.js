@@ -83,6 +83,7 @@ exports.register = async (req, res) => {
       gender: " ",
       calorie: 0,
       dailyCaloriesLog: [],
+      foodRecognitionLog: [],
     })
       .then((user) =>
         res.status(200).json({
@@ -606,6 +607,58 @@ exports.deleteUser = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "User deleted successfully" });
 });
 
+// Food Recognition
+exports.updateFoodRecognition = asyncHandler(async (req, res) => {
+ const userId = req.params.id;
+ const user = await User.findById(userId);
+
+ const {food, imageUrl} = req.body
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  try {
+    const foodObject = Object.entries(food).map(([key,value]) => {
+      return {
+        name: key,
+        calories: value
+      }
+    })
+
+    const foodLog = {
+      date: new Date(),
+      imageUrl,
+      food: foodObject
+    }
+   
+    if(food){
+      user.foodRecognitionLog.push(foodLog)
+  
+      await user.save();
+      res.status(200).json({ message: "Food Recognition updated successfully" });
+    } 
+} catch (error) {
+  throw new Error(`Error saving food recognition log: ${error.message}`);
+}
+})
+
+exports.getFoodRecognition = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  try {
+  res.json(user.foodRecognitionLog);
+} catch (error) {
+  throw new Error(`Error getting food recognition log: ${error.message}`);
+}
+});
+
+
 // Update Business Partner username
 exports.updateUsername = asyncHandler(async (req, res) => {
   const userId = req.params.id;
@@ -672,6 +725,118 @@ exports.updateBizFavorites = asyncHandler(async (req, res) => {
   await user.save();
   res.status(200).json({ message: "Favorites updated successfully" });
 });
+
+exports.getUserCart = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user.cart);
+
+  } catch (error) {
+    throw new Error(`Error getting user cart: ${error.message}`);
+  }
+});
+
+
+
+
+
+exports.updateBizCart = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const { recipeId, recipeName, recipePrice, action, quantity, preferences } = req.body;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  if (action === "add") {
+    if (user.cart.length === 0)
+    {
+      user.cart.push({
+        recipeId: recipeId,
+        recipeName: recipeName,
+        recipePrice: recipePrice,
+        quantity: quantity, // Set initial quantity to provided value or 1
+        preferences: preferences || "", // Use provided preferences or an empty string
+      })
+    } 
+    else 
+    {
+      const existingCartItemIndex = user.cart.findIndex(item => item.recipeId && item.recipeId.toString() === recipeId)
+    
+      if (existingCartItemIndex !== -1) 
+      {
+        // If the recipe is already in the cart, update quantity and preferences
+        user.cart[existingCartItemIndex].quantity += quantity // Add the provided quantity to the existing quantity
+        user.cart[existingCartItemIndex].preferences = preferences || "" // Use provided preferences or an empty string
+        
+      }
+      else 
+      {
+        user.cart.push({
+          recipeId: recipeId,
+          recipeName: recipeName,
+          recipePrice: recipePrice,
+          quantity: quantity, // Set initial quantity to provided value or 1
+          preferences: preferences || "", // Use provided preferences or an empty string
+        })
+      }
+    }
+    // console.log(user.cart)
+
+  } else if (action === "remove") {
+
+    if (user.cart.length != 0)
+    {
+      const existingCartItemIndex = user.cart.findIndex(item => item.recipeName === recipeName)
+
+      if (existingCartItemIndex !== -1) 
+      {
+        // Remove the recipe from cart using splice
+        user.cart.splice(existingCartItemIndex, 1);
+      }
+    }
+    
+      // user.cart = user.cart.filter(item => item.recipeId.toString() !== recipeId);
+    
+  }
+
+  await user.save();
+  res.status(200).json({ message: "Cart updated successfully", cart: user.cart });
+});
+
+exports.clearBizCart = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+
+  try{
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.cart = []
+
+    await user.save();
+    res.status(200).json({ message: "Cart cleared successfully", cart: user.cart });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error clearing the cart",
+      error: error.message,
+    });
+  }
+});
+
+
+
 // exports.postCalories = async (req, res) => {
 //   const {id} = req.params;
 //   const {total_calories } = req.body;

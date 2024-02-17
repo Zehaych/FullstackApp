@@ -1,19 +1,23 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
 import UserScreen from "../User/UserScreen";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import HomeScreen from "./HomeScreen";
-import OnlineRecipeScreen from "./OnlineRecipeScreen";
-import MembersRecipeScreen from "./MembersRecipeScreen";
 import BizPartnerScreen from "../BizPartner/BizPartnerScreen";
 import AdminScreen from "../SystemAdmin/AdminScreen";
-import ProgressScreen from "../User/ProgressScreen";
+import TabRecipes from "./TabRecipes";
+import TabFavourites from "../User/TabFavourites";
+import ViewOrdersScreen from "../BizPartner/ViewOrdersScreen";
+import FoodRequestedTabs from "../SystemAdmin/FoodRequestedTabs";
+
+import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import BusinessRecipeScreen from "./BusinessRecipeScreen";
 import { Context } from "../../store/context";
 import { useContext } from "react";
 import { useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/Feather";
 
 const Tab = createBottomTabNavigator();
 
@@ -42,8 +46,34 @@ function ConditionalUserScreen({ navigation }) {
   return null;
 }
 
+function FavouritesUserScreen({ navigation }) {
+  const [currentUser, setCurrentUser] = useContext(Context);
+
+  useEffect(() => {
+    if (currentUser.userType === "user") {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Favourite Recipes" }],
+      });
+    } else if (currentUser.userType === "bizpartner") {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Customer Orders" }],
+      });
+    } else if (currentUser.userType === "admin") {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Food Request" }],
+      });
+    }
+  }, [currentUser]);
+
+  return null;
+}
+
 export default function TabScreen() {
   const [currentUser, setCurrentUser] = useContext(Context);
+  const navigation = useNavigation();
 
   const getTabLabel = () => {
     switch (currentUser.userType) {
@@ -58,20 +88,33 @@ export default function TabScreen() {
     }
   };
 
+  const getTabLabelToo = () => {
+    switch (currentUser.userType) {
+      case "user":
+        return "Favourites";
+      case "bizpartner":
+        return "Orders";
+      case "admin":
+        return "Requests";
+      default:
+        return "Favourites";
+    }
+  }
+
+  const navigateToCart = () => {
+    navigation.navigate("Cart");
+  };
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, size }) => {
           let iconName;
-          let iconColor = focused ? "goldenrod" : "black"; // Set the color to golden for focused icons
+          let iconColor = focused ? "#ED6F21" : "#000000"; // Set the color to golden for focused icons
 
           if (route.name === "Home") {
-            iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Online Recipes") {
-            iconName = focused ? "restaurant" : "restaurant-outline";
-          } else if (route.name === "Community Recipes") {
-            iconName = focused ? "account-group" : "account-group-outline";
+            iconName = focused ? "home" : "home-outline", size = 30;
             return (
               <MaterialCommunityIcons
                 name={iconName}
@@ -79,8 +122,26 @@ export default function TabScreen() {
                 color={iconColor}
               />
             );
-          } else if (route.name === "Business Recipes") {
-            iconName = focused ? "chef-hat" : "chef-hat";
+          } else if (route.name === "Discover Recipes") {
+            iconName = focused ? "restaurant" : "restaurant-outline", size = 25;
+            return (
+              <Ionicons
+                name={iconName}
+                size={size}
+                color={iconColor}
+              />
+            );
+          } else if (route.name === "Recipes Stuff" && currentUser.userType === "user") {
+            iconName = focused ? "heart" : "heart-outline", size = 30;
+            return (
+              <MaterialCommunityIcons
+                name={iconName}
+                size={size}
+                color={iconColor}
+              />
+            );           
+          } else if (route.name === "Recipes Stuff" && currentUser.userType === "bizpartner") {
+            iconName = focused ? "clipboard-list" : "clipboard-list-outline", size = 30;
             return (
               <MaterialCommunityIcons
                 name={iconName}
@@ -88,15 +149,25 @@ export default function TabScreen() {
                 color={iconColor}
               />
             );
+          } else if (route.name === "Recipes Stuff" && currentUser.userType === "admin") {
+            iconName = focused ? "food" : "food-outline", size = 30;
+            return (
+              <MaterialCommunityIcons
+                name={iconName}
+                size={size}
+                color={iconColor}
+              />
+            );
+          } else if (route.name === "User") {
+            iconName = focused ? "person" : "person-outline", size = 25;
+            return (
+              <Ionicons 
+                name={iconName} 
+                size={size} 
+                color={iconColor} 
+              />            
+            );
           }
-          // else if (route.name === "Track Progress") {
-          //   iconName = focused ? "bar-chart" : "bar-chart-outline";
-          // }
-          else if (route.name === "User") {
-            iconName = focused ? "person" : "person-outline";
-          }
-
-          return <Ionicons name={iconName} size={size} color={iconColor} />;
         },
         tabBarLabelStyle: {
           color: "black", // Set the text color for tab labels (names of the icons)
@@ -110,25 +181,47 @@ export default function TabScreen() {
         options={{ headerShown: false, tabBarLabel: "Home" }}
       />
       <Tab.Screen
-        name="Online Recipes"
-        component={OnlineRecipeScreen}
-        options={{ tabBarLabel: "Online" }}
+        name="Discover Recipes"
+        component={TabRecipes}
+        options={{ 
+          tabBarLabel: "Recipes",
+          headerRight: () => (
+            <View style={styles.iconContainer}>
+              <Icon name="shopping-cart"
+                onPress={navigateToCart}
+                color={currentUser.cart.length > 0 ? "#ED6F21" : "#000"}
+                size={24}
+                style={styles.icon}
+              />
+              <Text style={styles.countText}>
+                {currentUser.cart.length > 0 ? currentUser.cart.length : ""}
+              </Text>
+            </View>
+          ),
+        }}
       />
       <Tab.Screen
-        name="Community Recipes"
-        component={MembersRecipeScreen}
-        options={{ tabBarLabel: "Community" }}
+        name="Recipes Stuff"
+        component={FavouritesUserScreen}
+        options={{ tabBarLabel: () => <Text>{getTabLabelToo()}</Text> }}
+      />
+
+      <Tab.Screen
+        name="Favourite Recipes" 
+        component={TabFavourites}
+        options={{ tabBarButton: () => null }}
       />
       <Tab.Screen
-        name="Business Recipes"
-        component={BusinessRecipeScreen}
-        options={{ tabBarLabel: "Business" }}
+        name="Customer Orders"
+        component={ViewOrdersScreen}
+        options={{ tabBarButton: () => null }}
       />
-      {/* <Tab.Screen
-        name="Track Progress"
-        component={ProgressScreen}
-        options={{ tabBarLabel: "Progress" }}
-      /> */}
+      <Tab.Screen
+        name="Food Request"
+        component={FoodRequestedTabs}
+        options={{ tabBarButton: () => null }}
+      />
+
       <Tab.Screen
         name="User"
         component={ConditionalUserScreen}
@@ -153,3 +246,41 @@ export default function TabScreen() {
     </Tab.Navigator>
   );
 }
+
+/*
+     <Tab.Screen
+        name="Online Recipes"
+        component={OnlineRecipeScreen}
+        options={{ tabBarLabel: "Online" }}
+      />
+      <Tab.Screen
+        name="Community Recipes"
+        component={MembersRecipeScreen}
+        options={{ tabBarLabel: "Community" }}
+      />
+      <Tab.Screen
+        name="Business Recipes"
+        component={BusinessRecipeScreen}
+        options={{ tabBarLabel: "Business" }}
+      /> 
+      <Tab.Screen
+        name="Track Progress"
+        component={ProgressScreen}
+        options={{ tabBarLabel: "Progress" }}
+      />
+*/
+const styles = StyleSheet.create({
+  iconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  countText: {
+    textAlign: "center",
+    marginLeft: 4,
+    fontSize: 16,
+    fontWeight: "500",
+    marginRight: 20,
+    color: "#ED6F21",
+  },
+});

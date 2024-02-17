@@ -33,5 +33,11 @@ router.put("/postCalories/:id", userController.postCalories);
 //router.get("/user/allergies", userController.getUserAllergies);
 router.patch("/updateFavorites/:id", userController.updateFavorites);
 router.patch("/updateBizFavorites/:id", userController.updateBizFavorites);
+router.patch("/updateBizCart/:id", userController.updateBizCart);
+router.delete("/clearBizCart/:id", userController.clearBizCart);
+router.get("/getUserCart/:id", userController.getUserCart);
+
+router.get("/getFoodRecognition/:id", userController.getFoodRecognition);
+router.patch("/updateFoodRecognition/:id", userController.updateFoodRecognition)
 
 module.exports = router;

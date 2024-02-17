@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Icon2 from "react-native-vector-icons/FontAwesome5";
 import { fetchRecipeDetails, fetchRecipeIngredients } from "../../services/Api";
 import { Context } from "../../store/context";
 
@@ -15,6 +16,7 @@ const OnlineRecipeInfoScreen = ({ route }) => {
   const { recipeId } = route.params;
   const [recipeDetails, setRecipeDetails] = useState(null);
   const [recipeIngredients, setRecipeIngredients] = useState(null);
+  const [healthScore, setHealthScore] = useState(0);
 
   const [currentUser, setCurrentUser] = useContext(Context);
 
@@ -43,92 +45,129 @@ const OnlineRecipeInfoScreen = ({ route }) => {
 
     for (let i = 0; i < 5; i++) {
       if (i < fullStar) {
-        stars.push(<Icon key={i} name="star" size={20} color="gold" />);
+        stars.push(<Icon key={i} name="star" size={20} color="#ED6F21" />);
       } else if (i === fullStar && halfStar >= 0.25) {
-        stars.push(<Icon key={i} name="star-half-o" size={20} color="gold" />);
+        stars.push(<Icon key={i} name="star-half-o" size={20} color="#ED6F21" />);
       } else {
-        stars.push(<Icon key={i} name="star-o" size={20} color="gray" />);
+        stars.push(<Icon key={i} name="star-o" size={20} color="#ED6F21" />);
       }
     }
     return stars;
+  };
+  const scoreRating = (score) => {
+    const rating = Math.floor((score / 100) * 5);
+    return rating;
+  }
+
+  // Remove <p>, <ol>, and <li> tags from instructions
+  const cleanInstructions = (instructions) => {
+    const cleanedInstructionsArray =  instructions.replace(/<\/?p>|<\/?ol>|<\/?li>/g, "\n").split('\n').filter(instruction => instruction.trim() !== '');
+    return cleanedInstructionsArray;
   };
 
   return (
     <ScrollView>
       {recipeDetails ? (
         <View style={styles.container}>
-          {/* image */}
-          <View style={styles.imageContainer}>
-            <Image source={{ uri: recipeDetails.image }} style={styles.image} />
-          </View>
-          {/* name */}
-          <Text style={styles.title}>{recipeDetails.title}</Text>
-          {/* spoonacular score */}
-          <Text style={styles.smallText}>Health Score</Text>
-          <View style={styles.scoreRating}>
-            {handleScoreRating(recipeDetails.healthScore)}
-          </View>
-          {/* servings, time taken, calories */}
-          <View style={styles.componentContainer}>
-            <View style={styles.leftComponent}>
-              <Text style={styles.smallHeadings}>Servings</Text>
-              <Text style={styles.smallText}>{recipeDetails.servings}</Text>
+          <View style={styles.info}>
+            {/* image */}
+            <View style={styles.imageContainer}>
+              <Image source={{ uri: recipeDetails.image }} style={styles.image} />
             </View>
-            <View style={styles.middleComponent}>
-              <Text style={styles.smallHeadings}>Time Taken</Text>
-              <Text style={styles.smallText}>
-                {recipeDetails.readyInMinutes}
+            {/* name */}
+            <Text style={styles.title}>{recipeDetails.title}</Text>
+            
+            {/* spoonacular score */}
+            <View style={styles.scoreRating}>
+              <Text style={styles.smallHeadings}>
+                {handleScoreRating(recipeDetails.healthScore)}
               </Text>
-            </View>
-            <View style={styles.rightComponent}>
-              <Text style={styles.smallHeadings}>Calories</Text>
-              <Text style={styles.smallText}>
-                {recipeDetails.nutrition.nutrients[0].amount} kcal
+              <Text style={styles.smallRating}>
+                {"  "}{scoreRating(recipeDetails.healthScore)}
               </Text>
-            </View>
-          </View>
-          <View style={styles.mainBox}>
-            {currentUser.foodRestrictions.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.customHeadings}>Disclaimer: </Text>
-                <Text style={styles.customText}>
-                  Based on your medical history, it is recommended to minimize
-                  or abstain from using{" "}
-                  <Text style={{ color: "red", fontWeight: "bold" }}>
-                    {currentUser.foodRestrictions.join(", ")}
-                  </Text>{" "}
-                  when preparing the recipe. {"\n"}
-                </Text>
-              </View>
-            )}
-            {/* ingredients */}
-            <View style={styles.section}>
-              <Text style={styles.customHeadings}>Ingredients:</Text>
-              {recipeDetails.extendedIngredients ? ( //recipeDetails.extendedIngredients !== null
-                <View>
-                  {recipeDetails.extendedIngredients.map(
-                    (ingredient, index) => (
-                      <View key={index}>
-                        <Text style={styles.customText}>
-                          {ingredient.name} - {ingredient.amount}{" "}
-                          {ingredient.unit}
-                        </Text>
-                      </View>
-                    )
-                  )}
-                </View>
-              ) : (
-                <Text>Loading recipe ingredients...</Text>
-              )}
             </View>
 
-            {/* instructions */}
-            <Text style={styles.customHeadings}>Instructions:</Text>
-            {recipeDetails.instructions ? (
-              <View>
-                <Text style={styles.customText}>
-                  {recipeDetails.instructions}
+            
+            {/* servings, time taken, calories */}
+            <View style={styles.componentContainer}>
+              <View style={styles.leftComponent}>
+                <Icon name="users" size={20} color="#ED6F21" style={styles.icons}/>
+                <Text style={styles.smallText}>{recipeDetails.servings}</Text>
+                <Text style={styles.smallHeadings}>Servings</Text>
+              </View>
+              <View style={styles.middleComponent}>
+                <Icon name="clock-o" size={20} color="#ED6F21" style={styles.icons}/>
+                <Text style={styles.smallText}>
+                  {recipeDetails.readyInMinutes}
                 </Text>
+                <Text style={styles.smallHeadings}>Time Taken</Text>
+              </View>
+              <View style={styles.rightComponent}>
+                <Icon2 name="fire-alt" size={20} color="#ED6F21" style={styles.icons}/>
+                <Text style={styles.smallText}>
+                  {recipeDetails.nutrition.nutrients[0].amount} kcal
+                </Text>
+                <Text style={styles.smallHeadings}>Calories</Text>
+              </View>
+            </View>
+          </View>
+          {currentUser.foodRestrictions.length > 0 && (
+            <View style={styles.disclaimerBox}>
+              <Text style={styles.customHeadings}>Disclaimer: </Text>
+              <Text style={styles.customText}>
+                Based on your medical history, it is recommended to minimize
+                or abstain from using{" "}
+                <Text style={{ color: "#ED6F21", fontWeight: "bold" }}>
+                  {currentUser.foodRestrictions.join(", ")}
+                </Text>{" "}
+                when preparing the recipe. {"\n"}
+              </Text>
+            </View>
+          )}
+            {/* ingredients */}
+          <View style={styles.ingredientBox}>
+            <Text style={styles.customHeadings}>Ingredients:</Text>
+
+            {recipeDetails.extendedIngredients ? ( //recipeDetails.extendedIngredients !== null
+              <View style={styles.inAlign}>
+                {recipeDetails.extendedIngredients.map(
+                  (ingredient, index) => (
+                    <View key={index} style={styles.ingredientContainer}>
+                      
+                      <Text style={styles.ingredientText}>•</Text>
+                      
+                      <Text style={styles.customText}>
+                        {ingredient.name} - {ingredient.amount}{" "}{ingredient.unit}
+                      </Text>
+                    </View>
+                  )
+                )}
+              </View>
+            ) : (
+              <Text>Loading recipe ingredients...</Text>
+            )}
+          </View>
+            {/* instructions */}
+          <View style={styles.instructionsBox}>
+            <Text style={styles.customHeadings}>Instructions:</Text>
+            
+            {recipeDetails.instructions ? (
+              <View style={styles.inAlign}>                
+                {cleanInstructions(recipeDetails.instructions).map (
+                  (instruction, index) => (
+                    <View key={index}> 
+                      <View style={styles.ingredientContainer}>
+                        <Text style={styles.ingredientText}>•</Text>      
+                        <Text style={styles.subText}>Step {index + 1}:</Text>      
+                      </View>
+
+                      <View style={styles.ingredientContainer}>
+                        <Text style={styles.ingredientText}> </Text>      
+                        <Text style={styles.subText}>{instruction}</Text>      
+                      </View>
+                    </View>
+                  )
+                )}
               </View>
             ) : (
               <Text style={styles.customText}>
@@ -149,9 +188,25 @@ export default OnlineRecipeInfoScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FCFCD3",
+    backgroundColor: "#F2F2F2",
     fontFamily: "Roboto",
     padding: 20,
+  },
+  //infoContainer
+  info: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    //padding: 20,
+    marginBottom: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
   },
   //title
   title: {
@@ -170,10 +225,14 @@ const styles = StyleSheet.create({
     width: "100%", // Occupy the entire width
     height: 300, // Fixed height
     borderRadius: 20,
-
     //resizeMode: "center",
   },
-
+  // icons
+  icons: {
+    textAlign: "center",
+    marginBottom:5
+  },
+  
   // image: {
   //   flex: 1,
   //   width: 310,
@@ -213,6 +272,7 @@ const styles = StyleSheet.create({
     //backgroundColor: 'lightyellow',
     paddingTop: 10,
     paddingBottom: 10,
+    alignContent: "center",
   },
   //headers
   customHeadings: {
@@ -231,18 +291,24 @@ const styles = StyleSheet.create({
     textAlign: "left",
     margin: 10,
   },
+  customTextInstructions: {
+    fontSize: 16,
+    textAlign: "left",
+    marginVertical: 10,
+  },
   smallText: {
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
+    marginBottom: 5,
+  },
+  smallRating: {
+    fontSize: 16,
+    color: "#ED6F21",
   },
   //ingredient
   ingredientContainer: {
-    flexDirection: "row", // Arrange components horizontally from left to right
-    justifyContent: "space-between", // Space them evenly
-    alignItems: "center", // Center them vertically
-    paddingTop: 10,
-    paddingBottom: 10,
+    flexDirection: "row",
   },
   ingredientImage: {
     width: 50,
@@ -250,24 +316,69 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     borderRadius: 10,
   },
-  mainBox: {
-    borderWidth: 2,
-    borderColor: "#CCCCCC",
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 30,
-  },
-  section: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#CCCCCC",
-    paddingBottom: 10,
-    marginBottom: 10,
+  disclaimerBox: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: "bold",
     color: "black",
     paddingBottom: 10,
+  },
+  ingredientBox: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
+  },
+  instructionsBox: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
+  },
+  inAlign: {
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  ingredientText: {
+    fontSize: 30,
+    color: "#FF9130",
+  },
+  subText: {
+    fontSize: 16,
+    textAlign: "left",
+    margin: 10,
   },
 });
 

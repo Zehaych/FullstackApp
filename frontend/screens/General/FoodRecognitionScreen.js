@@ -1,16 +1,24 @@
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
 import {
+  getDownloadURL,
+  ref,
+  uploadBytesResumable
+} from "firebase/storage";
+import { useContext, useState } from "react";
+import {
+  Dimensions,
   Image,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  View,
+  TouchableOpacity,
+  View
 } from "react-native";
-import { TouchableRipple } from "react-native-paper";
+import * as Progress from 'react-native-progress';
 import { SafeAreaView } from "react-native-safe-area-context";
+import { storage } from "../../services/firebase";
+import { Context } from "../../store/context";
 
 const PAT = "51ce8aa8d91b476b8c771030d6d0a12a";
 // Specify the correct user_id/app_id pairings
@@ -21,10 +29,60 @@ const APP_ID = "main";
 const MODEL_ID = "food-item-recognition";
 const MODEL_VERSION_ID = "1d5fd481e0cf4826aa72ec3ff049e044";
 
+// Open AI
+
+const headers = {
+  "Content-Type": "application/json",
+  "Authorization": `Bearer ${process.env.EXPO_PUBLIC_OPEN_AI}`
+};
+
 const FoodRecognitionScreen = ({ navigation }) => {
   const [image, setImage] = useState(null);
-  const [classifiedResults, setClassifiedResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false)
+  const [isClicked, setIsClicked] = useState(false);
+  const [totalCalories, setTotalCalories] = useState(0);
+
+  const [classifiedResults, setClassifiedResults] = useState(null);
   const [base64, setBase64] = useState("");
+
+  const [currentUser, setCurrentUser] = useContext(Context);
+
+  const handleImageUploadClick = () => {
+    setIsClicked(!isClicked);
+  };
+
+  const uploadImage = async (uri) => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      const filename = uri.substring(uri.lastIndexOf("/") + 1);
+      const storageRef = ref(storage, `images/${filename}`);
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+
+      return new Promise((resolve, reject) => {
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            reject(error);
+          },
+          () => {
+            // Handle successful uploads on complete
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+            });
+          }
+        );
+      });
+    } catch (error) {
+      console.error("Error uploading image: ", error);
+      throw error;
+    }
+  };
 
   const handleConvertImageToBase64 = async (imageUri) => {
     try {
@@ -38,51 +96,68 @@ const FoodRecognitionScreen = ({ navigation }) => {
   };
 
   const handleClassifyFood = async () => {
-    const raw = JSON.stringify({
-      user_app_id: {
-        user_id: USER_ID,
-        app_id: APP_ID,
-      },
-      inputs: [
+    setClassifiedResults([])
+    const payload = {
+      "model": "gpt-4-vision-preview",
+      "messages": [
         {
-          data: {
-            image: {
-              // url: image.uri
-              base64: base64,
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Estimate the type of food in the image and a rough estimate of the calories only. Make it concise and formatted. Do not add filler words. Provide the data in a json, where the key is the food, and the value is a numeric average of the estimate."
             },
-          },
-        },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": `data:image/jpeg;base64,${base64}`
+              }
+            }
+          ]
+        }
       ],
-    });
-
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        Authorization: "Key " + PAT,
-      },
-      body: raw,
+      "max_tokens": 1500,
     };
+
+    setIsLoading(true)
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(payload)
+    })
+
+    const responseData = await response.json()
+
     try {
-      fetch(
-        "https://api.clarifai.com/v2/models/" +
-          MODEL_ID +
-          "/versions/" +
-          MODEL_VERSION_ID +
-          "/outputs",
-        requestOptions
-      )
-        .then((response) => response.text())
-        .then((result) =>
-          setClassifiedResults(JSON.parse(result)?.outputs?.[0]?.data?.concepts)
-        )
-        .catch((error) => console.log("error", error));
-    } catch (err) {
-      console.log(err);
+
+      const result = responseData?.["choices"]?.[0]?.["message"]?.["content"]
+      let startIndex = result?.indexOf('{');
+      let endIndex = result?.lastIndexOf('}');
+      let formattedResult = result.substring(startIndex, endIndex + 1).trim();
+      setIsLoading(false)
+      setClassifiedResults(JSON.parse(formattedResult))
+
+      imageUrl = await uploadImage(image.uri);
+
+      // save to food recognition log
+      const response = await fetch(`${process.env.EXPO_PUBLIC_IP}/user/updateFoodRecognition/${currentUser._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          food: JSON.parse(formattedResult),
+          imageUrl
+        }),
+      })
+
+    } catch (error) {
+      console.log(error)
     }
-  };
+  }
 
   const handlePickImage = async () => {
+    handleImageUploadClick()
     // Ask for permission to access the camera roll
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -106,54 +181,62 @@ const FoodRecognitionScreen = ({ navigation }) => {
     }
   };
 
+  const imageDimensions = Dimensions.get('window').width * 0.8
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={styles.container}>
-        <StatusBar backgroundColor="white" barStyle="dark-content" />
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Food Recognition</Text>
-        </View>
-        <View style={styles.body}>
-          {image && (
-            <Image
-              source={image}
-              style={{ width: 300, height: 300, marginTop: 24 }}
-            />
-          )}
-          <View style={styles.buttonGroup}>
-            <TouchableRipple
-              style={styles.selectImageButton}
-              onPress={handlePickImage}
-            >
-              <View style={styles.selectImageButtonView}>
-                <Text>Select Image</Text>
-              </View>
-            </TouchableRipple>
+      {/* <StatusBar backgroundColor="white" barStyle="dark-content" />
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Food Recognition</Text>
+      </View> */}
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.body}>
+            {(
+              <TouchableOpacity onPress={handlePickImage}>
+                <Image
+                  source={image || require("../../assets/upload_food.png")}
+                  style={[{ width: imageDimensions, height: imageDimensions, borderRadius: 24 }, isClicked && styles.clickedImage]}
+                />
+              </TouchableOpacity>
+            )}
+            {image && <View style={styles.buttonGroup}>
+              <TouchableOpacity
+                style={styles.selectImageButton}
+                onPress={handleClassifyFood}
+              >
+                <Text style={styles.selectImageButtonText}>Calculate My Food!</Text>
+              </TouchableOpacity>
+            </View>}
 
-            <TouchableRipple
-              style={styles.selectImageButton}
-              onPress={handleClassifyFood}
-            >
-              <View style={styles.selectImageButtonView}>
-                <Text>Find Food</Text>
-              </View>
-            </TouchableRipple>
-          </View>
-        </View>
-        <View style={{ flex: 1, justifyContent: "center" }}>
-          {classifiedResults?.map((result, index) => {
-            return (
-              <View style={styles.classifiedResultsView} key={index}>
-                <View style={{ minWidth: "400px" }}>
-                  <Text>{result.name}</Text>
+            {classifiedResults && <View style={{ flex: 1, justifyContent: "space-between", width: "100%" }}>
+              <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
+                <View>
+                  <Text style={styles.resultsHeader}>Food</Text>
                 </View>
                 <View>
-                  <Text>{`${(Number(result.value) * 100).toFixed(2)}%`}</Text>
+                  <Text style={styles.resultsHeader} >Calories</Text>
                 </View>
               </View>
-            );
-          })}
+              {Object.keys(classifiedResults).map((resultKey, index) => {
+                return (
+                  <View style={styles.classifiedResultsView} key={index}>
+                    <View>
+                      <Text style={styles.resultText}>{resultKey}</Text>
+                    </View>
+                    <View>
+                      <Text style={styles.resultText}>{classifiedResults?.[resultKey]}</Text>
+                    </View>
+                  </View>
+                );
+              })}
+            </View>}
+            {
+              isLoading && <Progress.Circle size={50} indeterminate={true} />
+            }
+          </View>
         </View>
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -162,54 +245,56 @@ const FoodRecognitionScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-  },
-  header: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: "bold",
+    paddingHorizontal: 24,
+    paddingVertical: 8,
+    backgroundColor: "#F2F2F2",
   },
   body: {
     flex: 1,
-    marginLeft: "12px",
-    flexDirection: "column",
-    justifyContent: "center",
     alignItems: "center",
+    borderRadius: 20,
+    padding: 16,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    gap: 12,
   },
   buttonGroup: {
     flex: 1,
     flexDirection: "row",
-    marginLeft: 16,
-    paddingTop: 12,
-  },
-  selectImageButton: {
-    borderColor: "black",
-  },
-  selectImageButtonView: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    marginLeft: 8,
-    borderWidth: 1,
-    padding: 8,
-    borderRadius: 24,
-    borderColor: "#FF6347",
   },
   classifiedResultsView: {
     marginTop: 12,
-    marginLeft: 48,
+    // marginLeft: 48,
     flex: 1,
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
+    width: "100%"
   },
+  selectImageButton: {
+    backgroundColor: "#ED6F21",
+    padding: 10,
+    borderRadius: 10,
+    alignItems: "center",
+    width: Dimensions.get('window').width * 0.8
+  },
+  selectImageButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  resultText: {
+    fontSize: 14
+  },
+  resultsHeader: {
+    fontWeight: "bold", fontSize: 17
+  }
 });
 
 export default FoodRecognitionScreen;

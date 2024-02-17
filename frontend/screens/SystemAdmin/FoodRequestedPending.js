@@ -2,9 +2,12 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, TextInput, A
 import React, { useState, useContext, useEffect} from "react";
 import { Context } from "../../store/context";
 import { useFocusEffect } from "@react-navigation/native";
+import { Icon } from 'react-native-paper';
+import IconToo from "react-native-vector-icons/MaterialIcons";
 
-const FoodRequested = () => {
+const FoodRequestedPending = () => {
     const [foodRequests, setFoodRequests] = useState([]);
+    const [pendingRequests, setPendingRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentUser, setCurrentUser] = useContext(Context);
     const [modalVisible, setModalVisible] = useState(false);
@@ -33,6 +36,9 @@ const FoodRequested = () => {
             if (response.ok) {
                 const data = await response.json();
                 setFoodRequests(data);
+
+                const pendingRequests = data.filter(item => item.status === 'pending');
+                setPendingRequests(pendingRequests);
             } else {
                 console.error('Failed to fetch food requests');
             }
@@ -140,28 +146,27 @@ const FoodRequested = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{currentUser.username}</Text>
             {loading ? (
                 <Text>Loading...</Text>
             ) : (
                 <FlatList
-                    data={foodRequests}
+                    data={pendingRequests}
                     keyExtractor={(item) => item._id}
                     renderItem={({ item }) => (
+                       
                         <View style={styles.item}>
-                            <Text style={styles.title}>{item.name}</Text>
-                            <Text style={styles.subtitle}>Status: {item.status}</Text>
-
-                            <View style={styles.buttonContainer}>
-
-                            <TouchableOpacity style={[styles.button, styles.secondButton]} onPress={() => openModal(item)}>
-                                <Text style={styles.buttonText}>Approve Request</Text>
+                            <TouchableOpacity 
+                                style={styles.touchableContainer}
+                                onPress={() => openModal(item)}
+                            >
+                                <Text style={styles.title}>{item.name}</Text>
+                                <View style={styles.statusContainer}>
+                                    <Text style={styles.status1}>Status</Text>
+                                    <Text style={styles.status2}>{item.status}</Text>
+                                </View>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.button, styles.thirdButton]} onPress={() => rejectFoodRequest(item._id)}>
-                                <Text style={styles.buttonText}>Reject Request</Text>
-                            </TouchableOpacity>
-                            </View>
                         </View>
+                        
                     )}
                 />
             )}
@@ -177,6 +182,15 @@ const FoodRequested = () => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
+                    <View style={styles.componentContainer}>
+                        <Text style={styles.title2}>Food Requested</Text>
+                        <TouchableOpacity
+                            style={styles.iconX}
+                            onPress={closeModal}
+                        >
+                            <IconToo name="close" color="#000000" size={25} />
+                        </TouchableOpacity>
+                    </View>
                     <TextInput
                         style={styles.input}
                         placeholder="Calories"
@@ -205,18 +219,18 @@ const FoodRequested = () => {
                         onChangeText={(text) => setNutritionInfo({...nutritionInfo, carbs: text})}
                         keyboardType="numeric"
                     />
-                    <View style = {styles.buttonContainer}>
+                    <View style={styles.buttonContainer}>
                     <TouchableOpacity 
                         style={styles.confirmButton} 
                         onPress={handleConfirm}
                     >
-                        <Text style={styles.confirmButtonText}>Confirm</Text>
+                        <Text style={styles.confirmButtonText}>Approve Request</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.confirmButton}
-                        onPress={closeModal}
+                    <TouchableOpacity 
+                        style={styles.confirmButton2} 
+                        onPress={() => rejectFoodRequest(currentRequest._id)}
                     >
-                        <Text style={styles.confirmButtonText}>Close</Text>
+                        <Text style={styles.confirmButtonText}>Reject Request</Text>
                     </TouchableOpacity>
                     </View>
                 </View>
@@ -234,13 +248,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 22,
+        // marginTop: 20,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
     modalView: {
-        margin: 20,
+        // margin: 20,
         backgroundColor: 'white',
         borderRadius: 20,
-        padding: 35,
+        padding: 20,
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
@@ -250,59 +265,46 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        width: '80%', // Adjust as needed
-    },
-    modalText: {
-        marginBottom: 15,
-        textAlign: 'center',
+        width: '90%', // Adjust as needed
     },
     input: {
         height: 40,
-        margin: 12,
+        margin: 10,
         borderWidth: 1,
         padding: 10,
         width: '100%', // Adjust as needed
+        borderRadius: 5,
+        borderColor: '#ccc',
     },
     confirmButton: {
-        backgroundColor: '#2196F3',
+        //backgroundColor: '#2196F3',
+        backgroundColor: '#ED6F21',
         borderRadius: 10,
         padding: 10,
         elevation: 2,
-        marginTop: 20,
+        marginTop: 10,
+        width: '100%', // Adjust as needed
     },
     confirmButtonText: {
         color: 'white',
-    },
-    buttonText: {
-        textAlign: "center",
-        color: "white",
+        textAlign: 'center',
         fontSize: 16,
-      },
-    buttonContainer: {
-        marginVertical: 8,
-        borderRadius: 5,
+        fontWeight: "bold"
     },
-    button: {
-        backgroundColor: "#007bff", // Blue color for the primary button
-        padding: 10,
-        borderRadius: 5,
-        marginBottom: 10,
-        alignItems: "center",
-      },
-    secondButton: {
-        backgroundColor: "green",
+    touchableContainer: {
+        paddingHorizontal: 10,
+        width: '100%', // Adjust as needed
+        //backgroundColor: "green",
     },
-    thirdButton: {
-        backgroundColor: "#FF0000",
-      },
     container: {
-        marginTop: 30,
+        marginTop: 10,
         backgroundColor: '#f5f5f5',
         padding: 10,
+        marginBottom: 10,
     },
     item: {
         backgroundColor: 'white', 
-        padding: 20,
+        padding: 10,
         marginVertical: 8,
         marginHorizontal: 10,
         borderRadius: 10,
@@ -320,16 +322,48 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 5,
     },
-    subtitle: {
-        fontSize: 20,
-        marginBottom: 5,
-    },  
-    status: {
+    status1: {
+        fontSize: 16,
+        //fontStyle: 'italic',
+        color: '#000000',
+    },
+    status2: {
         fontSize: 16,
         fontStyle: 'italic',
-        color: '#2e2e2e',
+        color: '#ED6F21',
+    },
+    statusContainer: {
+        marginTop: 5,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 10,
+    },
+    buttonContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 10,
+        width: '100%', // Adjust as needed
+    },
+    componentContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 10,
+        width: '100%', // Adjust as needed
+    },
+    title2: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    confirmButton2: {
+        //backgroundColor: '#2196F3',
+        backgroundColor: '#A9A9A9',
+        borderRadius: 10,
+        padding: 10,
+        elevation: 2,
+        marginTop: 10,
+        width: '100%', // Adjust as needed
     },
 });
 
 
-export default FoodRequested;
+export default FoodRequestedPending;

@@ -29,6 +29,8 @@ exports.postRecipe = asyncHandler(async (req, res) => {
     !req.body.ingredients ||
     !req.body.instructions ||
     !req.body.calories ||
+    !req.body.servings ||
+    !req.body.timeTaken ||
     !req.body.image
   ) {
     res.status(400);
@@ -47,6 +49,8 @@ exports.postRecipe = asyncHandler(async (req, res) => {
     ingredients: req.body.ingredients,
     instructions: req.body.instructions,
     calories: req.body.calories,
+    servings: req.body.servings,
+    timeTaken: req.body.timeTaken,
     image: req.body.image,
     submitted_by: req.body.submitted_by,
   });
@@ -60,6 +64,8 @@ exports.updateRecipe = asyncHandler(async (req, res) => {
     !req.body.ingredients ||
     !req.body.instructions ||
     !req.body.calories ||
+    !req.body.servings ||
+    !req.body.timeTaken ||
     !req.body.image
   ) {
     res.status(400);
@@ -281,7 +287,7 @@ exports.deleteRating = asyncHandler(async (req, res) => {
 exports.getHighRatedRecipes = async (req, res) => {
   try {
     const highRatedRecipes = await Recipe.find({ averageRating: { $gte: 4 } })
-      .limit(2) // Limit the results to two recipes
+      .limit(3) // Limit the results to two recipes
       .exec();
 
     res.status(200).json(highRatedRecipes);

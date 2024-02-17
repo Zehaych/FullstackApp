@@ -18,6 +18,9 @@ import {
   Alert,
   AsyncStorage,
   Touchable,
+  SafeAreaView,
+  ScrollView,
+  Image,
 } from "react-native";
 import { Context } from "../../store/context";
 import FoodAndDrinksInfo from "./FoodAndDrinksInfo";
@@ -51,11 +54,15 @@ const AdminScreen = () => {
   };
 
   const handleFoodRequested = () => {
-    navigation.navigate("FoodRequested");
+    navigation.navigate("FoodRequestedTabs");
   };
 
   const handleRetrieveUserAccount = () => {
     navigation.navigate("RetrieveUserAccount");
+  };
+
+  const handleRetrieveBizPartner = () => {
+    navigation.navigate("RetrieveBizPartners");
   };
 
   //Function to navigate to retrieve all business partners
@@ -76,114 +83,138 @@ const AdminScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{currentUser.username}</Text>
-      <Text>Welcome to the System Administrator Screen</Text>
-
-      <TouchableRipple onPress={handleCreateBusinessPartner}>
-        <View style={styles.menuItem}>
-          <Icon
-            name="account-plus"
-            size={25}
-            color="#FF6347"
-            style={styles.icon}
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <View style={styles.userInfoSection}>
+          <Image 
+            source={require("../../assets/person-placeholder.jpg")} 
+            style={styles.userImage} 
           />
-          <Text style={styles.menuItemText}>
-            Create Business Partner Account
-          </Text>
-        </View>
-      </TouchableRipple>
 
-      <TouchableRipple onPress={handleRetrieveUserAccount}>
-        <View style={styles.menuItem}>
-          <Icon
-            name="account-search"
-            size={25}
-            color="#FF6347"
-            style={styles.icon}
-          />
-          <Text style={styles.menuItemText}>Retrieve User accounts</Text>
+          <Text style={styles.title}>{currentUser.username}</Text>
+          
+          <View style={styles.privilegeSection}>
+            <Icon
+              name="crown"
+              size={22}
+              color="#ED6F21"
+            />
+            <Text style={styles.detailText}> Admin Access Granted </Text>
+            <Icon
+              name="crown"
+              size={22}
+              color="#ED6F21"
+            />
+          </View>
         </View>
-      </TouchableRipple>
 
-      <TouchableRipple onPress={handleNavigateBizPartner}>
-        <View style={styles.menuItem}>
-          <Icon
-            name="account-search"
-            size={25}
-            color="#FF6347"
-            style={styles.icon}
-          />
-          <Text style={styles.menuItemText}>
-            Retrieve Business Partner accounts
-          </Text>
-        </View>
-      </TouchableRipple>
+        <View style={styles.menuWrapper}>
+          <Text style={styles.subTitle}>Account</Text>
+          <TouchableRipple onPress={handleCreateBusinessPartner}>
+            <View style={styles.menuItem}>
+              <Icon
+                name="account-plus"
+                size={25}
+                color="#ED6F21"
+              />
+              <Text style={styles.menuItemText}>
+                Create Business Partner Account
+              </Text>
+            </View>
+          </TouchableRipple>
 
-      <TouchableRipple onPress={handleNavigateReportedRecipe}>
-        <View style={styles.menuItem}>
-          <Icon
-            name="book-alert"
-            size={25}
-            color="#FF6347"
-            style={styles.icon}
-          />
-          <Text style={styles.menuItemText}>Reported Community Recipes</Text>
-        </View>
-      </TouchableRipple>
+          <TouchableRipple onPress={handleRetrieveUserAccount}>
+            <View style={styles.menuItem}>
+              <Icon
+                name="account-search"
+                size={25}
+                color="#ED6F21"
+              />
+              <Text style={styles.menuItemText}>Retrieve User accounts</Text>
+            </View>
+          </TouchableRipple>
 
-      <TouchableRipple onPress={handleNavigateReportedBizRecipe}>
-        <View style={styles.menuItem}>
-          <Icon
-            name="book-alert"
-            size={25}
-            color="#FF6347"
-            style={styles.icon}
-          />
-          <Text style={styles.menuItemText}>
-            Reported Business Partner Recipes
-          </Text>
-        </View>
-      </TouchableRipple>
+          <TouchableRipple onPress={handleRetrieveBizPartner}>
+            <View style={styles.menuItem}>
+              <Icon
+                name="account-search"
+                size={25}
+                color="#ED6F21"
+              />
+              <Text style={styles.menuItemText}>
+                Retrieve Business Partner accounts
+              </Text>
+            </View>
+          </TouchableRipple>
 
-      <TouchableRipple onPress={handleFoodRequested}>
-        <View style={styles.menuItem}>
-          <Icon name="food" size={25} color="#FF6347" style={styles.icon} />
-          <Text style={styles.menuItemText}>Food Requested</Text>
-        </View>
-      </TouchableRipple>
+          <View style={styles.divider} />
+          <Text style={styles.subTitle}>Report</Text>
+          <TouchableRipple onPress={handleNavigateReportedRecipe}>
+            <View style={styles.menuItem}>
+              <Icon
+                name="book-alert"
+                size={25}
+                color="#ED6F21"
+              />
+              <Text style={styles.menuItemText}>Reported Community Recipes</Text>
+            </View>
+          </TouchableRipple>
 
-      <TouchableRipple onPress={handleNavigateFoodAndDrinks}>
-        <View style={styles.menuItem}>
-          <Icon name="food" size={25} color="#FF6347" style={styles.icon} />
-          <Text style={styles.menuItemText}>Food And Drinks Database</Text>
-        </View>
-      </TouchableRipple>
+          <TouchableRipple onPress={handleNavigateReportedBizRecipe}>
+            <View style={styles.menuItem}>
+              <Icon
+                name="book-alert"
+                size={25}
+                color="#ED6F21"
+              />
+              <Text style={styles.menuItemText}>
+                Reported Business Partner Recipes
+              </Text>
+            </View>
+          </TouchableRipple>
 
-      <TouchableRipple onPress={handleNavigateBizPartner}>
-        <View style={styles.menuItem}>
-          <Icon
-            name="notebook-outline"
-            size={25}
-            color="#FF6347"
-            style={styles.icon}
-          />
-          <Text style={styles.menuItemText}>Generate Reports</Text>
-        </View>
-      </TouchableRipple>
+          <View style={styles.divider} />
+          <Text style={styles.subTitle}>Request</Text>
+          <TouchableRipple onPress={handleFoodRequested}>
+            <View style={styles.menuItem}>
+              <Icon name="food" size={25} color="#ED6F21" />
+              <Text style={styles.menuItemText}>Food Requested</Text>
+            </View>
+          </TouchableRipple>
 
-      <TouchableRipple onPress={onLogOutPressed}>
-        <View style={styles.menuItem}>
-          <Icon
-            name="exit-to-app"
-            color="#FF6347"
-            size={25}
-            style={styles.icon}
-          />
-          <Text style={styles.menuItemText}>Log Out</Text>
+          <View style={styles.divider} />
+          <Text style={styles.subTitle}>Database</Text>
+          <TouchableRipple onPress={handleNavigateFoodAndDrinks}>
+            <View style={styles.menuItem}>
+              <Icon name="food" size={25} color="#ED6F21" />
+              <Text style={styles.menuItemText}>Food And Drinks Database</Text>
+            </View>
+          </TouchableRipple>
+
+          <TouchableRipple onPress={handleNavigateBizPartner}>
+            <View style={styles.menuItem}>
+              <Icon
+                name="notebook-outline"
+                size={25}
+                color="#ED6F21"
+              />
+              <Text style={styles.menuItemText}>Generate Reports</Text>
+            </View>
+          </TouchableRipple>
+
+          <TouchableRipple onPress={onLogOutPressed}>
+            <View style={styles.menuItem}>
+              <Icon
+                name="exit-to-app"
+                color="#ED6F21"
+                size={25}
+              />
+              <Text style={styles.menuItemText}>Log Out</Text>
+            </View>
+          </TouchableRipple>
         </View>
-      </TouchableRipple>
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -191,27 +222,67 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    padding: 20,
+  },
+  userInfoSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    alignItems: "center",
+  },
+  userInfo: {
+    alignItems: "center",
+  },
+  privilegeSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  detailText: {
+    fontSize: 14,
+    color: "grey",
+  },
+  divider: {
+    borderBottomColor: "#C6C6CD",
+    borderBottomWidth: 1,
+    alignSelf: "center",
+    width: "90%",
+    marginTop: 10,
   },
   title: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10,
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#333", 
   },
-  icon: {
-    marginRight: 16,
+  subTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 20,
+    color: "grey",
+  },
+  menuWrapper: {
+    marginTop: 10,
   },
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#dddddd",
+    paddingVertical: 6,
+    paddingHorizontal: 30,
+    //borderBottomWidth: 1,
+    //borderBottomColor: "#dddddd",
   },
   menuItemText: {
-    color: "#333",
-    fontWeight: "600",
+    color: "#000000",
+    marginLeft: 20,
+    // fontWeight: "bold",
     fontSize: 16,
+    lineHeight: 26,
+  },
+  userImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    margin: 10,
   },
 });
 

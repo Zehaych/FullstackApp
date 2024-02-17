@@ -78,6 +78,24 @@ const userSchema = new Schema({
       },
     },
   ],
+  foodRecognitionLog: [
+    {
+      date: {
+        type: Date,
+        default: Date.now
+      },
+      imageUrl: {
+        type: String
+      },
+      food: [
+        {
+          name: String,
+          calories: String
+        }
+      ]
+
+    }
+  ],
   favouriteRecipes: [
     {
       type: mongoose.Types.ObjectId,
@@ -88,6 +106,30 @@ const userSchema = new Schema({
     {
       type: mongoose.Types.ObjectId,
       ref: "BizRecipe",
+    },
+  ],
+  cart: [
+    {
+      recipeId: {
+        type: mongoose.Types.ObjectId,
+        ref: "BizRecipe",
+      },
+      recipeName: {
+        type: String,
+        required: true,
+      },
+      recipePrice: {
+        type: Number,
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        default: 1,
+      },
+      preferences: {
+        type: String,
+        default: "",
+      },
     },
   ],
 });

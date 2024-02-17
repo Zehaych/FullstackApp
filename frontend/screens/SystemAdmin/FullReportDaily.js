@@ -46,6 +46,12 @@ const FullReportDaily = ({ route }) => {
           totalPrice: 0,
           quantity: 0,
           timeToDeliverCount: {},
+          maleCount: 0,
+          femaleCount: 0,
+          totalAge: 0,
+          totalHeight: 0,
+          totalWeight: 0,
+          totalCalorie: 0,
         };
       }
       const recipeGroup = orderMap[order.recipeName];
@@ -53,6 +59,13 @@ const FullReportDaily = ({ route }) => {
       recipeGroup.quantity += order.quantity;
       recipeGroup.timeToDeliverCount[order.timeToDeliver] =
         (recipeGroup.timeToDeliverCount[order.timeToDeliver] || 0) + 1;
+
+      if (order.userGender === "Male") recipeGroup.maleCount++;
+      if (order.userGender === "Female") recipeGroup.femaleCount++;
+      recipeGroup.totalAge += order.userAge;
+      recipeGroup.totalHeight += order.userHeight;
+      recipeGroup.totalWeight += order.userWeight;
+      recipeGroup.totalCalorie += order.userCalorie;
 
       totalSales += order.totalPrice;
 
@@ -93,10 +106,45 @@ const FullReportDaily = ({ route }) => {
     const mostOrderedRecipes = Object.keys(recipesWithHighestQuantity);
     if (mostOrderedRecipes.length === 0) mostOrderedRecipes.push("-");
 
+    // Calculate specific metrics for each recipe group
+    Object.values(orderMap).forEach((recipeGroup) => {
+      const totalOrders = recipeGroup.maleCount + recipeGroup.femaleCount;
+      recipeGroup.maleOrderRate = totalOrders
+        ? (recipeGroup.maleCount / totalOrders) * 100
+        : 0;
+      recipeGroup.femaleOrderRate = totalOrders
+        ? (recipeGroup.femaleCount / totalOrders) * 100
+        : 0;
+      recipeGroup.averageAge = totalOrders
+        ? recipeGroup.totalAge / totalOrders
+        : 0;
+      recipeGroup.averageHeight = totalOrders
+        ? recipeGroup.totalHeight / totalOrders
+        : 0;
+      recipeGroup.averageWeight = totalOrders
+        ? recipeGroup.totalWeight / totalOrders
+        : 0;
+      recipeGroup.averageCalorieGoal = totalOrders
+        ? recipeGroup.totalCalorie / totalOrders
+        : 0;
+
+      let mostOrderedTime = "-";
+      let maxCount = 0;
+      for (const [time, count] of Object.entries(
+        recipeGroup.timeToDeliverCount
+      )) {
+        if (count > maxCount) {
+          mostOrderedTime = time;
+          maxCount = count;
+        }
+      }
+      recipeGroup.mostOrderedTime = mostOrderedTime;
+    });
+
     return {
       groupedOrders: Object.values(orderMap),
       totalSales,
-      mostOrderedRecipes,
+      mostOrderedRecipes: Object.keys(recipesWithHighestQuantity),
     };
   };
 
@@ -111,21 +159,91 @@ const FullReportDaily = ({ route }) => {
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <Text style={styles.title}>{item.recipeName}</Text>
-      <Text style={styles.subtitle}>Total Sales: ${item.totalPrice}</Text>
-      <Text style={styles.subtitle}>Total Quantity Sold: {item.quantity}</Text>
-      <Text style={styles.subtitle}>
-        Most Ordered Time: {item.mostOrderedTime}
-      </Text>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>Total Sales</Text>
+        <Text style={styles.subtitle}>${item.totalPrice}</Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>Total Quantity Sold</Text>
+        <Text style={styles.subtitle}>{item.quantity}</Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>
+          Most Ordered Time
+        </Text>
+        <Text style={styles.subtitle}>
+          {item.mostOrderedTime}
+        </Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>
+          Male Order Rate
+        </Text>
+        <Text style={styles.subtitle}>
+          {item.maleOrderRate.toFixed(2)}%
+        </Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>
+          Female Order Rate
+        </Text>
+        <Text style={styles.subtitle}>
+          {item.femaleOrderRate.toFixed(2)}%
+        </Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>
+          Average Age
+        </Text>
+        <Text style={styles.subtitle}>
+          {item.averageAge.toFixed(0)}
+        </Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>
+          Average Height
+        </Text>
+        <Text style={styles.subtitle}>
+          {item.averageHeight.toFixed(0)} cm
+        </Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>
+          Average Weight
+        </Text>
+        <Text style={styles.subtitle}>
+          {item.averageWeight.toFixed(2)} kg
+        </Text>
+      </View>
+      <View style={styles.componentContainer}>
+        <Text style={styles.subtitle1}>
+          Average Calorie Goal
+        </Text>
+        <Text style={styles.subtitle}>
+          {item.averageCalorieGoal.toFixed(0)} kcal
+        </Text>
+      </View>
     </View>
   );
 
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
       <View style={styles.container}>
-        <Text style={styles.header}>Total Sales: ${totalSales}</Text>
-        <Text style={styles.header}>
-          Most Ordered: {mostOrderedRecipes.join(", ")}
-        </Text>
+        <View style={styles.detailBox}>
+          <Text style={styles.title2}>Daily Sales</Text>
+          <View style={styles.componentContainer}>
+            <Text style={styles.subtitle1}>Total Sales </Text>
+            <Text style={styles.salesSubtitle}>${totalSales}</Text>
+          </View>
+          <View style={styles.componentContainer}>
+            <Text style={styles.subtitle1}>
+              Most Ordered 
+            </Text>
+            <Text style={styles.salesSubtitle}>
+              {mostOrderedRecipes.join("\n")}
+            </Text>
+          </View>
+        </View>
         <FlatList
           data={groupedOrders}
           renderItem={renderItem}
@@ -138,9 +256,17 @@ const FullReportDaily = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-  safeAreaContainer: { flex: 1 },
-  container: { flex: 1, backgroundColor: "#FCFCD3", padding: 10 },
-  listContentContainer: { flexGrow: 1 },
+  safeAreaContainer: { 
+    flex: 1 
+  },
+  container: { 
+    flex: 1, 
+    backgroundColor: "#f5f5f5", 
+    padding: 10 
+  },
+  listContentContainer: {     
+    flexGrow: 1,
+  },
   header: {
     fontSize: 18,
     fontWeight: "bold",
@@ -152,20 +278,66 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 10,
-    borderRadius: 10,
+    borderRadius: 20,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
+    shadowOffset: { 
+      width: 0, 
+      height: 2 
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
+    //textAlign: "center",
+  },
+  title2: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#ED6F21",
+    marginBottom: 10,
     textAlign: "center",
   },
-  subtitle: { fontSize: 16, marginBottom: 5 },
+  subtitle: { 
+    fontSize: 16, 
+    marginBottom: 5 
+  },
+  salesSubtitle: { 
+    fontSize: 16, 
+    marginBottom: 5,
+    textAlign: "right",
+    width: "60%",
+  },
+  subtitle1: {
+    fontSize: 16,
+    color: "grey",
+    marginBottom: 5,
+  },
+  detailBox: {
+    //flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 20,
+    margin: 10,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
+  },
+  componentContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+    //paddingHorizontal: 20,
+  },
 });
 
 export default FullReportDaily;

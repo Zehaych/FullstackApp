@@ -1,7 +1,7 @@
-import React, { useState, useContext } from "react";
-import { Context } from "../../store/context";
-import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import React, { useContext, useState } from "react";
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Context } from "../../store/context";
 
 const DeleteAccountScreen = () => {
   const navigation = useNavigation();
@@ -71,31 +71,65 @@ const DeleteAccountScreen = () => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <Button title="Delete Account" onPress={handleDeleteAccount} />
+      
+      {/* Email */}
+      <View style={styles.detailContainer}>
+        <Text style={styles.title}>Email</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+        />
+      </View>
+
+      {/* Password */}
+      <View style={styles.detailContainer}>
+        <Text style={styles.title}>Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+      </View>
+      
+      {/* <Button title="Delete Account" onPress={handleDeleteAccount} /> */}
+
+      <TouchableOpacity style={styles.updatebutton} onPress={handleDeleteAccount}>
+        <Text style={styles.updatebuttonText}>Delete Account</Text>
+      </TouchableOpacity>
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    // justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
+    justifyContent: "center",
+    alignItems: "right",
+    padding: 16,
+    backgroundColor: "#fff",
+    marginTop: 8,
+    marginHorizontal: 16,
+    borderRadius: 20,
+    gap: 16,
+    shadowColor: "#000",
+    shadowOffset: {
+    width: 0,
+    height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
+  title: {
+    fontWeight: 'bold',
+  },
+  detailContainer: {
+    width: '100%'
   },
   input: {
     borderWidth: 1,
@@ -103,7 +137,22 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 10,
     width: "100%",
+    borderRadius: 5,
   },
+  updatebutton: {
+    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: '#ED6F21',
+    padding: 10,
+    width: '100%',
+  },
+  updatebuttonText: {
+    color: "#FFF",
+    fontWeight: 'bold',
+    fontSize: 16,
+    width: '100%',
+    textAlign: 'center',
+  }
 });
 
 export default DeleteAccountScreen;

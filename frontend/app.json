@@ -1,9 +1,26 @@
 {
   "expo": {
-    "name": "FullstackApp",
-    "slug": "FullstackApp",
-    "extra": {
-      "API_URL": "http://192.168.1.62:5000"
+    "plugins": ["./services/withCleartextTraffic"],
+    "name": "NutriRizz",
+    "slug": "nutririzz",
+    "icon": "./assets/icon.png",
+    "description": "Developing recommendation app for diet and nutrition",
+    "extra": {},
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/d937b1d2-bfaf-409d-ba4b-b08fb7bbf167"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ED6F21"
+      },
+      "package": "com.jrng013.nutririzz"
+    },
+    "ios": {
+      "bundleIdentifier": "com.jrng013.nutririzz"
     }
   }
 }

@@ -1,28 +1,33 @@
+import React, { useContext, useEffect, useState } from "react";
 import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-  ScrollView,
   Alert,
-  TouchableWithoutFeedback,
+  Dimensions,
+  Image,
   Keyboard,
   SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View
 } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
-import { Picker } from "@react-native-picker/picker";
-import Icon from "react-native-vector-icons/FontAwesome";
 import { Button } from "react-native-paper";
+import * as Progress from 'react-native-progress';
+import Icon from "react-native-vector-icons/FontAwesome";
 import { Context } from "../../store/context";
 //import { ScrollView } from 'react-native-virtualized-view';
+import { useNavigation } from "@react-navigation/native";
+import * as FileSystem from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
+import RNPickerSelect from 'react-native-picker-select';
 import {
-  fetchRecipes,
   fetchRecipeDetails,
+  fetchRecipes,
   fetchRecommendations,
 } from "../../services/Api";
-import { useNavigation } from "@react-navigation/native";
+
 //import { set } from "mongoose";
 //import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 //import MealScreen from "./MealScreen";
@@ -43,6 +48,11 @@ const ProgressScreen = () => {
   const [recipeDetails, setRecipeDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentUser, setCurrentUser] = useContext(Context);
+  const [foodRecognitionCalories, setFoodRecognitionCalories] = useState(0)
+  const [image, setImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false)
+  const [isClicked, setIsClicked] = useState(false);
+  const [base64, setBase64] = useState("");
 
   const [recommendedRecipes, setRecommendedRecipes] = useState([]);
   // const targetCalories = 2000; // Set your desired target calories here
@@ -293,7 +303,7 @@ const ProgressScreen = () => {
     }
     return (
       <Text style={styles.emptyMealRecipe}>
-        No recipe selected for this meal
+        No recipe selected
       </Text>
     );
   };
@@ -339,6 +349,10 @@ const ProgressScreen = () => {
         totalCalories += dinnerRecipe.nutrition.nutrients[0].amount;
       }
     }
+
+    if (foodRecognitionCalories) {
+      totalCalories += foodRecognitionCalories
+    }
     return totalCalories.toFixed(2);
   };
 
@@ -365,6 +379,14 @@ const ProgressScreen = () => {
     return null; // Return null if no condition is met
   };
 
+  const handleResetFoodRecognition = () => {
+    setFoodRecognitionCalories(0)
+    setImage(null)
+    setIsLoading(false)
+    setIsClicked(false)
+    setBase64("")
+  }
+
   // handle reset
   const handleReset = () => {
     setSelectedDropdownValue("none");
@@ -376,6 +398,7 @@ const ProgressScreen = () => {
     setSelectedRecipeId(null);
     setRecipeDetails(null);
     setSelectedFoodAndDrink(null);
+    handleResetFoodRecognition()
   };
 
   //handle submit
@@ -432,9 +455,109 @@ const ProgressScreen = () => {
     }
   };
 
+  const handleImageUploadClick = () => {
+    setIsClicked(!isClicked);
+  };
+
+  const handleConvertImageToBase64 = async (imageUri) => {
+    try {
+      const base64 = await FileSystem.readAsStringAsync(imageUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      setBase64(base64);
+    } catch (error) {
+      console.error("Error converting image to base64:", error);
+    }
+  };
+
+  const handlePickImage = async () => {
+    handleImageUploadClick()
+    // Ask for permission to access the camera roll
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (status !== "granted") {
+      alert("Permission to access camera roll is required!");
+      return;
+    }
+
+    // Launch the image picker
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      // Set the selected image
+
+      setImage({ uri: result.assets[0].uri });
+      handleConvertImageToBase64(result.assets[0].uri);
+    }
+  };
+
+
+
+  const handleAddToCalories = async () => {
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.EXPO_PUBLIC_OPEN_AI}`
+    };
+
+    const payload = {
+      "model": "gpt-4-vision-preview",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Estimate the type of food in the image and a rough estimate of the calories only. Make it concise and formatted. Do not add filler words. Provide the data in a json, where the key is the food, and the value is a numeric average of the estimate."
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": `data:image/jpeg;base64,${base64}`
+              }
+            }
+          ]
+        }
+      ],
+      "max_tokens": 1500,
+    };
+
+    setIsLoading(true)
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(payload)
+    })
+
+    const responseData = await response.json()
+
+    try {
+
+      const result = responseData?.["choices"]?.[0]?.["message"]?.["content"]
+      let startIndex = result?.indexOf('{');
+      let endIndex = result?.lastIndexOf('}');
+      let formattedResult = JSON.parse(result.substring(startIndex, endIndex + 1).trim());
+      setIsLoading(false)
+
+      const totalCal = Object.values(formattedResult).reduce((accumulator, value) => accumulator + Number(value), 0)
+      if (totalCal) {
+        setFoodRecognitionCalories(Number(totalCal))
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     fetchCurrentUser();
   }, []);
+
+  const imageDimensions = Dimensions.get('window').width * 0.8
 
   return (
     <ScrollView style={styles.scrollContainer}>
@@ -444,11 +567,61 @@ const ProgressScreen = () => {
         }}
       >
         <SafeAreaView style={styles.container}>
+          {/* Today's Meals */}
+          <View style={styles.componentContainer}>
+            <Text style={styles.subTitle}>Today's Meal</Text>
+            <View style={styles.componentRow}>
+              <Text style={[styles.smallHeadings, styles.boldText]}>Breakfast</Text>
+              {renderMealRecipe(breakfastRecipe)}
+            </View>
+            <View style={styles.componentRow}>
+              <Text style={[styles.smallHeadings, styles.boldText]}>Lunch</Text>
+              {renderMealRecipe(lunchRecipe)}
+            </View>
+            <View style={styles.componentRow}>
+              <Text style={[styles.smallHeadings, styles.boldText]}>Dinner</Text>
+              {renderMealRecipe(dinnerRecipe)}
+            </View>
+            <View style={styles.componentRow}>
+              <Text style={[styles.smallHeadings, styles.boldText]}>Recognized Image</Text>
+              {foodRecognitionCalories === 0 ? <Text style={styles.emptyMealRecipe}>
+                No Recognized Food
+              </Text> : <View style={styles.mealRecipe}>
+                <Text style={styles.mealDetails}>{foodRecognitionCalories} kcal</Text>
+              </View>}
+            </View>
+            {/* meal recipe recommendation*/}
+            {recommendedRecipes.meals && recommendedRecipes.meals.length > 0 && (
+              <View style={styles.componentContainer}>
+                <Text style={styles.subTitle}>
+                  Recommended Recipes:
+                </Text>
+                {recommendedRecipes.meals.map((recipe, index) => (
+                  <Text
+                    key={index}
+                    onPress={() => handleRecipeDetails(recipe.id)}
+                    style={styles.recommendationsText}
+                  >
+                    {recipe.title}
+                  </Text>
+                ))}
+              </View>
+            )}
+            <View style={styles.componentRow}>
+              <Button
+                onPress={handleGenerateRecommendations}
+                style={styles.submitButton}
+              >
+                <Text style={styles.buttonText}>Generate Daily Recommendation</Text>
+              </Button>
+            </View>
+          </View>
+
+
           {/* dropdown to choose meal */}
-          <View style={styles.pickerContainer}>
-            <Text style={styles.mealSelector}>Choose meal to add</Text>
-            <Picker
-              selectedValue={selectedDropdownValue}
+          <View style={styles.componentContainer}>
+            <Text style={styles.subTitle}>Choose meal to add</Text>
+            <RNPickerSelect
               onValueChange={(itemValue) => {
                 setSelectedDropdownValue(itemValue);
                 if (itemValue === "bf") {
@@ -459,154 +632,230 @@ const ProgressScreen = () => {
                   handleDinnerSelect(null); // Reset dinner
                 }
               }}
-              style={styles.dropdown}
-            >
-              <Picker.Item label="Select a meal" value="none" />
-              <Picker.Item label="Breakfast" value="bf" />
-              <Picker.Item label="Lunch" value="lunch" />
-              <Picker.Item label="Dinner" value="din" />
-            </Picker>
+              items={[
+                { label: "Breakfast", value: "bf" },
+                { label: "Lunch", value: "lunch" },
+                { label: "Dinner", value: "din" },
+              ]}
+              style={{
+                inputIOS: { height: 50, width: "100%", paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: "#C6C6CD", borderRadius: 4 },
+                inputAndroid: { height: 50, width: "100%", paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: "#C6C6CD", borderRadius: 4 },
+                placeholder: { color: '#676767', fontSize: 16, },
+                iconContainer: {
+                  top: 15, right: 18
+                },
+              }}
+              value={selectedDropdownValue}
+              placeholder={{ label: "Select a meal", value: null, color: '#808080' }}
+              useNativeAndroidPickerStyle={false}
+              Icon={() => {
+                return <Icon name="sort-down" size={16} color="#676767" />;
+              }}
+            />
+            <View style={styles.spacer}></View>
           </View>
+
 
           {/* search for member recipe */}
-          <Text style={styles.subTitle}>Available member recipes</Text>
-          <Picker
-            selectedValue={setSelectedRecipeId ? setSelectedRecipeId._id : null}
-            onValueChange={(itemValue) => handleSelectMemberRecipe(itemValue)}
-            style={styles.dropdown}
-          >
-            <Picker.Item label="Select a recipe" value={null} />
-            {memberRecipes.map((recipe) => (
-              <Picker.Item
-                key={recipe._id}
-                label={recipe.name}
-                value={recipe._id}
-              />
-            ))}
-          </Picker>
+          <View style={styles.componentContainer}>
+            <Text style={styles.subTitle}>Member Recipes</Text>
+            <RNPickerSelect
+              onValueChange={(itemValue) => handleSelectMemberRecipe(itemValue)}
+              items={[
+                ...memberRecipes.map((recipe) => ({
+                  label: recipe.name,
+                  value: recipe._id,
+                })),
+              ]}
+              style={{
+                inputIOS: { height: 50, width: "100%", paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: "#C6C6CD", borderRadius: 4 },
+                inputAndroid: { height: 50, width: "100%", paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: "#C6C6CD", borderRadius: 4 },
+                placeholder: { color: '#676767', fontSize: 16, },
+                iconContainer: {
+                  top: 15, right: 18
+                },
+              }}
+              value={setSelectedRecipeId ? setSelectedRecipeId._id : null}
+              placeholder={{ label: "Select a recipe", value: null, color: '#808080' }}
+              useNativeAndroidPickerStyle={false}
+              Icon={() => {
+                return <Icon name="sort-down" size={16} color="#676767" />;
+              }}
+
+            />
+            <View style={styles.spacer}></View>
+          </View>
+
+
+          <View style={styles.componentContainer}>
+            <Text style={styles.subTitle}>Available Food & Drinks</Text>
+            {/* <Picker
+              style={styles.dropdown}
+
+              selectedValue={
+                setSelectedFoodAndDrink ? setSelectedFoodAndDrink._id : null
+              }
+              onValueChange={(itemValue) => handleFoodAndDrinks(itemValue)}
+            >
+              <Picker.Item label="Select food and drinks" value={null} />
+              {foodAndDrinks.map((recipe) => (
+                <Picker.Item
+                  key={recipe._id}
+                  label={recipe.name}
+                  value={recipe._id}
+                />
+              ))}
+            </Picker> */}
+            <RNPickerSelect
+              onValueChange={(itemValue) => handleFoodAndDrinks(itemValue)}
+              items={[
+                ...foodAndDrinks.map((recipe) => ({
+                  label: recipe.name,
+                  value: recipe._id,
+                })),
+              ]}
+              style={{
+                inputIOS: { height: 50, width: "100%", paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: "#C6C6CD", borderRadius: 4 },
+                inputAndroid: { height: 50, width: "100%", paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: "#C6C6CD", borderRadius: 4 },
+                placeholder: { color: '#676767', fontSize: 16, },
+                iconContainer: {
+                  top: 15, right: 18
+                },
+              }}
+              value={setSelectedFoodAndDrink ? setSelectedFoodAndDrink._id : null}
+              placeholder={{ label: "Select food and drinks", value: null, color: '#808080' }}
+              useNativeAndroidPickerStyle={false}
+              Icon={() => {
+                return <Icon name="sort-down" size={16} color="#676767" />;
+              }}
+
+            />
+            <View style={styles.spacer}></View>
+          </View>
+
 
           {/* search for online recipe */}
-          <Text style={styles.subTitle}>Available online recipes</Text>
-          <View style={styles.searchContainer}>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search for online recipe"
-              value={search}
-              onChangeText={(text) => handleSearch(text)}
-            />
-          </View>
-
-          <Text style={styles.subTitle}>Available food and drinks</Text>
-          <Picker
-            selectedValue={
-              setSelectedFoodAndDrink ? setSelectedFoodAndDrink._id : null
-            }
-            onValueChange={(itemValue) => handleFoodAndDrinks(itemValue)}
-            style={styles.dropdown}
-          >
-            <Picker.Item label="Select food and drinks" value={null} />
-            {foodAndDrinks.map((recipe) => (
-              <Picker.Item
-                key={recipe._id}
-                label={recipe.name}
-                value={recipe._id}
+          <View style={styles.componentContainer}>
+            <Text style={styles.subTitle}>Available Online Recipes</Text>
+            <View style={styles.searchContainer}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search for online recipe"
+                value={search}
+                onChangeText={(text) => handleSearch(text)}
               />
-            ))}
-          </Picker>
-
-          {/* list of recipes */}
-          <View style={styles.searchList}>
-            {loading ? (
-              <Text style={styles.recipeTitle}>Loading...</Text>
-            ) : (
-              <ScrollView>
-                {onlineRecipes.map((item) => (
-                  <TouchableOpacity
-                    key={item.id.toString()}
-                    onPress={() => handleItemClick(item.id)}
-                  >
-                    <Text style={styles.recipeTitle}>{item.title}</Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            )}
+            </View>
+            {/* list of recipes */}
+            <View style={styles.searchList}>
+              {loading ? (
+                <Text style={styles.recipeTitle}>Loading...</Text>
+              ) : (
+                <ScrollView>
+                  {onlineRecipes.map((item) => (
+                    <TouchableOpacity
+                      key={item.id.toString()}
+                      onPress={() => handleItemClick(item.id)}
+                    >
+                      <Text style={styles.recipeTitle}>{item.title}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              )}
+            </View>
           </View>
 
-          {/* meal recipe recommandation*/}
-          {recommendedRecipes.meals && recommendedRecipes.meals.length > 0 && (
-            <View style={styles.recommendedRecipesContainer}>
-              <Text style={styles.subTitle}>
-                Recommended Recipes for the Day:
-              </Text>
-              {recommendedRecipes.meals.map((recipe, index) => (
-                <Text
-                  key={index}
-                  onPress={() => handleRecipeDetails(recipe.id)}
-                  style={styles.recommendationsText}
+          {/* food recognition */}
+          <View style={styles.componentContainer}>
+            <Text style={styles.subTitle}>Food Recognition Log</Text>
+
+            <View>
+              {
+                foodRecognitionCalories || image ? 
+                <View style={styles.foodRecognitionContainer}>
+
+                  {image && <Image
+                    source={image}
+                    style={[{ width: imageDimensions, height: imageDimensions, borderRadius: 24 }, isClicked && styles.clickedImage]}
+                  />}
+                  {
+                    isLoading && <Progress.Circle size={50} indeterminate={true} />
+                  }
+                  {foodRecognitionCalories !== 0 && <View style={styles.componentRow}>
+                    <Text style={[styles.smallHeadings, styles.boldText]}>Food Recognition Calories</Text>
+                    <Text style={styles.smallHeadings}>{foodRecognitionCalories} cal</Text>
+                  </View>}
+                  <View style={styles.componentRow}>
+                    <View style={styles.leftComponent}>
+                      <TouchableOpacity
+                        onPress={handleResetFoodRecognition}
+                        style={styles.resetButton}
+                      >
+                        <Text style={styles.buttonText}>Reset</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.rightComponent}>
+                      <TouchableOpacity
+                        onPress={handleAddToCalories}
+                        style={styles.submitButton2}
+                      >
+                        <Text style={styles.buttonText}>Add To Calories</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View> : <Button
+                  onPress={handlePickImage}
+                  style={styles.submitButton}
                 >
-                  {recipe.title}
-                </Text>
-              ))}
-            </View>
-          )}
-          <Button
-            onPress={handleGenerateRecommendations}
-            style={styles.resetButton}
-          >
-            Generate Daily Recommendations
-          </Button>
+                  <Text style={styles.buttonText}>Recognize Food</Text>
+                </Button>
+              }
 
-          {/* set Recipe for 3 meals */}
-          <View style={styles.componentContainer}>
-            <View style={styles.leftComponent}>
-              <Text style={styles.subTitle}>Breakfast</Text>
-              {renderMealRecipe(breakfastRecipe)}
-            </View>
-            <View style={styles.middleComponent}>
-              <Text style={styles.subTitle}>Lunch</Text>
-              {renderMealRecipe(lunchRecipe)}
-            </View>
-            <View style={styles.rightComponent}>
-              <Text style={styles.subTitle}>Dinner</Text>
-              {renderMealRecipe(dinnerRecipe)}
+
+
             </View>
           </View>
 
-          {/* total calories */}
+          {/* Calorie Intake */}
           <View style={styles.componentContainer}>
-            <View style={styles.leftComponent}>
-              <Text style={styles.smallHeadings}>Total Calories</Text>
-              <Text style={styles.smallText}>{handleTotalCalories()} cal</Text>
+            <Text style={[styles.subTitle]}>Calorie Intake</Text>
+            <View style={styles.componentRow}>
+              <Text style={[styles.smallHeadings, styles.boldText]}>Total Calories</Text>
+              <Text style={styles.smallHeadings}>{handleTotalCalories()} cal</Text>
             </View>
-            <View style={styles.middleComponent}>
-              <Text style={styles.smallHeadings}>Target Calories</Text>
-              <Text style={styles.smallText}>{targetCalories}</Text>
+            <View style={styles.componentRow}>
+              <Text style={[styles.smallHeadings, styles.boldText]}>Target Calories</Text>
+              <Text style={styles.smallHeadings}>{targetCalories} cal</Text>
             </View>
-            <View style={styles.rightComponent}>
-              <Text style={styles.smallHeadings}>Objective</Text>
+            <View style={styles.componentRow}>
+              <Text style={[styles.smallHeadings, styles.boldText]}>Objective</Text>
               {handleObjectiveIcon()}
             </View>
-          </View>
-          <View style={styles.componentContainer}>
-            <View style={styles.leftComponent}>
-              <Button onPress={() => handleReset()} style={styles.resetButton}>
-                Reset
-              </Button>
+            {/* reset and submit button */}
+            <View style={styles.componentRow}>
+              <View style={styles.leftComponent}>
+                <TouchableOpacity
+                  onPress={() => handleReset()}
+                  style={styles.resetButton}
+                >
+                  <Text style={styles.buttonText}>Reset</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.rightComponent}>
+                <TouchableOpacity
+                  onPress={() => handleSubmit()}
+                  style={styles.submitButton2}
+                >
+                  <Text style={styles.buttonText}>Submit</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.rightComponent}>
-              <Button
-                onPress={() => handleSubmit()}
-                style={styles.submitButton}
-              >
-                Submit
-              </Button>
-            </View>
           </View>
-          <TouchableOpacity>
+
+          {/* <TouchableOpacity>
             <Button onPress={handleSummary} style={styles.submitButton}>
               View Summary
             </Button>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </SafeAreaView>
       </TouchableWithoutFeedback>
     </ScrollView>
@@ -618,29 +867,30 @@ export default ProgressScreen;
 const styles = StyleSheet.create({
   //containers
   scrollContainer: {
-    flex: 1,
-    backgroundColor: "#FCFCD3",
+    backgroundColor: "#F2F2F2",
   },
   container: {
+    backgroundColor: "#F2F2F2",
+    //alignItems: "center",
+    // padding: 20,
+    //marginHorizontal: 5,
     flex: 1,
-    backgroundColor: "#FCFCD3",
-    alignItems: "center",
+    margin: 20,
   },
-  pickerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  dropdown: {
-    width: 200,
-    borderWidth: 1,
-    borderColor: "gray",
-  },
+  // dropdown: {
+  //   width: "100%",
+  //   borderWidth: 1,
+  //   borderColor: "#ED6F21",
+  //   borderRadius: 16,
+  // },
   searchInput: {
+    height: 50,
+    width: "100%",
+    paddingHorizontal: 16,
+    fontSize: 16,
     borderWidth: 1,
-    borderColor: "gray",
-    width: 200,
-    margin: 10,
-    padding: 5,
+    borderColor: "#C6C6CD",
+    borderRadius: 4,
   },
   searchContainer: {
     flexDirection: "row",
@@ -649,25 +899,23 @@ const styles = StyleSheet.create({
   //search result
   searchList: {
     width: 385,
-    padding: 10,
+    // padding: 10,
     margin: 5,
   },
   //text
   mealDetails: {
-    fontSize: 15,
-    textAlign: "center",
-  },
-  mealSelector: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 16,
+    textAlign: "right",
   },
   subTitle: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
+    color: "#000",
+    marginBottom: 5,
   },
   smallHeadings: {
-    fontSize: 13,
+    fontSize: 16,
     textAlign: "center",
   },
   smallText: {
@@ -675,7 +923,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-  //recommanded recipe
+  emptyMealRecipe: {
+    fontSize: 16,
+  },
+  buttonText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  boldText: {
+    fontWeight: "bold",
+  },
+  //recommended recipe
   recommendedRecipesContainer: {
     width: 385,
     padding: 5,
@@ -692,44 +951,93 @@ const styles = StyleSheet.create({
   },
   //component
   componentContainer: {
-    flexDirection: "row", // Arrange components horizontally from left to right
-    justifyContent: "space-between", // Space them evenly
-    alignItems: "center", // Center them vertically
-    paddingTop: 5,
-    paddingBottom: 5,
-    margin: 5,
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
+  },
+  componentRow: {
+    flexDirection: "row",
+    // alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 10,
   },
   leftComponent: {
     flex: 1, // Takes up 1/3 of the available space
-    paddingTop: 10,
-    paddingBottom: 10,
+    //alignContent: "flex-start",
+    alignItems: "flex-start",
   },
-  middleComponent: {
-    flex: 1, // Takes up 1/3 of the available space
-    paddingTop: 10,
-    paddingBottom: 10,
-  },
+  // middleComponent: {
+  //   flex: 1, // Takes up 1/3 of the available space
+  // },
   rightComponent: {
     flex: 1, // Takes up 1/3 of the available space
-    paddingTop: 10,
-    paddingBottom: 10,
+    //alignContent: "flex-end",
+    alignItems: "flex-end",
   },
+  // flexRowComponent: {
+  //   display: "flex",
+  //   paddingTop: 8,
+  //   paddingBottom: 8,
+  //   justifyContent: "space-between",
+  //   alignItems: "centre",
+  //   width: "100%",
+  //   flexDirection: "row",
+  //   gap: 16,
+  // },
+  // flexColumnComponent: {
+  //   display: "flex",
+  //   paddingTop: 8,
+  //   paddingBottom: 8,
+  //   justifyContent: "space-between",
+  //   alignItems: "centre",
+  //   width: "100%",
+  //   flexDirection: "column",
+  //   gap: 16,
+  // },
   iconObj: {
     textAlign: "center",
   },
   //buttons
   submitButton: {
-    backgroundColor: "lightgreen",
-    margin: 5,
+    backgroundColor: "#ED6F21",
     borderRadius: 10,
+    width: "100%",
   },
   resetButton: {
-    backgroundColor: "lightblue",
-    margin: 5,
+    backgroundColor: "#A9A9A9",
+    // marginVertical: 5,
+    padding: 10,
     borderRadius: 10,
+    width: "95%",
+    alignItems: "center",
+  },
+  submitButton2: {
+    backgroundColor: "#ED6F21",
+    padding: 10,
+    // marginVertical: 5,
+    borderRadius: 10,
+    width: "95%",
+    alignItems: "center",
   },
   recipeTitle: {
     marginLeft: 20,
+  },
+  spacer: {
+    marginVertical: 5,
+  },
+  foodRecognitionContainer: {
+    alignItems: "center",
+    gap: 8,
   },
 });
 
@@ -741,7 +1049,7 @@ const styles = StyleSheet.create({
           selectedValue={selectedDropdownValue}
           onValueChange={(itemValue, itemIndex) => setSelectedDropdownValue(itemValue)}
           style={styles.dropdown}
-        > 
+        >
 
         <TouchableOpacity style={styles.addButton} onPress={() => handleAddRecipe()}>
           <Icon name="plus" size={20} color="white" />

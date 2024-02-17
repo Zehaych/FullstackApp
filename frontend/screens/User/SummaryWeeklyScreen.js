@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
-import { View, Dimensions, StyleSheet, Text, ScrollView } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 import { BarChart } from "react-native-chart-kit";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
 import * as Progress from "react-native-progress";
 import { Context } from "../../store/context";
-import { useFocusEffect } from '@react-navigation/native';
 //import { calculateWeeklyDataUtil } from './utils';
 
 const SummaryWeeklyScreen = ({ route }) => {
@@ -19,7 +17,7 @@ const SummaryWeeklyScreen = ({ route }) => {
     //const targetCalories = currentUser.calorie * 7;
     const CaloriesLog = currentUserData.dailyCaloriesLog;
     console.log("1.=====weekly===== userData: " + currentUserData.username + "  CurrentUser's targetCalories: " + CaloriesLog[CaloriesLog.length - 1].total_calories);
-        
+
 
     useEffect(() => {
         //calculate weekly total calories and set the state
@@ -31,7 +29,7 @@ const SummaryWeeklyScreen = ({ route }) => {
     //week Number of the year
     const getWeekNumber = (date) => {
         const d = new Date(date);
-        d.setHours(0, 0, 0, 0);             // Set to 12 midnight  
+        d.setHours(0, 0, 0, 0);             // Set to 12 midnight
         d.setDate(d.getDate() + 4 - (d.getDay() || 7));             //  Set to nearest Thursday: current date + 4 - current day number, make Sunday's day number 7
         const yearStart = new Date(d.getFullYear(), 0, 1);          // start of current year
         const weekNumber = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
@@ -45,12 +43,12 @@ const SummaryWeeklyScreen = ({ route }) => {
         let currentWeek = null;
         let weeklyTotal = 0;
         let weeklyDays = [];
-    
+
         //iterate through daily calories log
         for (const entry of dailyCaloriesLog) {
             const entryDate = new Date(entry.date);
             const entryWeek = getWeekNumber(entryDate);
-        
+
             // Check if a new week starts
             if (currentWeek !== entryWeek) {
                 //save weekly data for the previous week
@@ -62,13 +60,13 @@ const SummaryWeeklyScreen = ({ route }) => {
                         exceededTarget: weeklyTotal > dailyTargetCalories * 7, //compare weekly total with weekly target
                     });
                 }
-        
+
                 //get for the new week
                 currentWeek = entryWeek;
                 weeklyTotal = 0;
                 weeklyDays = [];
             }
-        
+
             //add daily calories for the current week
             weeklyTotal += entry.total_calories;
             weeklyDays.push({
@@ -76,7 +74,7 @@ const SummaryWeeklyScreen = ({ route }) => {
                 total_calories: entry.total_calories,
             });
         }
-    
+
         // Save the last week
         if (currentWeek !== null) {
             weeklyData.push({
@@ -86,77 +84,87 @@ const SummaryWeeklyScreen = ({ route }) => {
                 exceededTarget: weeklyTotal > dailyTargetCalories * 7,
             });
         }
-    
+
         return weeklyData;
     };
 
     const chartData = {
-        labels: weeklyCalories.map((week) => `Week ${week.week}`),
+        labels: weeklyCalories.map((week) => ` ${week.week}`),
+        // labels: weeklyCalories.map((week) => `week ${week.week}`),
         datasets: [
             {
-                data: weeklyCalories.map((week) => week.totalCalories),
+                data: weeklyCalories.map((week) => Math.round(week.totalCalories)),
                 color: (opacity = 1) => (week.exceededTarget ? `rgba(255, 0, 0, ${opacity})` : `rgba(134, 65, 244, ${opacity})`),
             },
         ],
     };
-    
+
     const chartConfig = {
         backgroundGradientFrom: '#fff',
         backgroundGradientTo: '#fff',
-        color: (opacity = 1) => `rgba(0, 224, 255, ${opacity})`,
+        color: (opacity = 1) => `rgba(255, 165, 0, ${opacity})`,
         labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-        style: {
-            borderRadius: 16,
-        },
+        // style: {
+        //     borderRadius: 16,
+        // },
+        barPercentage: 0.8,
     };
 
-    const weeklyTargetCalories = targetCalories * 7; 
+    const weeklyTargetCalories = targetCalories * 7;
     const roundTargetCalories = Math.round(weeklyTargetCalories);
 
     const weeklyDataSorted = [...weeklyData].sort((a, b) => b.week - a.week);
 
     return (
-        <View style={styles.container}>
-            <View style={styles.textContainer}>
-                <Text style={styles.chartTextBold}>Weekly Intake</Text>
-            </View>
-            <BarChart
-                data={chartData}
-                width={Dimensions.get("window").width - 16}
-                height={220}
-                yAxisSuffix=" Cal"
-                chartConfig={chartConfig}
-                verticalLabelRotation={0}
-            />
-            <Text style={styles.text}>Weekly's total Calories intake: </Text>
-            <ScrollView style={styles.chartContainer}>
-                {weeklyDataSorted.map((week) => (
-                    <View key={week.week}>
-                    <Text style={styles.chartTextBold}>Weekly Intake - Week {week.week}</Text>
-                    <View style={styles.chartContainerToo}>
-                        <Progress.Bar
-                        progress={week.totalCalories / roundTargetCalories} // Progress based on the ratio
-                        width={200}
-                        height={15}
-                        color="#00e0ff"
-                        unfilledColor="#3d5875"
-                        borderWidth={0}
+        <ScrollView>
+            <View style={styles.introSection}>
+                <View style={styles.componentContainer}>
+                    <Text style={styles.subTitle}>Weekly Intake</Text>
+                    <ScrollView horizontal={true}>
+                        <BarChart
+                            data={chartData}
+                            width={Dimensions.get("window").width - 16}
+                            height={220}
+                            yAxisSuffix="cal"
+                            chartConfig={chartConfig}
+                            verticalLabelRotation={0}
                         />
-                        <View>
-                        <Text style={styles.chartTextBold}>
-                            {Math.round(week.totalCalories)} / {roundTargetCalories} Cal consumed
-                        </Text>
-                        <Text style={styles.chartText}>
-                            {week.totalCalories > roundTargetCalories
-                            ? `${Math.round(week.totalCalories - roundTargetCalories)} Cal more`
-                            : `${Math.round(roundTargetCalories - week.totalCalories)} Cal less`}
-                        </Text>
-                        </View>
+                    </ScrollView>
+                </View>
+
+                <View style={styles.componentContainer}>
+                    <Text style={styles.subTitle}>Total Calories Intake </Text>
+                    <View style={styles.progresslist}>
+                        {weeklyDataSorted.map((week) => (
+                            <View key={week.week}>
+                                <Text style={[styles.normalText, styles.bold]}>Week {week.week}</Text>
+                                <View style={styles.flexColumnComponent}>
+                                    <Progress.Bar
+                                        progress={week.totalCalories / roundTargetCalories} // Progress based on the ratio
+                                        width={null}
+                                        height={15}
+                                        color="#FF9130"
+                                        unfilledColor="#FFEBCC"
+                                        borderWidth={0}
+                                    />
+                                    <View style={styles.flexRowComponent}>
+                                        <Text style={[styles.normalText]}>
+                                            {Math.round(week.totalCalories)} / {roundTargetCalories} cal consumed
+                                        </Text>
+                                        <Text style={[styles.normalText]}>
+                                            {week.totalCalories > roundTargetCalories
+                                                ? `${Math.round(week.totalCalories - roundTargetCalories)} cal more`
+                                                : `${Math.round(roundTargetCalories - week.totalCalories)} cal less`}
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+                        ))}
                     </View>
-                    </View>
-                ))}
-            </ScrollView>
-        </View>
+                </View>
+            </View>
+        </ScrollView>
+
     );
 };
 
@@ -164,72 +172,59 @@ export default SummaryWeeklyScreen;
 
 const styles = StyleSheet.create({
     //containers
-    container: {
-        flex: 1,
-        backgroundColor: "#FCFCD3",
-        alignItems: "center",
+    introSection: {
+        padding: 12,
+        borderBottomColor: "#ccc",
     },
-    textContainer: {    
-        marginTop: 10,
-        marginBottom: 10,
-    },
-    chartContainer: {
-        marginTop: 15,
-        marginBottom: 15,
-        margin: 5,
-        width: "98%",
-        borderWidth:2,
-        borderColor: "#CCCCCC",
-    },
-    chartContainerToo: {
-        flex: 1,
-        marginTop: 10,
-        marginBottom: 10,
-        margin: 5,
-        alignItems: "center",
-        alignContent: "center",
-    },
+    // component
     componentContainer: {
-        flexDirection: "row", // Arrange components horizontally from left to right
-        justifyContent: "space-between", // Space them evenly
-        alignItems: "center", // Center them vertically
-        paddingTop: 5,
-        paddingBottom: 5,
-        margin: 5,
+        display: "flex",
+        width: "100%",
+        padding: 16,
+        backgroundColor: "#FFF",
+        borderRadius: 20,
+        marginBottom: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
-    leftComponent: {
-        flex: 1, // Takes up 1/3 of the available space
-        paddingTop: 10,
-        paddingBottom: 10,
+    flexRowComponent: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "100%",
+        flexDirection: "row",
     },
-    middleComponent: {
-        flex: 1, // Takes up 1/3 of the available space
-        paddingTop: 10,
-        paddingBottom: 10,
-    },
-    rightComponent: {
-        flex: 1, // Takes up 1/3 of the available space
-        paddingTop: 10,
-        paddingBottom: 10,
+    flexColumnComponent: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "left",
+        flexDirection: "column",
+        marginVertical: 4,
     },
     //text
-    text: {
-        fontSize: 18,
-        fontWeight: "bold",
-        textAlign: "center",
-    },
-    subText: {
-        fontSize: 16,
-        textAlign: "center",
-    },
-    chartText: {
-        fontSize: 16,
-        textAlign: "center",
-    },
-    chartTextBold: {
+    subTitle: {
         fontSize: 20,
         fontWeight: "bold",
-        textAlign: "center",
+        color: "#FF9130",
+        marginBottom: 10
+    },
+    normalText: {
+        fontSize: 14,
+    },
+    orangeText: {
+        color: "#FF9130"
+    },
+    bold: {
+        fontWeight: "bold"
+    },
+    progresslist: {
+        gap: 16
     },
 });
 

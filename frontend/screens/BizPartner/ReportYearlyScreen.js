@@ -115,13 +115,18 @@ const ReportYearlyScreen = () => {
     return (
       <View style={styles.itemContainer}>
         <Text style={styles.title}>{item.recipeName}</Text>
-        <Text style={styles.subtitle}>Total Sales: ${item.totalPrice}</Text>
-        <Text style={styles.subtitle}>
-          Total Quantity Sold: {item.quantity}
-        </Text>
-        <Text style={styles.subtitle}>
-          Most Ordered Time: {item.mostOrderedTime}
-        </Text>
+        <View style={styles.componentContainer}>
+          <Text style={styles.subtitle1}>Total Sales</Text>
+          <Text style={styles.subtitle}>${item.totalPrice}</Text>
+        </View>
+        <View style={styles.componentContainer}>
+          <Text style={styles.subtitle1}>Total Quantity Sold</Text>
+          <Text style={styles.subtitle}>{item.quantity}</Text>
+        </View>
+        <View style={styles.componentContainer}>
+          <Text style={styles.subtitle1}>Most Ordered Time</Text>
+          <Text style={styles.subtitle}>{item.mostOrderedTime}</Text>
+        </View>
       </View>
     );
   };
@@ -129,11 +134,17 @@ const ReportYearlyScreen = () => {
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
       <View style={styles.container}>
-        <Text style={styles.header}>Total Sales: ${totalSales}</Text>
-        <Text style={styles.header}>
-          Most Ordered: {mostOrderedRecipes.join(", ")}
-        </Text>
-
+        <View style={styles.detailBox}>
+          <Text style={styles.title2}>Yearly Sales</Text>
+          <View style={styles.componentContainer}>
+            <Text style={styles.subtitle1}>Total Sales</Text>
+            <Text style={styles.subtitle}>${totalSales}</Text>
+          </View>
+          <View style={styles.componentContainer}>
+            <Text style={styles.subtitle1}>Most Ordered</Text>
+            <Text style={styles.subtitle}>{mostOrderedRecipes.join("\n")}</Text>
+          </View>
+        </View>
         <FlatList
           data={groupedOrders}
           renderItem={renderItem}
@@ -151,7 +162,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#FCFCD3",
+    backgroundColor: "#f5f5f5",
     padding: 10,
   },
 
@@ -169,25 +180,59 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 10,
-    borderRadius: 10,
+    borderRadius: 20,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
+    shadowOffset: { 
+      width: 0, 
+      height: 2 
     },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
+    //textAlign: "center",
+  },
+  title2: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#ED6F21",
+    marginBottom: 10,
     textAlign: "center",
   },
-  subtitle: {
-    fontSize: 16,
+  subtitle: { 
+    fontSize: 16, 
     marginBottom: 5,
+    textAlign: "right",
+    width: "60%",
+  },
+  subtitle1: {
+    fontSize: 16,
+    color: "grey",
+    marginBottom: 5,
+  },
+  detailBox: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 20,
+    margin: 10,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
+  },
+  componentContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
   },
 });
 

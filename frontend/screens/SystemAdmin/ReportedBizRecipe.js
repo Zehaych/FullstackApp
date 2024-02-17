@@ -43,53 +43,94 @@ const ReportedBizRecipe = () => {
 
     return (
         <View style={styles.container}>
-        <Text style={styles.title}>{currentUser.username}</Text>
-        <Text style={styles.subtitle}>Reported Business Partner Recipes</Text>
-        <FlatList
-                data={reportedRecipes}
-                keyExtractor={item => item._id}
-                renderItem={({ item }) => (
-                    <TouchableOpacity 
-                        style={styles.recipeItem} 
-                        onPress={() => handleRecipePress(item)}
-                    >
-                        <Text style={styles.recipeTitle}>{item.name}</Text>
-                    </TouchableOpacity>
-                )}
-        />
+            <View style={styles.detailBox}>
+                <View style={styles.componentContainer}>
+                    <View style={styles.leftComponent1}>
+                        <Text style={styles.title}>No. </Text>
+                    </View>
+                    <View style={styles.rightComponent1}>
+                        <Text style={styles.title}>Reported Recipes</Text>
+                    </View>
+                </View>
+                <FlatList
+                    data={reportedRecipes}
+                    keyExtractor={item => item._id}
+                    renderItem={({ item, index }) => (
+                        <TouchableOpacity 
+                            onPress={() => handleRecipePress(item)}
+                        >
+                            <View style={styles.componentContainer}>
+                                <View style={styles.leftComponent}>
+                                    <Text style={styles.numbering}>{index + 1}</Text>
+                                </View>
+                                <View style={styles.rightComponent}>
+                                    <Text style={styles.subTitle}>{item.name}</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                />
+            </View>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        // padding: 10,
+        backgroundColor: '#f5f5f5',
+    },
     title: {
-        marginTop: 30,
+        marginTop: 10,
         fontSize: 20,
         fontWeight: "bold",
         marginBottom: 10,
     },
-    subtitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        color: "#333", 
-        textAlign: "center",
+    componentContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 10,
+        paddingHorizontal: 20,
     },
-    container: {
+    leftComponent: {
+        flex: 0.5,
+        paddingLeft: 10,
+        marginBottom:10,
+    },
+    rightComponent: {
         flex: 1,
-        padding: 10,
-        backgroundColor: '#f5f5f5',
+        marginBottom:10,
     },
-    recipeItem: {
-        backgroundColor: 'white',
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
-        borderRadius: 5,
+    leftComponent1: {
+        flex: 0.5,
     },
-    recipeTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
+    rightComponent1: {
+        flex: 1,
+    },
+    subTitle: {
+        fontSize: 16,
+    },   
+    detailBox: {
+        flex: 1,
+        backgroundColor: "#FFFFFF",
+        borderRadius: 20,
+        padding: 16,
+        margin: 20,
+        shadowColor: "#000000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowRadius: 3.84,
+        shadowOpacity: 0.25,
+        elevation: 5,
+    },
+    numbering: {
+        fontWeight: "bold",
+        fontSize: 16,
+        marginRight: 10,
     },
 });
 

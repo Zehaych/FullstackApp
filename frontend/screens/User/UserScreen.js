@@ -1,24 +1,20 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { useContext } from "react";
 import {
-  View,
-  SafeAreaView,
-  StyleSheet,
   Alert,
+  Image,
+  SafeAreaView,
   ScrollView,
+  StyleSheet,
+  View,
 } from "react-native";
 import {
-  Avatar,
-  Title,
-  Caption,
   Text,
-  TouchableRipple,
-  Divider,
+  Title,
+  TouchableRipple
 } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Context } from "../../store/context";
-import { useState, useEffect } from "react";
 
 const UserScreen = () => {
   const navigation = useNavigation();
@@ -67,8 +63,12 @@ const UserScreen = () => {
   };
 
   const onViewRecipePressed = () => {
-    navigation.push("View Recipe");
+    navigation.push("View Added Recipe");
   };
+
+  const onViewFoodRecognitionLog = () => {
+    navigation.push("View Food Recognition Log")
+  }
 
   const onTrackProgressPressed = () => {
     navigation.push("Track Progress");
@@ -89,29 +89,28 @@ const UserScreen = () => {
   };
   const onViewFavouritesPressed = () => {
     // Navigate to the "Insert Medical History" screen
-    navigation.push("View Favourites");
+    navigation.push("Favourites", { screen: "Community" });
   };
   const onViewBizFavouritesPressed = () => {
     // Navigate to the "Insert Medical History" screen
-    navigation.push("View Business Favourites");
+    navigation.push("Favourites", { screen: "Business" });
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.userInfoSection}>
-          <View style={styles.userInfo}>
-            <Title style={styles.title}>{currentUser.username}</Title>
-          </View>
+          <Image 
+              source={require("../../assets/person-placeholder.jpg")} 
+              style={styles.userImage} 
+          />
 
-          <View style={styles.userDetails}>
-            <View style={styles.userDetail}>
-              <Text
-                onPress={() => handleViewUserProfile()}
-                style={styles.detailText}
-              >User Profile</Text>
-            </View>
-          </View>
+          <Title style={styles.title}>{currentUser.username}</Title>
+
+          <Text
+            onPress={() => handleViewUserProfile()}
+            style={styles.detailText}
+          >User Profile</Text>
         </View>
 
         <View style={styles.menuWrapper}>
@@ -169,6 +168,13 @@ const UserScreen = () => {
             </View>
           </TouchableRipple>
 
+          <TouchableRipple onPress={onViewFoodRecognitionLog}>
+            <View style={styles.menuItem}>
+              <Icon name="silverware-fork-knife" color="#ED6F21" size={25} />
+              <Text style={styles.menuItemText}>View Food Recognition Log</Text>
+            </View>
+          </TouchableRipple>
+
           <View style={styles.divider} />
           <Text style={styles.subTitle}>Favourite Recipe</Text>
           <TouchableRipple onPress={onViewFavouritesPressed}>
@@ -202,7 +208,8 @@ const UserScreen = () => {
               <Text style={styles.menuItemText}>View Request Status</Text>
             </View>
           </TouchableRipple>
-
+          <View style={styles.divider} />
+          <Text style={styles.subTitle}>Others</Text>
           <TouchableRipple onPress={onPastOrderspressed}>
             <View style={styles.menuItem}>
               <Icon name="clipboard-list-outline" color="#ED6F21" size={25} />
@@ -246,7 +253,6 @@ const UserScreen = () => {
 export default UserScreen;
 
 const styles = StyleSheet.create({
-  //#FF6347
   container: {
     flex: 1,
     backgroundColor: "#fff",
@@ -254,30 +260,15 @@ const styles = StyleSheet.create({
   userInfoSection: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-
-  },
-  userInfo: {
     alignItems: "center",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-  },
-  caption: {
-    fontSize: 14,
-    lineHeight: 14,
-    fontWeight: "500",
-  },
-  userDetails: {
-    flexDirection: "row",
-    marginTop: 20,
-    justifyContent: "space-around",
-  },
-  userDetail: {
-    alignItems: "center",
+    color: "#333", 
   },
   detailText: {
-    fontSize: 16,
+    fontSize: 14,
     color: "grey",
   },
   divider: {
@@ -299,9 +290,9 @@ const styles = StyleSheet.create({
     //borderBottomColor: "#dddddd",
   },
   menuItemText: {
-    color: "#777777",
+    color: "#000000",
     marginLeft: 20,
-    fontWeight: "600",
+    // fontWeight: "bold",
     fontSize: 16,
     lineHeight: 26,
   },
@@ -312,5 +303,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 20,
     color: "grey",
+  },
+  userImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    margin: 10,
   },
 });

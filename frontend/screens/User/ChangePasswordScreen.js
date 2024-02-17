@@ -1,7 +1,7 @@
-import React, { useState, useContext } from "react";
-import { Context } from "../../store/context";
-import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import React, { useContext, useState } from "react";
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Context } from "../../store/context";
 
 const ChangePasswordScreen = () => {
   const navigation = useNavigation();
@@ -68,38 +68,77 @@ const ChangePasswordScreen = () => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Current Password"
-        secureTextEntry
-        value={currentPassword}
-        onChangeText={setCurrentPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="New Password"
-        secureTextEntry
-        value={newPassword}
-        onChangeText={setNewPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm New Password"
-        secureTextEntry
-        value={confirmNewPassword}
-        onChangeText={setConfirmNewPassword}
-      />
-      <Button title="Update Password" onPress={handlePasswordChange} />
+          
+      {/* Current Password */}
+      <View style={styles.detailContainer}>
+        <Text style={styles.title}>Current Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Current Password"
+          secureTextEntry
+          value={currentPassword}
+          onChangeText={setCurrentPassword}
+        />
+      </View>
+      
+      {/* New Password */}
+      <View style={styles.detailContainer}>
+        <Text style={styles.title}>New Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="New Password"
+          secureTextEntry
+          value={newPassword}
+          onChangeText={setNewPassword}
+        />
+      </View>
+
+      {/* Confirm New Password */}
+      <View style={styles.detailContainer}>
+        <Text style={styles.title}>Confirm New Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm New Password"
+          secureTextEntry
+          value={confirmNewPassword}
+          onChangeText={setConfirmNewPassword}
+        />
+      </View>
+      
+      {/* <Button title="Update Password" onPress={handlePasswordChange} /> */}
+
+      <TouchableOpacity style={styles.updatebutton} onPress={handlePasswordChange}>
+        <Text style={styles.updatebuttonText}>Update Password</Text>
+      </TouchableOpacity>
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    // justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
+    justifyContent: "center",
+    alignItems: "right",
+    padding: 16,
+    backgroundColor: "#fff",
+    marginTop: 8,
+    marginHorizontal: 16,
+    borderRadius: 20,
+    gap: 16,
+    shadowColor: "#000",
+    shadowOffset: {
+    width: 0,
+    height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
+  title: {
+    fontWeight: 'bold',
+  },
+  detailContainer: {
+    width: "100%",
   },
   input: {
     borderWidth: 1,
@@ -107,7 +146,20 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 10,
     width: "100%",
+    borderRadius: 5,
   },
+  updatebutton: {
+    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: '#ED6F21',
+    padding: 10,
+    width: '100%'
+  },
+  updatebuttonText: {
+    color: "#FFF",
+    fontWeight: 'bold',
+    fontSize: 16,
+  }
 });
 
 export default ChangePasswordScreen;

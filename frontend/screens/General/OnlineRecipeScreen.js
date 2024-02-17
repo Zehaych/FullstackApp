@@ -94,7 +94,7 @@ const OnlineRecipeScreen = () => {
             onChangeText={(text) => handleSearch(text)}
           />
         </View>
-        {/* list of recipes */}
+        {/* list of recipes for search*/}
         <View style={styles.listFlat}>
           {loading ? (
             <Text style={styles.recipeTitle}>Loading...</Text>
@@ -110,12 +110,14 @@ const OnlineRecipeScreen = () => {
             />
           )}
         </View>
+        
+        <View style={styles.divider}></View>
         {/* featured section */}
-        <Text style={styles.recommandation}>Featured Random Recipe</Text>
+        <Text style={styles.recommandation}>Featured Recommended Recipes</Text>
 
         <FlatList
           data={mealPlanRecipes}
-          horizontal={true}
+          numColumns={2}
           keyExtractor={(item, index) => `${item.id}-${index}`}
           renderItem={({ item }) => (
             <TouchableOpacity
@@ -126,7 +128,7 @@ const OnlineRecipeScreen = () => {
                 source={{
                   uri: `https://spoonacular.com/recipeImages/${item.id}-312x231.${item.imageType}`,
                 }}
-                style={styles.recipeImage}
+                style={styles.image}
               />
               <Text style={styles.recipeName}>{item.title}</Text>
             </TouchableOpacity>
@@ -142,19 +144,20 @@ export default OnlineRecipeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FCFCD3",
-    alignItems: "center",
-    paddingBottom: 10,
+    backgroundColor: "#F5F5F5",
+    //alignItems: "center",
+    padding: 5,
+    marginHorizontal: 5,
   },
   header: {},
   searchBar: {
     height: 50,
-    width: screenWidth - 20, // 20 is the total horizontal margin (10 on each side)
+    width: "100%", // 20 is the total horizontal margin (10 on each side)
     borderColor: "gray",
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
-    margin: 10,
+    marginTop: 10,
   },
   listFlat: {
     width: 385,
@@ -166,7 +169,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "orange",
+    color: "#ED6F21",
   },
   featuredSection: {},
   foodContainer: {
@@ -175,37 +178,56 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   recipeMember: {
-    //width: 200,
-    marginRight: 5,
-    //marginLeft: 5,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    padding: 10,
-  },
-  recipeImage: {
-    flex: 1,
-    width: 360,
-    height: 400,
-    resizeMode: "contain",
     alignItems: "center",
-    justifyContent: "center",
+    marginVertical: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 18,
+    width: "50%",
+  },
+  image: {
+    width: 160,
+    height: 175,
+    resizeMode: "cover",
+    borderRadius: 10,
   },
   recipeName: {
-    textAlign: "center",
     marginTop: 10,
+    width: "100%",
     fontSize: 16,
     fontWeight: "bold",
-    position: "absolute",
-    bottom: 80,
-    left: 10,
-    right: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    color: "white",
-    padding: 5,
-    borderRadius: 5,
+    textAlign: "center",
   },
+  // recipeName: {
+  //   textAlign: "center",
+  //   marginTop: 10,
+  //   fontSize: 16,
+  //   fontWeight: "bold",
+  //   position: "absolute",
+  //   bottom: 80,
+  //   left: 10,
+  //   right: 10,
+  //   backgroundColor: "rgba(0, 0, 0, 0.5)",
+  //   color: "white",
+  //   padding: 5,
+  //   borderRadius: 5,
+  // },
   recipeTitle: {
     marginLeft: 20,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#dddddd",
+    borderBottomWidth: 1,
+    borderBottomColor: "#dddddd",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    marginBottom: 10,
+    elevation: 5,
+    backgroundColor: "white",
   },
 });

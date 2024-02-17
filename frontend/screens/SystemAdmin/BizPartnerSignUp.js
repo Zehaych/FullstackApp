@@ -80,90 +80,72 @@ export default function BizPartnerSignUp() {
   };
 
   return (
-    <View className="bg-white h-full w-full">
+    <View style={styles.container}>
       <StatusBar style="light" />
-      <Image
-        className="h-full w-full absolute"
-        source={require("../../assets/background.png")}
-      />
-
-      {/* recipe logo */}
-      <View className="flex-row justify-around w-full absolute">
-        <Animated.Image
-          entering={FadeInUp.delay(200).duration(1000).springify()}
-          source={require("../../assets/logo.png")}
-          className="h-[250] w-90] mt-4"
-        />
-      </View>
 
       {/* title and form */}
-      <View className="h-full w-full flex justify-around pt-48">
-        {/* title */}
-        <View className="flex items-center">
-          <Animated.Text
-            entering={FadeInUp.duration(1000).springify()}
-            className="text-white font-bold tracking-wider text-5xl"
-          >
-            NutriRizz
-          </Animated.Text>
-        </View>
+      <View style={styles.detailBox}>
 
         {/* form */}
-        <View className="flex items-center mx-5 space-y-4">
           <Animated.View
             entering={FadeInDown.duration(1000).springify()}
-            className="bg-black/5 p-5 rounded-2xl w-full"
+            //className="bg-black/5 p-5 rounded-2xl w-full"
           >
+            <Text style={styles.subtitle}>Username</Text>
             <TextInput
               placeholder="Business Partner Username"
-              placeholderTextColor={"black"}
               onChangeText={handleUsernameChange}
+              style={styles.input}
             />
           </Animated.View>
           <Animated.View
             entering={FadeInDown.delay(200).duration(1000).springify()}
-            className="bg-black/5 p-5 rounded-2xl w-full"
+            //className="bg-black/5 p-5 rounded-2xl w-full"
           >
+            <Text style={styles.subtitle}>Email</Text>
             <TextInput
               placeholder="Email"
-              placeholderTextColor={"black"}
               onChangeText={handleEmailChange}
               keyboardType="email-address"
+              style={styles.input}
             />
           </Animated.View>
           <Animated.View
             entering={FadeInDown.delay(400).duration(1000).springify()}
-            className="bg-black/5 p-5 rounded-2xl w-full"
+            //className="bg-black/5 p-5 rounded-2xl w-full"
           >
+            <Text style={styles.subtitle}>Password</Text>
             <TextInput
               placeholder="Password"
-              placeholderTextColor={"black"}
               secureTextEntry
               onChangeText={handlePasswordChange}
+              style={styles.input}
             />
           </Animated.View>
 
           <Animated.View
             entering={FadeInDown.delay(400).duration(1000).springify()}
-            className="bg-black/5 p-5 rounded-2xl w-full"
+            //className="bg-black/5 p-5 rounded-2xl w-full"
           >
+            <Text style={styles.subtitle}>Confirm Password</Text>
             <TextInput
               placeholder="Confirm Password"
-              placeholderTextColor={"black"}
               secureTextEntry
               onChangeText={handlePasswordConfirmationChange}
+              style={styles.input}
             />
           </Animated.View>
 
           <Animated.View
             entering={FadeInDown.delay(400).duration(1000).springify()}
-            className="w-full"
+            //className="w-full"
           >
             <TouchableOpacity
               onPress={handleSignUp}
-              className="w-full bg-amber-600 p-3 rounded-2xl mb-3 active:bg-opacity-75"
+              //className="w-full bg-amber-600 p-3 rounded-2xl mb-3 active:bg-opacity-75"
+              style={styles.button}
             >
-              <Text className="text-xl font-bold text-white text-center">
+              <Text style={styles.text}>
                 Create Business Partner Account
               </Text>
             </TouchableOpacity>
@@ -171,10 +153,60 @@ export default function BizPartnerSignUp() {
 
           <Animated.View
             entering={FadeInDown.delay(800).duration(1000).springify()}
-            className="flex-row justify-center"
+            //className="flex-row justify-center"
           ></Animated.View>
-        </View>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container:{
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
+  detailBox: {
+    //flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 16,
+    margin: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
+  },
+  input: {
+    height: 40,
+    margin: 10,
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
+    borderColor: "#ccc",
+    fontSize: 16, // Adjust font size
+  },
+  button: {
+    margin: 10,
+    overflow: "hidden",
+    backgroundColor: "#ED6F21",
+    padding: 10,
+    borderRadius: 10,
+  },
+  text: {
+    fontSize: 16,
+    color: "#fff",
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  subtitle: {
+    fontSize:18,
+    fontWeight: "bold",
+    marginTop: 5,
+    marginHorizontal: 10,
+  },
+
+});

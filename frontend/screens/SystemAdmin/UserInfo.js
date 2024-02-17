@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Modal, StyleSheet, Button, TouchableOpacity, TextInput, Alert } from "react-native";
+import { View, Text, Modal, StyleSheet, Button, TouchableOpacity, TextInput, Alert, Image } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Context } from "../../store/context";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const UserInfo = ({ route, navigation }) => {
   const { user } = route.params; // Retrieve the user data passed from the previous screen
@@ -134,58 +135,113 @@ const UserInfo = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.infoTitle}>User Information</Text>
-      <Text style={styles.userInfo}>User: {user.username}</Text>
-      <Text style={styles.userInfo}>Email: {user.email}</Text>
-      <Text style={styles.userInfo}>
-        Status: {userData.isActive ? "Active" : "Suspended"}
-      </Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button]}
-          onPress={() => suspendUser(userData._id)}
-        >
-          <Text style={styles.buttonText}>Suspend User</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.button, styles.secondaryButton]}
-          onPress={() => unsuspendUser(userData._id)}
-        >
-          <Text style={styles.buttonText}>Reactivate User</Text>
-        </TouchableOpacity>
+      <View style={styles.userInfoSection}>
+        <Image 
+          source={require("../../assets/person-placeholder.jpg")} 
+          style={styles.userImage} 
+        />
+        <Text style={styles.infoTitle}>{user.username}</Text>
+      </View>
+      <View style={styles.divider} />
+      <View style={styles.detailBox}>
+        <View style={styles.componentContainer}>
+          <Text style={styles.userInfo}>Username</Text>
+          <Text style={styles.userInfo1}>{user.username}</Text>
+        </View>
+        <View style={styles.componentContainer}>
+          <Text style={styles.userInfo}>Email</Text>
+          <Text style={styles.userInfo1}>{user.email}</Text>
+        </View>
+        <View style={styles.componentContainer}>
+          <Text style={styles.userInfo}>Status</Text>
+          <Text style={styles.userInfo1}>{userData.isActive ? "Active" : "Suspended"}</Text>
+        </View>
 
-        <TouchableOpacity style={[styles.button, styles.thirdButton]} onPress={() => setModalVisible(true)}>
-          <Text style={styles.buttonText}>Delete User</Text>
-        </TouchableOpacity>
+
+        {/* <View style={styles.buttonContainer}>
+
+          <TouchableOpacity
+            style={[styles.button]}
+            onPress={() => suspendUser(userData._id)}
+          >
+            <Text style={styles.buttonText}>Suspend User</Text>
+          </TouchableOpacity>
+
+
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => unsuspendUser(userData._id)}
+          >
+            <Text style={styles.buttonText}>Reactivate User</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
+            <Text style={styles.buttonText}>Delete User</Text>
+          </TouchableOpacity>
+        </View> */}
+
+        <View style={styles.buttonContainer}>
+          {userData.isActive ? (
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => suspendUser(userData._id)}
+            >
+              <Text style={styles.buttonText}>Suspend User</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => unsuspendUser(userData._id)}
+            >
+              <Text style={styles.buttonText}>Reactivate User</Text>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity style={styles.deleteButton} onPress={() => setModalVisible(true)}>
+            <Text style={styles.buttonText}>Delete User</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
-        >
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <TextInput
-                        secureTextEntry
-                        style={styles.input}
-                        placeholder="Enter Admin Password"
-                        value={adminPassword}
-                        onChangeText={setAdminPassword}
-                    />
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => {
-                            setModalVisible(false);
-                            validateAndDeleteUser();
-                        }}
-                    >
-                        <Text style={styles.buttonText}>Confirm</Text>
-                    </TouchableOpacity>
-                </View>
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View style={styles.closeContainer}>
+              <Text></Text>
+              {/* Close Button */}
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                {/* <Text style={styles.submitButtonText}>Close</Text> */}
+                <Icon name="close" color="#4D4D4D" size={24} />
+              </TouchableOpacity>
             </View>
-        </Modal>
+            <TextInput
+                secureTextEntry
+                style={styles.input}
+                placeholder="Enter Admin Password"
+                value={adminPassword}
+                onChangeText={setAdminPassword}
+            />
+            <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={() => {
+                    setModalVisible(false);
+                    validateAndDeleteUser();
+                }}
+            >
+              <Text style={styles.buttonText}>Confirm</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -197,8 +253,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)', 
   },
+  userInfoSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    alignItems: "center",
+  },
   modalView: {
-      width: '80%', 
+      width: '90%', 
       backgroundColor: 'white',
       borderRadius: 20,
       padding: 20,
@@ -213,34 +274,40 @@ const styles = StyleSheet.create({
       elevation: 5
   },
   input: {
-      marginBottom: 10,
+    height: 40,
+    margin: 10,
+    borderWidth: 1,
+    padding: 10,
+    width: '100%', // Adjust as needed
+    borderRadius: 5,
+    borderColor: '#ccc',
   },
   buttonContainer: {
     margin: 10,
     overflow: "hidden",
   },
   button: {
-    backgroundColor: "#007bff", // Blue color for the primary button
+    backgroundColor: "#ED6F21", // Blue color for the primary button
     padding: 10,
     borderRadius: 10,
     marginBottom: 10,
     alignItems: "center",
   },
-  secondaryButton: {
-    backgroundColor: "#28a745", // Green color for the secondary button
-  },
-  thirdButton: {
-    backgroundColor: "#FF0000",
+  deleteButton: {
+    backgroundColor: "#A9A9A9", // Blue color for the primary button
+    padding: 10,
+    borderRadius: 10,
+    // marginBottom: 10,
+    alignItems: "center",
   },
   buttonText: {
     color: "white",
     fontSize: 16,
+    textAlign: "center",
+    fontWeight: "bold",
   },
   container: {
     flex: 1,
-    marginTop: 40,
-    alignItems: "center", // Center content horizontally
-    padding: 10,
     backgroundColor: "#f5f5f5",
   },
   infoTitle: {
@@ -250,21 +317,74 @@ const styles = StyleSheet.create({
     color: "#333", 
   },
   userInfo: {
-    fontSize: 20,
-    color: "#444", 
+    fontSize: 16,
+    color: "grey",
+    marginBottom: 5, 
+  },
+  userInfo1: {
+    fontSize: 16,
+    marginBottom: 5,
+    width: "70%",
+    textAlign: "right",
+  },
+  detailBox: {
+    //flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 20,
+    marginVertical: 10,
+    marginHorizontal: 20,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowRadius: 3.84,
+    shadowOpacity: 0.25,
+    elevation: 5,
+  },
+  userImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    margin: 10,
+
+  },
+  componentContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 10,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#ddd", 
-    borderRadius: 5,
-    width: "80%",
-    textAlign: "center", 
-    backgroundColor: "white", 
+    paddingHorizontal: 10,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#dddddd",
+    borderBottomWidth: 1,
+    borderBottomColor: "#dddddd",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    backgroundColor: 'white',
+  },
+  confirmButton: {
+    //backgroundColor: '#2196F3',
+    backgroundColor: '#ED6F21',
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
+    marginTop: 10,
+    width: '100%', // Adjust as needed
+  },
+  closeContainer: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-between",
   },
 });
 

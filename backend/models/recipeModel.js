@@ -37,6 +37,14 @@ const recipeSchema = mongoose.Schema(
       type: Number,
       required: true,
     },
+    servings: {
+      type: Number,
+      required: true,
+    },
+    timeTaken: {
+      type: Number,
+      required: true,
+    },
     image: {
       type: String,
       required: true,

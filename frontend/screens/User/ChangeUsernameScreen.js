@@ -1,16 +1,13 @@
-import React, { useState, useContext } from "react";
-import { Context } from "../../store/context";
+import { useNavigation } from "@react-navigation/native";
+import React, { useContext, useState } from "react";
 import {
-  Keyboard,
   StyleSheet,
-  View,
   Text,
   TextInput,
-  Button,
-  ScrollView,
-  Dimensions,
+  TouchableOpacity,
+  View
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { Context } from "../../store/context";
 
 const ChangeUsernameScreen = () => {
   const navigation = useNavigation();
@@ -77,34 +74,65 @@ const ChangeUsernameScreen = () => {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        {/* <Text>Change Username</Text> */}
+    <View style={styles.container}>
+
+      {/* New UserName */}
+      <View style={styles.detailContainer}>
+        <Text style={styles.title}>New Username</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter new username"
+          placeholder="New username"
           value={newUsername}
           onChangeText={(text) => setNewUsername(text)}
         />
+      </View>
+        
+      {/* Password */}
+      <View style={styles.detailContainer}>
+        <Text style={styles.title}>Password</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter password to verify identity"
+          placeholder="Password to verify identity"
           secureTextEntry
           onChangeText={(text) => setPassword(text)}
         />
-
-        <Button title="Update Username" onPress={handleUsernameChange} />
       </View>
-    </ScrollView>
+    
+      {/* <Button title="Update Username" onPress={handleUsernameChange} /> */}
+
+      <TouchableOpacity style={styles.updatebutton} onPress={handleUsernameChange}>
+        <Text style={styles.updatebuttonText}>Update Username</Text>
+      </TouchableOpacity>
+
+    </View>
+
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
+    alignItems: "right",
+    padding: 16,
+    backgroundColor: "#fff",
+    marginTop: 8,
+    marginHorizontal: 16,
+    borderRadius: 20,
+    gap: 16,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
+  title: {
+    fontWeight: 'bold',
+  },
+  detailContainer: {
+    width: "100%",
   },
   input: {
     borderWidth: 1,
@@ -112,7 +140,22 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 10,
     width: "100%",
+    borderRadius: 5,
   },
+  updatebutton: {
+    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: '#ED6F21',
+    padding: 10,
+    width: "100%",
+  },
+  updatebuttonText: {
+    color: "#FFF",
+    fontWeight: 'bold',
+    fontSize: 16,
+    width: "100%",
+    textAlign: 'center',
+  }
 });
 
 export default ChangeUsernameScreen;

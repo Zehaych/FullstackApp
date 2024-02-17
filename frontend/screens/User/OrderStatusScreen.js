@@ -107,53 +107,98 @@ const OrderStatusScreen = () => {
   }, []);
 
   const renderOrderItem = ({ item }) => (
-    <View style={styles.orderContainer}>
-      <Text style={styles.orderTitle}>{item.recipeName}</Text>
-      <Text style={styles.orderText}>
-        <Text style={styles.boldLabel}>Total Price:</Text> ${item.totalPrice}
-      </Text>
-      <Text style={styles.orderText}>
-        <Text style={styles.boldLabel}>Quantity:</Text> {item.quantity}
-      </Text>
-      <Text style={styles.orderText}>
-        <Text style={styles.boldLabel}>Preferences:</Text> {item.preferences}
-      </Text>
-      <Text style={styles.orderText}>
-        <Text style={styles.boldLabel}>Date to Deliver:</Text>{" "}
-        {item.dateToDeliver}
-      </Text>
-      <Text style={styles.orderText}>
-        <Text style={styles.boldLabel}>Time to Deliver:</Text>{" "}
-        {item.timeToDeliver}
-      </Text>
-      <Text style={styles.orderText}>
-        <Text style={styles.boldLabel}>Delivery Address:</Text>{" "}
-        {item.deliveryAddress}
-      </Text>
-      <Text style={styles.orderText}>
-        <Text style={styles.boldLabel}>Status:</Text> {item.status}
-      </Text>
-      <Text style={styles.orderText}>
-        <Text style={styles.boldLabel}>Estimated Arrival Time:</Text>{" "}
-        {item.estimatedArrivalTime}
-      </Text>
+    <View style={styles.itemContainer}>
+      <View style={styles.orderContainer}>
+
+        {/* title & status */}
+        <View style={styles.titleContainer}>
+          <View style={styles.leftComponent}>
+            <Text style={styles.title}>{item.recipeName}</Text>
+          </View>
+
+          <View style={styles.rightComponent}>
+            <Text style={styles.itemDetailRightText}>{item.status}</Text>
+          </View>
+        </View>
+
+        {/* cost & quantity */}
+        <View style={styles.amountContainer}>
+          <View style={styles.amount}>
+            <Text style={styles.amountText}>${item.totalPrice}</Text>
+          </View>
+
+          <View style={styles.quantity}>
+            <Text style={styles.amountText}>x {item.quantity}</Text>
+          </View>      
+        </View>
+        
+        <View style={styles.divider} />    
+
+        {/* preferences */}
+        <View style={styles.preferencesContainer}>
+          <View>
+            <Text style={styles.itemDetailLeftText}>Preferences</Text>
+          </View>
+
+          <View style={styles.itemDetailRight}>
+            <Text style={styles.itemDetailRightText}>{item.preferences}</Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.divider} />
+
+      <View style={styles.orderDetailContainer}>
+
+        {/* Date of Delivery */}
+        <View style={styles.itemDetailContainer}>        
+          <View>
+            <Text style={styles.itemDetailLeftText}>Date of Delivery</Text>
+          </View>
+
+          <View style={styles.itemDetailRight}>
+            <Text style={styles.itemDetailRightText}>{item.dateToDeliver}</Text>
+          </View>
+        </View>
+
+        {/* Time of Delivery */}
+        <View style={styles.itemDetailContainer}>        
+          <View>
+            <Text style={styles.itemDetailLeftText}>Time of Delivery</Text>
+          </View>
+
+          <View style={styles.itemDetailRight}>
+            <Text style={styles.itemDetailRightText}>{item.timeToDeliver}</Text>
+          </View>
+        </View>
+
+        {/* Estimated Arrival Time */}
+        <View style={styles.itemDetailContainer}>
+          <View>
+            <Text style={styles.itemDetailLeftText}>Estimated Arrival Time</Text>
+          </View>
+
+          <View style={styles.itemDetailRight}>
+            <Text style={styles.itemDetailRightText}>{item.estimatedArrivalTime}</Text>
+          </View>
+        </View>
+
+        {/* Delivery Address */}
+        <View style={styles.itemDetailContainer}>
+          <View>
+            <Text style={styles.itemDetailLeftText}>Delivery Address</Text>
+          </View>
+
+          <View style={styles.itemDetailRight}>
+            <Text style={styles.itemDetailRightText}>{item.deliveryAddress}</Text>
+          </View>
+        </View>
+      </View>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      {/* Conditionally render the button */}
-      {hasDoneOrRejectedOrders && (
-        <TouchableOpacity
-          onPress={confirmOrderClear}
-          style={styles.deleteButton}
-        >
-          <Text style={styles.deleteButtonText}>
-            Clear Done/Rejected Orders
-          </Text>
-        </TouchableOpacity>
-      )}
-
       <FlatList
         data={userOrders}
         renderItem={renderOrderItem}
@@ -162,6 +207,20 @@ const OrderStatusScreen = () => {
           <Text style={styles.emptyText}>No ongoing orders.</Text>
         }
       />
+      <View style={styles.deleteButtonContainer}>
+        {/* Conditionally render the button */}
+        {hasDoneOrRejectedOrders && (
+          <TouchableOpacity
+            onPress={confirmOrderClear}
+            style={styles.deleteButton}
+          >
+            <Text style={styles.deleteButtonText}>
+              Clear Done/Rejected Orders
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
+
     </View>
   );
 };
@@ -172,46 +231,97 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  orderContainer: {
+  itemContainer: {
     backgroundColor: "white",
-    padding: 20,
+    padding: 16,
     marginVertical: 8,
     marginHorizontal: 16,
-    borderRadius: 10,
+    borderRadius: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     elevation: 4,
   },
-  orderTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-    textAlign: "center",
-  },
-  orderText: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  boldLabel: {
-    fontWeight: "bold",
-  },
-  emptyText: {
-    fontSize: 16,
-    textAlign: "center",
-    marginTop: 50,
-  },
   deleteButton: {
-    backgroundColor: "#FF6347",
+    backgroundColor: "#ED6F21",
     padding: 10,
-    borderRadius: 5,
-    margin: 10,
+    borderRadius: 10,
+    margin: 16,
     alignItems: "center",
     justifyContent: "center",
   },
   deleteButtonText: {
     color: "white",
     fontWeight: "bold",
+    fontSize: 16,
+  },
+  titleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  orderContainer: {
+    gap: 4,
+    paddingBottom: 4,
+    paddingTop: 8,
+  },
+  orderDetailContainer: {
+    gap: 6,
+    paddingBottom: 4,
+    paddingTop: 4,
+  },
+  amountContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  itemDetailContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  preferencesContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 8,
+  },
+  itemDetailRight: {
+    width: "50%",
+  },
+  amountText: {
+    fontSize: 16,
+    color: "#676767",
+  },
+  itemDetailLeftText: {
+    fontSize: 14,
+  },
+  itemDetailRightText: {
+    fontSize: 14,
+    color: "#F97316",
+    textAlign: "right",
+  },
+  divider: {
+    borderBottomColor: "#C6C6CD",
+    borderBottomWidth: 1,
+    alignSelf: "center",
+    width: "100%",
+  },
+  emptyText: {
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 50,
+  },
+  deleteButtonContainer: {
+    backgroundColor: "white"
+  },
+  leftComponent: {
+    width: "50%",
+  },
+  rightComponent: {
+    width: "50%",
+    alignItems: "flex-end",
   },
 });
